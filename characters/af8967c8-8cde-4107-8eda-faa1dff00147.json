@@ -1,12 +1,12 @@
 {
   "id": "af8967c8-8cde-4107-8eda-faa1dff00147",
-  "updatedAt": "2026-05-18T14:32:06.582Z",
+  "updatedAt": "2026-05-18T15:14:57.307Z",
   "summary": {
     "name": "Test3",
     "armorClass": "15",
     "hpCurrent": "9",
     "hpMax": "24",
-    "passivePerception": "16"
+    "passivePerception": ""
   },
   "fields": [
     {
@@ -403,7 +403,7 @@
     },
     {
       "index": 98,
-      "value": false
+      "value": "false"
     },
     {
       "index": 99,
@@ -415,7 +415,7 @@
     },
     {
       "index": 101,
-      "value": ""
+      "value": false
     },
     {
       "index": 102,
@@ -435,7 +435,7 @@
     },
     {
       "index": 106,
-      "value": false
+      "value": "false"
     },
     {
       "index": 107,
@@ -447,7 +447,7 @@
     },
     {
       "index": 109,
-      "value": ""
+      "value": false
     },
     {
       "index": 110,
@@ -467,7 +467,7 @@
     },
     {
       "index": 114,
-      "value": false
+      "value": "false"
     },
     {
       "index": 115,
@@ -479,7 +479,7 @@
     },
     {
       "index": 117,
-      "value": ""
+      "value": false
     },
     {
       "index": 118,
@@ -499,7 +499,7 @@
     },
     {
       "index": 122,
-      "value": false
+      "value": "false"
     },
     {
       "index": 123,
@@ -511,7 +511,7 @@
     },
     {
       "index": 125,
-      "value": ""
+      "value": false
     },
     {
       "index": 126,
@@ -531,7 +531,7 @@
     },
     {
       "index": 130,
-      "value": false
+      "value": "false"
     },
     {
       "index": 131,
@@ -543,7 +543,7 @@
     },
     {
       "index": 133,
-      "value": ""
+      "value": false
     },
     {
       "index": 134,
@@ -563,7 +563,7 @@
     },
     {
       "index": 138,
-      "value": false
+      "value": "false"
     },
     {
       "index": 139,
@@ -575,7 +575,7 @@
     },
     {
       "index": 141,
-      "value": ""
+      "value": false
     },
     {
       "index": 142,
@@ -595,7 +595,7 @@
     },
     {
       "index": 146,
-      "value": false
+      "value": "false"
     },
     {
       "index": 147,
@@ -607,7 +607,7 @@
     },
     {
       "index": 149,
-      "value": ""
+      "value": false
     },
     {
       "index": 150,
@@ -627,7 +627,7 @@
     },
     {
       "index": 154,
-      "value": false
+      "value": "false"
     },
     {
       "index": 155,
@@ -639,7 +639,7 @@
     },
     {
       "index": 157,
-      "value": ""
+      "value": false
     },
     {
       "index": 158,
@@ -659,7 +659,7 @@
     },
     {
       "index": 162,
-      "value": false
+      "value": "false"
     },
     {
       "index": 163,
@@ -671,7 +671,7 @@
     },
     {
       "index": 165,
-      "value": ""
+      "value": false
     },
     {
       "index": 166,
@@ -695,6 +695,10 @@
     },
     {
       "index": 171,
+      "value": ""
+    },
+    {
+      "index": 172,
       "value": ""
     }
   ]
