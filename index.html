@@ -1169,9 +1169,19 @@ function deleteCurrentCharacter() {
   showStartPage();
 }
 
-function renderCharacterList() {
+async function renderCharacterList() {
   const list = document.getElementById("characterList");
-  const characters = getCharacters();
+
+  let characters = [];
+
+  try {
+    const response = await fetch(`/characters/character-index.json?cacheBust=${Date.now()}`);
+    characters = await response.json();
+  } catch (error) {
+    console.error(error);
+    list.innerHTML = "<p>Could not load saved characters.</p>";
+    return;
+  }
 
   if (!characters.length) {
     list.innerHTML = "<p>No saved characters yet.</p>";
@@ -1179,18 +1189,19 @@ function renderCharacterList() {
   }
 
   list.innerHTML = characters.map(character => `
-    <div class="character-card" data-id="${character.id}">
-      <strong>${character.summary.name}</strong><br>
-      Armor Class: ${character.summary.armorClass || "—"}<br>
-      Hit Points: ${character.summary.hpCurrent || "—"} / ${character.summary.hpMax || "—"}<br>
-      Passive Perception: ${character.summary.passivePerception || "—"}
+    <div class="character-card" data-file="${character.file}">
+      <strong>${character.name}</strong><br>
+      Armor Class: ${character.armorClass || "—"}<br>
+      Hit Points: ${character.hpCurrent || "—"} / ${character.hpMax || "—"}<br>
+      Passive Perception: ${character.passivePerception || "—"}
     </div>
   `).join("");
 
   document.querySelectorAll(".character-card").forEach(card => {
-    card.addEventListener("click", () => {
-      const character = getCharacters().find(c => c.id === card.dataset.id);
-      if (character) loadCharacter(character);
+    card.addEventListener("click", async () => {
+      const response = await fetch(`/${card.dataset.file}?cacheBust=${Date.now()}`);
+      const character = await response.json();
+      loadCharacter(character);
     });
   });
 }
