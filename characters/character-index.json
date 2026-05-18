@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "e5af15cf-478c-4d61-bbf3-0c2ce4a83201",
+    "name": "Test",
+    "armorClass": "14",
+    "hpCurrent": "22",
+    "hpMax": "30",
+    "passivePerception": "12",
+    "file": "characters/e5af15cf-478c-4d61-bbf3-0c2ce4a83201.json",
+    "updatedAt": "2026-05-18T14:30:30.358Z"
+  }
+]
