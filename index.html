@@ -1109,24 +1109,39 @@ function loadCharacter(character) {
   showSheet();
 }
 
-function saveCurrentCharacter(showAlert = true) {
-  const characters = getCharacters();
+async function saveCurrentCharacter(showAlert = true) {
   const data = collectCharacterData();
 
-  const existingIndex = characters.findIndex(c => c.id === data.id);
+  try {
+    const response = await fetch("/.netlify/functions/save-character", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
 
-  if (existingIndex >= 0) {
-    characters[existingIndex] = data;
-  } else {
-    characters.push(data);
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error(result);
+      alert("Failed to save character.");
+      return;
+    }
+
+    currentCharacterId = data.id;
+
+    if (showAlert) {
+      alert("Character saved!");
+    }
+
+    renderCharacterList();
+
+  } catch (error) {
+    console.error(error);
+    alert("Error saving character.");
   }
-
-  currentCharacterId = data.id;
-  saveCharacters(characters);
-  renderCharacterList();
-if (showAlert) alert("Character saved!");
 }
-
 function newCharacter() {
   currentCharacterId = crypto.randomUUID();
 
