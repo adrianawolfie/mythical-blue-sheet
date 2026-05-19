@@ -1347,7 +1347,6 @@ function addSR(
     mkCell(notes);
 
   tb.appendChild(tr);
-});
 }
 
 function resetSpellRows() {
@@ -1488,7 +1487,39 @@ function newCharacter() {
   showSheet();
 }
 
-function deleteCurrentCharacter() {
+async function deleteCurrentCharacter() {
+  if (!currentCharacterId) return;
+
+  if (!confirm("Delete this character?")) return;
+
+  try {
+    const response = await fetch("/.netlify/functions/delete-character", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id: currentCharacterId })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error(result);
+      alert("Failed to delete character.");
+      return;
+    }
+
+    currentCharacterId = null;
+
+    await renderCharacterList();
+    showStartPage();
+
+    alert("Character deleted!");
+  } catch (error) {
+    console.error(error);
+    alert("Error deleting character.");
+  }
+}
 
 async function renderCharacterList() {
   const list = document.getElementById("characterList");
