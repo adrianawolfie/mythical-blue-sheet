@@ -22,11 +22,11 @@
   {
     "id": "af8967c8-8cde-4107-8eda-faa1dff00147",
     "name": "Test",
-    "armorClass": "14",
+    "armorClass": "1e",
     "hpCurrent": "22",
     "hpMax": "30",
     "passivePerception": "12",
     "file": "characters/af8967c8-8cde-4107-8eda-faa1dff00147.json",
-    "updatedAt": "2026-05-18T21:54:49.689Z"
+    "updatedAt": "2026-05-19T05:26:41.393Z"
   }
 ]
