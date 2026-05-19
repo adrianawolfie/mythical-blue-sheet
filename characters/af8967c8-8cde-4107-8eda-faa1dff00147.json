@@ -1,6 +1,6 @@
 {
   "id": "af8967c8-8cde-4107-8eda-faa1dff00147",
-  "updatedAt": "2026-05-19T10:51:28.855Z",
+  "updatedAt": "2026-05-19T10:57:34.179Z",
   "summary": {
     "name": "Test",
     "armorClass": "1e",
@@ -595,7 +595,7 @@
     },
     {
       "index": 146,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 147,
