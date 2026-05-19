@@ -41,5 +41,16 @@
     "passivePerception": "",
     "file": "characters/23c03e6f-b0bb-4ad7-be37-c917fd216c93.json",
     "updatedAt": "2026-05-19T08:38:24.823Z"
+  },
+  {
+    "id": "7f1753b2-c918-40b1-a1e0-3da9a5dd44ac",
+    "name": "Unnamed Character",
+    "armorClass": "",
+    "hpCurrent": "",
+    "hpMax": "",
+    "passivePerception": "",
+    "currentConditions": "",
+    "file": "characters/7f1753b2-c918-40b1-a1e0-3da9a5dd44ac.json",
+    "updatedAt": "2026-05-19T14:06:23.428Z"
   }
 ]
