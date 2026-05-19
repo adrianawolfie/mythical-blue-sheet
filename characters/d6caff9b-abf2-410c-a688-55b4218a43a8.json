@@ -1,18 +1,18 @@
 {
   "id": "d6caff9b-abf2-410c-a688-55b4218a43a8",
-  "updatedAt": "2026-05-19T11:09:52.043Z",
+  "updatedAt": "2026-05-19T11:09:55.675Z",
   "summary": {
-    "name": "Test2",
-    "armorClass": "19",
-    "hpCurrent": "2",
-    "hpMax": "30",
+    "name": "Unnamed Character",
+    "armorClass": "",
+    "hpCurrent": "",
+    "hpMax": "",
     "passivePerception": "",
-    "currentConditions": "poisoned/petrified"
+    "currentConditions": ""
   },
   "fields": [
     {
       "index": 0,
-      "value": "Test2"
+      "value": ""
     },
     {
       "index": 1,
@@ -48,15 +48,15 @@
     },
     {
       "index": 9,
-      "value": "19"
+      "value": ""
     },
     {
       "index": 10,
-      "value": "2"
+      "value": ""
     },
     {
       "index": 11,
-      "value": "30"
+      "value": ""
     },
     {
       "index": 12,
@@ -64,11 +64,11 @@
     },
     {
       "index": 13,
-      "value": "poisoned/petrified"
+      "value": ""
     },
     {
       "index": 14,
-      "value": "14"
+      "value": ""
     },
     {
       "index": 15,
@@ -220,7 +220,7 @@
     },
     {
       "index": 52,
-      "value": "12"
+      "value": ""
     },
     {
       "index": 53,
@@ -404,7 +404,7 @@
     },
     {
       "index": 98,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 99,
@@ -436,7 +436,7 @@
     },
     {
       "index": 106,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 107,
@@ -468,7 +468,7 @@
     },
     {
       "index": 114,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 115,
@@ -500,7 +500,7 @@
     },
     {
       "index": 122,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 123,
@@ -532,7 +532,7 @@
     },
     {
       "index": 130,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 131,
@@ -564,7 +564,7 @@
     },
     {
       "index": 138,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 139,
@@ -596,7 +596,7 @@
     },
     {
       "index": 146,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 147,
@@ -628,7 +628,7 @@
     },
     {
       "index": 154,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 155,
@@ -660,7 +660,7 @@
     },
     {
       "index": 162,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 163,
@@ -696,11 +696,11 @@
     },
     {
       "index": 171,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 172,
-      "value": "false"
+      "value": ""
     }
   ]
 }
