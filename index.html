@@ -1507,7 +1507,8 @@ async function renderCharacterList() {
       <strong>${character.name}</strong><br>
       Armor Class: ${character.armorClass || "—"}<br>
       Hit Points: ${character.hpCurrent || "—"} / ${character.hpMax || "—"}<br>
-      Passive Perception: ${character.passivePerception || "—"}
+      Passive Perception: ${character.passivePerception || "—"}<br>
+      Current Conditions: ${character.currentConditions || "—"}
     </div>
   `).join("");
 
