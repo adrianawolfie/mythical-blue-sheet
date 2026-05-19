@@ -640,6 +640,25 @@
     font-weight: 700;
     outline: none;
   }
+ .treasure-card .coinsrow {
+  gap: 5px;
+}
+
+.treasure-card .cbox2 {
+  min-width: 0;
+  flex: 1 1 0;
+  padding: 5px 2px;
+}
+
+.treasure-card .cbox2 input {
+  width: 38px;
+  height: 38px;
+  font-size: 12px;
+}
+
+.treasure-card .cbox2 label {
+  font-size: 8px;
+}
   .cbox2.gold-coin input {
     background: rgba(214,168,56,.35);
     border-color: var(--navy-deep);
@@ -647,7 +666,28 @@
 
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .feats-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 12px; }
+ .feats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.feats-main {
+  grid-column: 1 / -1;
+}
+
+.class-features-card textarea {
+  min-height: 220px;
+}
+
+.feats-main textarea {
+  min-height: 420px;
+}
+
+.inventory-card textarea,
+.treasure-card textarea {
+  min-height: 180px;
+}
 
   .spell-stats { display: flex; gap: 9px; padding: 10px; }
   .slot-grid {
@@ -757,15 +797,222 @@
     .pg:last-child { page-break-after: auto; }
   }
 
-  @media (max-width: 768px) {
-    .body { grid-template-columns: 1fr; }
-    .sheet { padding: 180px 40px 60px; }
-    .corner { width: 130px; height: 130px; }
-    .title-banner { width: 240px; }
-    .hdr-row.r1, .hdr-row.r2 { grid-template-columns: 1fr 1fr; }
-    .hdr-row.r3 { grid-template-columns: repeat(4, 1fr); }
-    .three-col, .two-col, .feats-grid { grid-template-columns: 1fr; }
+@media (max-width: 768px) {
+  html, body {
+    padding: 8px 4px;
   }
+
+  .start-page,
+  .sheet-toolbar,
+  .sheet {
+    max-width: 100%;
+  }
+
+  .sheet-toolbar {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .sheet-toolbar button,
+  .start-page button {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 8px;
+    font-size: 11px;
+  }
+
+  .sheet {
+    padding: 145px 14px 36px;
+    overflow-x: hidden;
+
+    background-size: auto 900px;
+    background-repeat: repeat-y;
+    background-position: top center;
+  }
+
+  .corner {
+    width: 95px;
+    height: 95px;
+  }
+
+  .title-banner {
+    width: 220px;
+    top: 20px;
+  }
+
+  .tabs {
+    gap: 4px;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 8px;
+    margin-bottom: 18px;
+  }
+
+  .tab {
+    flex: 0 0 auto;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    padding: 8px 10px;
+  }
+
+  .hdr-fields {
+    padding: 0;
+    margin-bottom: 18px;
+  }
+
+  .hdr-row {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .hdr-row.r1,
+  .hdr-row.r2 {
+    grid-template-columns: 1fr;
+  }
+
+  .hdr-row.r3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .hstat {
+    min-width: 0;
+  }
+
+  .hstat input {
+    width: 52px;
+    height: 52px;
+  }
+
+  .hstat.wide,
+  .hstat.conditions,
+  .hstat.exhaustion {
+    grid-column: span 2;
+    width: 100%;
+  }
+
+  .hstat.wide input,
+  .hstat.conditions input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .body {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .lp {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .three-col,
+  .two-col,
+  .feats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .combrow {
+    flex-wrap: wrap;
+  }
+
+  .dsbox {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .cbox {
+    min-width: calc(33.333% - 6px);
+  }
+
+  .coinsrow {
+    flex-wrap: wrap;
+  }
+
+  .cbox2 {
+    flex: 1 1 30%;
+  }
+
+  .spell-stats {
+    flex-wrap: wrap;
+  }
+
+  .spell-stats .cbox {
+    min-width: calc(33.333% - 6px);
+  }
+
+  .slot-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .wtbl,
+  .stbl {
+    font-size: 12px;
+  }
+
+  .wtbl th,
+  .stbl th {
+    font-size: 7px;
+    letter-spacing: .8px;
+    padding: 5px 4px;
+  }
+
+  .wtbl td input,
+  .stbl td input[type="text"] {
+    font-size: 12px;
+    padding: 6px 4px;
+  }
+
+  textarea {
+    font-size: 13px;
+  }
+
+  .ftr {
+    padding: 12px 0 0;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .sheet {
+    padding: 125px 10px 28px;
+
+    background-size: auto 760px;
+    background-repeat: repeat-y;
+    background-position: top center;
+  }
+
+  .corner {
+    width: 78px;
+    height: 78px;
+  }
+
+  .title-banner {
+    width: 190px;
+  }
+
+  .lp {
+    grid-template-columns: 1fr;
+  }
+
+  .hdr-row.r3 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .slot-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cbox,
+  .spell-stats .cbox {
+    min-width: 100%;
+  }
+}
 </style>
 </head>
 <body>
@@ -944,34 +1191,34 @@
             </table>
           </div>
 
-          <div class="sb-card">
-            <div class="sb-hdr">Class Features & Species Traits</div>
-            <textarea placeholder="List your class features, species traits, and special abilities here…" style="min-height:120px;"></textarea>
-          </div>
+<div class="sb-card class-features-card">
+  <div class="sb-hdr">Class Features & Species Traits</div>
+  <textarea placeholder="List your class features, species traits, and special abilities here…"></textarea>
+</div>
 
-          <div class="feats-grid">
-            <div class="sb-card">
-              <div class="sb-hdr">Feats</div>
-              <textarea placeholder="Tavern Brawler&#10;Lucky&#10;Alert&#10;Sharpshooter&#10;Magic Initiate&#10;Mage Slayer&#10;&#10;Add feat descriptions, passive bonuses, and special rules here. Plenty of room for a fully detailed list of your acquired feats over your adventuring career." style="min-height:520px;"></textarea>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:12px;">
-              <div class="sb-card" style="flex:1;">
-                <div class="sb-hdr">Equipment & Proficiencies</div>
-                <textarea placeholder="Armor: Light, Medium&#10;Weapons: Martial, Simple&#10;Tools: Navigator's Tools&#10;          Thieves' Tools" style="min-height:130px;"></textarea>
-              </div>
-              <div class="sb-card">
-                <div class="sb-hdr">Treasure & Coinage</div>
-                <div class="coinsrow">
-                  <div class="cbox2"><label>CP</label><input type="text" placeholder="0" /></div>
-                  <div class="cbox2"><label>SP</label><input type="text" placeholder="0" /></div>
-                  <div class="cbox2"><label>EP</label><input type="text" placeholder="0" /></div>
-                  <div class="cbox2 gold-coin"><label>GP</label><input type="text" placeholder="0" /></div>
-                  <div class="cbox2"><label>PP</label><input type="text" placeholder="0" /></div>
-                </div>
-                <textarea placeholder="Notable loot, ship's cargo manifest…" style="min-height:300px;padding:6px 12px 10px;"></textarea>
-              </div>
-            </div>
-          </div>
+<div class="feats-grid">
+  <div class="sb-card feats-main">
+    <div class="sb-hdr">Feats</div>
+    <textarea placeholder="Tavern Brawler&#10;Lucky&#10;Alert&#10;Sharpshooter&#10;Magic Initiate&#10;Mage Slayer&#10;&#10;Add feat descriptions, passive bonuses, and special rules here. Plenty of room for a fully detailed list of your acquired feats over your adventuring career."></textarea>
+  </div>
+
+  <div class="sb-card inventory-card">
+    <div class="sb-hdr">Equipment & Proficiencies</div>
+    <textarea placeholder="Armor: Light, Medium&#10;Weapons: Martial, Simple&#10;Tools: Navigator's Tools&#10;          Thieves' Tools"></textarea>
+  </div>
+
+  <div class="sb-card treasure-card">
+    <div class="sb-hdr">Treasure & Coinage</div>
+    <div class="coinsrow">
+      <div class="cbox2"><label>CP</label><input type="text" placeholder="0" /></div>
+      <div class="cbox2"><label>SP</label><input type="text" placeholder="0" /></div>
+      <div class="cbox2"><label>EP</label><input type="text" placeholder="0" /></div>
+      <div class="cbox2 gold-coin"><label>GP</label><input type="text" placeholder="0" /></div>
+      <div class="cbox2"><label>PP</label><input type="text" placeholder="0" /></div>
+    </div>
+    <textarea placeholder="Notable loot, ship's cargo manifest…"></textarea>
+  </div>
+</div>
         </div>
 
       </div>
