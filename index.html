@@ -1488,17 +1488,6 @@ function newCharacter() {
 }
 
 function deleteCurrentCharacter() {
-  if (!currentCharacterId) return;
-
-  if (!confirm("Delete this character?")) return;
-
-  const characters = getCharacters().filter(c => c.id !== currentCharacterId);
-  saveCharacters(characters);
-
-  currentCharacterId = null;
-  renderCharacterList();
-  showStartPage();
-}
 
 async function renderCharacterList() {
   const list = document.getElementById("characterList");
