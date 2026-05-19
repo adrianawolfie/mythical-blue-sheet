@@ -1307,38 +1307,55 @@
     btn.classList.add('on');
   }
 
-  function mkCell(v) {
-    return `<td><input type="text" value="${v}" /></td>`;
-  }
+const DEFAULT_SPELL_ROWS = [
+  ['C', 'Mage Hand', '1 action', '30 ft', false, false, false, ''],
+  ['C', 'Control Water', '1 action', '300 ft', true, false, false, ''],
+  ['1', 'Fog Cloud', '1 action', '120 ft', true, false, false, ''],
+  ['2', 'Misty Step', 'Bonus', 'Self', false, false, false, ''],
+  ['3', 'Call Lightning', '1 action', '120 ft', true, false, false, ''],
+  ['', '', '', '', false, false, false, ''],
+  ['', '', '', '', false, false, false, ''],
+  ['', '', '', '', false, false, false, ''],
+  ['', '', '', '', false, false, false, '']
+];
 
-function addSR() {
-    const tb = document.getElementById('sbody');
-    const tr = document.createElement('tr');
-    tr.innerHTML = mkCell('') + mkCell('') + mkCell('') + mkCell('') +
-      [0,1,2].map(() => `<td style="text-align:center;"><input type="checkbox" /></td>`).join('') +
-      mkCell('');
-    tb.appendChild(tr);
-  }
+function mkCell(v = "") {
+  return `<td><input type="text" value="${String(v).replace(/"/g, "&quot;")}" /></td>`;
+}
 
-  [
-    ['C','Mage Hand','1 action','30 ft',0,0,0,''],
-    ['C','Control Water','1 action','300 ft',1,0,0,''],
-    ['1','Fog Cloud','1 action','120 ft',1,0,0,''],
-    ['2','Misty Step','Bonus','Self',0,0,0,''],
-    ['3','Call Lightning','1 action','120 ft',1,0,0,''],
-    ['','','','',0,0,0,''],
-    ['','','','',0,0,0,''],
-    ['','','','',0,0,0,''],
-    ['','','','',0,0,0,'']
-  ].forEach(r => {
-    const tb = document.getElementById('sbody');
-    const tr = document.createElement('tr');
-    tr.innerHTML =
-      mkCell(r[0]) + mkCell(r[1]) + mkCell(r[2]) + mkCell(r[3]) +
-      [0,1,2].map(i => `<td style="text-align:center;"><input type="checkbox" ${r[4+i]?'checked':''} /></td>`).join('') +
-      mkCell(r[7]);
-    tb.appendChild(tr);
-  });
+function addSR(
+  level = "",
+  name = "",
+  castTime = "",
+  range = "",
+  concentration = false,
+  ritual = false,
+  material = false,
+  notes = ""
+) {
+  const tb = document.getElementById("sbody");
+  const tr = document.createElement("tr");
+
+  tr.innerHTML =
+    mkCell(level) +
+    mkCell(name) +
+    mkCell(castTime) +
+    mkCell(range) +
+    `<td style="text-align:center;"><input type="checkbox" ${concentration ? "checked" : ""} /></td>` +
+    `<td style="text-align:center;"><input type="checkbox" ${ritual ? "checked" : ""} /></td>` +
+    `<td style="text-align:center;"><input type="checkbox" ${material ? "checked" : ""} /></td>` +
+    mkCell(notes);
+
+  tb.appendChild(tr);
+}
+
+function resetSpellRows() {
+  const tb = document.getElementById("sbody");
+  tb.innerHTML = "";
+  DEFAULT_SPELL_ROWS.forEach(row => addSR(...row));
+}
+
+resetSpellRows();
 </script>
 <script>
 let currentCharacterId = null;
