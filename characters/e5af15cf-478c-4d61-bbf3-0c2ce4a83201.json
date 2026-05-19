@@ -1,6 +1,6 @@
 {
   "id": "e5af15cf-478c-4d61-bbf3-0c2ce4a83201",
-  "updatedAt": "2026-05-19T14:06:57.129Z",
+  "updatedAt": "2026-05-19T14:07:33.087Z",
   "summary": {
     "name": "Test",
     "armorClass": "14",
@@ -404,7 +404,7 @@
     },
     {
       "index": 98,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 99,
@@ -436,7 +436,7 @@
     },
     {
       "index": 106,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 107,
@@ -468,7 +468,7 @@
     },
     {
       "index": 114,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 115,
@@ -500,7 +500,7 @@
     },
     {
       "index": 122,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 123,
@@ -532,7 +532,7 @@
     },
     {
       "index": 130,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 131,
@@ -564,7 +564,7 @@
     },
     {
       "index": 138,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 139,
@@ -596,7 +596,7 @@
     },
     {
       "index": 146,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 147,
@@ -628,7 +628,7 @@
     },
     {
       "index": 154,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 155,
@@ -660,7 +660,7 @@
     },
     {
       "index": 162,
-      "value": "false"
+      "value": ""
     },
     {
       "index": 163,
@@ -696,10 +696,42 @@
     },
     {
       "index": 171,
-      "value": ""
+      "value": false
     },
     {
       "index": 172,
+      "value": false
+    },
+    {
+      "index": 173,
+      "value": false
+    },
+    {
+      "index": 174,
+      "value": ""
+    },
+    {
+      "index": 175,
+      "value": ""
+    },
+    {
+      "index": 176,
+      "value": ""
+    },
+    {
+      "index": 177,
+      "value": ""
+    },
+    {
+      "index": 178,
+      "value": ""
+    },
+    {
+      "index": 179,
+      "value": ""
+    },
+    {
+      "index": 180,
       "value": ""
     }
   ]
