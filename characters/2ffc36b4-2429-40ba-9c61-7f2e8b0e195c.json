@@ -1,6 +1,6 @@
 {
   "id": "2ffc36b4-2429-40ba-9c61-7f2e8b0e195c",
-  "updatedAt": "2026-05-20T12:09:51.087Z",
+  "updatedAt": "2026-05-20T12:11:33.050Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "",
@@ -344,7 +344,7 @@
     },
     {
       "index": 83,
-      "value": ""
+      "value": "CHA"
     },
     {
       "index": 84,
@@ -356,7 +356,7 @@
     },
     {
       "index": 86,
-      "value": ""
+      "value": "2/2"
     },
     {
       "index": 87,
@@ -524,7 +524,7 @@
     },
     {
       "index": 128,
-      "value": "Siren's Call"
+      "value": "Siren's Call [ Aeterian]"
     },
     {
       "index": 129,
