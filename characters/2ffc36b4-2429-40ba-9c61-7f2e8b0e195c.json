@@ -1,6 +1,6 @@
 {
   "id": "2ffc36b4-2429-40ba-9c61-7f2e8b0e195c",
-  "updatedAt": "2026-05-20T10:47:52.814Z",
+  "updatedAt": "2026-05-20T10:57:09.125Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "",
@@ -28,7 +28,7 @@
     },
     {
       "index": 4,
-      "value": "Aeternian"
+      "value": "Aeterian"
     },
     {
       "index": 5,
@@ -44,7 +44,7 @@
     },
     {
       "index": 8,
-      "value": ""
+      "value": "30"
     },
     {
       "index": 9,
@@ -308,7 +308,7 @@
     },
     {
       "index": 74,
-      "value": ""
+      "value": "Aeterian feats: \n- Darkvision 60ft"
     },
     {
       "index": 75,
