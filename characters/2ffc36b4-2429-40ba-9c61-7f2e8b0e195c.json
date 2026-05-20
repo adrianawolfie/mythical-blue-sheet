@@ -1,6 +1,6 @@
 {
   "id": "2ffc36b4-2429-40ba-9c61-7f2e8b0e195c",
-  "updatedAt": "2026-05-20T10:58:53.318Z",
+  "updatedAt": "2026-05-20T11:58:38.293Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "",
@@ -308,7 +308,7 @@
     },
     {
       "index": 74,
-      "value": "Aeterian feats: \n- Darkvision 60ft"
+      "value": "Aeterian feats: \n- Darkvision 60ft\n- Amphibious\n- Cold climate adept\n- Bioluminescence: On land 5 ft dim light, under water 15 ft dim light"
     },
     {
       "index": 75,
