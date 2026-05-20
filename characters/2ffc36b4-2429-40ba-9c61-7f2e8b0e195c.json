@@ -1,6 +1,6 @@
 {
   "id": "2ffc36b4-2429-40ba-9c61-7f2e8b0e195c",
-  "updatedAt": "2026-05-20T12:05:09.867Z",
+  "updatedAt": "2026-05-20T12:09:51.087Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "",
@@ -392,7 +392,7 @@
     },
     {
       "index": 95,
-      "value": ""
+      "value": "C"
     },
     {
       "index": 96,
@@ -424,7 +424,7 @@
     },
     {
       "index": 103,
-      "value": ""
+      "value": "C"
     },
     {
       "index": 104,
@@ -456,7 +456,7 @@
     },
     {
       "index": 111,
-      "value": ""
+      "value": "C"
     },
     {
       "index": 112,
@@ -488,7 +488,7 @@
     },
     {
       "index": 119,
-      "value": ""
+      "value": "C"
     },
     {
       "index": 120,
@@ -520,19 +520,19 @@
     },
     {
       "index": 127,
-      "value": ""
+      "value": "1"
     },
     {
       "index": 128,
-      "value": ""
+      "value": "Siren's Call"
     },
     {
       "index": 129,
-      "value": ""
+      "value": "1 action"
     },
     {
       "index": 130,
-      "value": ""
+      "value": "15/20 ft cone"
     },
     {
       "index": 131,
@@ -548,7 +548,7 @@
     },
     {
       "index": 134,
-      "value": ""
+      "value": "Con Save, 2d8 thunder, 5/15 ft push"
     },
     {
       "index": 135,
