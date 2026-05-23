@@ -1,8 +1,8 @@
 {
   "id": "6838aa74-5c72-44a1-bdde-7c759165d446",
-  "updatedAt": "2026-05-23T16:28:44.092Z",
+  "updatedAt": "2026-05-23T16:28:55.256Z",
   "summary": {
-    "name": "Lillith",
+    "name": "Nimue",
     "armorClass": "",
     "hpCurrent": "",
     "hpMax": "",
@@ -12,15 +12,15 @@
   "fields": [
     {
       "index": 0,
-      "value": "Lillith"
+      "value": "Nimue"
     },
     {
       "index": 1,
-      "value": "Courier"
+      "value": ""
     },
     {
       "index": 2,
-      "value": ""
+      "value": "Sorcerer 1"
     },
     {
       "index": 3,
@@ -28,15 +28,15 @@
     },
     {
       "index": 4,
-      "value": "Drow"
+      "value": "Aeterian"
     },
     {
       "index": 5,
-      "value": ""
+      "value": "Thalassic"
     },
     {
       "index": 6,
-      "value": "Neutral / Morally Grey"
+      "value": ""
     },
     {
       "index": 7,
@@ -44,7 +44,7 @@
     },
     {
       "index": 8,
-      "value": ""
+      "value": "30"
     },
     {
       "index": 9,
@@ -60,7 +60,7 @@
     },
     {
       "index": 12,
-      "value": ""
+      "value": "1D6"
     },
     {
       "index": 13,
@@ -68,7 +68,7 @@
     },
     {
       "index": 14,
-      "value": ""
+      "value": "+2"
     },
     {
       "index": 15,
@@ -308,7 +308,7 @@
     },
     {
       "index": 74,
-      "value": ""
+      "value": "Aeterian traits: Darkvision 60ft; Amphibious; Cold climate adept; Bioluminescence: On land 5 ft dim light, under water 15 ft dim light; Aquatic Affiliation; Siren's Call; Versatile; Resourceful"
     },
     {
       "index": 75,
@@ -316,7 +316,7 @@
     },
     {
       "index": 76,
-      "value": ""
+      "value": "Weapons: Simple"
     },
     {
       "index": 77,
@@ -332,7 +332,7 @@
     },
     {
       "index": 80,
-      "value": ""
+      "value": "28"
     },
     {
       "index": 81,
@@ -344,7 +344,7 @@
     },
     {
       "index": 83,
-      "value": ""
+      "value": "CHA"
     },
     {
       "index": 84,
@@ -356,7 +356,7 @@
     },
     {
       "index": 86,
-      "value": ""
+      "value": "2/2"
     },
     {
       "index": 87,
@@ -392,7 +392,7 @@
     },
     {
       "index": 95,
-      "value": ""
+      "value": "C"
     },
     {
       "index": 96,
@@ -424,7 +424,7 @@
     },
     {
       "index": 103,
-      "value": ""
+      "value": "C"
     },
     {
       "index": 104,
@@ -456,7 +456,7 @@
     },
     {
       "index": 111,
-      "value": ""
+      "value": "C"
     },
     {
       "index": 112,
@@ -488,7 +488,7 @@
     },
     {
       "index": 119,
-      "value": ""
+      "value": "C"
     },
     {
       "index": 120,
@@ -520,19 +520,19 @@
     },
     {
       "index": 127,
-      "value": ""
+      "value": "1"
     },
     {
       "index": 128,
-      "value": ""
+      "value": "Siren's Call [ Aeterian]"
     },
     {
       "index": 129,
-      "value": ""
+      "value": "1 action"
     },
     {
       "index": 130,
-      "value": ""
+      "value": "15/20 ft cone"
     },
     {
       "index": 131,
@@ -548,11 +548,11 @@
     },
     {
       "index": 134,
-      "value": ""
+      "value": "Con Save, 2d8 thunder, 5/15 ft push"
     },
     {
       "index": 135,
-      "value": ""
+      "value": "1"
     },
     {
       "index": 136,
@@ -584,7 +584,7 @@
     },
     {
       "index": 143,
-      "value": ""
+      "value": "1"
     },
     {
       "index": 144,
@@ -680,19 +680,19 @@
     },
     {
       "index": 167,
-      "value": "Lillith is the classic story any other drow could have endured. Forced to live in the undershadows of  Halsperia, her own kind too selfish for her liking, she ventured out into the wide kingdom and further across seas. With her nature of being drow, Lillith managed to travel the world pitching alliances with any and all sorts of folk, no matter the race. Between Halsperia & Aeternia a route formed on which she could travel to deliver goods and letters.\n\nLillith is a seasoned traveler and adventurer, is able to haggle and sneer her way out of a bad bargain and over the years has forged unlikely allies. "
+      "value": ""
     },
     {
       "index": 168,
-      "value": "Lillith does what serves her own interest best, but knows to keep alliances alive to serve her well. She comes from a background of survival of the fittest, but can be persuade when the right person comes along. She's in her element with fellow creatures that share her stoicm, sarcasm and overall bluntness. Booze is welcomed. \n\nHer ideal is to leave the delivery business and earn enough so she can dissapear for good. She wants to buy a boat and explore what has never been seen before. "
+      "value": ""
     },
     {
       "index": 169,
-      "value": "Slightly below average height, lean, too long white hair, deep dark purple/black eyes, wearing a scrambled together ensamble of cloth leather and blade. "
+      "value": ""
     },
     {
       "index": 170,
-      "value": ""
+      "value": "Common, Aequor"
     },
     {
       "index": 171,
@@ -700,7 +700,7 @@
     },
     {
       "index": 172,
-      "value": ""
+      "value": "Spear, 2 Daggers, Arcane Focus (crystal), Dungeoneer's Pack"
     }
   ]
 }
