@@ -1,6 +1,6 @@
 {
   "id": "9963c29a-825a-49d1-9284-08bfc62a7382",
-  "updatedAt": "2026-05-28T09:14:40.186Z",
+  "updatedAt": "2026-05-28T09:25:00.853Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "",
@@ -308,11 +308,11 @@
     },
     {
       "index": 74,
-      "value": "Aeterian traits: Darkvision 60ft; Amphibious; Cold climate adept; Bioluminescence: On land 5 ft dim light, under water 15 ft dim light; Aquatic Affiliation; Siren's Call; Versatile; Resourceful"
+      "value": "Aeterian traits: Darkvision 60ft; Amphibious; Cold climate adept; Bioluminescence: On land 5 ft dim light, under water 15 ft dim light; Aquatic Affiliation; Siren's Call; Versatile; Resourceful\n\nSorcerer features: \nInnate sorcery: 2/LR, Bonus Action,  1 minute: +1 spell save DC, advantage on attack rolls.\n"
     },
     {
       "index": 75,
-      "value": ""
+      "value": "Origin feat: Goose: - Golden Egg: when crit, give heroic inspiration to ally within 30ft\n- Corrupted Egg (1/LR): when 1/2 health, burst of 15ft radius, DC15 dex save, 2d8 force and pushed 10ft or if save then half damage"
     },
     {
       "index": 76,
