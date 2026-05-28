@@ -1,6 +1,6 @@
 {
   "id": "2ffc36b4-2429-40ba-9c61-7f2e8b0e195c",
-  "updatedAt": "2026-05-28T11:53:14.108Z",
+  "updatedAt": "2026-05-28T11:53:27.755Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "",
@@ -312,7 +312,7 @@
     },
     {
       "index": 75,
-      "value": "Origin feat: Goose: - Golden Egg: when crit, give heroic inspiration to ally within 30ft\n- Corrupted Egg (1/LR): when 1/2 health, burst of 15ft radius, DC15 dex save, 2d8 force and pushed 10ft or if save then half damage\n\nVersatile: Magic Initiate (Cleric): cantrips: Guidance & Spare the Dying; level 1 spell: 1/LR: Healing Word"
+      "value": "Origin feat: Goose: - Golden Egg: when crit, give heroic inspiration to ally within 30ft\n- Corrupted Egg (1/LR): when 1/2 health, burst of 15ft radius, DC15 dex save, 2d8 force and pushed 10ft or if save then half damage\n\nVersatile: Magic Initiate (Cleric): "
     },
     {
       "index": 76,
@@ -696,42 +696,10 @@
     },
     {
       "index": 171,
-      "value": false
+      "value": ""
     },
     {
       "index": 172,
-      "value": true
-    },
-    {
-      "index": 173,
-      "value": false
-    },
-    {
-      "index": 174,
-      "value": ""
-    },
-    {
-      "index": 175,
-      "value": ""
-    },
-    {
-      "index": 176,
-      "value": ""
-    },
-    {
-      "index": 177,
-      "value": ""
-    },
-    {
-      "index": 178,
-      "value": "Common, Aequor"
-    },
-    {
-      "index": 179,
-      "value": ""
-    },
-    {
-      "index": 180,
       "value": "Spear, 2 Daggers, Arcane Focus (crystal), Dungeoneer's Pack"
     }
   ]
