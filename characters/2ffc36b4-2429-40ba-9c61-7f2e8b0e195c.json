@@ -1,6 +1,6 @@
 {
   "id": "2ffc36b4-2429-40ba-9c61-7f2e8b0e195c",
-  "updatedAt": "2026-05-28T11:50:42.665Z",
+  "updatedAt": "2026-05-28T11:51:53.306Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "",
@@ -312,7 +312,7 @@
     },
     {
       "index": 75,
-      "value": "Origin feat: Goose: - Golden Egg: when crit, give heroic inspiration to ally within 30ft\n- Corrupted Egg (1/LR): when 1/2 health, burst of 15ft radius, DC15 dex save, 2d8 force and pushed 10ft or if save then half damage\n\nVersatile: Magic Initiate (Cleric): "
+      "value": "Origin feat: Goose: - Golden Egg: when crit, give heroic inspiration to ally within 30ft\n- Corrupted Egg (1/LR): when 1/2 health, burst of 15ft radius, DC15 dex save, 2d8 force and pushed 10ft or if save then half damage\n\nVersatile: Magic Initiate (Cleric): cantrips: Guidance & Spare the Dying; level 1 spell: 1/LR: Healing Word"
     },
     {
       "index": 76,
@@ -556,15 +556,15 @@
     },
     {
       "index": 136,
-      "value": ""
+      "value": "Healing Word [Cleric Initiate]"
     },
     {
       "index": 137,
-      "value": ""
+      "value": "1 bonus action"
     },
     {
       "index": 138,
-      "value": ""
+      "value": "60ft"
     },
     {
       "index": 139,
@@ -580,7 +580,7 @@
     },
     {
       "index": 142,
-      "value": ""
+      "value": "2d4+mod healing"
     },
     {
       "index": 143,
