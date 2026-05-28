@@ -1,6 +1,6 @@
 {
   "id": "2ffc36b4-2429-40ba-9c61-7f2e8b0e195c",
-  "updatedAt": "2026-05-28T11:53:05.820Z",
+  "updatedAt": "2026-05-28T11:53:10.876Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "",
@@ -312,7 +312,7 @@
     },
     {
       "index": 75,
-      "value": "Origin feat: Goose: - Golden Egg: when crit, give heroic inspiration to ally within 30ft\n- Corrupted Egg (1/LR): when 1/2 health, burst of 15ft radius, DC15 dex save, 2d8 force and pushed 10ft or if save then half damage\n\nVersatile: Magic Initiate (Cleric): cantrips: Guidance & Spare the Dying; level 1 spell: 1/LR: Healing Word"
+      "value": "Origin feat: Goose: - Golden Egg: when crit, give heroic inspiration to ally within 30ft\n- Corrupted Egg (1/LR): when 1/2 health, burst of 15ft radius, DC15 dex save, 2d8 force and pushed 10ft or if save then half damage\n\nVersatile: Magic Initiate (Cleric): "
     },
     {
       "index": 76,
@@ -396,7 +396,7 @@
     },
     {
       "index": 96,
-      "value": "Guidance [Cleric Initiate]"
+      "value": ""
     },
     {
       "index": 97,
@@ -404,7 +404,7 @@
     },
     {
       "index": 98,
-      "value": "touch"
+      "value": ""
     },
     {
       "index": 99,
@@ -428,7 +428,7 @@
     },
     {
       "index": 104,
-      "value": "Spare the Dying [Cleric Initiate]"
+      "value": ""
     },
     {
       "index": 105,
@@ -436,7 +436,7 @@
     },
     {
       "index": 106,
-      "value": "15ft"
+      "value": ""
     },
     {
       "index": 107,
@@ -556,15 +556,15 @@
     },
     {
       "index": 136,
-      "value": "Healing Word [Cleric Initiate]"
+      "value": ""
     },
     {
       "index": 137,
-      "value": "1 bonus action"
+      "value": ""
     },
     {
       "index": 138,
-      "value": "60ft"
+      "value": ""
     },
     {
       "index": 139,
@@ -580,7 +580,7 @@
     },
     {
       "index": 142,
-      "value": "2d4+mod healing"
+      "value": ""
     },
     {
       "index": 143,
@@ -692,7 +692,7 @@
     },
     {
       "index": 170,
-      "value": ""
+      "value": "Common, Aequor"
     },
     {
       "index": 171,
@@ -700,7 +700,7 @@
     },
     {
       "index": 172,
-      "value": false
+      "value": true
     },
     {
       "index": 173,
