@@ -20,16 +20,5 @@
     "currentConditions": "",
     "file": "characters/9963c29a-825a-49d1-9284-08bfc62a7382.json",
     "updatedAt": "2026-05-29T07:26:39.956Z"
-  },
-  {
-    "id": "c6fee7d2-5a98-43e7-b710-dd166b3fdf9f",
-    "name": "Nimue",
-    "armorClass": "",
-    "hpCurrent": "",
-    "hpMax": "",
-    "passivePerception": "",
-    "currentConditions": "",
-    "file": "characters/c6fee7d2-5a98-43e7-b710-dd166b3fdf9f.json",
-    "updatedAt": "2026-05-29T08:32:08.047Z"
   }
 ]
