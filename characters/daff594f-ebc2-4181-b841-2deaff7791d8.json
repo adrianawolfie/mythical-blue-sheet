@@ -1,0 +1,497 @@
+{
+  "id": "daff594f-ebc2-4181-b841-2deaff7791d8",
+  "updatedAt": "2026-05-29T08:40:33.067Z",
+  "summary": {
+    "name": "Nimue",
+    "armorClass": "",
+    "hpCurrent": "",
+    "hpMax": "",
+    "passivePerception": "",
+    "currentConditions": ""
+  },
+  "fields": [
+    {
+      "index": 0,
+      "value": "Nimue"
+    },
+    {
+      "index": 1,
+      "value": ""
+    },
+    {
+      "index": 2,
+      "value": "Sorcerer 1"
+    },
+    {
+      "index": 3,
+      "value": ""
+    },
+    {
+      "index": 4,
+      "value": "Aeterian"
+    },
+    {
+      "index": 5,
+      "value": "Thalassic"
+    },
+    {
+      "index": 6,
+      "value": ""
+    },
+    {
+      "index": 7,
+      "value": ""
+    },
+    {
+      "index": 8,
+      "value": ""
+    },
+    {
+      "index": 9,
+      "value": ""
+    },
+    {
+      "index": 10,
+      "value": ""
+    },
+    {
+      "index": 11,
+      "value": ""
+    },
+    {
+      "index": 12,
+      "value": ""
+    },
+    {
+      "index": 13,
+      "value": ""
+    },
+    {
+      "index": 14,
+      "value": "2"
+    },
+    {
+      "index": 15,
+      "value": ""
+    },
+    {
+      "index": 16,
+      "value": ""
+    },
+    {
+      "index": 17,
+      "value": ""
+    },
+    {
+      "index": 18,
+      "value": ""
+    },
+    {
+      "index": 19,
+      "value": ""
+    },
+    {
+      "index": 20,
+      "value": ""
+    },
+    {
+      "index": 21,
+      "value": ""
+    },
+    {
+      "index": 22,
+      "value": ""
+    },
+    {
+      "index": 23,
+      "value": ""
+    },
+    {
+      "index": 24,
+      "value": ""
+    },
+    {
+      "index": 25,
+      "value": ""
+    },
+    {
+      "index": 26,
+      "value": ""
+    },
+    {
+      "index": 27,
+      "value": ""
+    },
+    {
+      "index": 28,
+      "value": ""
+    },
+    {
+      "index": 29,
+      "value": ""
+    },
+    {
+      "index": 30,
+      "value": ""
+    },
+    {
+      "index": 31,
+      "value": ""
+    },
+    {
+      "index": 32,
+      "value": ""
+    },
+    {
+      "index": 33,
+      "value": ""
+    },
+    {
+      "index": 34,
+      "value": ""
+    },
+    {
+      "index": 35,
+      "value": ""
+    },
+    {
+      "index": 36,
+      "value": ""
+    },
+    {
+      "index": 37,
+      "value": ""
+    },
+    {
+      "index": 38,
+      "value": ""
+    },
+    {
+      "index": 39,
+      "value": ""
+    },
+    {
+      "index": 40,
+      "value": ""
+    },
+    {
+      "index": 41,
+      "value": ""
+    },
+    {
+      "index": 42,
+      "value": ""
+    },
+    {
+      "index": 43,
+      "value": ""
+    },
+    {
+      "index": 44,
+      "value": ""
+    },
+    {
+      "index": 45,
+      "value": ""
+    },
+    {
+      "index": 46,
+      "value": ""
+    },
+    {
+      "index": 47,
+      "value": ""
+    },
+    {
+      "index": 48,
+      "value": ""
+    },
+    {
+      "index": 49,
+      "value": ""
+    },
+    {
+      "index": 50,
+      "value": ""
+    },
+    {
+      "index": 51,
+      "value": ""
+    },
+    {
+      "index": 52,
+      "value": ""
+    },
+    {
+      "index": 53,
+      "value": ""
+    },
+    {
+      "index": 54,
+      "value": ""
+    },
+    {
+      "index": 55,
+      "value": ""
+    },
+    {
+      "index": 56,
+      "value": ""
+    },
+    {
+      "index": 57,
+      "value": ""
+    },
+    {
+      "index": 58,
+      "value": ""
+    },
+    {
+      "index": 59,
+      "value": ""
+    },
+    {
+      "index": 60,
+      "value": ""
+    },
+    {
+      "index": 61,
+      "value": ""
+    },
+    {
+      "index": 62,
+      "value": ""
+    },
+    {
+      "index": 63,
+      "value": ""
+    },
+    {
+      "index": 64,
+      "value": ""
+    },
+    {
+      "index": 65,
+      "value": ""
+    },
+    {
+      "index": 66,
+      "value": ""
+    },
+    {
+      "index": 67,
+      "value": ""
+    },
+    {
+      "index": 68,
+      "value": ""
+    },
+    {
+      "index": 69,
+      "value": ""
+    },
+    {
+      "index": 70,
+      "value": ""
+    },
+    {
+      "index": 71,
+      "value": ""
+    },
+    {
+      "index": 72,
+      "value": ""
+    },
+    {
+      "index": 73,
+      "value": ""
+    },
+    {
+      "index": 74,
+      "value": ""
+    },
+    {
+      "index": 75,
+      "value": ""
+    },
+    {
+      "index": 76,
+      "value": ""
+    },
+    {
+      "index": 77,
+      "value": ""
+    },
+    {
+      "index": 78,
+      "value": ""
+    }
+  ],
+  "customLists": {
+    "feats": [
+      {
+        "name": "Class Feature",
+        "short": "Short summary of what this feature does.",
+        "resource": "1/1 Short Rest",
+        "details": "",
+        "open": false
+      },
+      {
+        "name": "Species Trait",
+        "short": "Short summary of what this trait does.",
+        "resource": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "name": "Feat",
+        "short": "Short summary of what this feat does.",
+        "resource": "",
+        "details": "",
+        "open": false
+      }
+    ],
+    "weapons": [
+      {
+        "name": "Cutlass",
+        "atk": "+5",
+        "damage": "1d6+3 slashing",
+        "notes": "Finesse"
+      },
+      {
+        "name": "",
+        "atk": "",
+        "damage": "",
+        "notes": ""
+      },
+      {
+        "name": "",
+        "atk": "",
+        "damage": "",
+        "notes": ""
+      },
+      {
+        "name": "",
+        "atk": "",
+        "damage": "",
+        "notes": ""
+      },
+      {
+        "name": "",
+        "atk": "",
+        "damage": "",
+        "notes": ""
+      }
+    ],
+    "spells": [
+      {
+        "level": "C",
+        "name": "Mage Hand",
+        "castTime": "1 action",
+        "range": "30 ft",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "C",
+        "name": "Control Water",
+        "castTime": "1 action",
+        "range": "300 ft",
+        "concentration": true,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "1",
+        "name": "Fog Cloud",
+        "castTime": "1 action",
+        "range": "120 ft",
+        "concentration": true,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "2",
+        "name": "Misty Step",
+        "castTime": "Bonus",
+        "range": "Self",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "3",
+        "name": "Call Lightning",
+        "castTime": "1 action",
+        "range": "120 ft",
+        "concentration": true,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      }
+    ]
+  }
+}
