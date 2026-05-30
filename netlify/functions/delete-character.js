@@ -80,7 +80,7 @@ exports.handler = async (event) => {
 
     const characterPath = `characters/${id}.json`;
 
-    await deleteFile(characterPath, `Delete character ${id}`);
+await deleteFile(characterPath, `[skip netlify] Delete character ${id}`);
 
     const indexFile = await getFile("characters/character-index.json");
 
@@ -92,11 +92,11 @@ exports.handler = async (event) => {
 
     index = index.filter(character => character.id !== id);
 
-    await saveFile(
-      "characters/character-index.json",
-      index,
-      `Remove character from index`
-    );
+await saveFile(
+  "characters/character-index.json",
+  index,
+  `[skip netlify] Remove character from index`
+);
 
     return {
       statusCode: 200,
