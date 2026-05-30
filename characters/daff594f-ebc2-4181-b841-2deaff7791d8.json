@@ -1,6 +1,6 @@
 {
   "id": "daff594f-ebc2-4181-b841-2deaff7791d8",
-  "updatedAt": "2026-05-30T20:32:23.257Z",
+  "updatedAt": "2026-05-30T20:35:45.594Z",
   "summary": {
     "name": "Lillith",
     "armorClass": "15",
@@ -256,15 +256,15 @@
     },
     {
       "index": 61,
-      "value": ""
+      "value": "Modifyer +2"
     },
     {
       "index": 62,
-      "value": ""
+      "value": "12"
     },
     {
       "index": 63,
-      "value": ""
+      "value": "+4"
     },
     {
       "index": 64,
