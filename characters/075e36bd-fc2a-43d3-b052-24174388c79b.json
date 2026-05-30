@@ -1,6 +1,6 @@
 {
   "id": "075e36bd-fc2a-43d3-b052-24174388c79b",
-  "updatedAt": "2026-05-30T19:28:04.091Z",
+  "updatedAt": "2026-05-30T19:39:48.001Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "13",
@@ -268,7 +268,7 @@
     },
     {
       "index": 64,
-      "value": ""
+      "value": "2/2"
     },
     {
       "index": 65,
@@ -472,9 +472,33 @@
     "spells": [
       {
         "level": "C",
-        "name": "Mage Hand",
-        "castTime": "1 action",
-        "range": "30 ft",
+        "name": "Guidance",
+        "castTime": "Action",
+        "range": "Touch",
+        "concentration": true,
+        "ritual": false,
+        "material": false,
+        "effect": "1d4 to any ability check for 1 min",
+        "details": "Divination Cantrip (Artificer, Cleric, Druid)\n\nCasting Time: Action\nRange: Touch\nComponents: V, S\nDuration: Concentration, up to 1 minute\n\nYou touch a willing creature and choose a skill. Until the spell ends, the creature adds 1d4 to any ability check using the chosen skill.",
+        "open": false
+      },
+      {
+        "level": "C",
+        "name": "Spare the Dying",
+        "castTime": "Action",
+        "range": "15 ft",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "A creature with 0 hit points becomes stable",
+        "details": "Necromancy Cantrip (Artificer, Cleric, Druid)\n\nCasting Time: Action\nRange: 15 feet\nComponents: V, S\nDuration: Instantaneous\n\nChoose a creature within range that has 0 Hit Points and isn’t dead. The creature becomes Stable.\n\nCantrip Upgrade. The range doubles when you reach levels 5 (30 feet), 11 (60 feet), and 17 (120 feet).",
+        "open": false
+      },
+      {
+        "level": "C",
+        "name": "",
+        "castTime": "",
+        "range": "",
         "concentration": false,
         "ritual": false,
         "material": false,
@@ -484,10 +508,34 @@
       },
       {
         "level": "C",
-        "name": "Control Water",
-        "castTime": "1 action",
-        "range": "300 ft",
-        "concentration": true,
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "C",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "C",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
         "ritual": false,
         "material": false,
         "effect": "",
@@ -496,42 +544,18 @@
       },
       {
         "level": "1",
-        "name": "Fog Cloud",
-        "castTime": "1 action",
-        "range": "120 ft",
-        "concentration": true,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "2",
-        "name": "Misty Step",
-        "castTime": "Bonus",
-        "range": "Self",
+        "name": "Healing Word",
+        "castTime": "Bonus Action",
+        "range": "60 ft",
         "concentration": false,
         "ritual": false,
         "material": false,
-        "effect": "",
-        "details": "",
+        "effect": "2d4+4 healing",
+        "details": "Level 1 Abjuration (Bard, Cleric, Druid)\n\nCasting Time: Bonus Action\nRange: 60 feet\nComponents: V\nDuration: Instantaneous\n\nA creature of your choice that you can see within range regains Hit Points equal to 2d4 plus your spellcasting ability modifier.\n\nUsing a Higher-Level Spell Slot. The healing increases by 2d4 for each spell slot level above 1.",
         "open": false
       },
       {
-        "level": "3",
-        "name": "Call Lightning",
-        "castTime": "1 action",
-        "range": "120 ft",
-        "concentration": true,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "",
+        "level": "1",
         "name": "",
         "castTime": "",
         "range": "",
@@ -543,31 +567,7 @@
         "open": false
       },
       {
-        "level": "",
-        "name": "",
-        "castTime": "",
-        "range": "",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "",
-        "name": "",
-        "castTime": "",
-        "range": "",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "",
+        "level": "1",
         "name": "",
         "castTime": "",
         "range": "",
