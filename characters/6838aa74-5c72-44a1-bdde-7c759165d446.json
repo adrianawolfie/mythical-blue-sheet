@@ -1,6 +1,6 @@
 {
   "id": "6838aa74-5c72-44a1-bdde-7c759165d446",
-  "updatedAt": "2026-05-23T16:28:44.092Z",
+  "updatedAt": "2026-05-30T18:34:12.484Z",
   "summary": {
     "name": "Lillith",
     "armorClass": "",
@@ -304,15 +304,15 @@
     },
     {
       "index": 73,
-      "value": "Lillith is the classic story any other drow could have endured. Forced to live in the undershadows of  Halsperia, her own kind too selfish for her liking, she ventured out into the wide kingdom and further across seas. With her nature of being drow, Lillith managed to travel the world pitching alliances with any and all sorts of folk, no matter the race. Between Halsperia & Aeternia a route formed on which she could travel to deliver goods and letters.\n\nLillith is a seasoned traveler and adventurer, is able to haggle and sneer her way out of a bad bargain and over the years has forged unlikely allies. "
+      "value": ""
     },
     {
       "index": 74,
-      "value": "Lillith does what serves her own interest best, but knows to keep alliances alive to serve her well. She comes from a background of survival of the fittest, but can be persuade when the right person comes along. She's in her element with fellow creatures that share her stoicm, sarcasm and overall bluntness. Booze is welcomed. \n\nHer ideal is to leave the delivery business and earn enough so she can dissapear for good. She wants to buy a boat and explore what has never been seen before. "
+      "value": ""
     },
     {
       "index": 75,
-      "value": "Slightly below average height, lean, too long white hair, deep dark purple/black eyes, wearing a scrambled together ensamble of cloth leather and blade. "
+      "value": ""
     },
     {
       "index": 76,
@@ -325,382 +325,218 @@
     {
       "index": 78,
       "value": ""
-    },
-    {
-      "index": 79,
-      "value": ""
-    },
-    {
-      "index": 80,
-      "value": ""
-    },
-    {
-      "index": 81,
-      "value": ""
-    },
-    {
-      "index": 82,
-      "value": ""
-    },
-    {
-      "index": 83,
-      "value": ""
-    },
-    {
-      "index": 84,
-      "value": ""
-    },
-    {
-      "index": 85,
-      "value": ""
-    },
-    {
-      "index": 86,
-      "value": ""
-    },
-    {
-      "index": 87,
-      "value": ""
-    },
-    {
-      "index": 88,
-      "value": ""
-    },
-    {
-      "index": 89,
-      "value": ""
-    },
-    {
-      "index": 90,
-      "value": ""
-    },
-    {
-      "index": 91,
-      "value": ""
-    },
-    {
-      "index": 92,
-      "value": ""
-    },
-    {
-      "index": 93,
-      "value": ""
-    },
-    {
-      "index": 94,
-      "value": ""
-    },
-    {
-      "index": 95,
-      "value": ""
-    },
-    {
-      "index": 96,
-      "value": ""
-    },
-    {
-      "index": 97,
-      "value": ""
-    },
-    {
-      "index": 98,
-      "value": ""
-    },
-    {
-      "index": 99,
-      "value": false
-    },
-    {
-      "index": 100,
-      "value": false
-    },
-    {
-      "index": 101,
-      "value": false
-    },
-    {
-      "index": 102,
-      "value": ""
-    },
-    {
-      "index": 103,
-      "value": ""
-    },
-    {
-      "index": 104,
-      "value": ""
-    },
-    {
-      "index": 105,
-      "value": ""
-    },
-    {
-      "index": 106,
-      "value": ""
-    },
-    {
-      "index": 107,
-      "value": false
-    },
-    {
-      "index": 108,
-      "value": false
-    },
-    {
-      "index": 109,
-      "value": false
-    },
-    {
-      "index": 110,
-      "value": ""
-    },
-    {
-      "index": 111,
-      "value": ""
-    },
-    {
-      "index": 112,
-      "value": ""
-    },
-    {
-      "index": 113,
-      "value": ""
-    },
-    {
-      "index": 114,
-      "value": ""
-    },
-    {
-      "index": 115,
-      "value": false
-    },
-    {
-      "index": 116,
-      "value": false
-    },
-    {
-      "index": 117,
-      "value": false
-    },
-    {
-      "index": 118,
-      "value": ""
-    },
-    {
-      "index": 119,
-      "value": ""
-    },
-    {
-      "index": 120,
-      "value": ""
-    },
-    {
-      "index": 121,
-      "value": ""
-    },
-    {
-      "index": 122,
-      "value": ""
-    },
-    {
-      "index": 123,
-      "value": false
-    },
-    {
-      "index": 124,
-      "value": false
-    },
-    {
-      "index": 125,
-      "value": false
-    },
-    {
-      "index": 126,
-      "value": ""
-    },
-    {
-      "index": 127,
-      "value": ""
-    },
-    {
-      "index": 128,
-      "value": ""
-    },
-    {
-      "index": 129,
-      "value": ""
-    },
-    {
-      "index": 130,
-      "value": ""
-    },
-    {
-      "index": 131,
-      "value": false
-    },
-    {
-      "index": 132,
-      "value": false
-    },
-    {
-      "index": 133,
-      "value": false
-    },
-    {
-      "index": 134,
-      "value": ""
-    },
-    {
-      "index": 135,
-      "value": ""
-    },
-    {
-      "index": 136,
-      "value": ""
-    },
-    {
-      "index": 137,
-      "value": ""
-    },
-    {
-      "index": 138,
-      "value": ""
-    },
-    {
-      "index": 139,
-      "value": false
-    },
-    {
-      "index": 140,
-      "value": false
-    },
-    {
-      "index": 141,
-      "value": false
-    },
-    {
-      "index": 142,
-      "value": ""
-    },
-    {
-      "index": 143,
-      "value": ""
-    },
-    {
-      "index": 144,
-      "value": ""
-    },
-    {
-      "index": 145,
-      "value": ""
-    },
-    {
-      "index": 146,
-      "value": ""
-    },
-    {
-      "index": 147,
-      "value": false
-    },
-    {
-      "index": 148,
-      "value": false
-    },
-    {
-      "index": 149,
-      "value": false
-    },
-    {
-      "index": 150,
-      "value": ""
-    },
-    {
-      "index": 151,
-      "value": ""
-    },
-    {
-      "index": 152,
-      "value": ""
-    },
-    {
-      "index": 153,
-      "value": ""
-    },
-    {
-      "index": 154,
-      "value": ""
-    },
-    {
-      "index": 155,
-      "value": false
-    },
-    {
-      "index": 156,
-      "value": false
-    },
-    {
-      "index": 157,
-      "value": false
-    },
-    {
-      "index": 158,
-      "value": ""
-    },
-    {
-      "index": 159,
-      "value": ""
-    },
-    {
-      "index": 160,
-      "value": ""
-    },
-    {
-      "index": 161,
-      "value": ""
-    },
-    {
-      "index": 162,
-      "value": ""
-    },
-    {
-      "index": 163,
-      "value": false
-    },
-    {
-      "index": 164,
-      "value": false
-    },
-    {
-      "index": 165,
-      "value": false
-    },
-    {
-      "index": 166,
-      "value": ""
-    },
-    {
-      "index": 167,
-      "value": "Lillith is the classic story any other drow could have endured. Forced to live in the undershadows of  Halsperia, her own kind too selfish for her liking, she ventured out into the wide kingdom and further across seas. With her nature of being drow, Lillith managed to travel the world pitching alliances with any and all sorts of folk, no matter the race. Between Halsperia & Aeternia a route formed on which she could travel to deliver goods and letters.\n\nLillith is a seasoned traveler and adventurer, is able to haggle and sneer her way out of a bad bargain and over the years has forged unlikely allies. "
-    },
-    {
-      "index": 168,
-      "value": "Lillith does what serves her own interest best, but knows to keep alliances alive to serve her well. She comes from a background of survival of the fittest, but can be persuade when the right person comes along. She's in her element with fellow creatures that share her stoicm, sarcasm and overall bluntness. Booze is welcomed. \n\nHer ideal is to leave the delivery business and earn enough so she can dissapear for good. She wants to buy a boat and explore what has never been seen before. "
-    },
-    {
-      "index": 169,
-      "value": "Slightly below average height, lean, too long white hair, deep dark purple/black eyes, wearing a scrambled together ensamble of cloth leather and blade. "
-    },
-    {
-      "index": 170,
-      "value": ""
-    },
-    {
-      "index": 171,
-      "value": ""
-    },
-    {
-      "index": 172,
-      "value": ""
     }
-  ]
+  ],
+  "uiState": {
+    "inspiration": false,
+    "skillProficiencies": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "deathSaves": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "exhaustion": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "customLists": {
+    "feats": [
+      {
+        "name": "Class Feature",
+        "short": "Short summary of what this feature does.",
+        "resource": "1/1 Short Rest",
+        "details": "",
+        "open": false
+      },
+      {
+        "name": "Species Trait",
+        "short": "Short summary of what this trait does.",
+        "resource": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "name": "Feat",
+        "short": "Short summary of what this feat does.",
+        "resource": "",
+        "details": "",
+        "open": false
+      }
+    ],
+    "weapons": [
+      {
+        "name": "Cutlass",
+        "atk": "+5",
+        "damage": "1d6+3 slashing",
+        "notes": "Finesse"
+      },
+      {
+        "name": "",
+        "atk": "",
+        "damage": "",
+        "notes": ""
+      },
+      {
+        "name": "",
+        "atk": "",
+        "damage": "",
+        "notes": ""
+      },
+      {
+        "name": "",
+        "atk": "",
+        "damage": "",
+        "notes": ""
+      },
+      {
+        "name": "",
+        "atk": "",
+        "damage": "",
+        "notes": ""
+      }
+    ],
+    "spells": [
+      {
+        "level": "C",
+        "name": "Mage Hand",
+        "castTime": "1 action",
+        "range": "30 ft",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "C",
+        "name": "Control Water",
+        "castTime": "1 action",
+        "range": "300 ft",
+        "concentration": true,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "1",
+        "name": "Fog Cloud",
+        "castTime": "1 action",
+        "range": "120 ft",
+        "concentration": true,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "2",
+        "name": "Misty Step",
+        "castTime": "Bonus",
+        "range": "Self",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "3",
+        "name": "Call Lightning",
+        "castTime": "1 action",
+        "range": "120 ft",
+        "concentration": true,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      }
+    ]
+  }
 }
