@@ -1,6 +1,6 @@
 {
   "id": "6838aa74-5c72-44a1-bdde-7c759165d448",
-  "updatedAt": "2026-05-29T13:12:10.219Z",
+  "updatedAt": "2026-05-30T18:38:42.465Z",
   "summary": {
     "name": "Mara Flint",
     "armorClass": "",
@@ -327,6 +327,51 @@
       "value": ""
     }
   ],
+  "uiState": {
+    "inspiration": false,
+    "skillProficiencies": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "deathSaves": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "exhaustion": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
   "customLists": {
     "feats": [
       {
