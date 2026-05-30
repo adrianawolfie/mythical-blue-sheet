@@ -18,15 +18,12 @@ exports.handler = async () => {
     if (!response.ok) {
       return {
         statusCode: response.status,
-        headers: {
-          "Cache-Control": "no-store"
-        },
+        headers: { "Cache-Control": "no-store" },
         body: JSON.stringify({ error: await response.text() })
       };
     }
 
     const file = await response.json();
-
     const index = JSON.parse(
       Buffer.from(file.content, "base64").toString("utf8")
     );
@@ -39,13 +36,10 @@ exports.handler = async () => {
       },
       body: JSON.stringify(index)
     };
-
   } catch (error) {
     return {
       statusCode: 500,
-      headers: {
-        "Cache-Control": "no-store"
-      },
+      headers: { "Cache-Control": "no-store" },
       body: JSON.stringify({ error: error.message })
     };
   }
