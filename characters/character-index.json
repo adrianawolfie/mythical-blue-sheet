@@ -16,10 +16,10 @@
     "armorClass": "13",
     "hpCurrent": "8",
     "hpMax": "8",
-    "passivePerception": "",
+    "passivePerception": "11",
     "currentConditions": "",
     "file": "characters/075e36bd-fc2a-43d3-b052-24174388c79b.json",
-    "updatedAt": "2026-05-30T19:01:58.211Z"
+    "updatedAt": "2026-05-30T19:16:57.678Z"
   },
   {
     "id": "6838aa74-5c72-44a1-bdde-7c759165d448",
