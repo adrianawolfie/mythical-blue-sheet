@@ -1,26 +1,26 @@
-{
+ {
   "id": "daff594f-ebc2-4181-b841-2deaff7791d8",
-  "updatedAt": "2026-05-30T19:26:47.452Z",
+  "updatedAt": "2026-05-30T18:40:24.409Z",
   "summary": {
-    "name": "Nimue",
+    "name": "Lillith",
     "armorClass": "",
-    "hpCurrent": "8",
-    "hpMax": "8",
+    "hpCurrent": "",
+    "hpMax": "",
     "passivePerception": "",
     "currentConditions": ""
   },
   "fields": [
     {
       "index": 0,
-      "value": "Nimue"
+      "value": "Lillith"
     },
     {
       "index": 1,
-      "value": "Golden Goose"
+      "value": "Courier"
     },
     {
       "index": 2,
-      "value": "Sorcerer 1"
+      "value": ""
     },
     {
       "index": 3,
@@ -28,15 +28,15 @@
     },
     {
       "index": 4,
-      "value": "Aeterian"
+      "value": "Drow"
     },
     {
       "index": 5,
-      "value": "Thalassic"
+      "value": ""
     },
     {
       "index": 6,
-      "value": ""
+      "value": "Neutral / Morally Grey"
     },
     {
       "index": 7,
@@ -44,7 +44,7 @@
     },
     {
       "index": 8,
-      "value": "30"
+      "value": ""
     },
     {
       "index": 9,
@@ -52,15 +52,15 @@
     },
     {
       "index": 10,
-      "value": "8"
+      "value": ""
     },
     {
       "index": 11,
-      "value": "8"
+      "value": ""
     },
     {
       "index": 12,
-      "value": "1d6"
+      "value": ""
     },
     {
       "index": 13,
@@ -68,7 +68,7 @@
     },
     {
       "index": 14,
-      "value": "2"
+      "value": ""
     },
     {
       "index": 15,
@@ -76,67 +76,67 @@
     },
     {
       "index": 16,
-      "value": "+0"
+      "value": ""
     },
     {
       "index": 17,
-      "value": "10"
+      "value": ""
     },
     {
       "index": 18,
-      "value": "+0"
+      "value": ""
     },
     {
       "index": 19,
-      "value": "+0"
+      "value": ""
     },
     {
       "index": 20,
-      "value": "+3"
+      "value": ""
     },
     {
       "index": 21,
-      "value": "16"
+      "value": ""
     },
     {
       "index": 22,
-      "value": "+3"
+      "value": ""
     },
     {
       "index": 23,
-      "value": "+3"
+      "value": ""
     },
     {
       "index": 24,
-      "value": "+3"
+      "value": ""
     },
     {
       "index": 25,
-      "value": "+3"
+      "value": ""
     },
     {
       "index": 26,
-      "value": "+2"
+      "value": ""
     },
     {
       "index": 27,
-      "value": "14"
+      "value": ""
     },
     {
       "index": 28,
-      "value": "+4"
+      "value": ""
     },
     {
       "index": 29,
-      "value": "+2"
+      "value": ""
     },
     {
       "index": 30,
-      "value": "14"
+      "value": ""
     },
     {
       "index": 31,
-      "value": "+2"
+      "value": ""
     },
     {
       "index": 32,
@@ -160,27 +160,27 @@
     },
     {
       "index": 37,
-      "value": "+1"
+      "value": ""
     },
     {
       "index": 38,
-      "value": "13"
+      "value": ""
     },
     {
       "index": 39,
-      "value": "+1"
+      "value": ""
     },
     {
       "index": 40,
-      "value": "+1"
+      "value": ""
     },
     {
       "index": 41,
-      "value": "+1"
+      "value": ""
     },
     {
       "index": 42,
-      "value": "+1"
+      "value": ""
     },
     {
       "index": 43,
@@ -192,27 +192,27 @@
     },
     {
       "index": 45,
-      "value": "+4"
+      "value": ""
     },
     {
       "index": 46,
-      "value": "18"
+      "value": ""
     },
     {
       "index": 47,
-      "value": "+6"
+      "value": ""
     },
     {
       "index": 48,
-      "value": "+6"
+      "value": ""
     },
     {
       "index": 49,
-      "value": "+4"
+      "value": ""
     },
     {
       "index": 50,
-      "value": "+6"
+      "value": ""
     },
     {
       "index": 51,
@@ -304,15 +304,15 @@
     },
     {
       "index": 73,
-      "value": ""
+      "value": "Lillith is the classic story any other drow could have endured. Forced to live in the undershadows of Halsperia, her own kind too selfish for her liking, she ventured out into the wide kingdom and further across seas. With her nature of being drow, Lillith managed to travel the world pitching alliances with any and all sorts of folk, no matter the race. Between Halsperia & Aeternia a route formed on which she could travel to deliver goods and letters.\n\nLillith is a seasoned traveler and adventurer, is able to haggle and sneer her way out of a bad bargain and over the years has forged unlikely allies. "
     },
     {
       "index": 74,
-      "value": ""
+      "value": "Lillith does what serves her own interest best, but knows to keep alliances alive to serve her well. She comes from a background of survival of the fittest, but can be persuade when the right person comes along. She's in her element with fellow creatures that share her stoicm, sarcasm and overall bluntness. Booze is welcomed. \n\nHer ideal is to leave the delivery business and earn enough so she can dissapear for good. She wants to buy a boat and explore what has never been seen before. "
     },
     {
       "index": 75,
-      "value": ""
+      "value": "Slightly below average height, lean, too long white hair, deep dark purple/black eyes, wearing a scrambled together ensamble of cloth leather and blade. "
     },
     {
       "index": 76,
@@ -328,7 +328,7 @@
     }
   ],
   "uiState": {
-    "inspiration": true,
+    "inspiration": false,
     "skillProficiencies": [
       false,
       false,
@@ -336,7 +336,6 @@
       false,
       false,
       false,
-      true,
       false,
       false,
       false,
@@ -349,10 +348,11 @@
       false,
       false,
       false,
-      true,
-      true,
       false,
-      true,
+      false,
+      false,
+      false,
+      false,
       false
     ],
     "deathSaves": [
@@ -402,12 +402,6 @@
         "atk": "+5",
         "damage": "1d6+3 slashing",
         "notes": "Finesse"
-      },
-      {
-        "name": "",
-        "atk": "",
-        "damage": "",
-        "notes": ""
       },
       {
         "name": "",
