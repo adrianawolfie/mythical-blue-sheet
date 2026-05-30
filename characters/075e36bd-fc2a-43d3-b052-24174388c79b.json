@@ -1,12 +1,12 @@
 {
   "id": "075e36bd-fc2a-43d3-b052-24174388c79b",
-  "updatedAt": "2026-05-30T19:01:58.211Z",
+  "updatedAt": "2026-05-30T19:16:57.678Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "13",
     "hpCurrent": "8",
     "hpMax": "8",
-    "passivePerception": "",
+    "passivePerception": "11",
     "currentConditions": ""
   },
   "fields": [
@@ -28,7 +28,7 @@
     },
     {
       "index": 4,
-      "value": "Aeterian"
+      "value": "Aeternian"
     },
     {
       "index": 5,
@@ -72,7 +72,7 @@
     },
     {
       "index": 15,
-      "value": ""
+      "value": "11"
     },
     {
       "index": 16,
@@ -140,23 +140,23 @@
     },
     {
       "index": 32,
-      "value": ""
+      "value": "+4"
     },
     {
       "index": 33,
-      "value": ""
+      "value": "+2"
     },
     {
       "index": 34,
-      "value": ""
+      "value": "+2"
     },
     {
       "index": 35,
-      "value": ""
+      "value": "+2"
     },
     {
       "index": 36,
-      "value": ""
+      "value": "+2"
     },
     {
       "index": 37,
@@ -184,11 +184,11 @@
     },
     {
       "index": 43,
-      "value": ""
+      "value": "+1"
     },
     {
       "index": 44,
-      "value": ""
+      "value": "+1"
     },
     {
       "index": 45,
@@ -216,11 +216,11 @@
     },
     {
       "index": 51,
-      "value": ""
+      "value": "+6"
     },
     {
       "index": 52,
-      "value": "Tools: Calligrapher's Supplies"
+      "value": "Darkvision: 60ft\nSpeed: 30ft Swimming\nWeapons: Simple\nTools: Calligrapher's Supplies"
     },
     {
       "index": 53,
@@ -244,7 +244,7 @@
     },
     {
       "index": 58,
-      "value": ""
+      "value": "28"
     },
     {
       "index": 59,
@@ -252,7 +252,7 @@
     },
     {
       "index": 60,
-      "value": "Calligrapher's Supplies\nFine Clothes\nBook about Arcana\nSpear, 2 Daggers, Arcane Focus (crystal), Dungeoneer's Pack"
+      "value": "Calligrapher's Supplies\nFine Clothes\nBook about Thalassic Mythology\nArcane Focus (crystal)\nDungeoneer's Pack"
     },
     {
       "index": 61,
@@ -316,7 +316,7 @@
     },
     {
       "index": 76,
-      "value": "Common\n"
+      "value": "Common\nAequor\n"
     },
     {
       "index": 77,
@@ -324,7 +324,7 @@
     },
     {
       "index": 78,
-      "value": ""
+      "value": "Spear, 2 Daggers, Backpack, Caltrops, Crowbar, 2 flasks of Oil, 10 days of Rations, Rope, Tinderbox, 10 Torches, and Waterskin."
     }
   ],
   "uiState": {
@@ -338,7 +338,7 @@
       false,
       true,
       false,
-      false,
+      true,
       false,
       false,
       false,
@@ -353,7 +353,7 @@
       true,
       false,
       true,
-      false
+      true
     ],
     "deathSaves": [
       false,
@@ -389,10 +389,10 @@
         "open": false
       },
       {
-        "name": "Feat",
-        "short": "Short summary of what this feat does.",
+        "name": "Amphibious",
+        "short": "Ability to breathe and move above and below water.",
         "resource": "",
-        "details": "",
+        "details": "Aeternians have grown gills, webbing between their phalanges, and translucent pearl-like scales which become  \nvisible underwater; allowing them to breathe and swim underwater no different than on land.  ",
         "open": false
       }
     ],
@@ -401,13 +401,13 @@
         "name": "Dagger",
         "atk": "+5",
         "damage": "1d4+3 piercing",
-        "notes": "Finesse"
+        "notes": "Finesse, Light, Thrown (Range 20/60)"
       },
       {
-        "name": "",
-        "atk": "",
-        "damage": "",
-        "notes": ""
+        "name": "Spear",
+        "atk": "+2",
+        "damage": "1d6 piercing",
+        "notes": "Thrown (Range 20/60), Versatile (1d8)"
       },
       {
         "name": "",
