@@ -1044,6 +1044,111 @@ function getFields() {
   return Array.from(document.querySelectorAll(".sheet input, .sheet textarea, .sheet select"));
 }
 
+function normalizeSaveKeyPart(value = "") {
+  return String(value)
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "field";
+}
+
+function getPageKey(field) {
+  return field.closest(".pg")?.id || "sheet";
+}
+
+function getCardKey(field) {
+  const card = field.closest(".sb-card");
+  const header = card?.querySelector(":scope > .sb-hdr")?.textContent || "";
+  return normalizeSaveKeyPart(header || "card");
+}
+
+function getStableFieldKey(field, index) {
+  if (field.dataset.saveKey) return field.dataset.saveKey;
+
+  const page = getPageKey(field);
+
+  const ability = field.closest(".ab");
+  if (ability) {
+    const abilityName = normalizeSaveKeyPart(ability.querySelector(".abn")?.textContent || "ability");
+
+    if (field.closest(".modcircle")) return `${page}:ability:${abilityName}:modifier`;
+    if (field.closest(".scorebox")) return `${page}:ability:${abilityName}:score`;
+
+    const skill = field.closest(".sk");
+    if (skill) {
+      const skillName = normalizeSaveKeyPart(skill.querySelector(".sn")?.textContent || "skill");
+      return `${page}:ability:${abilityName}:skill:${skillName}`;
+    }
+  }
+
+  const table = field.closest("table");
+  if (table) {
+    const tableKey = normalizeSaveKeyPart(table.id || table.className || "table");
+    const row = field.closest("tr");
+    const cell = field.closest("td, th");
+    const rowIndex = row ? Array.from(row.parentElement.children).indexOf(row) : 0;
+    const cellIndex = cell ? Array.from(row.children).indexOf(cell) : 0;
+    return `${page}:table:${tableKey}:row:${rowIndex}:cell:${cellIndex}`;
+  }
+
+  const labelContainer = field.closest(".topfield, .bonbox, .cbox, .cbox2, .slotbox");
+  if (labelContainer) {
+    const label = labelContainer.querySelector("label, span")?.textContent || "field";
+    return `${page}:card:${getCardKey(field)}:${normalizeSaveKeyPart(label)}`;
+  }
+
+  const card = field.closest(".sb-card");
+  if (card) {
+    const sameTypeFields = Array.from(card.querySelectorAll(field.tagName.toLowerCase()));
+    const localIndex = sameTypeFields.indexOf(field);
+    return `${page}:card:${getCardKey(field)}:${field.tagName.toLowerCase()}:${localIndex}`;
+  }
+
+  return `${page}:fallback:${index}`;
+}
+
+const BASE_SPELL_ROW_COUNT = document.querySelectorAll("#sbody tr").length;
+
+function ensureSpellRowCount(targetCount = BASE_SPELL_ROW_COUNT) {
+  const tbody = document.getElementById("sbody");
+  if (!tbody) return;
+
+  const parsedCount = Number(targetCount);
+  const desiredCount = Number.isFinite(parsedCount)
+    ? Math.max(BASE_SPELL_ROW_COUNT, Math.floor(parsedCount))
+    : BASE_SPELL_ROW_COUNT;
+
+  while (tbody.rows.length < desiredCount) addSR();
+  while (tbody.rows.length > desiredCount) tbody.deleteRow(tbody.rows.length - 1);
+}
+
+function getToggleStates(selector) {
+  return Array.from(document.querySelectorAll(selector)).map(element =>
+    element.classList.contains("on")
+  );
+}
+
+function applyToggleStates(selector, savedStates = []) {
+  document.querySelectorAll(selector).forEach((element, index) => {
+    element.classList.toggle("on", savedStates[index] === true);
+  });
+}
+
+function collectUiState() {
+  return {
+    inspiration: document.querySelector(".insp")?.textContent.trim() === "✦",
+    toggleDots: getToggleStates(".sheet .dot, .sheet .svdie"),
+    spellRowCount: document.querySelectorAll("#sbody tr").length
+  };
+}
+
+function applyUiState(uiState = {}) {
+  const inspiration = document.querySelector(".insp");
+  if (inspiration) inspiration.textContent = uiState.inspiration === true ? "✦" : "○";
+
+  applyToggleStates(".sheet .dot, .sheet .svdie", uiState.toggleDots || []);
+}
+
 function findFieldByNearbyText(possibleTexts) {
   const fields = getFields();
 
@@ -1072,60 +1177,10 @@ function getValueByExactLabel(labelText) {
 
   return field ? field.value : "";
 }
-
-const BASE_SPELL_ROW_COUNT = document.querySelectorAll("#sbody tr").length;
-
-function ensureSpellRowCount(targetCount = BASE_SPELL_ROW_COUNT) {
-  const tbody = document.getElementById("sbody");
-  if (!tbody) return;
-
-  const parsedCount = Number(targetCount);
-  const desiredCount = Number.isFinite(parsedCount)
-    ? Math.max(BASE_SPELL_ROW_COUNT, Math.floor(parsedCount))
-    : BASE_SPELL_ROW_COUNT;
-
-  while (tbody.rows.length < desiredCount) {
-    addSR();
-  }
-
-  while (tbody.rows.length > desiredCount) {
-    tbody.deleteRow(tbody.rows.length - 1);
-  }
-}
-
-function getToggleStates(selector) {
-  return Array.from(document.querySelectorAll(selector)).map(element =>
-    element.classList.contains("on")
-  );
-}
-
-function applyToggleStates(selector, savedStates = []) {
-  document.querySelectorAll(selector).forEach((element, index) => {
-    element.classList.toggle("on", savedStates[index] === true);
-  });
-}
-
-function collectUiState() {
-  return {
-    inspiration: document.querySelector(".insp")?.textContent.trim() === "✦",
-    toggleDots: getToggleStates(".sheet .dot, .sheet .svdie"),
-    spellRowCount: document.querySelectorAll("#sbody tr").length
-  };
-}
-
-function applyUiState(uiState = {}) {
-  const inspiration = document.querySelector(".insp");
-
-  if (inspiration) {
-    inspiration.textContent = uiState.inspiration === true ? "✦" : "○";
-  }
-
-  applyToggleStates(".sheet .dot, .sheet .svdie", uiState.toggleDots || []);
-}
-
 function collectCharacterData() {
   const fields = getFields().map((field, index) => ({
     index,
+    key: getStableFieldKey(field, index),
     value: field.type === "checkbox" ? field.checked : field.value
   }));
 
@@ -1153,7 +1208,8 @@ function loadCharacter(character) {
   ensureSpellRowCount(uiState.spellRowCount);
 
   getFields().forEach((field, index) => {
-    const saved = savedFields.find(f => f.index === index);
+    const key = getStableFieldKey(field, index);
+    const saved = savedFields.find(f => f.key === key) || savedFields.find(f => f.index === index);
     if (!saved) return;
 
     if (field.type === "checkbox") {
@@ -1213,7 +1269,7 @@ function newCharacter() {
     }
   });
 
-  applyUiState({});
+  applyUiState({ inspiration: false, toggleDots: [] });
   showSheet();
 }
 
