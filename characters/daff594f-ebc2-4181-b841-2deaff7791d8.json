@@ -1,11 +1,11 @@
 {
   "id": "daff594f-ebc2-4181-b841-2deaff7791d8",
-  "updatedAt": "2026-05-30T15:28:41.614Z",
+  "updatedAt": "2026-05-30T15:39:43.960Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "",
-    "hpCurrent": "",
-    "hpMax": "",
+    "hpCurrent": "8",
+    "hpMax": "8",
     "passivePerception": "",
     "currentConditions": ""
   },
@@ -52,11 +52,11 @@
     },
     {
       "index": 10,
-      "value": ""
+      "value": "8"
     },
     {
       "index": 11,
-      "value": ""
+      "value": "8"
     },
     {
       "index": 12,
