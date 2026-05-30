@@ -1,13 +1,12 @@
 {
   "id": "daff594f-ebc2-4181-b841-2deaff7791d8",
-  "updatedAt": "2026-05-30T14:59:46.618Z",
+  "updatedAt": "2026-05-30T15:01:16.865Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "",
     "hpCurrent": "",
     "hpMax": "",
-    "passivePerception": "",
-    "currentConditions": ""
+    "passivePerception": "2"
   },
   "fields": [
     {
@@ -325,173 +324,414 @@
     {
       "index": 78,
       "value": ""
+    },
+    {
+      "index": 79,
+      "value": ""
+    },
+    {
+      "index": 80,
+      "value": ""
+    },
+    {
+      "index": 81,
+      "value": ""
+    },
+    {
+      "index": 82,
+      "value": ""
+    },
+    {
+      "index": 83,
+      "value": ""
+    },
+    {
+      "index": 84,
+      "value": ""
+    },
+    {
+      "index": 85,
+      "value": ""
+    },
+    {
+      "index": 86,
+      "value": ""
+    },
+    {
+      "index": 87,
+      "value": ""
+    },
+    {
+      "index": 88,
+      "value": ""
+    },
+    {
+      "index": 89,
+      "value": ""
+    },
+    {
+      "index": 90,
+      "value": ""
+    },
+    {
+      "index": 91,
+      "value": ""
+    },
+    {
+      "index": 92,
+      "value": ""
+    },
+    {
+      "index": 93,
+      "value": ""
+    },
+    {
+      "index": 94,
+      "value": "C"
+    },
+    {
+      "index": 95,
+      "value": "Mage Hand"
+    },
+    {
+      "index": 96,
+      "value": "1 action"
+    },
+    {
+      "index": 97,
+      "value": "30 ft"
+    },
+    {
+      "index": 98,
+      "value": false
+    },
+    {
+      "index": 99,
+      "value": false
+    },
+    {
+      "index": 100,
+      "value": false
+    },
+    {
+      "index": 101,
+      "value": ""
+    },
+    {
+      "index": 102,
+      "value": "C"
+    },
+    {
+      "index": 103,
+      "value": "Control Water"
+    },
+    {
+      "index": 104,
+      "value": "1 action"
+    },
+    {
+      "index": 105,
+      "value": "300 ft"
+    },
+    {
+      "index": 106,
+      "value": true
+    },
+    {
+      "index": 107,
+      "value": false
+    },
+    {
+      "index": 108,
+      "value": false
+    },
+    {
+      "index": 109,
+      "value": ""
+    },
+    {
+      "index": 110,
+      "value": "1"
+    },
+    {
+      "index": 111,
+      "value": "Fog Cloud"
+    },
+    {
+      "index": 112,
+      "value": "1 action"
+    },
+    {
+      "index": 113,
+      "value": "120 ft"
+    },
+    {
+      "index": 114,
+      "value": true
+    },
+    {
+      "index": 115,
+      "value": false
+    },
+    {
+      "index": 116,
+      "value": false
+    },
+    {
+      "index": 117,
+      "value": ""
+    },
+    {
+      "index": 118,
+      "value": "2"
+    },
+    {
+      "index": 119,
+      "value": "Misty Step"
+    },
+    {
+      "index": 120,
+      "value": "Bonus"
+    },
+    {
+      "index": 121,
+      "value": "Self"
+    },
+    {
+      "index": 122,
+      "value": false
+    },
+    {
+      "index": 123,
+      "value": false
+    },
+    {
+      "index": 124,
+      "value": false
+    },
+    {
+      "index": 125,
+      "value": ""
+    },
+    {
+      "index": 126,
+      "value": "3"
+    },
+    {
+      "index": 127,
+      "value": "Call Lightning"
+    },
+    {
+      "index": 128,
+      "value": "1 action"
+    },
+    {
+      "index": 129,
+      "value": "120 ft"
+    },
+    {
+      "index": 130,
+      "value": true
+    },
+    {
+      "index": 131,
+      "value": false
+    },
+    {
+      "index": 132,
+      "value": false
+    },
+    {
+      "index": 133,
+      "value": ""
+    },
+    {
+      "index": 134,
+      "value": ""
+    },
+    {
+      "index": 135,
+      "value": ""
+    },
+    {
+      "index": 136,
+      "value": ""
+    },
+    {
+      "index": 137,
+      "value": ""
+    },
+    {
+      "index": 138,
+      "value": false
+    },
+    {
+      "index": 139,
+      "value": false
+    },
+    {
+      "index": 140,
+      "value": false
+    },
+    {
+      "index": 141,
+      "value": ""
+    },
+    {
+      "index": 142,
+      "value": ""
+    },
+    {
+      "index": 143,
+      "value": ""
+    },
+    {
+      "index": 144,
+      "value": ""
+    },
+    {
+      "index": 145,
+      "value": ""
+    },
+    {
+      "index": 146,
+      "value": false
+    },
+    {
+      "index": 147,
+      "value": false
+    },
+    {
+      "index": 148,
+      "value": false
+    },
+    {
+      "index": 149,
+      "value": ""
+    },
+    {
+      "index": 150,
+      "value": ""
+    },
+    {
+      "index": 151,
+      "value": ""
+    },
+    {
+      "index": 152,
+      "value": ""
+    },
+    {
+      "index": 153,
+      "value": ""
+    },
+    {
+      "index": 154,
+      "value": false
+    },
+    {
+      "index": 155,
+      "value": false
+    },
+    {
+      "index": 156,
+      "value": false
+    },
+    {
+      "index": 157,
+      "value": ""
+    },
+    {
+      "index": 158,
+      "value": ""
+    },
+    {
+      "index": 159,
+      "value": ""
+    },
+    {
+      "index": 160,
+      "value": ""
+    },
+    {
+      "index": 161,
+      "value": ""
+    },
+    {
+      "index": 162,
+      "value": false
+    },
+    {
+      "index": 163,
+      "value": false
+    },
+    {
+      "index": 164,
+      "value": false
+    },
+    {
+      "index": 165,
+      "value": ""
+    },
+    {
+      "index": 166,
+      "value": ""
+    },
+    {
+      "index": 167,
+      "value": ""
+    },
+    {
+      "index": 168,
+      "value": ""
+    },
+    {
+      "index": 169,
+      "value": ""
+    },
+    {
+      "index": 170,
+      "value": ""
+    },
+    {
+      "index": 171,
+      "value": ""
     }
   ],
-  "customLists": {
-    "feats": [
-      {
-        "name": "Class Feature",
-        "short": "Short summary of what this feature does.",
-        "resource": "1/1 Short Rest",
-        "details": "",
-        "open": false
-      },
-      {
-        "name": "Species Trait",
-        "short": "Short summary of what this trait does.",
-        "resource": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "name": "Feat",
-        "short": "Short summary of what this feat does.",
-        "resource": "",
-        "details": "",
-        "open": false
-      }
+  "uiState": {
+    "inspiration": false,
+    "toggleDots": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
     ],
-    "weapons": [
-      {
-        "name": "Cutlass",
-        "atk": "+5",
-        "damage": "1d6+3 slashing",
-        "notes": "Finesse"
-      },
-      {
-        "name": "",
-        "atk": "",
-        "damage": "",
-        "notes": ""
-      },
-      {
-        "name": "",
-        "atk": "",
-        "damage": "",
-        "notes": ""
-      },
-      {
-        "name": "",
-        "atk": "",
-        "damage": "",
-        "notes": ""
-      },
-      {
-        "name": "",
-        "atk": "",
-        "damage": "",
-        "notes": ""
-      }
-    ],
-    "spells": [
-      {
-        "level": "C",
-        "name": "Mage Hand",
-        "castTime": "1 action",
-        "range": "30 ft",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "C",
-        "name": "Control Water",
-        "castTime": "1 action",
-        "range": "300 ft",
-        "concentration": true,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "1",
-        "name": "Fog Cloud",
-        "castTime": "1 action",
-        "range": "120 ft",
-        "concentration": true,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "2",
-        "name": "Misty Step",
-        "castTime": "Bonus",
-        "range": "Self",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "3",
-        "name": "Call Lightning",
-        "castTime": "1 action",
-        "range": "120 ft",
-        "concentration": true,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "",
-        "name": "",
-        "castTime": "",
-        "range": "",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "",
-        "name": "",
-        "castTime": "",
-        "range": "",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "",
-        "name": "",
-        "castTime": "",
-        "range": "",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "",
-        "name": "",
-        "castTime": "",
-        "range": "",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      }
-    ]
+    "spellRowCount": 9
   }
 }
