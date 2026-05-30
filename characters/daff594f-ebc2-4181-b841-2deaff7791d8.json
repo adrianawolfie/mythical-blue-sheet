@@ -1,6 +1,6 @@
 {
   "id": "daff594f-ebc2-4181-b841-2deaff7791d8",
-  "updatedAt": "2026-05-30T15:13:55.779Z",
+  "updatedAt": "2026-05-30T15:20:13.873Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "",
@@ -76,7 +76,7 @@
     },
     {
       "index": 16,
-      "value": ""
+      "value": "+0"
     },
     {
       "index": 17,
@@ -84,11 +84,11 @@
     },
     {
       "index": 18,
-      "value": ""
+      "value": "+0"
     },
     {
       "index": 19,
-      "value": ""
+      "value": "+0"
     },
     {
       "index": 20,
@@ -100,43 +100,43 @@
     },
     {
       "index": 22,
-      "value": ""
+      "value": "+3"
     },
     {
       "index": 23,
-      "value": ""
+      "value": "+3"
     },
     {
       "index": 24,
-      "value": ""
+      "value": "+3"
     },
     {
       "index": 25,
-      "value": ""
+      "value": "+3"
     },
     {
       "index": 26,
-      "value": ""
+      "value": "+2"
     },
     {
       "index": 27,
-      "value": "13"
+      "value": "14"
     },
     {
       "index": 28,
-      "value": ""
+      "value": "+4"
     },
     {
       "index": 29,
-      "value": ""
+      "value": "+2"
     },
     {
       "index": 30,
-      "value": "13"
+      "value": "14"
     },
     {
       "index": 31,
-      "value": ""
+      "value": "+2"
     },
     {
       "index": 32,
@@ -160,7 +160,7 @@
     },
     {
       "index": 37,
-      "value": ""
+      "value": "+1"
     },
     {
       "index": 38,
@@ -168,19 +168,19 @@
     },
     {
       "index": 39,
-      "value": ""
+      "value": "+1"
     },
     {
       "index": 40,
-      "value": ""
+      "value": "+1"
     },
     {
       "index": 41,
-      "value": ""
+      "value": "+1"
     },
     {
       "index": 42,
-      "value": ""
+      "value": "+1"
     },
     {
       "index": 43,
@@ -192,27 +192,27 @@
     },
     {
       "index": 45,
-      "value": "+3"
+      "value": "+4"
     },
     {
       "index": 46,
-      "value": "17"
+      "value": "18"
     },
     {
       "index": 47,
-      "value": ""
+      "value": "+6"
     },
     {
       "index": 48,
-      "value": ""
+      "value": "+6"
     },
     {
       "index": 49,
-      "value": ""
+      "value": "+4"
     },
     {
       "index": 50,
-      "value": ""
+      "value": "+6"
     },
     {
       "index": 51,
@@ -336,6 +336,7 @@
       false,
       false,
       false,
+      true,
       false,
       false,
       false,
@@ -348,11 +349,10 @@
       false,
       false,
       false,
+      true,
+      true,
       false,
-      false,
-      false,
-      false,
-      false,
+      true,
       false
     ],
     "deathSaves": [
