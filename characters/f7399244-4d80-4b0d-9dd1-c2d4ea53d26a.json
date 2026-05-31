@@ -1,6 +1,6 @@
 {
   "id": "f7399244-4d80-4b0d-9dd1-c2d4ea53d26a",
-  "updatedAt": "2026-05-31T17:34:48.941Z",
+  "updatedAt": "2026-05-31T17:41:49.638Z",
   "summary": {
     "name": "Mara Flint",
     "armorClass": "",
@@ -252,11 +252,11 @@
     },
     {
       "index": 60,
-      "value": ""
+      "value": "Choose A or B: (A) Studded Leather Armor, Scimitar, Shortsword, Longbow, 20 Arrows, Quiver, Druidic Focus (sprig of mistletoe), Explorer's Pack and 7 GP; or (B) 150 GP"
     },
     {
       "index": 61,
-      "value": ""
+      "value": "WIS"
     },
     {
       "index": 62,
@@ -268,7 +268,7 @@
     },
     {
       "index": 64,
-      "value": ""
+      "value": "2/2"
     },
     {
       "index": 65,
@@ -408,6 +408,20 @@
         "resource": "",
         "details": "Though it began with donning the pelts of seals that they had befriended, forced evolution caused the Selkies to bond with the pelts and companions on a genetic level. In the present day, Selkies can choose to follow their instincts or fight them with a Wisdom saving throw (DC 10), as they are instinctually driven to transform into a seal when they enter a body of water.\n\nTransforming into a seal, they gain the ability to breathe underwater for up to an hour and gain a swimming speed of 40 ft.\n\nWhile in the shape of a seal, the Selkie’s Armor Class is equal to 13 + their Wisdom modifier if that total is higher than the Natural Seal’s AC of 15. In addition, Selkies gain a number of Temporary Hit Points equal to three times their level.",
         "open": false
+      },
+      {
+        "name": "Favored Enemy",
+        "short": "Cast Hunter's Mark without spell slot. ",
+        "resource": "2/2 Long Rest",
+        "details": "You always have the Hunter's Mark spell prepared.\nYou can cast it twice without expending a spell slot, and you regain all expended uses of this ability when you finish a Long Rest.\n\nThe number of times you can cast the spell without a spell slot increases when you reach certain Ranger Levels, as shown in the Favored Enemy column of the Ranger Features table.",
+        "open": false
+      },
+      {
+        "name": "Weapon Mastery",
+        "short": "Mastery of two weapons:",
+        "resource": "",
+        "details": "Your training with weapons allows you to use the mastery properties of two kinds of weapons of your choice with which you have proficiency, such as Longbows and Shortswords.\n\nWhenever you finish a Long Rest, you can change the kinds of weapons you chose. For Example, you could switch to using the mastery properties of Scimitars and Longswords.",
+        "open": false
       }
     ],
     "weapons": [
@@ -444,46 +458,22 @@
     ],
     "spells": [
       {
-        "level": "C",
-        "name": "Mage Hand",
-        "castTime": "1 action",
-        "range": "30 ft",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "C",
-        "name": "Control Water",
-        "castTime": "1 action",
-        "range": "300 ft",
-        "concentration": true,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
         "level": "1",
-        "name": "Fog Cloud",
-        "castTime": "1 action",
-        "range": "120 ft",
+        "name": "Hunter's Mark",
+        "castTime": "Bonus Action",
+        "range": "90 ft",
         "concentration": true,
         "ritual": false,
         "material": false,
-        "effect": "",
-        "details": "",
+        "effect": "1d6 force damage with every hit. Adv. on any Wis check to find target.",
+        "details": "Level 1 Divination (Ranger)\n\nCasting Time: Bonus Action\nRange: 90 feet\nComponents: V\nDuration: Concentration, up to 1 hour\n\nYou magically mark one creature you can see within range as your quarry. Until the spell ends, you deal an extra 1d6 Force damage to the target whenever you hit it with an attack roll. You also have Advantage on any Wisdom (Perception or Survival) check you make to find it.\n\nIf the target drops to 0 Hit Points before this spell ends, you can take a Bonus Action to move the mark to a new creature you can see within range.\n\nUsing a Higher-Level Spell Slot. Your Concentration can last longer with a spell slot of level 3–4 (up to 8 hours) or 5+ (up to 24 hours).",
         "open": false
       },
       {
-        "level": "2",
-        "name": "Misty Step",
-        "castTime": "Bonus",
-        "range": "Self",
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
         "concentration": false,
         "ritual": false,
         "material": false,
@@ -492,11 +482,35 @@
         "open": false
       },
       {
-        "level": "3",
-        "name": "Call Lightning",
-        "castTime": "1 action",
-        "range": "120 ft",
-        "concentration": true,
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
         "ritual": false,
         "material": false,
         "effect": "",
