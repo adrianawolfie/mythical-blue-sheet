@@ -1,13 +1,13 @@
 {
   "id": "a0f2d0e2-3dc5-46ab-9b65-8ce9d0e8b5f1",
-  "updatedAt": "2026-05-31T10:47:56.646Z",
+  "updatedAt": "2026-05-31T18:36:16.684Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "13",
     "hpCurrent": "8",
     "hpMax": "8",
     "passivePerception": "11",
-    "currentConditions": ""
+    "currentConditions": "Deafened, Incapacitated"
   },
   "fields": [
     {
@@ -64,7 +64,7 @@
     },
     {
       "index": 13,
-      "value": ""
+      "value": "Deafened, Incapacitated"
     },
     {
       "index": 14,
