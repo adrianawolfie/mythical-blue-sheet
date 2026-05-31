@@ -1,6 +1,6 @@
 {
   "id": "daff594f-ebc2-4181-b841-2deaff7791d8",
-  "updatedAt": "2026-05-31T08:55:33.487Z",
+  "updatedAt": "2026-05-31T09:00:42.450Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "13",
@@ -459,10 +459,10 @@
         "notes": "Thrown (Range 20/60), Versatile (1d8)"
       },
       {
-        "name": "",
-        "atk": "",
-        "damage": "",
-        "notes": ""
+        "name": "Sorcerous Burst",
+        "atk": "+6",
+        "damage": "1d8 type of choice",
+        "notes": "Add d8 if roll an 8"
       },
       {
         "name": "",
@@ -486,7 +486,7 @@
     "spells": [
       {
         "level": "C",
-        "name": "Guidance",
+        "name": "Guidance (Cleric Initiate)",
         "castTime": "Action",
         "range": "Touch",
         "concentration": true,
@@ -498,7 +498,7 @@
       },
       {
         "level": "C",
-        "name": "Spare the Dying",
+        "name": "Spare the Dying (Cleric Initiate)",
         "castTime": "Action",
         "range": "15 ft",
         "concentration": false,
@@ -510,14 +510,14 @@
       },
       {
         "level": "C",
-        "name": "",
-        "castTime": "",
-        "range": "",
+        "name": "Sorcerous Burst",
+        "castTime": "Action",
+        "range": "120 ft",
         "concentration": false,
         "ritual": false,
         "material": false,
-        "effect": "",
-        "details": "",
+        "effect": "1d8 type of choice. Add d8 if you roll an 8. ",
+        "details": "Evocation Cantrip (Sorcerer)\n\nCasting Time: Action\nRange: 120 feet\nComponents: V, S\nDuration: Instantaneous\n\nYou cast sorcerous energy at one creature or object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d8 damage of a type you choose: Acid, Cold, Fire, Lightning, Poison, Psychic, or Thunder.\n\nIf you roll an 8 on a d8 for this spell, you can roll another d8, and add it to the damage. When you cast this spell, the maximum number of these d8s you can add to the spell’s damage equals your spellcasting ability modifier.\n\nCantrip Upgrade. The damage increases by 1d8 when you reach levels 5 (2d8), 11 (3d8), and 17 (4d8).",
         "open": false
       },
       {
