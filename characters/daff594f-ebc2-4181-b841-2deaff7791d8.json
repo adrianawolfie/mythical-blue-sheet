@@ -1,6 +1,6 @@
 {
   "id": "daff594f-ebc2-4181-b841-2deaff7791d8",
-  "updatedAt": "2026-05-31T09:21:24.463Z",
+  "updatedAt": "2026-05-31T09:21:27.937Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "13",
@@ -312,7 +312,7 @@
     },
     {
       "index": 75,
-      "value": "Average Height, Violet Eyes, Blue Hair"
+      "value": "Average, Violet Eyes, Blue Hair"
     },
     {
       "index": 76,
@@ -425,23 +425,16 @@
       },
       {
         "name": "Versatile: Cleric Initiate",
-        "short": "Guidance & Spare the Dying, Healing Word.",
+        "short": "Guidance & Spare the Dying, Healing Word",
         "resource": "1/1 Long Rest",
         "details": "Aeternians are as versatile as their surface-born counterparts: humans. Depending on their origin they gain  a matching feat (gain an Origin feat of choice). -> Cleric Initiate\n\nTwo Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat). -> Charisma; Guidance & Spare the Dying\n\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have. -> Healing Word\n\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\n\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time.",
         "open": false
       },
       {
         "name": "Resourceful",
-        "short": "Gain Heroic Inspiration at Long Rest.",
+        "short": "Gain Heroic Inspiration at Long Rest",
         "resource": "1/1 Long Rest",
         "details": "Similar to their surface-born counterparts (humans), Aeternians gain Heroic Inspiration whenever they finish  a Long Rest.",
-        "open": false
-      },
-      {
-        "name": "Innate Sorcery",
-        "short": "Spell save DC +1 and advantage on attack rolls.",
-        "resource": "2/2 Long Rest",
-        "details": "An event in your past left an indelible mark on you, infusing you with simmering magic. As a Bonus Action, you can unleash that magic for 1 minute, during which you gain the following benefits:\n\nThe spell save DC of your Sorcerer spells increases by 1.\nYou have Advantage on the attack rolls of Sorcerer spells you cast.\nYou can use this feature twice, and you regain all expended uses of it when you finish a Long Rest.",
         "open": false
       }
     ],
@@ -459,10 +452,10 @@
         "notes": "Thrown (Range 20/60), Versatile (1d8)"
       },
       {
-        "name": "Sorcerous Burst",
-        "atk": "+6",
-        "damage": "1d8 type of choice",
-        "notes": "Add d8 if roll an 8"
+        "name": "",
+        "atk": "",
+        "damage": "",
+        "notes": ""
       },
       {
         "name": "",
@@ -486,7 +479,7 @@
     "spells": [
       {
         "level": "C",
-        "name": "Guidance (Cleric Initiate)",
+        "name": "Guidance",
         "castTime": "Action",
         "range": "Touch",
         "concentration": true,
@@ -498,7 +491,7 @@
       },
       {
         "level": "C",
-        "name": "Spare the Dying (Cleric Initiate)",
+        "name": "Spare the Dying",
         "castTime": "Action",
         "range": "15 ft",
         "concentration": false,
@@ -510,67 +503,55 @@
       },
       {
         "level": "C",
-        "name": "Sorcerous Burst",
-        "castTime": "Action",
-        "range": "120 ft",
+        "name": "",
+        "castTime": "",
+        "range": "",
         "concentration": false,
         "ritual": false,
         "material": false,
-        "effect": "1d8 type of choice. Add d8 if you roll an 8. ",
-        "details": "Evocation Cantrip (Sorcerer)\n\nCasting Time: Action\nRange: 120 feet\nComponents: V, S\nDuration: Instantaneous\n\nYou cast sorcerous energy at one creature or object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d8 damage of a type you choose: Acid, Cold, Fire, Lightning, Poison, Psychic, or Thunder.\n\nIf you roll an 8 on a d8 for this spell, you can roll another d8, and add it to the damage. When you cast this spell, the maximum number of these d8s you can add to the spell’s damage equals your spellcasting ability modifier.\n\nCantrip Upgrade. The damage increases by 1d8 when you reach levels 5 (2d8), 11 (3d8), and 17 (4d8).",
+        "effect": "",
+        "details": "",
         "open": false
       },
       {
         "level": "C",
-        "name": "Mage Hand",
-        "castTime": "Action",
-        "range": "30 ft",
+        "name": "",
+        "castTime": "",
+        "range": "",
         "concentration": false,
         "ritual": false,
         "material": false,
-        "effect": "Control a spectral hand",
-        "details": "Conjuration Cantrip (Artificer, Bard, Sorcerer, Warlock, Wizard)\n\nCasting Time: Action\nRange: 30 feet\nComponents: V, S\nDuration: 1 minute\n\nA spectral, floating hand appears at a point you choose within range. The hand lasts for the duration. The hand vanishes if it is ever more than 30 feet away from you or if you cast this spell again.\n\nWhen you cast the spell, you can use the hand to manipulate an object, open an unlocked door or container, stow or retrieve an item from an open container, or pour the contents out of a vial.\n\nAs a Magic action on your later turns, you can control the hand thus again. As part of that action, you can move the hand up to 30 feet.\n\nThe hand can’t attack, activate magic items, or carry more than 10 pounds.",
+        "effect": "",
+        "details": "",
         "open": false
       },
       {
         "level": "C",
-        "name": "Mending",
-        "castTime": "1 minute",
-        "range": "Touch",
+        "name": "",
+        "castTime": "",
+        "range": "",
         "concentration": false,
         "ritual": false,
-        "material": true,
-        "effect": "Repair a break or tear no larger than 1 foot",
-        "details": "Transmutation Cantrip (Bard, Cleric, Druid, Sorcerer, Wizard)\n\nCasting Time: 1 minute\nRange: Touch\nComponents: V, S, M (two lodestones)\nDuration: Instantaneous\n\nThis spell repairs a single break or tear in an object you touch, such as a broken chain link, two halves of a broken key, a torn cloak, or a leaking wineskin. As long as the break or tear is no larger than 1 foot in any dimension, you mend it, leaving no trace of the former damage.\n\nThis spell can physically repair a magic item, but it can’t restore magic to such an object.",
+        "material": false,
+        "effect": "",
+        "details": "",
         "open": false
       },
       {
         "level": "C",
-        "name": "Prestidigitation",
-        "castTime": "Action",
-        "range": "10 ft",
+        "name": "",
+        "castTime": "",
+        "range": "",
         "concentration": false,
         "ritual": false,
         "material": false,
-        "effect": "Create a magical effect",
-        "details": "Transmutation Cantrip (Artificer, Bard, Sorcerer, Warlock, Wizard)\n\nCasting Time: Action\nRange: 10 feet\nComponents: V, S\nDuration: Up to 1 hour\n\nYou create a magical effect within range. Choose the effect from the options below. If you cast this spell multiple times, you can have up to three of its non-instantaneous effects active at a time.\n\nSensory Effect. You create an instantaneous, harmless sensory effect, such as a shower of sparks, a puff of wind, faint musical notes, or an odd odor.\n\nFire Play. You instantaneously light or snuff out a candle, a torch, or a small campfire.\n\nClean or Soil. You instantaneously clean or soil an object no larger than 1 cubic foot.\n\nMinor Sensation. You chill, warm, or flavor up to 1 cubic foot of nonliving material for 1 hour.\n\nMagic Mark. You make a color, a small mark, or a symbol appear on an object or a surface for 1 hour.\n\nMinor Creation. You create a nonmagical trinket or an illusory image that can fit in your hand. It lasts until the end of your next turn. A trinket can deal no damage and has no monetary worth.",
+        "effect": "",
+        "details": "",
         "open": false
       },
       {
         "level": "1",
-        "name": "Siren's Call (Aeternian)",
-        "castTime": "Action",
-        "range": "Self",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "Con save; 15/20 ft cone of 2d8 thunder and pushed 15/20 ft",
-        "details": "Spell Level: 1st\nCasting Time: 1 Action\nRange/Area: Self — 15 ft. cone\nComponents: V, S\n\nDuration: Instantaneous\nSchool: Evocation\nAttack/Save: Constitution Save\nDamage/Effect: Thunder\n\nDescription\nThrough the echoes, your call for help shall be heard. A defensive spell created by the magic researchers of the Aeternia kingdom. As you cry for help, you forcefully push away those who mean you harm. However, be mindful, as sound transfers differently under water.\n\nOn Land\nEach creature within a 15 ft. cone makes a Constitution saving throw. On a failed save, they take 2d8 Thunder damage and are pushed away from you by 5 ft. On a successful save, they take half the damage and are not pushed.\n\nYour call travels over 100 ft. on land.\n\nUnder Water\nEach creature within a 20 ft. cone makes a Constitution saving throw. On a failed save, they take 2d8 Thunder damage and are pushed away from you by 15 ft. On a successful save, they take half the damage and are not pushed.\n\nYour call travels over 300 ft. through water.\n\nHigher-Level Spell Slot\nThe damage increases by 1d8 for each spell slot level above 1. ",
-        "open": false
-      },
-      {
-        "level": "1",
-        "name": "Healing Word (Cleric Initiate)",
+        "name": "Healing Word",
         "castTime": "Bonus Action",
         "range": "60 ft",
         "concentration": false,
@@ -582,26 +563,26 @@
       },
       {
         "level": "1",
-        "name": "Bubble Spray",
-        "castTime": "Action",
-        "range": "Self",
+        "name": "",
+        "castTime": "",
+        "range": "",
         "concentration": false,
         "ritual": false,
-        "material": true,
-        "effect": "Wis save; cone of 1d6 psychic damage and blinded",
-        "details": "Spell Level: 1st\nCasting Time: 1 Action\nRange/Area: Self — 15 ft. cone\nComponents: V, S, M*\n*A small ring\n\nDuration: Instantaneous\nSchool: Evocation\nAttack/Save: Wisdom Save\nDamage/Effect: Psychic\n\nDescription\nYou spray a dazzling collection of mystifying bubbles from your hands. Each creature in a 15 ft. cone, originating from you, must succeed on a Wisdom saving throw or become blinded until the end of your next turn. In addition, upon a failed save, the creatures take 1d6 Psychic damage, or half as much on a successful save.\n\nNatural fires within the cone will be extinguished.\n\nHigher-Level Spell Slot\nThe damage increases by 1d6 for each spell slot level above 1.",
+        "material": false,
+        "effect": "",
+        "details": "",
         "open": false
       },
       {
         "level": "1",
-        "name": "Whirlpool",
-        "castTime": "Action",
-        "range": "90 ft",
+        "name": "",
+        "castTime": "",
+        "range": "",
         "concentration": false,
         "ritual": false,
-        "material": true,
-        "effect": "Dex save; 3d8/3d10 cold damage and target falls prone/is pushed downward",
-        "details": "Spell Level: 1st\nCasting Time: 1 Action\nRange/Area: 90 ft. — 5 ft. square\nComponents: S, M*\n*A small vial of water\n\nDuration: Instantaneous\nSchool: Conjuration\nAttack/Save: Dexterity Save\nDamage/Effect: Cold & Control\n\nDescription\nAs you spin around your vial of water, a whirlpool comes to be. Uncorking the vial will release said whirlpool upon a target within range (90 ft.). The target must make a Dexterity saving throw or experience the full effect of the spell. The effect of the spell differs depending on whether the target is on the surface or below it:\n\nOn Land\nThe target takes 3d8 cold damage and falls prone. On a successful save, the target takes half the damage and does not fall prone.\n\nUnder Water\nThe target takes 3d10 cold damage and is pushed downward by 30 ft. On a successful save, the target takes half the damage and is not pushed downward.\n\nHigher-Level Spell Slot\nFor each spell slot above level 1, an extra whirlpool is created. ",
+        "material": false,
+        "effect": "",
+        "details": "",
         "open": false
       }
     ]
