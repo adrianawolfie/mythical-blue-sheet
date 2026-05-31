@@ -11,17 +11,6 @@
     "updatedAt": "2026-05-31T09:21:27.937Z"
   },
   {
-    "id": "075e36bd-fc2a-43d3-b052-24174388c79b",
-    "name": "Nimue",
-    "armorClass": "13",
-    "hpCurrent": "8",
-    "hpMax": "8",
-    "passivePerception": "11",
-    "currentConditions": "",
-    "file": "characters/075e36bd-fc2a-43d3-b052-24174388c79b.json",
-    "updatedAt": "2026-05-30T20:37:55.309Z"
-  },
-  {
     "id": "6838aa74-5c72-44a1-bdde-7c759165d448",
     "name": "Mara Flint",
     "armorClass": "",
@@ -31,5 +20,16 @@
     "currentConditions": "",
     "file": "characters/6838aa74-5c72-44a1-bdde-7c759165d448.json",
     "updatedAt": "2026-05-30T18:38:42.465Z"
+  },
+  {
+    "id": "3b1ddf6a-4027-48d5-b683-1a8a292d8e1d",
+    "name": "Lillith (Recovered)",
+    "armorClass": "15",
+    "hpCurrent": "9",
+    "hpMax": "9",
+    "passivePerception": "14",
+    "currentConditions": "",
+    "file": "characters/3b1ddf6a-4027-48d5-b683-1a8a292d8e1d.json",
+    "updatedAt": "2026-05-31T09:49:54.941340Z"
   }
 ]
