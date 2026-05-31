@@ -1,6 +1,6 @@
 {
   "id": "a0f2d0e2-3dc5-46ab-9b65-8ce9d0e8b5f1",
-  "updatedAt": "2026-05-31T21:39:03.657Z",
+  "updatedAt": "2026-05-31T21:39:42.180Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "13",
@@ -232,7 +232,7 @@
     },
     {
       "index": 55,
-      "value": ""
+      "value": "1"
     },
     {
       "index": 56,
