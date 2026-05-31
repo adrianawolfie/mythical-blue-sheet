@@ -2528,9 +2528,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("saveCharacterBtn").addEventListener("click", saveCurrentCharacter);
   document.getElementById("deleteCharacterBtn").addEventListener("click", deleteCurrentCharacter);
 
-document.getElementById("backToStartBtn").addEventListener("click", () => {
-  saveCurrentCharacter(false);
+document.getElementById("backToStartBtn").addEventListener("click", async () => {
+  currentCharacterId = null;
   showStartPage();
+  await renderCharacterList();
 });
 });
 </script>
