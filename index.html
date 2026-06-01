@@ -640,8 +640,8 @@ background-position: top center;
   .sb-card textarea {
     background: transparent;
     border: none;
-    font-family: 'IM Fell English', serif;
-    font-size: 13px;
+    font-family: var(--small-italic-font);
+    font-size: 12px;
     color: var(--ink);
     resize: none;
     width: 100%;
@@ -759,7 +759,7 @@ background-position: top center;
     background: transparent;
     border: none;
     font-family: var(--small-italic-font);
-    font-size: 13px;
+    font-size: 12px;
     color: var(--ink);
     padding: 6px 8px;
     width: 100%;
@@ -870,10 +870,11 @@ background-position: top center;
   border: 1px solid rgba(184,144,44,.7);
   background: rgba(255,253,245,.45);
   color: var(--ink);
-  font-family: 'IM Fell English', serif;
-  font-size: 13px;
+  font-family: var(--small-italic-font);
+  font-size: 12px;
   padding: 6px 8px;
   outline: none;
+  font-style: italic;
 }
 
 .feature-entry input {
@@ -1128,11 +1129,12 @@ background-position: top center;
   border: 1px solid rgba(184,144,44,.7);
   background: rgba(255,253,245,.45);
   color: var(--ink);
-  font-family: 'IM Fell English', serif;
-  font-size: 13px;
+  font-family: var(--small-italic-font);
+  font-size: 12px;
   padding: 6px 8px;
   outline: none;
   margin-top: 0;
+  font-style: italic;
 }
 
 .stbl .spell-main-row td input[type="text"] {
@@ -1293,7 +1295,7 @@ background-position: top center;
     background: transparent;
     border: none;
     font-family: var(--small-italic-font);
-    font-size: 12px;
+    font-size: 11px;
     color: var(--ink);
     padding: 4px 7px;
     width: 100%;
@@ -1611,14 +1613,18 @@ background-position: top center;
     padding: 5px 4px;
   }
 
-  .wtbl td input,
-  .stbl td input[type="text"] {
+  .wtbl td input {
     font-size: 12px;
     padding: 6px 4px;
   }
 
+  .stbl td input[type="text"] {
+    font-size: 11px;
+    padding: 6px 4px;
+  }
+
   textarea {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .ftr {
