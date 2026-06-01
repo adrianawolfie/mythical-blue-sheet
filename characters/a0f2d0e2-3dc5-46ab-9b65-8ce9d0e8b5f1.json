@@ -1,10 +1,10 @@
 {
   "id": "a0f2d0e2-3dc5-46ab-9b65-8ce9d0e8b5f1",
-  "updatedAt": "2026-06-01T14:16:58.379Z",
+  "updatedAt": "2026-06-01T14:18:22.211Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "13",
-    "hpCurrent": "8",
+    "hpCurrent": "3",
     "hpMax": "8",
     "tempHp": "",
     "hitDice": "1d6",
@@ -54,7 +54,7 @@
     },
     {
       "index": 10,
-      "value": "8"
+      "value": "3"
     },
     {
       "index": 11,
