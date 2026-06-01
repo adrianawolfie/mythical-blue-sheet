@@ -197,10 +197,10 @@ background-position: top center;
   .hdr-row.r1 { grid-template-columns: 2fr 1.5fr 1.2fr 1fr; }
 .hdr-row.r2 { grid-template-columns: 1.5fr 1.5fr 1fr 2fr; }
 .hdr-row.r3 {
-  grid-template-columns: repeat(4, 78px) 1fr 95px;
+  grid-template-columns: 78px auto 78px 1fr 95px;
   gap: 10px;
   margin-top: 16px;
-  align-items: end;
+  align-items: start;
 }
 
 .hstat input {
@@ -1455,9 +1455,22 @@ background-position: top center;
   }
 
   .hdr-row.r3 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: auto 1fr auto;
     gap: 10px;
   }
+
+  /* Bar fills the flexible middle column */
+  .hp-bar-wrap {
+    width: 100%;
+  }
+
+  /* Tighten the controls so they fit on a narrow phone */
+  .hp-controls {
+    gap: 6px;
+  }
+
+  .hp-cur-input { width: 42px; font-size: 19px; }
+  .hp-max-input { width: 34px; font-size: 13px; }
 
   .hstat {
     min-width: 0;
@@ -1471,7 +1484,7 @@ background-position: top center;
   .hstat.wide,
   .hstat.conditions,
   .hstat.exhaustion {
-    grid-column: span 2;
+    grid-column: 1 / -1;
     width: 100%;
   }
 
@@ -1653,7 +1666,7 @@ background-position: top center;
   }
 
   .hdr-row.r3 {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: auto 1fr auto;
   }
 
   .slot-grid {
@@ -1701,6 +1714,90 @@ background-position: top center;
   }
 }
 
+
+/* ─── HP TRACKER ─────────────────────────────────────────────── */
+.hp-tracker { align-items: center; gap: 7px; }
+
+.hp-controls {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.hp-adj {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold-deep);
+  background: var(--navy);
+  color: white;
+  font-family: 'Cinzel', serif;
+  font-size: 19px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.hp-adj:hover { background: var(--navy-soft); }
+
+.hp-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.hp-cur-input,
+.hp-max-input {
+  background: transparent;
+  border: none;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  color: var(--navy-deep);
+  text-align: center;
+  outline: none;
+  -moz-appearance: textfield;
+}
+.hp-cur-input::-webkit-outer-spin-button,
+.hp-cur-input::-webkit-inner-spin-button,
+.hp-max-input::-webkit-outer-spin-button,
+.hp-max-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.hp-cur-input  { width: 50px; font-size: 22px; }
+.hp-slash      { font-family: 'Cinzel', serif; font-size: 15px; color: var(--gold); font-weight: 700; padding: 0 2px; }
+.hp-max-input  { width: 40px; font-size: 15px; opacity: .7; }
+
+.hp-bar-wrap {
+  width: 120px;
+  height: 5px;
+  background: rgba(43,56,102,.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.hp-bar {
+  height: 100%;
+  background: #1D9E75;
+  border-radius: 3px;
+  transition: width .3s, background .4s;
+}
+.hp-bar.danger { background: #c0392b; }
+
+/* ─── CHARACTER INDEX CARD — HP MINI-BAR ────────────────────── */
+.card-hp { margin-top: 8px; }
+.card-hp-bwrap {
+  width: 100%;
+  height: 4px;
+  background: rgba(43,56,102,.12);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.card-hp-bar { height: 100%; background: #1D9E75; border-radius: 2px; transition: width .3s, background .3s; }
+.card-hp-bar.danger { background: #c0392b; }
+.card-hp-text { font-family: 'Cinzel', serif; font-size: 9px; color: var(--navy-deep); opacity: .7; letter-spacing: 1px; }
 </style>
 </head>
 <body>
@@ -1749,9 +1846,22 @@ background-position: top center;
       </div>
 <div class="hdr-row r3">
   <div class="hstat"><label>Armor Class</label><input type="text" placeholder="—" /></div>
-  <div class="hstat"><label>HP Current</label><input id="hpCurrentInput" type="text" placeholder="—" /></div>
-  <div class="hstat"><label>HP Max</label><input id="hpMaxInput" type="text" placeholder="—" /></div>
-  <div class="hstat"><label>Hit Dice</label><input type="text" placeholder="5d8" /></div>
+  <div class="hstat hp-tracker">
+    <label>Hit Points</label>
+    <div class="hp-controls">
+      <button class="hp-adj" onclick="adjustHP(-1)" title="Lose 1 HP">−</button>
+      <div class="hp-readout">
+        <input class="hp-cur-input" id="hpCurrentInput" type="number" min="0" placeholder="0" oninput="updateHPBar()" />
+        <span class="hp-slash">/</span>
+        <input class="hp-max-input" id="hpMaxInput" type="number" min="0" placeholder="0" oninput="updateHPBar()" />
+      </div>
+      <button class="hp-adj" onclick="adjustHP(+1)" title="Gain 1 HP">+</button>
+    </div>
+    <div class="hp-bar-wrap">
+      <div class="hp-bar" id="hp-bar"></div>
+    </div>
+  </div>
+  <div class="hstat"><label>Temp HP</label><input id="tempHpInput" type="text" placeholder="—" /></div>
   <div class="hstat wide conditions">
     <label>Current Conditions</label>
     <input id="currentConditionsInput" type="hidden" value="" />
@@ -1879,7 +1989,7 @@ background-position: top center;
               <div class="svrow"><div class="svlbl">Successes</div><div class="svdie" onclick="this.classList.toggle('on')"></div><div class="svdie" onclick="this.classList.toggle('on')"></div><div class="svdie" onclick="this.classList.toggle('on')"></div></div>
               <div class="svrow"><div class="svlbl">Failures</div><div class="svdie fail" onclick="this.classList.toggle('on')"></div><div class="svdie fail" onclick="this.classList.toggle('on')"></div><div class="svdie fail" onclick="this.classList.toggle('on')"></div></div>
             </div>
-            <div class="cbox"><label>Temp HP</label><input type="text" placeholder="—" /></div>
+            <div class="cbox"><label>Hit Dice</label><input id="hitDiceInput" type="text" placeholder="5d8" /></div>
             <div class="cbox"><label>HD Spent</label><input type="text" placeholder="—" /></div>
             <div class="cbox"><label>Inspiration</label><div class="insp" onclick="this.textContent = this.textContent === '✦' ? '○' : '✦'">○</div></div>
           </div>
@@ -2726,8 +2836,10 @@ return {
 summary: {
   name: getValueByExactLabel("Character Name") || "Unnamed Character",
   armorClass: getValueByExactLabel("Armor Class"),
-  hpCurrent: getValueByExactLabel("HP Current"),
-  hpMax: getValueByExactLabel("HP Max"),
+  hpCurrent: document.getElementById("hpCurrentInput")?.value || "",
+  hpMax: document.getElementById("hpMaxInput")?.value || "",
+  tempHp: document.getElementById("tempHpInput")?.value || "",
+  hitDice: document.getElementById("hitDiceInput")?.value || "",
   passivePerception: getValueByExactLabel("Passive Perc."),
   currentConditions: getValueByExactLabel("Current Conditions")
 },
@@ -2780,6 +2892,18 @@ if (hpCurrentInput && character.summary?.hpCurrent !== undefined) {
 if (hpMaxInput && character.summary?.hpMax !== undefined) {
   hpMaxInput.value = character.summary.hpMax || "";
 }
+
+// Load Temp HP and Hit Dice by ID so they survive DOM reordering
+const tempHpInput = document.getElementById("tempHpInput");
+const hitDiceInput = document.getElementById("hitDiceInput");
+if (tempHpInput && character.summary?.tempHp !== undefined) {
+  tempHpInput.value = character.summary.tempHp || "";
+}
+if (hitDiceInput && character.summary?.hitDice !== undefined) {
+  hitDiceInput.value = character.summary.hitDice || "";
+}
+
+updateHPBar(); // sync bar with loaded values
 
 showSheet();
 }
@@ -2909,15 +3033,25 @@ async function renderCharacterList() {
     return;
   }
 
-  list.innerHTML = characters.map(character => `
+  list.innerHTML = characters.map(character => {
+    const hpCur  = parseInt(character.hpCurrent) || 0;
+    const hpMax  = parseInt(character.hpMax)     || 0;
+    const hpPct  = hpMax > 0 ? Math.round((hpCur / hpMax) * 100) : 0;
+    const danger = hpPct > 0 && hpPct <= 50 ? " danger" : "";
+    return `
     <div class="character-card" data-id="${character.id}">
       <strong>${character.name}</strong><br>
       Armor Class: ${character.armorClass || "—"}<br>
-      Hit Points: ${character.hpCurrent || "—"} / ${character.hpMax || "—"}<br>
       Passive Perception: ${character.passivePerception || "—"}<br>
       Current Conditions: ${character.currentConditions || "—"}
-    </div>
-  `).join("");
+      <div class="card-hp">
+        <div class="card-hp-bwrap">
+          <div class="card-hp-bar${danger}" style="width:${hpPct}%"></div>
+        </div>
+        <span class="card-hp-text">${hpCur} / ${hpMax} HP</span>
+      </div>
+    </div>`;
+  }).join("");
 
   document.querySelectorAll(".character-card").forEach(card => {
     card.addEventListener("click", async () => {
@@ -2976,6 +3110,32 @@ document.getElementById("backToStartBtn").addEventListener("click", async () => 
   await renderCharacterList();
 });
 });
+
+// ─── HP TRACKER LOGIC ────────────────────────────────────────────────────────
+
+function adjustHP(delta) {
+  const cur = document.getElementById("hpCurrentInput");
+  const max = document.getElementById("hpMaxInput");
+  if (!cur || !max) return;
+  let c = parseInt(cur.value) || 0;
+  let m = parseInt(max.value) || 0;
+  c = Math.max(0, Math.min(m || 9999, c + delta));
+  cur.value = c;
+  updateHPBar();
+}
+
+function updateHPBar() {
+  const bar = document.getElementById("hp-bar");
+  const cur = document.getElementById("hpCurrentInput");
+  const max = document.getElementById("hpMaxInput");
+  if (!bar || !cur || !max) return;
+  const c = parseInt(cur.value) || 0;
+  const m = parseInt(max.value) || 0;
+  const pct = m > 0 ? Math.round((c / m) * 100) : 0;
+  bar.style.width = pct + "%";
+  // green above 50 %, red at 50 % and below
+  bar.classList.toggle("danger", pct > 0 && pct <= 50);
+}
 </script>
 </body>
 </html>
