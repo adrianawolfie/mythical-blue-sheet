@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "c6c1c2a0-92d9-41b8-85a1-1d5f2fe7e6db",
-  "updatedAt": "2026-06-03T08:54:20.632Z",
+  "updatedAt": "2026-06-03T08:59:34.022Z",
   "summary": {
     "name": "Lillith",
     "armorClass": "15",
@@ -154,6 +154,14 @@
         "hasResource": false,
         "resource": "",
         "details": "You don't need to sleep, and magic can't put you to sleep. You can finish a Long Rest in 4 hours if you spend those hours in a trancelike meditation, during which you retain consciousness.",
+        "open": false
+      },
+      {
+        "name": "Elven Lineage: Drow",
+        "short": "Darkvision, Dancing Lights, Faerie Fire, Darkness",
+        "hasResource": true,
+        "resource": "1/1 Long Rest",
+        "details": "Lineage: Drow\nLevel 1: The range of your Darkvision increases to 120 feet. You also know the Dancing Lights cantrip.\nLevel 3: Faerie Fire\nLevel 5: Darkness\n\nYou are part of a lineage that grants you supernatural abilities. Choose a lineage from the Elven Lineages table. You gain the level 1 benefit of that lineage.\n\nWhen you reach character levels 3 and 5, you learn a higher-level spell, as shown on the table. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have of the appropriate level.\n\nIntelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the lineage).",
         "open": false
       }
     ],
