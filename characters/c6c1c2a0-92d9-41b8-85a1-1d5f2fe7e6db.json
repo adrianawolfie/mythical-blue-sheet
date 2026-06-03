@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "c6c1c2a0-92d9-41b8-85a1-1d5f2fe7e6db",
-  "updatedAt": "2026-06-03T08:22:57.641Z",
+  "updatedAt": "2026-06-03T08:54:20.632Z",
   "summary": {
     "name": "Lillith",
     "armorClass": "15",
@@ -141,20 +141,20 @@
   "customLists": {
     "feats": [
       {
-        "name": "Class Feature",
-        "short": "Short summary of what this feature does.",
-        "hasResource": true,
-        "resource": "1/1 Short Rest",
-        "details": "",
-        "open": false
-      },
-      {
-        "name": "Advantage to charmed",
-        "short": "To avoid or end charmed condition ",
+        "name": "Fey Ancestry",
+        "short": "Advantage to avoid or end charmed condition ",
         "hasResource": false,
         "resource": "",
         "details": "Fey Ancestry. You have Advantage on saving throws you make to avoid or end the Charmed condition.",
-        "open": true
+        "open": false
+      },
+      {
+        "name": "Trance",
+        "short": "You can finish a Long Rest in 4 hours. ",
+        "hasResource": false,
+        "resource": "",
+        "details": "You don't need to sleep, and magic can't put you to sleep. You can finish a Long Rest in 4 hours if you spend those hours in a trancelike meditation, during which you retain consciousness.",
+        "open": false
       }
     ],
     "weapons": [
