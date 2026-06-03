@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "f7399244-4d80-4b0d-9dd1-c2d4ea53d26a",
-  "updatedAt": "2026-06-03T17:02:16.429Z",
+  "updatedAt": "2026-06-03T17:06:07.968Z",
   "summary": {
     "name": "Mara Flint",
     "armorClass": "15",
@@ -250,9 +250,9 @@
         "concentration": false,
         "ritual": false,
         "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
+        "effect": "You set an alarm against intrusion. Choose a door, a window, or an area within range that is no larger than a 20-foot Cube. Until the spell ends, an alarm alerts you whenever a creature touches or enters the warded area. When you cast the spell, you can designate creatures that won’t set off the alarm. You also choose whether the alarm is audible or mental:",
+        "details": "Casting Time: 1 minute or Ritual\nRange: 30 feet\nComponents: V, S, M (a bell and silver wire)\nDuration: 8 hours\n\nYou set an alarm against intrusion. Choose a door, a window, or an area within range that is no larger than a 20-foot Cube. Until the spell ends, an alarm alerts you whenever a creature touches or enters the warded area. When you cast the spell, you can designate creatures that won’t set off the alarm. You also choose whether the alarm is audible or mental:\n\nAudible Alarm. The alarm produces the sound of a handbell for 10 seconds within 60 feet of the warded area.\n\nMental Alarm. You are alerted by a mental ping if you are within 1 mile of the warded area. This ping awakens you if you’re asleep.",
+        "open": true
       },
       {
         "level": "1",
