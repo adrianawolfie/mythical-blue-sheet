@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
   "id": "c2d9f7e6-44d2-4777-8608-47cf157bcb98",
-  "updatedAt": "2026-06-03T14:08:27.436Z",
+  "updatedAt": "2026-06-03T21:20:41.262Z",
   "summary": {
     "name": "Crowley",
     "armorClass": "15",
-    "hpCurrent": "10",
+    "hpCurrent": "9",
     "hpMax": "10",
     "tempHp": "",
     "hitDice": "1d8",
@@ -23,7 +23,7 @@
     "initiative": "+6",
     "speed": "30",
     "armorClass": "15",
-    "hpCurrent": "10",
+    "hpCurrent": "9",
     "hpMax": "10",
     "tempHp": "",
     "currentConditions": "",
@@ -65,19 +65,19 @@
     "intimidation": "+4",
     "performance": "+6",
     "persuasion": "+4",
-    "equipmentProficiencies": "Rapier, Leather Armour, Rope, Waterskin, Bedroll, Rations x5, Hunting Trap, Net, Cook's Utensils.\n\nArmour: Light Armour\nWeapons: Simple Weapons, Hand Crossbows, Longswords, Rapiers, Shortswords\nTools: Cook's Utensils, Lyre, Drums, Fiddle.",
+    "equipmentProficiencies": "Rapier, Leather Armour, Rope, Waterskin, Bedroll, Rations x5, Hunting Trap, Net, Cook's Utensils.\n*MISSING: Hunting Trap, Net, Bedroll*\nArmour: Light Armour\nWeapons: Simple Weapons, Hand Crossbows, Longswords, Rapiers, Shortswords\nTools: Cook's Utensils, Lyre, Drums, Fiddle.",
     "hitDice": "1d8",
     "hitDiceSpent": "",
-    "copperPieces": "",
+    "copperPieces": "3",
     "silverPieces": "3",
     "electrumPieces": "",
     "goldPieces": "3",
     "platinumPieces": "",
-    "treasureNotes": "",
+    "treasureNotes": "4 daggers, leather armour, 15 caltrops, 3 beads of nourishment.",
     "spellcastingAbility": "CHA",
     "spellSaveDc": "14",
     "spellAttackBonus": "+6",
-    "spellSlotsLevel1": "2/2",
+    "spellSlotsLevel1": "0/2",
     "spellSlotsLevel2": "-",
     "spellSlotsLevel3": "-",
     "spellSlotsLevel4": "-",
@@ -144,20 +144,20 @@
         "name": "Bardic Inspiration (Class)",
         "short": "1 creature receives 1d6 for D20 Test.",
         "hasResource": true,
-        "resource": "4/1 Long Rest",
+        "resource": "(3/4) 4/1 Long Rest",
         "details": "As a Bonus Action, you can inspire another creature within 60 ft. that can see or hear you. That creature gains one of your Bardic Inspiration dice (1d6). Once within the next hour, when the creature fails a D20 Test, the creature can roll the Bardic Inspiration die and add the number rolled to the total, potentially turning the failure into a success.",
         "open": false
       },
       {
         "name": "Darkvision (Species)",
-        "short": "Sight in the dark.",
+        "short": "Yay not a human",
         "hasResource": false,
         "resource": "",
         "details": "",
         "open": false
       },
       {
-        "name": "Reactive (Feat)",
+        "name": "Reactive (Background)",
         "short": "PB to Initiative",
         "hasResource": false,
         "resource": "",
@@ -174,7 +174,7 @@
       },
       {
         "name": "Spider Sense (Species)",
-        "short": "",
+        "short": "Buzz Buzz",
         "hasResource": false,
         "resource": "",
         "details": "Extra pair of eyes grants proficiency in Perception. ",
@@ -205,11 +205,11 @@
         "open": false
       },
       {
-        "name": "Everything is Edible (Feat)",
+        "name": "Everything is Edible (Background)",
         "short": "Nom Nom x2",
         "hasResource": true,
         "resource": "1/1 Long Rest",
-        "details": "Once per long rest, spend 1 hour foraging to craft a number of rations equakl to your PB (2 at Level 1). When a creature eats one during a short rest they gain a d4 they can add to one saving throw after rolling but before knowing the outcome. Lasts until long rest. Rations spoil after 24 hours.",
+        "details": "Once per long rest, spend 1 hour foraging to craft a number of rations equal to your PB (2 at Level 1). When a creature eats one during a short rest they gain a d4 they can add to one saving throw after rolling but before knowing the outcome. Lasts until long rest. Rations spoil after 24 hours.",
         "open": false
       }
     ],
@@ -221,16 +221,16 @@
         "notes": "Finesse"
       },
       {
-        "name": "",
-        "atk": "",
-        "damage": "",
-        "notes": ""
+        "name": "Scimitar",
+        "atk": "+6",
+        "damage": "1d6+4",
+        "notes": "Finesse"
       },
       {
-        "name": "",
-        "atk": "",
-        "damage": "",
-        "notes": ""
+        "name": "Dagger",
+        "atk": "+6",
+        "damage": "1d4+4",
+        "notes": "Finesse"
       },
       {
         "name": "",
