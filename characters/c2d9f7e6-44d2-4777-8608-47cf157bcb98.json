@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "c2d9f7e6-44d2-4777-8608-47cf157bcb98",
-  "updatedAt": "2026-06-03T21:20:41.262Z",
+  "updatedAt": "2026-06-03T21:31:15.865Z",
   "summary": {
     "name": "Crowley",
     "armorClass": "15",
@@ -65,7 +65,7 @@
     "intimidation": "+4",
     "performance": "+6",
     "persuasion": "+4",
-    "equipmentProficiencies": "Rapier, Leather Armour, Rope, Waterskin, Bedroll, Rations x5, Hunting Trap, Net, Cook's Utensils.\n*MISSING: Hunting Trap, Net, Bedroll*\nArmour: Light Armour\nWeapons: Simple Weapons, Hand Crossbows, Longswords, Rapiers, Shortswords\nTools: Cook's Utensils, Lyre, Drums, Fiddle.",
+    "equipmentProficiencies": "Rapier, Leather Armour, Rope, Waterskin, Bedroll, Rations x5, Hunting Trap, Net, Cook's Utensils.\n\nArmour: Light Armour\nWeapons: Simple Weapons, Hand Crossbows, Longswords, Rapiers, Shortswords\nTools: Cook's Utensils, Lyre, Drums, Fiddle.",
     "hitDice": "1d8",
     "hitDiceSpent": "",
     "copperPieces": "3",
