@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "c5430ee3-3274-47eb-aa4e-9696ab8fcd87",
-  "updatedAt": "2026-06-03T19:16:28.673Z",
+  "updatedAt": "2026-06-03T20:29:36.708Z",
   "summary": {
     "name": "Vasir Serpentis",
     "armorClass": "14",
@@ -68,8 +68,8 @@
     "equipmentProficiencies": "Calligrapher's Supplies",
     "hitDice": "1d6",
     "hitDiceSpent": "",
-    "copperPieces": "",
-    "silverPieces": "",
+    "copperPieces": "2",
+    "silverPieces": "3",
     "electrumPieces": "",
     "goldPieces": "",
     "platinumPieces": "",
