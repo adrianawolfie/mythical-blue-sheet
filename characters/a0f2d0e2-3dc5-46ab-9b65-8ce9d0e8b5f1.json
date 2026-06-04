@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "a0f2d0e2-3dc5-46ab-9b65-8ce9d0e8b5f1",
-  "updatedAt": "2026-06-04T13:02:52.034Z",
+  "updatedAt": "2026-06-04T13:18:24.105Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "13",
@@ -77,7 +77,7 @@
     "spellcastingAbility": "cha",
     "spellSaveDc": "14",
     "spellAttackBonus": "+6",
-    "spellSlotsLevel1": "2/2",
+    "spellSlotsLevel1": "2/3",
     "spellSlotsLevel2": "",
     "spellSlotsLevel3": "",
     "spellSlotsLevel4": "",
