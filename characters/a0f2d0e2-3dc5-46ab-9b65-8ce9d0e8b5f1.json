@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
   "id": "a0f2d0e2-3dc5-46ab-9b65-8ce9d0e8b5f1",
-  "updatedAt": "2026-06-06T23:07:22.448Z",
+  "updatedAt": "2026-06-06T23:07:47.982Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "15",
-    "hpCurrent": "9",
+    "hpCurrent": "10",
     "hpMax": "14",
-    "tempHp": "2",
+    "tempHp": "",
     "hitDice": "2d6",
     "passivePerception": "11",
     "currentConditions": "Deafened"
@@ -23,9 +23,9 @@
     "initiative": "+3",
     "speed": "30",
     "armorClass": "15",
-    "hpCurrent": "9",
+    "hpCurrent": "10",
     "hpMax": "14",
-    "tempHp": "2",
+    "tempHp": "",
     "currentConditions": "Deafened",
     "proficiencyBonus": "2",
     "passivePerception": "11",
