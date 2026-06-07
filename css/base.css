@@ -1,0 +1,181 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:        #2b3866;
+    --navy-deep:   #1c2750;
+    --navy-soft:   #3d4d80;
+    --gold:        #b8902c;
+    --gold-deep:   #8a6918;
+    --gold-light:  #d6a838;
+    --ink:         #1f2952;
+    --ink-soft:    #404e88;
+    --small-italic-font: 'Lora', Georgia, serif;
+    --r: 3px;
+  }
+
+  html, body {
+    background: linear-gradient(#5a4424 0%, #6e5530 50%, #8a6a40 100%);
+    min-height: 100vh;
+    font-family: 'IM Fell English', Georgia, serif;
+    color: var(--ink);
+    padding: 24px 12px;
+  }
+.start-page,
+.sheet-toolbar {
+  max-width: 1000px;
+  margin: 0 auto 16px auto;
+  background: #ede1c0;
+  border: 2px solid var(--gold);
+  padding: 16px;
+  color: var(--ink);
+}
+
+.start-page h1 {
+  font-family: 'Cinzel Decorative', serif;
+  margin-bottom: 16px;
+  color: var(--navy-deep);
+}
+
+.character-card {
+  border: 1px solid var(--gold);
+  padding: 12px;
+  margin: 10px 0;
+  cursor: pointer;
+  background: rgba(255,255,255,.35);
+}
+
+.character-card:hover {
+  background: rgba(255,255,255,.6);
+}
+
+.character-card strong {
+  font-size: 1.2rem;
+}
+
+.sheet-toolbar {
+  display: none;
+  gap: 8px;
+}
+
+.sheet-toolbar button,
+.start-page button {
+  padding: 8px 12px;
+  border: 1px solid var(--gold-deep);
+  background: var(--navy);
+  color: white;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+}
+  /* SHEET — seamless parchment background repeated vertically */
+  .sheet {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: #ede1c0;
+    background-image: url('../assets/parchment-seamless.png');
+background-size: 100% auto;
+background-repeat: repeat-y;
+background-position: top center;
+    box-shadow: 0 8px 40px rgba(0,0,0,.5), 0 2px 10px rgba(0,0,0,.3);
+    padding: 230px 90px 90px;
+  }
+
+  /* TITLE BANNER — separate image */
+  .title-banner {
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 380px;
+    height: auto;
+    z-index: 5;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* CORNER ORNAMENTS — corner.png is natively top-right */
+  .corner {
+    position: absolute;
+    width: 230px;
+    height: 230px;
+    background-image: url('../assets/corner.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .corner.tr { top: 0;     right: 0;   background-position: top right; }
+  .corner.tl { top: 0;     left: 0;    transform: scaleX(-1);  background-position: top right; }
+  .corner.br { bottom: 0;  right: 0;   transform: scaleY(-1);  background-position: top right; }
+  .corner.bl { bottom: 0;  left: 0;    transform: scale(-1,-1); background-position: top right; }
+
+  /* COMPASS WATERMARK */
+  .compass-watermark {
+    position: absolute;
+    top: 38%;
+    left: 50%;
+    width: 460px;
+    height: 480px;
+    transform: translate(-50%, -50%);
+    background-image: url('../assets/compass.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: .35;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: multiply;
+  }
+
+  /* SHIP */
+  .ship-art {
+    position: absolute;
+    bottom: 125px;
+    right: 90px;
+    width: 320px;
+    height: 260px;
+    background-image: url('../assets/ship.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    opacity: .85;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .content { position: relative; z-index: 3; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    border-bottom: 1.5px solid var(--gold);
+    padding: 0 0 6px;
+    margin-bottom: 24px;
+  }
+  .tab {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--ink-soft);
+    background: transparent;
+    border: none;
+    padding: 6px 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -7.5px;
+    transition: all .2s;
+    font-weight: 500;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.on {
+    color: var(--navy-deep);
+    border-bottom-color: var(--gold);
+    font-weight: 700;
+  }
+
+  .pg { display: none; }
+  .pg.on { display: block; }

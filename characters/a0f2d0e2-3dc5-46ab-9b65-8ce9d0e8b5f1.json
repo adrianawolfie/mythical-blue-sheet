@@ -91,7 +91,8 @@
     "languages": "Common\nAequor\n",
     "attunement": "",
     "equipmentInventory": "Spear, 2 Daggers, Backpack, Caltrops, Crowbar, 2 flasks of Oil, 10 days of Rations, Rope, Tinderbox, 10 Torches, and Waterskin.",
-    "equipment": ""
+    "equipment": "",
+    "otherInventory": ""
   },
   "uiState": {
     "inspiration": true,
@@ -433,6 +434,364 @@
         "Darkvision: 60ft",
         "Swim Speed: 30ft"
       ]
-    }
+    },
+    "journalNotes": [],
+    "gems": [],
+    "attunementSlots": [
+      {
+        "item": "",
+        "notes": ""
+      },
+      {
+        "item": "",
+        "notes": ""
+      },
+      {
+        "item": "",
+        "notes": ""
+      }
+    ],
+    "storageLocations": [
+      {
+        "id": "storage-a0f2d0e2-backpack",
+        "name": "Backpack",
+        "type": "Carried Container",
+        "notes": "Imported from the original inventory list."
+      }
+    ],
+    "equippedSlots": {
+      "mainHand": "item-a0f2d0e2-spear-1",
+      "backStorage": "item-a0f2d0e2-backpack-1",
+      "otherWorn": "item-a0f2d0e2-arcane-focus-crystal-1"
+    },
+    "customEquippedSlots": [],
+    "inventoryView": "list",
+    "inventoryItems": [
+      {
+        "id": "item-a0f2d0e2-spear-1",
+        "name": "Spear",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "worn",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-daggers-1",
+        "name": "Daggers",
+        "type": "gear",
+        "qty": "2",
+        "value": "",
+        "location": "worn",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-backpack-1",
+        "name": "Backpack",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "worn",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-caltrops-1",
+        "name": "Caltrops",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-crowbar-1",
+        "name": "Crowbar",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-flasks-of-oil-1",
+        "name": "Flasks of Oil",
+        "type": "consumable",
+        "qty": "2",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-rations-1",
+        "name": "Rations",
+        "type": "consumable",
+        "qty": "10",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-rope-1",
+        "name": "Rope",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-tinderbox-1",
+        "name": "Tinderbox",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-torches-1",
+        "name": "Torches",
+        "type": "gear",
+        "qty": "10",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-waterskin-1",
+        "name": "Waterskin",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-calligrapher-s-supplies-1",
+        "name": "Calligrapher's Supplies",
+        "type": "tool",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-fine-clothes-1",
+        "name": "Fine Clothes",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-book-about-thalassic-mythology-1",
+        "name": "Book about Thalassic Mythology",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-arcane-focus-crystal-1",
+        "name": "Arcane Focus (crystal)",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "worn",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-dungeoneer-s-pack-1",
+        "name": "Dungeoneer's Pack",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "Imported as a pack entry. Its contents were not expanded because the original note also listed individual carried items.",
+        "open": false
+      }
+    ],
+    "inventoryEquipment": [
+      {
+        "id": "item-a0f2d0e2-spear-1",
+        "name": "Spear",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "worn",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-daggers-1",
+        "name": "Daggers",
+        "type": "gear",
+        "qty": "2",
+        "value": "",
+        "location": "worn",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-backpack-1",
+        "name": "Backpack",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "worn",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-caltrops-1",
+        "name": "Caltrops",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-crowbar-1",
+        "name": "Crowbar",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-rope-1",
+        "name": "Rope",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-tinderbox-1",
+        "name": "Tinderbox",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-torches-1",
+        "name": "Torches",
+        "type": "gear",
+        "qty": "10",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-waterskin-1",
+        "name": "Waterskin",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-calligrapher-s-supplies-1",
+        "name": "Calligrapher's Supplies",
+        "type": "tool",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-fine-clothes-1",
+        "name": "Fine Clothes",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-book-about-thalassic-mythology-1",
+        "name": "Book about Thalassic Mythology",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-arcane-focus-crystal-1",
+        "name": "Arcane Focus (crystal)",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "worn",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-dungeoneer-s-pack-1",
+        "name": "Dungeoneer's Pack",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "Imported as a pack entry. Its contents were not expanded because the original note also listed individual carried items.",
+        "open": false
+      }
+    ],
+    "magicItems": [],
+    "consumables": [
+      {
+        "id": "item-a0f2d0e2-flasks-of-oil-1",
+        "name": "Flasks of Oil",
+        "type": "consumable",
+        "qty": "2",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-rations-1",
+        "name": "Rations",
+        "type": "consumable",
+        "qty": "10",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      }
+    ]
   }
 }

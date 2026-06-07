@@ -72,15 +72,16 @@
         return parseJsonResponse(response, "Failed to save character.");
       },
 
-      async saveHPOnly({
+      async saveCharacterStatus({
         id,
         hpCurrent,
         hpMax,
         tempHp,
         armorClass,
+        armorClassState,
         currentConditions
       }) {
-        const response = await fetch("/.netlify/functions/save-hp", {
+        const response = await fetch("/.netlify/functions/save-character-status", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -89,6 +90,7 @@
             hpMax,
             tempHp,
             armorClass,
+            armorClassState,
             currentConditions
           })
         });
@@ -170,7 +172,13 @@
       async listCharacterData() {
         return Object.values(readCharacters())
           .map(summarize)
-          .sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+          .sort((a, b) =>
+            String(a.name || "").localeCompare(
+              String(b.name || ""),
+              undefined,
+              { sensitivity: "base" }
+            )
+          );
       },
 
       async loadCharacterData(id) {
@@ -221,12 +229,13 @@
         };
       },
 
-      async saveHPOnly({
+      async saveCharacterStatus({
         id,
         hpCurrent,
         hpMax,
         tempHp,
         armorClass,
+        armorClassState,
         currentConditions
       }) {
         const characters = readCharacters();
@@ -246,6 +255,11 @@
         character.summary.tempHp = tempHp;
         character.summary.armorClass = armorClass;
         character.summary.currentConditions = currentConditions;
+
+        if (armorClassState && typeof armorClassState === "object") {
+          character.customLists = character.customLists || {};
+          character.customLists.armorClass = clone(armorClassState);
+        }
 
         character.fields.hpCurrent = hpCurrent;
         character.fields.hpMax = hpMax;

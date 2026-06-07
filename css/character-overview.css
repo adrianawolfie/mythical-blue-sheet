@@ -1,0 +1,295 @@
+/* ─── CHARACTER INDEX CARD — HP MINI-BAR ────────────────────── */
+.card-hp { margin-top: 8px; }
+.card-hp-bwrap {
+  width: 100%;
+  height: 4px;
+  background: rgba(43,56,102,.12);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.card-hp-bar { height: 100%; background: #1D9E75; border-radius: 2px; transition: width .3s, background .3s; }
+.card-hp-bar.danger { background: #c0392b; }
+.card-hp-text { font-family: 'Cinzel', serif; font-size: 9px; color: var(--navy-deep); opacity: .7; letter-spacing: 1px; }
+
+/* ─── CHARACTER INDEX CARD — HP EDIT CONTROLS ──────────────── */
+.card-hp-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.card-hp-adj {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-deep);
+  background: var(--navy);
+  color: white;
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background .15s;
+}
+.card-hp-adj:hover { background: var(--navy-soft, #2b3866); }
+
+.card-hp-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.card-hp-cur,
+.card-hp-max {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(43,56,102,.3);
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  color: var(--navy-deep);
+  text-align: center;
+  outline: none;
+  -moz-appearance: textfield;
+}
+.card-hp-cur::-webkit-outer-spin-button,
+.card-hp-cur::-webkit-inner-spin-button,
+.card-hp-max::-webkit-outer-spin-button,
+.card-hp-max::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.card-hp-cur   { width: 36px; font-size: 16px; }
+.card-hp-slash { font-family: 'Cinzel', serif; font-size: 11px; color: var(--gold); font-weight: 700; padding: 0 2px; }
+.card-hp-max   { width: 30px; font-size: 11px; opacity: .7; }
+
+.character-card:has(.card-hp-cur:focus),
+.character-card:has(.card-hp-max:focus) {
+  cursor: default;
+}
+
+
+/* ─── MOBILE SAVED-CHARACTER HP CONTROLS ─────────────────────
+   Override the generic .start-page button mobile rule so the HP + / −
+   controls remain compact circles instead of stretching across the card. */
+@media (max-width: 768px) {
+  .start-page .character-card .card-hp-controls {
+    justify-content: flex-start;
+    gap: 7px;
+  }
+
+  .start-page .character-card .card-hp-adj {
+    flex: 0 0 28px;
+    min-width: 28px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 16px;
+  }
+
+  .start-page .character-card .card-hp-readout {
+    flex: 0 0 auto;
+  }
+}
+
+
+/* ─── MOBILE SAVED-CHARACTER HP CONTROLS — HARD OVERRIDE ─────
+   The general mobile .start-page button rule makes every button flexible.
+   Force the small HP adjustment controls back into compact circles. */
+@media (max-width: 768px) {
+  .start-page .character-card .card-hp-controls {
+    display: inline-flex !important;
+    width: auto !important;
+    max-width: max-content !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 7px !important;
+  }
+
+  .start-page .character-card button.card-hp-adj {
+    flex: 0 0 28px !important;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    width: 28px !important;
+    height: 28px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 50% !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+  }
+
+  .start-page .character-card .card-hp-readout {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+
+  .start-page .character-card .card-hp-cur {
+    width: 36px !important;
+    min-width: 36px !important;
+  }
+
+  .start-page .character-card .card-hp-max {
+    width: 30px !important;
+    min-width: 30px !important;
+  }
+}
+
+
+/* ─── SAVED CHARACTERS — LIVE CONDITIONS EDITOR ───────────── */
+.card-condition-editor {
+  margin-top: 7px;
+  padding-top: 6px;
+  border-top: 1px dotted rgba(184,144,44,.55);
+}
+
+.card-condition-label {
+  margin-bottom: 4px;
+  color: var(--navy-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.card-condition-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+
+.card-condition-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 5px;
+  border: 1px solid rgba(184,144,44,.62);
+  border-radius: 999px;
+  background: rgba(255,253,245,.26);
+  color: var(--navy-deep);
+  font-family: var(--small-italic-font);
+  font-size: 11px;
+}
+
+.card-condition-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--gold-deep);
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+  opacity: .42;
+  transition:
+    background .16s ease,
+    border-color .16s ease,
+    color .16s ease,
+    opacity .16s ease;
+}
+
+.card-condition-chip:hover .card-condition-remove,
+.card-condition-remove:focus-visible {
+  background: rgba(214,168,56,.10);
+  color: var(--gold-deep);
+  opacity: .9;
+  outline: none;
+}
+
+.card-condition-empty {
+  color: rgba(28,39,80,.58);
+  font-family: var(--small-italic-font);
+  font-size: 11px;
+  font-style: italic;
+}
+
+.card-condition-picker {
+  width: auto;
+  max-width: 210px;
+  border: 1px solid rgba(184,144,44,.58);
+  background: rgba(255,253,245,.3);
+  color: var(--navy-deep);
+  font-family: var(--small-italic-font);
+  font-size: 11px;
+  padding: 3px 5px;
+}
+
+@media (max-width: 768px) {
+  .start-page .character-card .card-condition-picker {
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .start-page .character-card button.card-condition-remove {
+    flex: 0 0 16px !important;
+    width: 16px !important;
+    min-width: 16px !important;
+    max-width: 16px !important;
+    height: 16px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--gold-deep) !important;
+    font-family: 'Cinzel', serif !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    opacity: .58;
+  }
+}
+
+
+/* ─── CONDITION REMOVE × — SAME VISUAL LOGIC AS PROFICIENCIES ─
+   This rule intentionally appears last so the generic start-page button
+   styling cannot turn the tiny × into a dark action button. */
+.start-page .character-card .card-condition-chip button.card-condition-remove {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 16px !important;
+  width: 16px !important;
+  min-width: 16px !important;
+  max-width: 16px !important;
+  height: 16px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--gold-deep) !important;
+  font-family: 'Cinzel', serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  opacity: .42;
+}
+
+.start-page .character-card .card-condition-chip:hover button.card-condition-remove,
+.start-page .character-card .card-condition-chip button.card-condition-remove:focus-visible {
+  background: rgba(214,168,56,.10) !important;
+  color: var(--gold-deep) !important;
+  opacity: .9;
+  outline: none !important;
+}

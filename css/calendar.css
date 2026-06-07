@@ -231,3 +231,336 @@
   .calendar-sheet-bar { padding: 6px 10px; font-size: 11.5px; }
   .cal-sheet-lbl, .cal-sheet-sep { display: none; }
 }
+
+
+/* ── SHARED CAMPAIGN TRAVEL ─────────────────────────────────────────────── */
+
+.cal-travel {
+  border-top: 1px solid rgba(184, 144, 44, 0.38);
+  background: rgba(184, 144, 44, 0.055);
+  padding: 8px 10px 9px;
+}
+
+.cal-travel-heading {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.cal-travel-label {
+  color: var(--navy);
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.7px;
+  opacity: .78;
+  text-transform: uppercase;
+}
+
+.cal-travel-count {
+  color: var(--gold-deep);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cal-travel-controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.cal-travel-btn {
+  padding: 5px 7px;
+  border: 1px solid rgba(184, 144, 44, 0.54);
+  border-radius: 2px;
+  background: rgba(255, 253, 245, 0.16);
+  color: var(--navy);
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .45px;
+  transition:
+    background .15s ease,
+    border-color .15s ease,
+    color .15s ease;
+}
+
+.cal-travel-btn:hover,
+.cal-travel-btn:focus-visible {
+  background: rgba(184, 144, 44, 0.16);
+  border-color: var(--gold-deep);
+  color: var(--navy-deep);
+  outline: none;
+}
+
+.cal-travel-btn:disabled {
+  cursor: default;
+  opacity: .72;
+}
+
+@media (max-width: 768px) {
+  .cal-travel {
+    padding: 7px 7px 8px;
+  }
+
+  .cal-travel-controls {
+    gap: 4px;
+  }
+
+  .cal-travel-btn {
+    flex: 1 1 calc(50% - 4px);
+    padding: 6px 5px;
+    font-size: 7.5px;
+  }
+}
+
+
+/* ── ADJUSTABLE DAYS TRAVELED ───────────────────────────────────────────── */
+
+.cal-travel-count-input {
+  width: 58px;
+  height: 26px;
+  padding: 0 4px;
+  border: none;
+  border-bottom: 1px dotted rgba(184, 144, 44, 0.66);
+  border-radius: 0;
+  background: transparent;
+  color: var(--gold-deep);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.cal-travel-count-input:focus {
+  border-bottom-color: var(--gold-deep);
+  background: rgba(255, 253, 245, 0.22);
+}
+
+.cal-travel-count-input::-webkit-inner-spin-button,
+.cal-travel-count-input::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.cal-sheet-travel {
+  color: var(--gold-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 8.5px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cal-sheet-travel strong {
+  color: var(--navy-deep);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 11px;
+}
+
+@media (max-width: 768px) {
+  .cal-travel-count-input {
+    width: 52px;
+    height: 24px;
+    font-size: 14px;
+  }
+
+  .cal-sheet-travel {
+    width: 100%;
+    font-size: 8px;
+    text-align: right;
+  }
+
+  .cal-sheet-travel strong {
+    font-size: 10px;
+  }
+}
+
+
+/* ── SUBTLE CALENDAR CORRECTION CONTROLS ─────────────────────────────────
+   Replaces the chunky travel buttons with thin inline − / + controls. */
+
+.cal-travel-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 11px;
+}
+
+.cal-travel-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cal-travel-step-label {
+  min-width: 36px;
+  color: var(--navy);
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  opacity: .72;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.cal-travel-step-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--gold-deep);
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: .52;
+  transition:
+    color .15s ease,
+    opacity .15s ease,
+    transform .15s ease;
+}
+
+.cal-travel-step-btn:hover,
+.cal-travel-step-btn:focus-visible {
+  color: var(--navy-deep);
+  opacity: 1;
+  outline: none;
+  transform: scale(1.08);
+}
+
+.cal-travel-step-btn:disabled {
+  cursor: default;
+  opacity: .72;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .cal-travel-controls {
+    gap: 8px;
+  }
+
+  .cal-travel-step {
+    gap: 3px;
+  }
+
+  .cal-travel-step-label {
+    min-width: 31px;
+    font-size: 7.5px;
+  }
+
+  .cal-travel-step-btn {
+    width: 14px;
+    height: 14px;
+    font-size: 13px;
+  }
+}
+
+
+/* ── INLINE CALENDAR DATE CORRECTION CONTROLS ────────────────────────────
+   Thin gold − / + controls live directly beside Month, Week, and Day. */
+
+.cal-inline-adjust-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.cal-week-row {
+  gap: 6px;
+}
+
+.cal-day-row {
+  gap: 9px;
+}
+
+.cal-inline-adjust {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  width: 16px !important;
+  min-width: 16px !important;
+  max-width: 16px !important;
+  height: 16px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--gold-deep) !important;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 14px !important;
+  font-weight: 700;
+  line-height: 1 !important;
+  opacity: .52;
+  transition:
+    color .15s ease,
+    opacity .15s ease,
+    transform .15s ease;
+}
+
+.cal-inline-adjust:hover,
+.cal-inline-adjust:focus-visible {
+  background: transparent !important;
+  color: var(--navy-deep) !important;
+  opacity: 1;
+  outline: none !important;
+  transform: scale(1.08);
+}
+
+.cal-inline-adjust:disabled {
+  cursor: default;
+  opacity: .72;
+  transform: none;
+}
+
+.cal-travel {
+  padding-bottom: 6px;
+}
+
+.cal-travel-heading {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .cal-inline-adjust-row {
+    gap: 5px;
+  }
+
+  .cal-day-row {
+    gap: 7px;
+  }
+
+  .cal-inline-adjust {
+    width: 15px !important;
+    min-width: 15px !important;
+    max-width: 15px !important;
+    height: 15px !important;
+    font-size: 13px !important;
+  }
+
+  .cal-travel {
+    padding-bottom: 5px;
+  }
+}

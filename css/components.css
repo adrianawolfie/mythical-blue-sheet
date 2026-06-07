@@ -1,0 +1,69 @@
+/* ─── HP TRACKER ─────────────────────────────────────────────── */
+.hp-tracker { align-items: center; gap: 7px; }
+
+.hp-controls {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.hp-adj {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold-deep);
+  background: var(--navy);
+  color: white;
+  font-family: 'Cinzel', serif;
+  font-size: 19px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.hp-adj:hover { background: var(--navy-soft); }
+
+.hp-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.hp-cur-input,
+.hp-max-input {
+  background: transparent;
+  border: none;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  color: var(--navy-deep);
+  text-align: center;
+  outline: none;
+  -moz-appearance: textfield;
+}
+.hp-cur-input::-webkit-outer-spin-button,
+.hp-cur-input::-webkit-inner-spin-button,
+.hp-max-input::-webkit-outer-spin-button,
+.hp-max-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.hp-cur-input  { width: 50px; font-size: 22px; }
+.hp-slash      { font-family: 'Cinzel', serif; font-size: 15px; color: var(--gold); font-weight: 700; padding: 0 2px; }
+.hp-max-input  { width: 40px; font-size: 15px; opacity: .7; }
+
+.hp-bar-wrap {
+  width: 120px;
+  height: 5px;
+  background: rgba(43,56,102,.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.hp-bar {
+  height: 100%;
+  background: #1D9E75;
+  border-radius: 3px;
+  transition: width .3s, background .4s;
+}
+.hp-bar.danger { background: #c0392b; }

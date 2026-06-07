@@ -91,7 +91,8 @@
     "languages": "",
     "attunement": "",
     "equipmentInventory": "",
-    "equipment": "Calligrapher's Supplies"
+    "equipment": "Calligrapher's Supplies",
+    "otherInventory": ""
   },
   "uiState": {
     "inspiration": false,
@@ -312,6 +313,52 @@
       "weapons": [],
       "tools": [],
       "other": []
-    }
+    },
+    "journalNotes": [],
+    "gems": [],
+    "attunementSlots": [
+      {
+        "item": "",
+        "notes": ""
+      },
+      {
+        "item": "",
+        "notes": ""
+      },
+      {
+        "item": "",
+        "notes": ""
+      }
+    ],
+    "storageLocations": [],
+    "equippedSlots": {},
+    "customEquippedSlots": [],
+    "inventoryView": "list",
+    "inventoryItems": [
+      {
+        "id": "item-c5430ee3-calligrapher-s-supplies-1",
+        "name": "Calligrapher's Supplies",
+        "type": "tool",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      }
+    ],
+    "inventoryEquipment": [
+      {
+        "id": "item-c5430ee3-calligrapher-s-supplies-1",
+        "name": "Calligrapher's Supplies",
+        "type": "tool",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      }
+    ],
+    "magicItems": [],
+    "consumables": []
   }
 }

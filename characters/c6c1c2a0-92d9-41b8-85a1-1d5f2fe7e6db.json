@@ -91,7 +91,8 @@
     "languages": "",
     "attunement": "",
     "equipmentInventory": "",
-    "equipment": "Chain Shirt (Med. Armor)\nAmulet (Holy Symbol)\n1x Vial of alchemist fire (U can chuck it)\n1x Antitoxin\n5x healing potions"
+    "equipment": "Chain Shirt (Med. Armor)\nAmulet (Holy Symbol)\n1x Vial of alchemist fire (U can chuck it)\n1x Antitoxin\n5x healing potions",
+    "otherInventory": ""
   },
   "uiState": {
     "inspiration": false,
@@ -276,6 +277,136 @@
       "other": [
         "Darkvision: 120 ft"
       ]
-    }
+    },
+    "journalNotes": [],
+    "gems": [],
+    "attunementSlots": [
+      {
+        "item": "",
+        "notes": ""
+      },
+      {
+        "item": "",
+        "notes": ""
+      },
+      {
+        "item": "",
+        "notes": ""
+      }
+    ],
+    "storageLocations": [],
+    "equippedSlots": {
+      "armor": "item-c6c1c2a0-chain-shirt-1",
+      "neck": "item-c6c1c2a0-amulet-1"
+    },
+    "customEquippedSlots": [],
+    "inventoryView": "list",
+    "inventoryItems": [
+      {
+        "id": "item-c6c1c2a0-chain-shirt-1",
+        "name": "Chain Shirt",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "worn",
+        "details": "Medium Armor.",
+        "open": false
+      },
+      {
+        "id": "item-c6c1c2a0-amulet-1",
+        "name": "Amulet",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "worn",
+        "details": "Holy Symbol.",
+        "open": false
+      },
+      {
+        "id": "item-c6c1c2a0-vial-of-alchemist-s-fire-1",
+        "name": "Vial of Alchemist's Fire",
+        "type": "consumable",
+        "qty": "1",
+        "value": "",
+        "location": "",
+        "details": "Can be thrown.",
+        "open": false
+      },
+      {
+        "id": "item-c6c1c2a0-antitoxin-1",
+        "name": "Antitoxin",
+        "type": "consumable",
+        "qty": "1",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-c6c1c2a0-healing-potions-1",
+        "name": "Healing Potions",
+        "type": "consumable",
+        "qty": "5",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      }
+    ],
+    "inventoryEquipment": [
+      {
+        "id": "item-c6c1c2a0-chain-shirt-1",
+        "name": "Chain Shirt",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "worn",
+        "details": "Medium Armor.",
+        "open": false
+      },
+      {
+        "id": "item-c6c1c2a0-amulet-1",
+        "name": "Amulet",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "worn",
+        "details": "Holy Symbol.",
+        "open": false
+      }
+    ],
+    "magicItems": [],
+    "consumables": [
+      {
+        "id": "item-c6c1c2a0-vial-of-alchemist-s-fire-1",
+        "name": "Vial of Alchemist's Fire",
+        "type": "consumable",
+        "qty": "1",
+        "value": "",
+        "location": "",
+        "details": "Can be thrown.",
+        "open": false
+      },
+      {
+        "id": "item-c6c1c2a0-antitoxin-1",
+        "name": "Antitoxin",
+        "type": "consumable",
+        "qty": "1",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-c6c1c2a0-healing-potions-1",
+        "name": "Healing Potions",
+        "type": "consumable",
+        "qty": "5",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      }
+    ]
   }
 }

@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="css/accessibility.css" />
 <link rel="stylesheet" href="css/styles.css" />
 <link rel="stylesheet" href="css/calendar.css" />
+<link rel="stylesheet" href="css/inventory.css" />
+<link rel="stylesheet" href="css/spells.css" />
+<link rel="stylesheet" href="css/armor-class.css" />
 </head>
 <body>
 
@@ -43,28 +46,98 @@
     <div class="cal-sign" id="calWidgetSign">Year of the Void Wyrm · Abzutarus</div>
 
     <div class="cal-date-block">
-      <div class="cal-season"    id="calWidgetSeason">Winter (Hiver)</div>
+      <div class="cal-season" id="calWidgetSeason">Winter (Hiver)</div>
 
-      <div class="cal-month-row">
+      <div class="cal-inline-adjust-row cal-month-row">
+        <button
+          type="button"
+          class="cal-inline-adjust"
+          id="calTravelMinusMonth"
+          title="Subtract one month"
+          aria-label="Subtract one month"
+        >−</button>
+
         <span class="cal-month-num" id="calWidgetMonthNum">Month 3</span>
         <span class="cal-month-sep">·</span>
-        <span class="cal-month-of"  id="calWidgetMonth">Trelus</span>
+        <span class="cal-month-of" id="calWidgetMonth">Trelus</span>
+
+        <button
+          type="button"
+          class="cal-inline-adjust"
+          id="calTravelAddMonth"
+          title="Add one month"
+          aria-label="Add one month"
+        >+</button>
       </div>
 
-      <div class="cal-week"    id="calWidgetWeek">Week 4 of 4</div>
+      <div class="cal-inline-adjust-row cal-week-row">
+        <button
+          type="button"
+          class="cal-inline-adjust"
+          id="calTravelMinusWeek"
+          title="Subtract one week"
+          aria-label="Subtract one week"
+        >−</button>
+
+        <span class="cal-week" id="calWidgetWeek">Week 4 of 4</span>
+
+        <button
+          type="button"
+          class="cal-inline-adjust"
+          id="calTravelAddWeek"
+          title="Add one week"
+          aria-label="Add one week"
+        >+</button>
+      </div>
+
       <div class="cal-weekday" id="calWidgetWeekday">Final Solaris · Solis</div>
 
-      <div class="cal-day-row">
+      <div class="cal-inline-adjust-row cal-day-row">
+        <button
+          type="button"
+          class="cal-inline-adjust"
+          id="calTravelMinusDay"
+          title="Subtract one day"
+          aria-label="Subtract one day"
+        >−</button>
+
         <span class="cal-ornament">❖</span>
         <span class="cal-day-num" id="calWidgetDay">the 28th</span>
         <span class="cal-ornament">❖</span>
+
+        <button
+          type="button"
+          class="cal-inline-adjust"
+          id="calTravelAddDay"
+          title="Add one day"
+          aria-label="Add one day"
+        >+</button>
       </div>
     </div>
 
     <div class="cal-controls">
       <button type="button" class="cal-btn" id="calPrevDay">← Prev</button>
-      <button type="button" class="cal-btn cal-btn-save" id="calSaveDay">Save</button>
+      <button type="button" class="cal-btn cal-btn-save" id="calSaveDay">Save Date</button>
       <button type="button" class="cal-btn" id="calNextDay">Next →</button>
+    </div>
+
+    <div class="cal-travel">
+      <div class="cal-travel-heading">
+        <label class="cal-travel-label" for="calDaysTraveledInput">Days Traveled</label>
+        <input
+          id="calDaysTraveledInput"
+          class="cal-travel-count-input"
+          type="number"
+          min="0"
+          step="1"
+          inputmode="numeric"
+          value="0"
+          aria-label="Total days traveled"
+          title="Enter the total days traveled"
+        >
+      </div>
+
+
     </div>
   </div>
   <!-- ════════════════════════════════════════════════════════════════ -->
@@ -114,21 +187,97 @@
     <div class="hdr-fields">
       <div class="hdr-row r1">
         <div class="hfl"><label>Character Name</label><input type="text" placeholder="enter name…" data-field="characterName"></div>
+        <div class="hfl"><label>Species</label><input type="text" placeholder="sea elf, human…" data-field="speciesRace"></div>
         <div class="hfl"><label>Background</label><input type="text" placeholder="sailor, pirate, corsair…" data-field="background"></div>
-        <div class="hfl"><label>Class & Level</label><input type="text" placeholder="swashbuckler 5" data-field="classLevel"></div>
-        <div class="hfl"><label>Experience</label><input type="text" placeholder="0 xp" data-field="experience"></div>
+        <div class="hfl"><label>Alignment</label><input type="text" placeholder="cn…" data-field="alignment"></div>
       </div>
       <div class="hdr-row r2">
-        <div class="hfl"><label>Species / Race</label><input type="text" placeholder="sea elf, human…" data-field="speciesRace"></div>
-        <div class="hfl"><label>Subclass</label><input type="text" placeholder="…" data-field="subclass"></div>
-        <div class="hfl"><label>Alignment</label><input type="text" placeholder="cn…" data-field="alignment"></div>
-<div class="hmini-row">
-  <div class="hstat hmini"><label>Initiative</label><input type="text" placeholder="+0" data-field="initiative"></div>
-  <div class="hstat hmini"><label>Speed</label><input type="text" placeholder="30" data-field="speed"></div>
+        <div class="hfl"><label>Level</label><input type="number" min="1" max="20" placeholder="1" data-field="level"></div>
+        <div class="hfl"><label>Class</label><input type="text" placeholder="fighter…" data-field="class"></div>
+        <div class="hfl"><label>Subclass</label><input type="text" placeholder="psi warrior…" data-field="subclass"></div>
+<div class="movement-wrap">
+  <div class="hmini-row">
+    <div class="hstat hmini">
+      <label>Initiative</label>
+      <input type="text" placeholder="+0" data-field="initiative">
+    </div>
+    <div class="hstat hmini">
+      <label>Walking Speed</label>
+      <input type="text" placeholder="30" data-field="speed">
+    </div>
+  </div>
+
+  <div class="extra-speed-panel">
+    <button
+      id="addExtraSpeedBtn"
+      type="button"
+      class="extra-speed-add"
+      title="Add another movement speed"
+      aria-label="Add another movement speed"
+    >+ Add Speed</button>
+
+    <div id="extraSpeedRows" class="extra-speed-rows"></div>
+  </div>
 </div>
       </div>
 <div class="hdr-row r3">
-  <div class="hstat"><label>Armor Class</label><input type="text" placeholder="—" data-field="armorClass"></div>
+  <div class="hstat armor-class-tracker">
+    <label>Armor Class</label>
+    <input
+      id="armorClassInput"
+      class="armor-class-total"
+      type="text"
+      placeholder="—"
+      data-field="armorClass"
+      readonly
+      aria-label="Total Armor Class"
+    >
+
+    <button
+      id="toggleArmorClassPanelBtn"
+      type="button"
+      class="armor-class-toggle"
+      aria-expanded="false"
+      aria-controls="armorClassPanel"
+    >+ Modify AC</button>
+
+    <div id="armorClassPanel" class="armor-class-panel" hidden>
+      <div class="armor-class-panel-header">
+        <div class="armor-class-panel-title">Armor Class</div>
+        <button
+          id="closeArmorClassPanelBtn"
+          type="button"
+          class="armor-class-panel-close"
+          title="Close Armor Class modifiers"
+          aria-label="Close Armor Class modifiers"
+        >×</button>
+      </div>
+
+      <label class="armor-class-base-row">
+        <span>Base AC</span>
+        <input
+          id="armorClassBaseInput"
+          type="number"
+          inputmode="numeric"
+          placeholder="10"
+          aria-label="Base Armor Class"
+        >
+      </label>
+
+      <div id="armorClassModifierRows" class="armor-class-modifier-rows"></div>
+
+      <select
+        id="addArmorClassModifierSelect"
+        class="armor-class-add-select"
+        aria-label="Add Armor Class modifier"
+      >
+        <option value="">+ Add Modifier</option>
+        <option value="mage-armor">Mage Armor (+3)</option>
+        <option value="shield">Shield (+2)</option>
+        <option value="custom">Custom Modifier</option>
+      </select>
+    </div>
+  </div>
   <div class="hstat hp-tracker">
     <label>Hit Points</label>
     <div class="hp-controls">
@@ -177,12 +326,15 @@
       <span class="cal-sheet-lbl">✦ Era of Materra</span>
       <span class="cal-sheet-sep">·</span>
       <span class="cal-sheet-date" id="calSheetDisplay">Loading…</span>
+      <span class="cal-sheet-sep">·</span>
+      <span class="cal-sheet-travel">Days Traveled: <strong id="calSheetDaysTraveled">0</strong></span>
     </div>
     <!-- ═════════════════════════════════════════════════════════════ -->
 
     <div class="tabs">
       <button class="tab on" onclick="sw('main',this)">⚓ Main</button>
       <button class="tab" onclick="sw('spells',this)">✦ Spells</button>
+      <button class="tab" onclick="sw('inventory',this)">🎒 Inventory</button>
       <button class="tab" onclick="sw('journal',this)">📜 Journal</button>
     </div>
 
@@ -274,10 +426,6 @@
             </table>
           </div>
 
-          <div class="sb-card main-equipment-card">
-            <div class="sb-hdr">Equipment</div>
-            <textarea placeholder="Weapons, armor, adventuring gear, tools, supplies…" data-field="equipment"></textarea>
-          </div>
         </div>
 
         <div class="rp">
@@ -314,16 +462,15 @@
   </div>
 </div>
 
-<div class="sb-card treasure-card">
-  <div class="sb-hdr">Treasure & Coinage</div>
-  <div class="coinsrow">
-    <div class="cbox2"><label>CP</label><input type="text" placeholder="0" data-field="copperPieces"></div>
-    <div class="cbox2"><label>SP</label><input type="text" placeholder="0" data-field="silverPieces"></div>
-    <div class="cbox2"><label>EP</label><input type="text" placeholder="0" data-field="electrumPieces"></div>
-    <div class="cbox2 gold-coin"><label>GP</label><input type="text" placeholder="0" data-field="goldPieces"></div>
-    <div class="cbox2"><label>PP</label><input type="text" placeholder="0" data-field="platinumPieces"></div>
+<div class="sb-card compact-main-coinage-card">
+  <div class="sb-hdr">Coinage</div>
+  <div class="coinsrow compact-old-coinsrow">
+    <div class="cbox2"><label>CP</label><input type="text" placeholder="0" data-coinage-key="copperPieces"></div>
+    <div class="cbox2"><label>SP</label><input type="text" placeholder="0" data-coinage-key="silverPieces"></div>
+    <div class="cbox2"><label>EP</label><input type="text" placeholder="0" data-coinage-key="electrumPieces"></div>
+    <div class="cbox2 gold-coin"><label>GP</label><input type="text" placeholder="0" data-coinage-key="goldPieces"></div>
+    <div class="cbox2"><label>PP</label><input type="text" placeholder="0" data-coinage-key="platinumPieces"></div>
   </div>
-  <textarea placeholder="Notable loot, ship's cargo manifest…" data-field="treasureNotes"></textarea>
 </div>
 
 <div class="sb-card features-traits-main">
@@ -371,33 +518,43 @@
           </div>
         </div>
       </div>
-<div class="sb-card" style="margin-top:12px;">
-  <div class="sb-hdr">Cantrips & Prepared Spells</div>
-
-  <div class="spell-table-wrap">
-  <table class="stbl dynamic-table" id="spellTable">
-    <thead>
-<tr>
-  <th style="width:5%">Lvl</th>
-  <th style="width:18%">Spell Name</th>
-  <th style="width:10%">Cast Time</th>
-  <th style="width:9%">Range</th>
-  <th style="width:4%">C</th>
-  <th style="width:4%">R</th>
-  <th style="width:4%">M</th>
-  <th>Effect</th>
-  <th class="spell-details-heading" style="width:8%"></th>
-  <th class="edit-col" style="width:10%"></th>
-</tr>
-    </thead>
-    <tbody id="sbody"></tbody>
-  </table>
+<div class="sb-card spellbook-card" style="margin-top:12px;">
+  <div class="spellbook-heading-row">
+    <div>
+      <div class="sb-hdr">Cantrips & Prepared Spells</div>
+      <div class="spellbook-subtitle">Build a spellbook from the SRD library or add your own homebrew magic.</div>
+    </div>
   </div>
 
-  <div class="table-actions">
-    <button type="button" class="add-btn" onclick="addSR()">+ Add Spell</button>
-    <button type="button" class="add-btn" onclick="toggleTableEditMode('spellTable', this)">Edit Spells</button>
+  <div class="spell-toolbar">
+    <label><span>Level</span><select id="spellLevelFilter"><option value="all">All Levels</option><option value="C">Cantrips</option><option value="1">Level 1</option><option value="2">Level 2</option><option value="3">Level 3</option><option value="4">Level 4</option><option value="5">Level 5</option><option value="6">Level 6</option><option value="7">Level 7</option><option value="8">Level 8</option><option value="9">Level 9</option></select></label>
+    <label><span>School</span><select id="spellSchoolFilter"><option value="all">All Schools</option><option>Abjuration</option><option>Conjuration</option><option>Divination</option><option>Enchantment</option><option>Evocation</option><option>Illusion</option><option>Necromancy</option><option>Transmutation</option><option value="Homebrew">Homebrew / Unassigned</option></select></label>
+    <label class="spell-search-label"><span>Search</span><input id="spellSearchInput" placeholder="Search your spellbook…"></label>
+    <label class="spell-prepared-filter"><input id="spellPreparedFilter" type="checkbox"><span aria-hidden="true">✦</span><em>Prepared only</em></label>
   </div>
+
+  <div id="spellCardView" class="spell-card-grid"></div>
+
+  <div id="spellListView" class="spell-list-view spell-data-store" hidden aria-hidden="true">
+    <div class="spell-table-wrap">
+      <table class="stbl dynamic-table" id="spellTable">
+        <thead><tr>
+          <th style="width:5%">Lvl</th><th style="width:18%">Spell Name</th><th style="width:10%">Cast Time</th><th style="width:9%">Range</th><th style="width:4%">C</th><th style="width:4%">R</th><th style="width:4%">M</th><th>Effect</th><th class="spell-details-heading" style="width:8%"></th><th class="edit-col" style="width:10%"></th>
+        </tr></thead>
+        <tbody id="sbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="table-actions spellbook-actions">
+    <button type="button" class="add-btn" onclick="openSpellPicker()">+ Add Spell</button>
+    <button type="button" class="add-btn" onclick="addCustomSpell()">+ Create Homebrew Spell</button>
+  </div>
+
+  <details class="srd-license-note">
+    <summary>SRD attribution</summary>
+    <p>This work includes material from the System Reference Document 5.2.1 (“SRD 5.2.1”) by Wizards of the Coast LLC, available at https://www.dndbeyond.com/srd. The SRD 5.2.1 is licensed under the Creative Commons Attribution 4.0 International License, available at https://creativecommons.org/licenses/by/4.0/legalcode.</p>
+  </details>
 </div>
     </div>
 
@@ -406,14 +563,212 @@
         <div class="sb-card"><div class="sb-hdr">Backstory</div><textarea placeholder="Where did your character come from? What drove them to the sea? What unfinished business waits on shore?" style="min-height:240px;" data-field="backstory"></textarea></div>
         <div class="sb-card"><div class="sb-hdr">Personality, Ideals & Bonds</div><textarea placeholder="Personality traits, ideals, bonds, flaws, mannerisms…" style="min-height:240px;" data-field="personalityIdealsBonds"></textarea></div>
       </div>
-      <div class="three-col" style="margin-top:12px;">
+      <div class="two-col" style="margin-top:12px;">
         <div class="sb-card"><div class="sb-hdr">Appearance</div><textarea placeholder="Height, weight, eye color, scars, tattoos, attire…" style="min-height:140px;" data-field="appearance"></textarea></div>
         <div class="sb-card"><div class="sb-hdr">Languages</div><textarea placeholder="Common, Elvish, Aquan, Thieves' Cant…" style="min-height:140px;" data-field="languages"></textarea></div>
-        <div class="sb-card"><div class="sb-hdr">Attunement</div><textarea placeholder="◆ ___________&#10;◆ ___________&#10;◆ ___________" style="min-height:140px;" data-field="attunement"></textarea></div>
       </div>
-      <div class="sb-card" style="margin-top:12px;"><div class="sb-hdr">Inventory</div><textarea placeholder="List your gear, ship equipment, rations, tools, trinkets, and special items…" style="min-height:140px;" data-field="equipmentInventory"></textarea></div>
+      <div class="sb-card journal-notes-card" style="margin-top:12px;">
+        <div class="sb-hdr">Notes</div>
+
+        <div class="journal-note-toolbar">
+          <label>
+            <span>Show</span>
+            <select id="journalNoteFilter">
+              <option value="all">All Categories</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Category</span>
+            <input id="journalNewNoteCategory" list="journalNoteCategoryOptions" placeholder="NPCs, Quests, Lore…">
+          </label>
+
+          <label class="journal-note-title-input">
+            <span>Title</span>
+            <input id="journalNewNoteTitle" placeholder="Captain Elara, Sunken Archive…">
+          </label>
+
+          <button type="button" class="journal-note-add" onclick="addJournalNoteFromToolbar()">+ Add Note</button>
+        </div>
+
+        <datalist id="journalNoteCategoryOptions"></datalist>
+        <div id="journalNotesList" class="journal-notes-list"></div>
+
+        <details class="journal-imported-notes">
+          <summary>Imported / Freeform Notes</summary>
+          <textarea
+            placeholder="Previously saved freeform notes remain available here…"
+            data-field="journalNotes"
+          ></textarea>
+        </details>
+      </div>
     </div>
 
+    <div id="pg-inventory" class="pg">
+      <div class="inventory-page-grid">
+
+        <div class="sb-card inventory-coinage-card">
+          <div class="sb-hdr">Coinage & Gems</div>
+
+          <div class="coinsrow inventory-old-coinsrow">
+            <div class="cbox2"><label>CP</label><input type="text" placeholder="0" data-field="copperPieces" data-coinage-key="copperPieces"></div>
+            <div class="cbox2"><label>SP</label><input type="text" placeholder="0" data-field="silverPieces" data-coinage-key="silverPieces"></div>
+            <div class="cbox2"><label>EP</label><input type="text" placeholder="0" data-field="electrumPieces" data-coinage-key="electrumPieces"></div>
+            <div class="cbox2 gold-coin"><label>GP</label><input type="text" placeholder="0" data-field="goldPieces" data-coinage-key="goldPieces"></div>
+            <div class="cbox2"><label>PP</label><input type="text" placeholder="0" data-field="platinumPieces" data-coinage-key="platinumPieces"></div>
+          </div>
+
+          <details class="inventory-gems-details">
+            <summary class="inventory-subheading">Gems & Valuables</summary>
+            <div class="inventory-gems-section">
+              <table class="inventory-table inventory-gems-table">
+                <thead>
+                  <tr>
+                    <th>Gem / Valuable</th>
+                    <th class="inventory-qty-col">Qty</th>
+                    <th class="inventory-value-col">Value</th>
+                    <th class="inventory-location-col">Location</th>
+                    <th>Notes</th>
+                    <th class="inventory-remove-col"></th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryGemsBody"></tbody>
+              </table>
+              <button type="button" class="inventory-add" onclick="addInventoryGemRow()">+ Add Gem / Valuable</button>
+            </div>
+          </details>
+        </div>
+
+        <div class="sb-card equipped-carried-card">
+          <div class="equipped-card-header">
+            <div class="equipped-card-heading-group">
+              <div class="sb-hdr">Equipped & Carried</div>
+              <div class="equipped-intro">Choose equipped items or carried containers from your inventory.</div>
+            </div>
+          </div>
+
+          <div id="equippedLayout" class="equipped-layout is-list-view equipped-list-only" data-view="list">
+            <div id="equippedListView" class="equipped-list-view"></div>
+
+            <div class="custom-equipped-section">
+              <div class="inventory-subheading">Custom Slots</div>
+              <div id="customEquippedSlots" class="custom-equipped-slots"></div>
+              <button type="button" class="inventory-add" onclick="addCustomEquippedSlot()">+ Add Custom Slot</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-card inventory-filter-card inventory-filter-toolbar">
+          <label>
+            <span>Location</span>
+            <select id="inventoryLocationFilter" class="inventory-filter-select">
+              <option value="all">All Locations</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Type</span>
+            <select id="inventoryTypeFilter" class="inventory-filter-select">
+              <option value="all">All Types</option>
+              <option value="gear">Gear</option>
+              <option value="tool">Tool</option>
+              <option value="magic">Magic Item</option>
+              <option value="consumable">Potion / Consumable</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+
+          <label class="inventory-search-label">
+            <span>Search</span>
+            <input id="inventorySearchInput" class="inventory-search-input" placeholder="Search items…">
+          </label>
+        </div>
+
+        <div class="sb-card inventory-card inventory-unified-card">
+          <div class="sb-hdr">Equipment</div>
+          <div class="inventory-table-wrap">
+            <table class="inventory-table inventory-detail-table inventory-unified-table" id="inventoryItemsTable">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th class="inventory-type-col">Type</th>
+                  <th class="inventory-qty-col">Qty</th>
+                  <th class="inventory-value-col">Value</th>
+                  <th class="inventory-location-col">Location</th>
+                  <th class="inventory-details-col"></th>
+                  <th class="inventory-remove-col"></th>
+                </tr>
+              </thead>
+              <tbody id="inventoryItemsBody"></tbody>
+            </table>
+          </div>
+          <button type="button" class="inventory-add" onclick="addUnifiedInventoryRow()">+ Add Item</button>
+        </div>
+
+        <div class="inventory-support-grid">
+          <div class="sb-card containers-locations-card">
+            <div class="sb-hdr">Containers & Locations</div>
+            <table class="inventory-table storage-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Notes</th>
+                  <th class="inventory-remove-col"></th>
+                </tr>
+              </thead>
+              <tbody id="storageLocationsBody"></tbody>
+            </table>
+            <button type="button" class="inventory-add" onclick="addStorageLocationRow()">+ Add Container / Location</button>
+          </div>
+
+          <div class="sb-card inventory-card inventory-attunement-card">
+            <div class="sb-hdr">Attunement</div>
+            <table class="inventory-table" id="inventoryAttunementTable">
+              <thead>
+                <tr>
+                  <th class="inventory-slot-col">Slot</th>
+                  <th>Item</th>
+                  <th>Notes</th>
+                  <th class="inventory-remove-col"></th>
+                </tr>
+              </thead>
+              <tbody id="inventoryAttunementBody"></tbody>
+            </table>
+            <button type="button" class="inventory-add" onclick="addInventoryAttunementRow()">+ Add Slot</button>
+          </div>
+        </div>
+        <div class="sb-card other-inventory-card">
+          <div class="sb-hdr">Other Inventory</div>
+          <textarea
+            placeholder="Party loot, cargo manifests, unusual trinkets, temporary notes, or anything that does not fit neatly into a table…"
+            data-field="otherInventory"
+          ></textarea>
+        </div>
+
+        <details class="sb-card inventory-legacy-notes">
+          <summary class="sb-hdr">Imported / Freeform Notes</summary>
+          <div class="inventory-notes-grid">
+            <label>
+              <span>Equipment Notes</span>
+              <textarea placeholder="Weapons, armor, adventuring gear, tools, supplies…" data-field="equipment"></textarea>
+            </label>
+            <label>
+              <span>Inventory Notes</span>
+              <textarea placeholder="Previously saved freeform inventory notes…" data-field="equipmentInventory"></textarea>
+            </label>
+            <label>
+              <span>Treasure Notes</span>
+              <textarea placeholder="Notable loot, ship's cargo manifest…" data-field="treasureNotes"></textarea>
+            </label>
+            <label>
+              <span>Legacy Attunement Notes</span>
+              <textarea placeholder="Previously saved freeform attunement notes…" data-field="attunement"></textarea>
+            </label>
+          </div>
+        </details>
+      </div>
+    </div>
     <div class="ftr">
       <div class="ftr-t">✦ Mythical Blue · The Great Depth ✦</div>
       <svg width="100" height="10" viewBox="0 0 100 10"><path d="M0 5 Q10 1 20 5 Q30 9 40 5 Q50 1 60 5 Q70 9 80 5 Q90 1 100 5" stroke="#b8902c" stroke-width="1" fill="none" stroke-linecap="round" opacity=".6" /></svg>
@@ -423,22 +778,43 @@
   </div>
 </div>
 
+<div id="spellPickerModal" class="spell-picker-backdrop" hidden>
+  <section class="spell-picker-modal" role="dialog" aria-modal="true" aria-labelledby="spellPickerTitle">
+    <div class="spell-picker-header">
+      <div><div class="sb-hdr" id="spellPickerTitle">Add Spell</div><p>Choose an SRD or Mythical Blue spell to autofill its structured fields. You can edit the imported snapshot afterward.</p></div>
+      <button type="button" class="spell-picker-close" onclick="closeSpellPicker()" aria-label="Close spell picker">×</button>
+    </div>
+    <div class="spell-picker-toolbar">
+      <label><span>Search</span><input id="spellPickerSearch" placeholder="Mage Armor, Fog Cloud, Healing Word…"></label>
+      <label><span>Level</span><select id="spellPickerLevel"><option value="all">All Levels</option><option value="C">Cantrips</option><option value="1">Level 1</option><option value="2">Level 2</option><option value="3">Level 3</option><option value="4">Level 4</option><option value="5">Level 5</option><option value="6">Level 6</option><option value="7">Level 7</option><option value="8">Level 8</option><option value="9">Level 9</option></select></label>
+      <label><span>School</span><select id="spellPickerSchool"><option value="all">All Schools</option><option>Abjuration</option><option>Conjuration</option><option>Divination</option><option>Enchantment</option><option>Evocation</option><option>Illusion</option><option>Necromancy</option><option>Transmutation</option></select></label>
+      <label><span>Class</span><select id="spellPickerClass"><option value="all">All Classes</option><option>Bard</option><option>Cleric</option><option>Druid</option><option>Paladin</option><option>Ranger</option><option>Sorcerer</option><option>Warlock</option><option>Wizard</option></select></label>
+    </div>
+    <div id="spellPickerResults" class="spell-picker-results"></div>
+    <div class="spell-picker-footer"><span id="spellPickerCount"></span><button type="button" class="add-btn" onclick="addCustomSpell(); closeSpellPicker();">+ Create Homebrew Spell</button></div>
+  </section>
+</div>
+
 <script src="js/conditions.js"></script>
 <script src="js/storage-config.js"></script>
 <script src="js/storage-adapter.js"></script>
+
+<script src="js/core.js"></script>
+<script src="js/tables.js"></script>
+<script src="js/spells-ui.js"></script>
+<script src="js/conditions-ui.js"></script>
+<script src="js/features.js"></script>
+<script src="js/proficiencies.js"></script>
+<script src="js/inventory.js"></script>
+<script src="js/journal-notes.js"></script>
+<script src="js/speeds.js"></script>
+<script src="js/armor-class.js"></script>
+<script src="js/character-overview.js"></script>
+<script src="js/live-sync.js"></script>
 <script src="js/app.js"></script>
+
+<script src="js/campaign-state.js"></script>
 <script src="js/calendar.js"></script>
-<script>
-  // Refresh the calendar bar whenever the character sheet opens.
-  // Navigation on the index page is ephemeral; only the Save button commits.
-  (function () {
-    var _origShowSheet = showSheet;
-    showSheet = function () {
-      _origShowSheet();
-      if (typeof renderCalendarOnSheet === 'function') renderCalendarOnSheet();
-    };
-  }());
-</script>
 <script src="js/accessibility.js"></script>
 </body>
 </html>

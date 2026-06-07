@@ -91,7 +91,8 @@
     "languages": "Common\nAqui (lv 3)",
     "attunement": "",
     "equipmentInventory": "* Herbalism Kit\n* Traveler’s Clothes\n* Bedroll\n* Waterskin\n* Rations (7)\n* Rope\n* Net\n* Cheese\n* Sling\n* Sling Stones (30)\n* Arrows\n* Quiver\n* Druidic Focus (sprig of mistletoe)",
-    "equipment": ""
+    "equipment": "",
+    "otherInventory": ""
   },
   "uiState": {
     "inspiration": false,
@@ -351,6 +352,302 @@
         "Darkvision: 60 ft.",
         "Speed (Swimming): 20–40 ft."
       ]
-    }
+    },
+    "journalNotes": [],
+    "gems": [],
+    "attunementSlots": [
+      {
+        "item": "",
+        "notes": ""
+      },
+      {
+        "item": "",
+        "notes": ""
+      },
+      {
+        "item": "",
+        "notes": ""
+      }
+    ],
+    "storageLocations": [
+      {
+        "id": "storage-f7399244-quiver",
+        "name": "Quiver",
+        "type": "Carried Container",
+        "notes": "Used for arrows."
+      }
+    ],
+    "equippedSlots": {
+      "backStorage": "item-f7399244-quiver-1"
+    },
+    "customEquippedSlots": [],
+    "inventoryView": "list",
+    "inventoryItems": [
+      {
+        "id": "item-f7399244-herbalism-kit-1",
+        "name": "Herbalism Kit",
+        "type": "tool",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-traveler-s-clothes-1",
+        "name": "Traveler’s Clothes",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-bedroll-1",
+        "name": "Bedroll",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-waterskin-1",
+        "name": "Waterskin",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-rations-1",
+        "name": "Rations",
+        "type": "consumable",
+        "qty": "7",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-rope-1",
+        "name": "Rope",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-net-1",
+        "name": "Net",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-cheese-1",
+        "name": "Cheese",
+        "type": "consumable",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-sling-1",
+        "name": "Sling",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-sling-stones-1",
+        "name": "Sling Stones",
+        "type": "gear",
+        "qty": "30",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-arrows-1",
+        "name": "Arrows",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-f7399244-quiver",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-quiver-1",
+        "name": "Quiver",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "worn",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-druidic-focus-sprig-of-mistletoe-1",
+        "name": "Druidic Focus (sprig of mistletoe)",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      }
+    ],
+    "inventoryEquipment": [
+      {
+        "id": "item-f7399244-herbalism-kit-1",
+        "name": "Herbalism Kit",
+        "type": "tool",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-traveler-s-clothes-1",
+        "name": "Traveler’s Clothes",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-bedroll-1",
+        "name": "Bedroll",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-waterskin-1",
+        "name": "Waterskin",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-rope-1",
+        "name": "Rope",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-net-1",
+        "name": "Net",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-sling-1",
+        "name": "Sling",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-sling-stones-1",
+        "name": "Sling Stones",
+        "type": "gear",
+        "qty": "30",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-arrows-1",
+        "name": "Arrows",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-f7399244-quiver",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-quiver-1",
+        "name": "Quiver",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "worn",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-druidic-focus-sprig-of-mistletoe-1",
+        "name": "Druidic Focus (sprig of mistletoe)",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      }
+    ],
+    "magicItems": [],
+    "consumables": [
+      {
+        "id": "item-f7399244-rations-1",
+        "name": "Rations",
+        "type": "consumable",
+        "qty": "7",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-f7399244-cheese-1",
+        "name": "Cheese",
+        "type": "consumable",
+        "qty": "",
+        "value": "",
+        "location": "",
+        "details": "",
+        "open": false
+      }
+    ]
   }
 }

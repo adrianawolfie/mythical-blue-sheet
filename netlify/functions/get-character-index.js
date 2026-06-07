@@ -88,7 +88,11 @@ exports.handler = async () => {
     const validCharacters = characters
       .filter(Boolean)
       .sort((a, b) => {
-        return new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0);
+        return String(a.name || "").localeCompare(
+          String(b.name || ""),
+          undefined,
+          { sensitivity: "base" }
+        );
       });
 
     return {
