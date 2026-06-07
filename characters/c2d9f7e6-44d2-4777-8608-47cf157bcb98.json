@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "c2d9f7e6-44d2-4777-8608-47cf157bcb98",
-  "updatedAt": "2026-06-07T07:20:06.185Z",
+  "updatedAt": "2026-06-07T07:21:13.491Z",
   "summary": {
     "name": "Crowley",
     "armorClass": "15",
@@ -324,7 +324,11 @@
         "Light Armour"
       ],
       "weapons": [
-        "Simple Weapons, Hand Crossbows, Longswords, Rapiers, Shortswords"
+        "Simple Weapons",
+        "Hand Crossbows",
+        "Longswords",
+        "Rapiers",
+        "Shortswords"
       ],
       "tools": [
         "Cook's Utensils"
