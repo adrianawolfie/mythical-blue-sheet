@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "f7399244-4d80-4b0d-9dd1-c2d4ea53d26a",
-  "updatedAt": "2026-06-08T12:16:17.928Z",
+  "updatedAt": "2026-06-08T12:16:58.558Z",
   "summary": {
     "name": "Mara Flint",
     "armorClass": "15",
@@ -603,7 +603,7 @@
         "type": "gear",
         "qty": "",
         "value": "2 GP",
-        "location": "",
+        "location": "worn",
         "details": "Adventuring Gear · Weight: 4 lb.\n\nTraveler’s Clothes are resilient garments designed for travel in various environments.\n\nSource: SRD 5.2.1",
         "open": false
       },
@@ -715,7 +715,7 @@
         "type": "gear",
         "qty": "",
         "value": "2 GP",
-        "location": "",
+        "location": "worn",
         "details": "Adventuring Gear · Weight: 4 lb.\n\nTraveler’s Clothes are resilient garments designed for travel in various environments.\n\nSource: SRD 5.2.1",
         "open": false
       },
@@ -781,7 +781,7 @@
       "neck": "",
       "cape": "",
       "armor": "",
-      "clothing": "",
+      "clothing": "item-f7399244-traveler-s-clothes-1",
       "mainHand": "",
       "offHand": "",
       "ring1": "",
