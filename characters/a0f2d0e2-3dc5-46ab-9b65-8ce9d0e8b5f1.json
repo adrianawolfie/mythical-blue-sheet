@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "a0f2d0e2-3dc5-46ab-9b65-8ce9d0e8b5f1",
-  "updatedAt": "2026-06-06T23:14:48.987Z",
+  "updatedAt": "2026-06-08T12:10:42.206Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "13",
@@ -14,12 +14,12 @@
   },
   "fields": {
     "characterName": "Nimue",
-    "background": "Golden Goose",
-    "classLevel": "Sorcerer 2",
-    "experience": "",
     "speciesRace": "Aeternian",
-    "subclass": "Thalassic",
+    "background": "Golden Goose",
     "alignment": "",
+    "level": "2",
+    "class": "Sorcerer",
+    "subclass": "Thalassic",
     "initiative": "+3",
     "speed": "30",
     "armorClass": "13",
@@ -67,12 +67,6 @@
     "persuasion": "+6",
     "hitDice": "2d6",
     "hitDiceSpent": "",
-    "copperPieces": "",
-    "silverPieces": "",
-    "electrumPieces": "",
-    "goldPieces": "28",
-    "platinumPieces": "",
-    "treasureNotes": "Calligrapher's Supplies\nFine Clothes\nBook about Thalassic Mythology\nArcane Focus (crystal)\nDungeoneer's Pack",
     "spellcastingAbility": "cha",
     "spellSaveDc": "14",
     "spellAttackBonus": "+6",
@@ -89,10 +83,17 @@
     "personalityIdealsBonds": "Zodiac: Sahet - the Twin Koi",
     "appearance": "Violet Eyes, Blue Hair",
     "languages": "Common\nAequor\n",
-    "attunement": "",
-    "equipmentInventory": "Spear, 2 Daggers, Backpack, Caltrops, Crowbar, 2 flasks of Oil, 10 days of Rations, Rope, Tinderbox, 10 Torches, and Waterskin.",
+    "journalNotes": "",
+    "copperPieces": "",
+    "silverPieces": "",
+    "electrumPieces": "",
+    "goldPieces": "28",
+    "platinumPieces": "",
+    "otherInventory": "",
     "equipment": "",
-    "otherInventory": ""
+    "equipmentInventory": "Spear, 2 Daggers, Backpack, Caltrops, Crowbar, 2 flasks of Oil, 10 days of Rations, Rope, Tinderbox, 10 Torches, and Waterskin.",
+    "treasureNotes": "Calligrapher's Supplies\nFine Clothes\nBook about Thalassic Mythology\nArcane Focus (crystal)\nDungeoneer's Pack",
+    "attunement": ""
   },
   "uiState": {
     "inspiration": true,
@@ -147,7 +148,10 @@
         "hasResource": false,
         "resource": "",
         "details": "Whenever you make a critical hit, you can take or give a heroic inspiration. Giving can only be done to allies within 30 ft of you.",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "category": ""
       },
       {
         "name": "Goose: Corrupted Egg",
@@ -155,7 +159,10 @@
         "hasResource": true,
         "resource": "1/1 Long Rest",
         "details": "When you are equal to or below 1/2th of health, you explode in frustration. Unleashing a burst of energy with a 15 ft radius around you (once per long rest). Those within your vicinity (allies and enemies alike) will need to make a dexterity saving throw (DC 15). Upon failure, they’ll be pushed 10 ft away and take 2D8 force damage. Upon a successful save, they’ll only take half the damage.",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "category": ""
       },
       {
         "name": "Amphibious",
@@ -163,7 +170,10 @@
         "hasResource": false,
         "resource": "",
         "details": "Aeternians have grown gills, webbing between their phalanges, and translucent pearl-like scales which become  \nvisible underwater; allowing them to breathe and swim underwater no different than on land.  ",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "category": ""
       },
       {
         "name": "Cold Climate Adept",
@@ -171,7 +181,10 @@
         "hasResource": false,
         "resource": "",
         "details": "Aeternians have adapted to the cold of the deep, allowing them to become unbothered by cold climate  \ntemperatures, though they may require more hydration in warmer climates.  ",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "category": ""
       },
       {
         "name": "Bioluminescence",
@@ -179,7 +192,10 @@
         "hasResource": false,
         "resource": "",
         "details": "Before the Aeternians had discovered how to light their underwater Queendom, they themselves emitted light  in darkness through bioluminescence.  \n\nWhen in natural darkness, the scales of the Aeternians softly exude a dim light. On land their scales are less  on the surface of their skin; therefore they only emit dim light for 5 ft, while underwater their scales surface,  due to which the Aeternians’ bioluminescence is strengthened to emitting dim light for 15 ft. The  bioluminescence does not shine within magical darkness.  \n\nThe bioluminescence effect comes from releasing the stored light within the scales of the Aeternian.  \nGenerally, 6–8 hours of exposure to a light source is required to store enough light to generate the effect.  As such, in covert situations, Aeternians who do not wish to shed light will ensure to either not be exposed  to a light source, or to fully cover themselves. However, the lack of natural light is regarded as an indication  of shady business; an Aeternian who does not emit bioluminescence is commonly viewed with suspicion  \nby others of their kin. ",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "category": ""
       },
       {
         "name": "Aquatic Affiliation",
@@ -187,7 +203,10 @@
         "hasResource": false,
         "resource": "",
         "details": "Due to centuries of living below the water surface, the Aeternians have become adept in communing and  handling aquatic beasts.  ",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "category": ""
       },
       {
         "name": "Siren's Call",
@@ -195,7 +214,10 @@
         "hasResource": true,
         "resource": "2/2 Long Rest",
         "details": "The geographical change of the Aeternia Queendom came with new forms of danger. However, due to their  brilliant minds and abundant forms of art, they quickly became connected to the Sirens, a species that are  natural denizens of the sea.  \n\nThrough them they learned the Siren's Call, a method to warn others while forcing their assailants to move  away from them. They can cast this spell of warding a number of times equal to their proficiency bonus  per long rest.  \n\nIntelligence, Wisdom, or Charisma is their spellcasting ability for this trait (choose when you select this race). -> Charisma",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "category": ""
       },
       {
         "name": "Versatile: Cleric Initiate",
@@ -203,7 +225,10 @@
         "hasResource": true,
         "resource": "1/1 Long Rest",
         "details": "Aeternians are as versatile as their surface-born counterparts: humans. Depending on their origin they gain  a matching feat (gain an Origin feat of choice). -> Cleric Initiate\n\nTwo Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat). -> Charisma; Guidance & Spare the Dying\n\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have. -> Healing Word\n\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\n\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time.",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "category": ""
       },
       {
         "name": "Resourceful",
@@ -211,7 +236,10 @@
         "hasResource": true,
         "resource": "1/1 Long Rest",
         "details": "Similar to their surface-born counterparts (humans), Aeternians gain Heroic Inspiration whenever they finish  a Long Rest.",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "category": ""
       },
       {
         "name": "Innate Sorcery",
@@ -219,7 +247,10 @@
         "hasResource": true,
         "resource": "2/2 Long Rest",
         "details": "An event in your past left an indelible mark on you, infusing you with simmering magic. As a Bonus Action, you can unleash that magic for 1 minute, during which you gain the following benefits:\n\nThe spell save DC of your Sorcerer spells increases by 1.\nYou have Advantage on the attack rolls of Sorcerer spells you cast.\nYou can use this feature twice, and you regain all expended uses of it when you finish a Long Rest.",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "category": ""
       },
       {
         "name": "Font of Magic",
@@ -227,7 +258,10 @@
         "hasResource": true,
         "resource": "2/2 Long Rest",
         "details": "You can tap into the wellspring of magic within yourself. This wellspring is represented by Sorcery Points, which allow you to create a variety of magical effects.\n\nYou have 2 Sorcery Points, and you gain more as you reach higher levels, as shown in the Sorcery Points column of the Sorcerer Features table. You can’t have more Sorcery Points than the number shown in the table for your level. You regain all expended Sorcery Points when you finish a Long Rest.\n\nYou can use your Sorcery Points to fuel the options below, along with other features, such as Metamagic, that use those points.\n\nConverting Spell Slots to Sorcery Points. You can expend a spell slot to gain a number of Sorcery Points equal to the slot’s level (no action required).\n\nCreating Spell Slots. As a Bonus Action, you can transform unexpended Sorcery Points into one spell slot. The Creating Spell Slots table shows the cost of creating a spell slot of a given level, and it lists the minimum Sorcerer level you must be to create a slot. You can create a spell slot no higher than level 5.\n\nAny spell slot you create with this feature vanishes when you finish a Long Rest.\n\nCreating Spell Slots\nSpell Slot Level\tSorcery Point Cost\tMin. Sorcerer Level\n1\t2\t2\n2\t3\t3\n3\t5\t5\n4\t6\t7\n5\t7\t9",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "category": ""
       },
       {
         "name": "Metamagic",
@@ -235,7 +269,10 @@
         "hasResource": false,
         "resource": "",
         "details": "Heightened: Cost: 2 Sorcery Points\nWhen you cast a spell that forces a creature to make a saving throw, you can spend 2 Sorcery Points to give one target of the spell Disadvantage on saves against the spell.\n\nTwinned: Source: Cost: 1 Sorcery Point\nWhen you cast a spell, such as Charm Person, that can be cast with a higher-level spell slot to target an additional creature, you can spend 1 Sorcery Point to increase the spell’s effective level by 1.\n\nBecause your magic flows from within, you can alter your spells to suit your needs; you gain two Metamagic options of your choice from “Metamagic Options” later in this class’s description. You use the chosen options to temporarily modify spells you cast. To use an option, you must spend the number of Sorcery Points that it costs.\n\nYou can use only one Metamagic option on a spell when you cast it unless otherwise noted in one of those options.\n\nWhenever you gain a Sorcerer level, you can replace one of your Metamagic options with one you don’t know. You gain two more options at Sorcerer level 10 and two more at Sorcerer level 17.",
-        "open": true
+        "open": true,
+        "sourceId": "",
+        "source": "",
+        "category": ""
       }
     ],
     "weapons": [
@@ -287,7 +324,19 @@
         "material": false,
         "effect": "1d4 to any ability check for 1 min",
         "details": "Divination Cantrip (Artificer, Cleric, Druid)\n\nCasting Time: Action\nRange: Touch\nComponents: V, S\nDuration: Concentration, up to 1 minute\n\nYou touch a willing creature and choose a skill. Until the spell ends, the creature adds 1d4 to any ability check using the chosen skill.",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "school": "Homebrew",
+        "duration": "",
+        "componentsText": "",
+        "classes": "",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
       },
       {
         "level": "C",
@@ -299,7 +348,19 @@
         "material": false,
         "effect": "A creature with 0 hit points becomes stable",
         "details": "Necromancy Cantrip (Artificer, Cleric, Druid)\n\nCasting Time: Action\nRange: 15 feet\nComponents: V, S\nDuration: Instantaneous\n\nChoose a creature within range that has 0 Hit Points and isn’t dead. The creature becomes Stable.\n\nCantrip Upgrade. The range doubles when you reach levels 5 (30 feet), 11 (60 feet), and 17 (120 feet).",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "school": "Homebrew",
+        "duration": "",
+        "componentsText": "",
+        "classes": "",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
       },
       {
         "level": "C",
@@ -311,7 +372,19 @@
         "material": false,
         "effect": "1d8 type of choice. Add d8 if you roll an 8. ",
         "details": "Evocation Cantrip (Sorcerer)\n\nCasting Time: Action\nRange: 120 feet\nComponents: V, S\nDuration: Instantaneous\n\nYou cast sorcerous energy at one creature or object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d8 damage of a type you choose: Acid, Cold, Fire, Lightning, Poison, Psychic, or Thunder.\n\nIf you roll an 8 on a d8 for this spell, you can roll another d8, and add it to the damage. When you cast this spell, the maximum number of these d8s you can add to the spell’s damage equals your spellcasting ability modifier.\n\nCantrip Upgrade. The damage increases by 1d8 when you reach levels 5 (2d8), 11 (3d8), and 17 (4d8).",
-        "open": false
+        "open": false,
+        "sourceId": "srd-sorcerous-burst",
+        "source": "SRD 5.2.1",
+        "school": "Evocation",
+        "duration": "Instantaneous",
+        "componentsText": "V, S",
+        "classes": "Sorcerer",
+        "attackSave": "Spell Attack",
+        "damageHealing": "1d8 / 2d8 / 3d8",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
       },
       {
         "level": "C",
@@ -323,7 +396,19 @@
         "material": false,
         "effect": "Control a spectral hand",
         "details": "Conjuration Cantrip (Artificer, Bard, Sorcerer, Warlock, Wizard)\n\nCasting Time: Action\nRange: 30 feet\nComponents: V, S\nDuration: 1 minute\n\nA spectral, floating hand appears at a point you choose within range. The hand lasts for the duration. The hand vanishes if it is ever more than 30 feet away from you or if you cast this spell again.\n\nWhen you cast the spell, you can use the hand to manipulate an object, open an unlocked door or container, stow or retrieve an item from an open container, or pour the contents out of a vial.\n\nAs a Magic action on your later turns, you can control the hand thus again. As part of that action, you can move the hand up to 30 feet.\n\nThe hand can’t attack, activate magic items, or carry more than 10 pounds.",
-        "open": false
+        "open": false,
+        "sourceId": "srd-mage-hand",
+        "source": "SRD 5.2.1",
+        "school": "Conjuration",
+        "duration": "1 minute",
+        "componentsText": "V, S",
+        "classes": "Bard, Sorcerer, Warlock, Wizard",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
       },
       {
         "level": "C",
@@ -335,7 +420,19 @@
         "material": true,
         "effect": "Repair a break or tear no larger than 1 foot",
         "details": "Transmutation Cantrip (Bard, Cleric, Druid, Sorcerer, Wizard)\n\nCasting Time: 1 minute\nRange: Touch\nComponents: V, S, M (two lodestones)\nDuration: Instantaneous\n\nThis spell repairs a single break or tear in an object you touch, such as a broken chain link, two halves of a broken key, a torn cloak, or a leaking wineskin. As long as the break or tear is no larger than 1 foot in any dimension, you mend it, leaving no trace of the former damage.\n\nThis spell can physically repair a magic item, but it can’t restore magic to such an object.",
-        "open": false
+        "open": false,
+        "sourceId": "srd-mending",
+        "source": "SRD 5.2.1",
+        "school": "Transmutation",
+        "duration": "Instantaneous",
+        "componentsText": "V, S, M (two lodestones)",
+        "classes": "Bard, Cleric, Druid, Sorcerer, Wizard",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
       },
       {
         "level": "C",
@@ -347,7 +444,19 @@
         "material": false,
         "effect": "Create a magical effect",
         "details": "Transmutation Cantrip (Artificer, Bard, Sorcerer, Warlock, Wizard)\n\nCasting Time: Action\nRange: 10 feet\nComponents: V, S\nDuration: Up to 1 hour\n\nYou create a magical effect within range. Choose the effect from the options below. If you cast this spell multiple times, you can have up to three of its non-instantaneous effects active at a time.\n\nSensory Effect. You create an instantaneous, harmless sensory effect, such as a shower of sparks, a puff of wind, faint musical notes, or an odd odor.\n\nFire Play. You instantaneously light or snuff out a candle, a torch, or a small campfire.\n\nClean or Soil. You instantaneously clean or soil an object no larger than 1 cubic foot.\n\nMinor Sensation. You chill, warm, or flavor up to 1 cubic foot of nonliving material for 1 hour.\n\nMagic Mark. You make a color, a small mark, or a symbol appear on an object or a surface for 1 hour.\n\nMinor Creation. You create a nonmagical trinket or an illusory image that can fit in your hand. It lasts until the end of your next turn. A trinket can deal no damage and has no monetary worth.",
-        "open": false
+        "open": false,
+        "sourceId": "srd-prestidigitation",
+        "source": "SRD 5.2.1",
+        "school": "Transmutation",
+        "duration": "Up to 1 hour",
+        "componentsText": "V, S",
+        "classes": "Bard, Sorcerer, Warlock, Wizard",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
       },
       {
         "level": "1",
@@ -359,7 +468,19 @@
         "material": false,
         "effect": "Con save; 15/20 ft cone of 2d8 thunder and pushed 15/20 ft",
         "details": "Spell Level: 1st\nCasting Time: 1 Action\nRange/Area: Self — 15 ft. cone\nComponents: V, S\n\nDuration: Instantaneous\nSchool: Evocation\nAttack/Save: Constitution Save\nDamage/Effect: Thunder\n\nDescription\nThrough the echoes, your call for help shall be heard. A defensive spell created by the magic researchers of the Aeternia kingdom. As you cry for help, you forcefully push away those who mean you harm. However, be mindful, as sound transfers differently under water.\n\nOn Land\nEach creature within a 15 ft. cone makes a Constitution saving throw. On a failed save, they take 2d8 Thunder damage and are pushed away from you by 5 ft. On a successful save, they take half the damage and are not pushed.\n\nYour call travels over 100 ft. on land.\n\nUnder Water\nEach creature within a 20 ft. cone makes a Constitution saving throw. On a failed save, they take 2d8 Thunder damage and are pushed away from you by 15 ft. On a successful save, they take half the damage and are not pushed.\n\nYour call travels over 300 ft. through water.\n\nHigher-Level Spell Slot\nThe damage increases by 1d8 for each spell slot level above 1. ",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "school": "Homebrew",
+        "duration": "",
+        "componentsText": "",
+        "classes": "",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
       },
       {
         "level": "1",
@@ -371,7 +492,19 @@
         "material": false,
         "effect": "2d4+4 healing",
         "details": "Level 1 Abjuration (Bard, Cleric, Druid)\n\nCasting Time: Bonus Action\nRange: 60 feet\nComponents: V\nDuration: Instantaneous\n\nA creature of your choice that you can see within range regains Hit Points equal to 2d4 plus your spellcasting ability modifier.\n\nUsing a Higher-Level Spell Slot. The healing increases by 2d4 for each spell slot level above 1.",
-        "open": false
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "school": "Homebrew",
+        "duration": "",
+        "componentsText": "",
+        "classes": "",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
       },
       {
         "level": "1",
@@ -383,7 +516,19 @@
         "material": true,
         "effect": "Wis save; cone of 1d6 psychic damage and blinded",
         "details": "Spell Level: 1st\nCasting Time: 1 Action\nRange/Area: Self — 15 ft. cone\nComponents: V, S, M*\n*A small ring\n\nDuration: Instantaneous\nSchool: Evocation\nAttack/Save: Wisdom Save\nDamage/Effect: Psychic\n\nDescription\nYou spray a dazzling collection of mystifying bubbles from your hands. Each creature in a 15 ft. cone, originating from you, must succeed on a Wisdom saving throw or become blinded until the end of your next turn. In addition, upon a failed save, the creatures take 1d6 Psychic damage, or half as much on a successful save.\n\nNatural fires within the cone will be extinguished.\n\nHigher-Level Spell Slot\nThe damage increases by 1d6 for each spell slot level above 1.",
-        "open": false
+        "open": false,
+        "sourceId": "mb-bubble-spray",
+        "source": "Mythical Blue - The Great Depth",
+        "school": "Evocation",
+        "duration": "Instantaneous",
+        "componentsText": "V, S, M (a small ring)",
+        "classes": "Sorcerer",
+        "attackSave": "WIS Save",
+        "damageHealing": "1d6",
+        "damageType": "Psychic",
+        "areaShape": "Cone",
+        "areaSize": "15 ft",
+        "prepared": false
       },
       {
         "level": "1",
@@ -395,7 +540,19 @@
         "material": true,
         "effect": "Dex save; 3d8/3d10 cold damage and target falls prone/is pushed downward",
         "details": "Spell Level: 1st\nCasting Time: 1 Action\nRange/Area: 90 ft. — 5 ft. square\nComponents: S, M*\n*A small vial of water\n\nDuration: Instantaneous\nSchool: Conjuration\nAttack/Save: Dexterity Save\nDamage/Effect: Cold & Control\n\nDescription\nAs you spin around your vial of water, a whirlpool comes to be. Uncorking the vial will release said whirlpool upon a target within range (90 ft.). The target must make a Dexterity saving throw or experience the full effect of the spell. The effect of the spell differs depending on whether the target is on the surface or below it:\n\nOn Land\nThe target takes 3d8 cold damage and falls prone. On a successful save, the target takes half the damage and does not fall prone.\n\nUnder Water\nThe target takes 3d10 cold damage and is pushed downward by 30 ft. On a successful save, the target takes half the damage and is not pushed downward.\n\nHigher-Level Spell Slot\nFor each spell slot above level 1, an extra whirlpool is created. ",
-        "open": false
+        "open": false,
+        "sourceId": "mb-whirlpool",
+        "source": "Mythical Blue - The Great Depth",
+        "school": "Conjuration",
+        "duration": "Instantaneous",
+        "componentsText": "S, M (a small vial of water)",
+        "classes": "Sorcerer",
+        "attackSave": "DEX Save",
+        "damageHealing": "3d8 land / 3d10 underwater",
+        "damageType": "Cold & Control",
+        "areaShape": "Square",
+        "areaSize": "5 ft",
+        "prepared": false
       },
       {
         "level": "1",
@@ -407,7 +564,19 @@
         "material": false,
         "effect": "20 ft radius sphere of heavily obscured fog for 1hr.",
         "details": "Level 1 Conjuration (Druid, Ranger, Sorcerer, Wizard)\n\nCasting Time: Action\nRange: 120 feet\nComponents: V, S\nDuration: Concentration, up to 1 hour\n\nYou create a 20-foot-radius Sphere of fog centered on a point within range. The Sphere is Heavily Obscured. It lasts for the duration or until a strong wind (such as one created by Gust of Wind) disperses it.\n\nUsing a Higher-Level Spell Slot. The fog’s radius increases by 20 feet for each spell slot level above 1.",
-        "open": false
+        "open": false,
+        "sourceId": "srd-fog-cloud",
+        "source": "SRD 5.2.1",
+        "school": "Conjuration",
+        "duration": "Concentration, up to 1 hour",
+        "componentsText": "V, S",
+        "classes": "Druid, Ranger, Sorcerer, Wizard",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "Sphere",
+        "areaSize": "20 ft radius",
+        "prepared": false
       },
       {
         "level": "1",
@@ -419,7 +588,19 @@
         "material": true,
         "effect": "AC13+Dex 8hrs. ",
         "details": "Level 1 Abjuration (Sorcerer, Wizard)\n\nCasting Time: Action\nRange: Touch\nComponents: V, S, M (a piece of cured leather)\nDuration: 8 hours\n\nYou touch a willing creature who isn’t wearing armor. Until the spell ends, the target’s base AC becomes 13 plus its Dexterity modifier. The spell ends early if the target dons armor.",
-        "open": false
+        "open": false,
+        "sourceId": "srd-mage-armor",
+        "source": "SRD 5.2.1",
+        "school": "Abjuration",
+        "duration": "8 hours",
+        "componentsText": "V, S, M (a piece of cured leather)",
+        "classes": "Sorcerer, Wizard",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
       }
     ],
     "proficiencies": {
@@ -431,11 +612,317 @@
         "Calligrapher's Supplies"
       ],
       "other": [
-        "Darkvision: 60ft",
-        "Swim Speed: 30ft"
+        "Darkvision: 60ft"
       ]
     },
     "journalNotes": [],
+    "inventoryItems": [
+      {
+        "id": "item-a0f2d0e2-arcane-focus-crystal-1",
+        "name": "Arcane Focus (crystal)",
+        "type": "gear",
+        "qty": "",
+        "value": "Varies",
+        "location": "storage:storage-d6c96be4-95d9-4754-8553-5e657a7eb252",
+        "details": "Adventuring Gear · Weight: Varies\n\nAn Arcane Focus takes one of the forms in the Arcane Focuses table and is bejeweled or carved to channel arcane magic. A Sorcerer, Warlock, or Wizard can use such an item as a Spellcasting Focus. Focus Weight Cost Crystal 1 lb. 10 GP Orb 3 lb. 20 GP Rod 2 lb. 10 GP Staff (also a Quarterstaff) 4 lb. 5 GP Wand 1 lb. 10 GP\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-backpack-1",
+        "name": "Backpack",
+        "type": "gear",
+        "qty": "",
+        "value": "2 GP",
+        "location": "worn",
+        "details": "Adventuring Gear · Weight: 5 lb.\n\nA Backpack holds up to 30 pounds within 1 cubic foot. It can also serve as a saddlebag.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-book-about-thalassic-mythology-1",
+        "name": "Book about Thalassic Mythology",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-calligrapher-s-supplies-1",
+        "name": "Calligrapher's Supplies",
+        "type": "tool",
+        "qty": "",
+        "value": "10 GP",
+        "location": "storage:storage-d6c96be4-95d9-4754-8553-5e657a7eb252",
+        "details": "Tool\n\nAbility: Dexterity Weight: 5 lb. Utilize: Write text with impressive flourishes that guard against forgery (DC 15) Craft: Ink, Spell Scroll\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-caltrops-1",
+        "name": "Caltrops",
+        "type": "gear",
+        "qty": "2",
+        "value": "1 GP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 2 lb.\n\nAs a Utilize action, you can spread Caltrops from their bag to cover a 5-footsquare area within 5 feet of yourself. A creature that enters this area for the first time on a turn must succeed on a DC 15 Dexterity saving throw or take 1 Piercing damage and have its Speed reduced to 0 until the start of its next turn. It takes 10 minutes to recover the Caltrops.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-crowbar-1",
+        "name": "Crowbar",
+        "type": "gear",
+        "qty": "",
+        "value": "2 GP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 5 lb.\n\nUsing a Crowbar gives you Advantage on Strength checks where the Crowbar’s leverage can be applied.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-daggers-1",
+        "name": "Dagger",
+        "type": "gear",
+        "qty": "2",
+        "value": "2 GP",
+        "location": "worn",
+        "details": "Weapon · Weight: 1 lb.\n\n1d4 Piercing; Finesse, Light, Thrown (Range 20/60); Nick\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-fine-clothes-1",
+        "name": "Fine Clothes",
+        "type": "gear",
+        "qty": "1",
+        "value": "15 GP",
+        "location": "storage:storage-d6c96be4-95d9-4754-8553-5e657a7eb252",
+        "details": "Adventuring Gear · Weight: 6 lb.\n\nFine Clothes are made of expensive fabrics and adorned with expertly crafted details. Some events and locations admit only people wearing these clothes.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-flasks-of-oil-1",
+        "name": "Flasks of Oil",
+        "type": "consumable",
+        "qty": "2",
+        "value": "1 SP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 1 lb.\n\nYou can douse a creature, object, or space with Oil or use it as fuel, as detailed below. Dousing a Creature or an Object. When you take the Attack action, you can replace one of your attacks with throwing an Oil flask. Target one creature or object within 20 feet of yourself. The target must succeed on a Dexterity saving throw (DC 8 plus your Dexterity modifier and Proficiency Bonus) or be covered in oil. If the target takes Fire damage before the oil dries (after 1 minute), the target takes an extra 5 Fire damage from burning oil. Dousing a Space. You can take the Utilize action to pour an Oil flask on level ground to cover a 5-footsquare area within 5 feet of yourself. If lit, the oil burns until the end of the turn 2 rounds from when the oil was lit (or 12 seconds) and deals 5 Fire damage to any creature that enters the area or ends its turn there. A creature can take this damage only once per turn. 99 Fuel. Oil serves as fuel for Lamps and Lanterns. Once lit, a flask of Oil burns for 6 hours in a Lamp or Lantern. That duration doesn’t need to be consecutive; you can extinguish the burning Oil (as a Utilize action) and rekindle it again until it has burned for a total of 6 hours.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-rations-1",
+        "name": "Rations",
+        "type": "consumable",
+        "qty": "10",
+        "value": "5 SP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 2 lb.\n\nRations consist of travelready food, including jerky, dried fruit, hardtack, and nuts. See “Malnutrition” in “Rules Glossary” for the risks of not eating.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-rope-1",
+        "name": "Rope",
+        "type": "gear",
+        "qty": "1",
+        "value": "1 GP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 5 lb.\n\nAs a Utilize action, you can tie a knot with Rope if you succeed on a DC 10 Dexterity (Sleight of Hand) check. The Rope can be burst with a successful DC 20 Strength (Athletics) check. You can bind an unwilling creature with the Rope only if the creature has the Grappled, Incapacitated, or Restrained condition. If the creature’s legs are bound, the creature has the Restrained condition until it escapes. Escaping the Rope requires the creature to make a successful DC 15 Dexterity (Acrobatics) check as an action.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-spear-1",
+        "name": "Spear",
+        "type": "gear",
+        "qty": "",
+        "value": "1 GP",
+        "location": "storage:storage-d6c96be4-95d9-4754-8553-5e657a7eb252",
+        "details": "Weapon · Weight: 3 lb.\n\n1d6 Piercing; Thrown (Range 20/60), Versatile (1d8); Sap\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-tinderbox-1",
+        "name": "Tinderbox",
+        "type": "gear",
+        "qty": "1",
+        "value": "5 SP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 1 lb.\n\nA Tinderbox is a small container holding flint, fire steel, and tinder (usually dry cloth soaked in light oil) used to kindle a fire. Using it to light a Candle, Lamp, Lantern, or Torch—or anything else with exposed fuel—takes a Bonus Action. Lighting any other fire takes 1 minute.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-torches-1",
+        "name": "Torches",
+        "type": "gear",
+        "qty": "10",
+        "value": "1 CP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 1 lb.\n\nA Torch burns for 1 hour, casting Bright Light in a 20-foot radius and Dim Light for an additional 20 feet. When you take the Attack action, you can attack with the Torch, using it as a Simple Melee weapon. On a hit, the target takes 1 Fire damage.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-waterskin-1",
+        "name": "Waterskin",
+        "type": "gear",
+        "qty": "1",
+        "value": "2 SP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 5 lb. (full)\n\nA Waterskin holds up to 4 pints. If you don’t drink sufficient water, you risk dehydration (see “Rules Glossary”). A mount can help you move more quickly through the wilderness, but its primary purpose is to carry gear that would otherwise slow you down. The Mounts and Other Animals table shows each animal’s carrying capacity. See “Monsters” for the animals’ stat blocks. An animal pulling a carriage, cart, chariot, sled, or wagon can move weight up to five times its base carrying capacity, including the weight of the vehicle. If multiple animals pull the same vehicle, add their carrying capacities together. Barding is armor designed for a mount. Any type of armor on the Armor table in “Equipment” can be purchased as barding. The cost is four times the normal cost, and it weighs twice as much. A saddle comes with a bit, a bridle, reins, and any other equipment needed to use the saddle. A Military Saddle gives Advantage on any ability check you make to remain mounted. An Exotic Saddle is required for riding an aquatic or a flying mount. Mounts and Other Animals Item Carrying Capacity Cost Camel 450 lb. 50 GP Elephant 1,320 lb. 200 GP Horse, Draft 540 lb. 50 GP Horse, Riding 480 lb. 75 GP Mastiff 195 lb. 25 GP Mule 420 lb. 8 GP Pony 225 lb. 30 GP Warhorse 540 lb. 400 GP Item Weight Cost Carriage 600 lb. 100 GP Cart 200 lb. 15 GP Chariot 100 lb. 250 GP Feed per day 10 lb. 5 CP Saddle Exotic 40 lb. 60 GP Military 30 lb. 20 GP Riding 25 lb. 10 GP Sled 300 lb. 20 GP Stabling per day — 5 SP Wagon 400 lb. 35 GP The Airborne and Waterborne Vehicles table provides statistics for various types of large vehicles. The following notes apply. A ship sailing against a strong wind moves at half speed. In a dead calm (no wind), waterborne ships can’t move under sail and must be rowed. Keelboats and Rowboats are used on lakes and rivers. If going downstream, add the speed of the current (typically 3 miles per hour) to the speed of the vehicle. These vehicles can’t be rowed against any significant current, but they can be pulled upstream by draft animals on the shores. A Rowboat can be carried and weighs 100 pounds.\n\nSource: SRD 5.2.1",
+        "open": false
+      }
+    ],
+    "inventoryEquipment": [
+      {
+        "id": "item-a0f2d0e2-arcane-focus-crystal-1",
+        "name": "Arcane Focus (crystal)",
+        "type": "gear",
+        "qty": "",
+        "value": "Varies",
+        "location": "storage:storage-d6c96be4-95d9-4754-8553-5e657a7eb252",
+        "details": "Adventuring Gear · Weight: Varies\n\nAn Arcane Focus takes one of the forms in the Arcane Focuses table and is bejeweled or carved to channel arcane magic. A Sorcerer, Warlock, or Wizard can use such an item as a Spellcasting Focus. Focus Weight Cost Crystal 1 lb. 10 GP Orb 3 lb. 20 GP Rod 2 lb. 10 GP Staff (also a Quarterstaff) 4 lb. 5 GP Wand 1 lb. 10 GP\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-backpack-1",
+        "name": "Backpack",
+        "type": "gear",
+        "qty": "",
+        "value": "2 GP",
+        "location": "worn",
+        "details": "Adventuring Gear · Weight: 5 lb.\n\nA Backpack holds up to 30 pounds within 1 cubic foot. It can also serve as a saddlebag.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-book-about-thalassic-mythology-1",
+        "name": "Book about Thalassic Mythology",
+        "type": "gear",
+        "qty": "",
+        "value": "",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-calligrapher-s-supplies-1",
+        "name": "Calligrapher's Supplies",
+        "type": "tool",
+        "qty": "",
+        "value": "10 GP",
+        "location": "storage:storage-d6c96be4-95d9-4754-8553-5e657a7eb252",
+        "details": "Tool\n\nAbility: Dexterity Weight: 5 lb. Utilize: Write text with impressive flourishes that guard against forgery (DC 15) Craft: Ink, Spell Scroll\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-caltrops-1",
+        "name": "Caltrops",
+        "type": "gear",
+        "qty": "2",
+        "value": "1 GP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 2 lb.\n\nAs a Utilize action, you can spread Caltrops from their bag to cover a 5-footsquare area within 5 feet of yourself. A creature that enters this area for the first time on a turn must succeed on a DC 15 Dexterity saving throw or take 1 Piercing damage and have its Speed reduced to 0 until the start of its next turn. It takes 10 minutes to recover the Caltrops.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-crowbar-1",
+        "name": "Crowbar",
+        "type": "gear",
+        "qty": "",
+        "value": "2 GP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 5 lb.\n\nUsing a Crowbar gives you Advantage on Strength checks where the Crowbar’s leverage can be applied.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-daggers-1",
+        "name": "Dagger",
+        "type": "gear",
+        "qty": "2",
+        "value": "2 GP",
+        "location": "worn",
+        "details": "Weapon · Weight: 1 lb.\n\n1d4 Piercing; Finesse, Light, Thrown (Range 20/60); Nick\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-fine-clothes-1",
+        "name": "Fine Clothes",
+        "type": "gear",
+        "qty": "1",
+        "value": "15 GP",
+        "location": "storage:storage-d6c96be4-95d9-4754-8553-5e657a7eb252",
+        "details": "Adventuring Gear · Weight: 6 lb.\n\nFine Clothes are made of expensive fabrics and adorned with expertly crafted details. Some events and locations admit only people wearing these clothes.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-rope-1",
+        "name": "Rope",
+        "type": "gear",
+        "qty": "1",
+        "value": "1 GP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 5 lb.\n\nAs a Utilize action, you can tie a knot with Rope if you succeed on a DC 10 Dexterity (Sleight of Hand) check. The Rope can be burst with a successful DC 20 Strength (Athletics) check. You can bind an unwilling creature with the Rope only if the creature has the Grappled, Incapacitated, or Restrained condition. If the creature’s legs are bound, the creature has the Restrained condition until it escapes. Escaping the Rope requires the creature to make a successful DC 15 Dexterity (Acrobatics) check as an action.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-spear-1",
+        "name": "Spear",
+        "type": "gear",
+        "qty": "",
+        "value": "1 GP",
+        "location": "storage:storage-d6c96be4-95d9-4754-8553-5e657a7eb252",
+        "details": "Weapon · Weight: 3 lb.\n\n1d6 Piercing; Thrown (Range 20/60), Versatile (1d8); Sap\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-tinderbox-1",
+        "name": "Tinderbox",
+        "type": "gear",
+        "qty": "1",
+        "value": "5 SP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 1 lb.\n\nA Tinderbox is a small container holding flint, fire steel, and tinder (usually dry cloth soaked in light oil) used to kindle a fire. Using it to light a Candle, Lamp, Lantern, or Torch—or anything else with exposed fuel—takes a Bonus Action. Lighting any other fire takes 1 minute.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-torches-1",
+        "name": "Torches",
+        "type": "gear",
+        "qty": "10",
+        "value": "1 CP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 1 lb.\n\nA Torch burns for 1 hour, casting Bright Light in a 20-foot radius and Dim Light for an additional 20 feet. When you take the Attack action, you can attack with the Torch, using it as a Simple Melee weapon. On a hit, the target takes 1 Fire damage.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-waterskin-1",
+        "name": "Waterskin",
+        "type": "gear",
+        "qty": "1",
+        "value": "2 SP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 5 lb. (full)\n\nA Waterskin holds up to 4 pints. If you don’t drink sufficient water, you risk dehydration (see “Rules Glossary”). A mount can help you move more quickly through the wilderness, but its primary purpose is to carry gear that would otherwise slow you down. The Mounts and Other Animals table shows each animal’s carrying capacity. See “Monsters” for the animals’ stat blocks. An animal pulling a carriage, cart, chariot, sled, or wagon can move weight up to five times its base carrying capacity, including the weight of the vehicle. If multiple animals pull the same vehicle, add their carrying capacities together. Barding is armor designed for a mount. Any type of armor on the Armor table in “Equipment” can be purchased as barding. The cost is four times the normal cost, and it weighs twice as much. A saddle comes with a bit, a bridle, reins, and any other equipment needed to use the saddle. A Military Saddle gives Advantage on any ability check you make to remain mounted. An Exotic Saddle is required for riding an aquatic or a flying mount. Mounts and Other Animals Item Carrying Capacity Cost Camel 450 lb. 50 GP Elephant 1,320 lb. 200 GP Horse, Draft 540 lb. 50 GP Horse, Riding 480 lb. 75 GP Mastiff 195 lb. 25 GP Mule 420 lb. 8 GP Pony 225 lb. 30 GP Warhorse 540 lb. 400 GP Item Weight Cost Carriage 600 lb. 100 GP Cart 200 lb. 15 GP Chariot 100 lb. 250 GP Feed per day 10 lb. 5 CP Saddle Exotic 40 lb. 60 GP Military 30 lb. 20 GP Riding 25 lb. 10 GP Sled 300 lb. 20 GP Stabling per day — 5 SP Wagon 400 lb. 35 GP The Airborne and Waterborne Vehicles table provides statistics for various types of large vehicles. The following notes apply. A ship sailing against a strong wind moves at half speed. In a dead calm (no wind), waterborne ships can’t move under sail and must be rowed. Keelboats and Rowboats are used on lakes and rivers. If going downstream, add the speed of the current (typically 3 miles per hour) to the speed of the vehicle. These vehicles can’t be rowed against any significant current, but they can be pulled upstream by draft animals on the shores. A Rowboat can be carried and weighs 100 pounds.\n\nSource: SRD 5.2.1",
+        "open": false
+      }
+    ],
+    "magicItems": [],
+    "consumables": [
+      {
+        "id": "item-a0f2d0e2-flasks-of-oil-1",
+        "name": "Flasks of Oil",
+        "type": "consumable",
+        "qty": "2",
+        "value": "1 SP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 1 lb.\n\nYou can douse a creature, object, or space with Oil or use it as fuel, as detailed below. Dousing a Creature or an Object. When you take the Attack action, you can replace one of your attacks with throwing an Oil flask. Target one creature or object within 20 feet of yourself. The target must succeed on a Dexterity saving throw (DC 8 plus your Dexterity modifier and Proficiency Bonus) or be covered in oil. If the target takes Fire damage before the oil dries (after 1 minute), the target takes an extra 5 Fire damage from burning oil. Dousing a Space. You can take the Utilize action to pour an Oil flask on level ground to cover a 5-footsquare area within 5 feet of yourself. If lit, the oil burns until the end of the turn 2 rounds from when the oil was lit (or 12 seconds) and deals 5 Fire damage to any creature that enters the area or ends its turn there. A creature can take this damage only once per turn. 99 Fuel. Oil serves as fuel for Lamps and Lanterns. Once lit, a flask of Oil burns for 6 hours in a Lamp or Lantern. That duration doesn’t need to be consecutive; you can extinguish the burning Oil (as a Utilize action) and rekindle it again until it has burned for a total of 6 hours.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "item-a0f2d0e2-rations-1",
+        "name": "Rations",
+        "type": "consumable",
+        "qty": "10",
+        "value": "5 SP",
+        "location": "storage:storage-a0f2d0e2-backpack",
+        "details": "Adventuring Gear · Weight: 2 lb.\n\nRations consist of travelready food, including jerky, dried fruit, hardtack, and nuts. See “Malnutrition” in “Rules Glossary” for the risks of not eating.\n\nSource: SRD 5.2.1",
+        "open": false
+      }
+    ],
     "gems": [],
     "attunementSlots": [
       {
@@ -457,489 +944,42 @@
         "name": "Backpack",
         "type": "Carried Container",
         "notes": "Imported from the original inventory list."
+      },
+      {
+        "id": "storage-d6c96be4-95d9-4754-8553-5e657a7eb252",
+        "name": "Lost",
+        "type": "",
+        "notes": ""
       }
     ],
     "equippedSlots": {
-      "mainHand": "item-a0f2d0e2-spear-1",
+      "head": "",
+      "neck": "",
+      "cape": "",
+      "armor": "",
+      "clothing": "",
+      "mainHand": "item-a0f2d0e2-daggers-1",
+      "offHand": "",
+      "ring1": "",
+      "ring2": "",
+      "belt": "",
+      "glovesBracers": "",
+      "footwear": "",
       "backStorage": "item-a0f2d0e2-backpack-1",
-      "otherWorn": "item-a0f2d0e2-arcane-focus-crystal-1"
+      "otherWorn": ""
     },
     "customEquippedSlots": [],
     "inventoryView": "list",
-    "inventoryItems": [
+    "speeds": [
       {
-        "id": "item-a0f2d0e2-spear-1",
-        "name": "Spear",
-        "type": "gear",
-        "qty": "",
-        "value": "1 GP",
-        "location": "worn",
-        "details": "Weapon · Weight: 3 lb.\n\n1d6 Piercing; Thrown (Range 20/60), Versatile (1d8); Sap\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-spear",
-        "source": "SRD 5.2.1",
-        "category": "Weapon",
-        "weight": "3 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-daggers-1",
-        "name": "Daggers",
-        "type": "gear",
-        "qty": "2",
-        "value": "2 GP",
-        "location": "worn",
-        "details": "Weapon · Weight: 1 lb.\n\n1d4 Piercing; Finesse, Light, Thrown (Range 20/60); Nick\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-dagger",
-        "source": "SRD 5.2.1",
-        "category": "Weapon",
-        "weight": "1 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-backpack-1",
-        "name": "Backpack",
-        "type": "gear",
-        "qty": "",
-        "value": "2 GP",
-        "location": "worn",
-        "details": "Adventuring Gear · Weight: 5 lb.\n\nA Backpack holds up to 30 pounds within 1 cubic foot. It can also serve as a saddlebag.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-backpack",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "5 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-caltrops-1",
-        "name": "Caltrops",
-        "type": "gear",
-        "qty": "",
-        "value": "1 GP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 2 lb.\n\nAs a Utilize action, you can spread Caltrops from their bag to cover a 5-footsquare area within 5 feet of yourself. A creature that enters this area for the first time on a turn must succeed on a DC 15 Dexterity saving throw or take 1 Piercing damage and have its Speed reduced to 0 until the start of its next turn. It takes 10 minutes to recover the Caltrops.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-caltrops",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "2 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-crowbar-1",
-        "name": "Crowbar",
-        "type": "gear",
-        "qty": "",
-        "value": "2 GP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 5 lb.\n\nUsing a Crowbar gives you Advantage on Strength checks where the Crowbar’s leverage can be applied.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-crowbar",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "5 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-flasks-of-oil-1",
-        "name": "Flasks of Oil",
-        "type": "consumable",
-        "qty": "2",
-        "value": "1 SP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 1 lb.\n\nYou can douse a creature, object, or space with Oil or use it as fuel, as detailed below. Dousing a Creature or an Object. When you take the Attack action, you can replace one of your attacks with throwing an Oil flask. Target one creature or object within 20 feet of yourself. The target must succeed on a Dexterity saving throw (DC 8 plus your Dexterity modifier and Proficiency Bonus) or be covered in oil. If the target takes Fire damage before the oil dries (after 1 minute), the target takes an extra 5 Fire damage from burning oil. Dousing a Space. You can take the Utilize action to pour an Oil flask on level ground to cover a 5-footsquare area within 5 feet of yourself. If lit, the oil burns until the end of the turn 2 rounds from when the oil was lit (or 12 seconds) and deals 5 Fire damage to any creature that enters the area or ends its turn there. A creature can take this damage only once per turn. 99 Fuel. Oil serves as fuel for Lamps and Lanterns. Once lit, a flask of Oil burns for 6 hours in a Lamp or Lantern. That duration doesn’t need to be consecutive; you can extinguish the burning Oil (as a Utilize action) and rekindle it again until it has burned for a total of 6 hours.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-oil",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "1 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-rations-1",
-        "name": "Rations",
-        "type": "consumable",
-        "qty": "10",
-        "value": "5 SP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 2 lb.\n\nRations consist of travelready food, including jerky, dried fruit, hardtack, and nuts. See “Malnutrition” in “Rules Glossary” for the risks of not eating.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-rations",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "2 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-rope-1",
-        "name": "Rope",
-        "type": "gear",
-        "qty": "",
-        "value": "1 GP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 5 lb.\n\nAs a Utilize action, you can tie a knot with Rope if you succeed on a DC 10 Dexterity (Sleight of Hand) check. The Rope can be burst with a successful DC 20 Strength (Athletics) check. You can bind an unwilling creature with the Rope only if the creature has the Grappled, Incapacitated, or Restrained condition. If the creature’s legs are bound, the creature has the Restrained condition until it escapes. Escaping the Rope requires the creature to make a successful DC 15 Dexterity (Acrobatics) check as an action.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-rope",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "5 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-tinderbox-1",
-        "name": "Tinderbox",
-        "type": "gear",
-        "qty": "",
-        "value": "5 SP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 1 lb.\n\nA Tinderbox is a small container holding flint, fire steel, and tinder (usually dry cloth soaked in light oil) used to kindle a fire. Using it to light a Candle, Lamp, Lantern, or Torch—or anything else with exposed fuel—takes a Bonus Action. Lighting any other fire takes 1 minute.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-tinderbox",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "1 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-torches-1",
-        "name": "Torches",
-        "type": "gear",
-        "qty": "10",
-        "value": "1 CP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 1 lb.\n\nA Torch burns for 1 hour, casting Bright Light in a 20-foot radius and Dim Light for an additional 20 feet. When you take the Attack action, you can attack with the Torch, using it as a Simple Melee weapon. On a hit, the target takes 1 Fire damage.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-torch",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "1 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-waterskin-1",
-        "name": "Waterskin",
-        "type": "gear",
-        "qty": "",
-        "value": "2 SP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 5 lb. (full)\n\nA Waterskin holds up to 4 pints. If you don’t drink sufficient water, you risk dehydration (see “Rules Glossary”). A mount can help you move more quickly through the wilderness, but its primary purpose is to carry gear that would otherwise slow you down. The Mounts and Other Animals table shows each animal’s carrying capacity. See “Monsters” for the animals’ stat blocks. An animal pulling a carriage, cart, chariot, sled, or wagon can move weight up to five times its base carrying capacity, including the weight of the vehicle. If multiple animals pull the same vehicle, add their carrying capacities together. Barding is armor designed for a mount. Any type of armor on the Armor table in “Equipment” can be purchased as barding. The cost is four times the normal cost, and it weighs twice as much. A saddle comes with a bit, a bridle, reins, and any other equipment needed to use the saddle. A Military Saddle gives Advantage on any ability check you make to remain mounted. An Exotic Saddle is required for riding an aquatic or a flying mount. Mounts and Other Animals Item Carrying Capacity Cost Camel 450 lb. 50 GP Elephant 1,320 lb. 200 GP Horse, Draft 540 lb. 50 GP Horse, Riding 480 lb. 75 GP Mastiff 195 lb. 25 GP Mule 420 lb. 8 GP Pony 225 lb. 30 GP Warhorse 540 lb. 400 GP Item Weight Cost Carriage 600 lb. 100 GP Cart 200 lb. 15 GP Chariot 100 lb. 250 GP Feed per day 10 lb. 5 CP Saddle Exotic 40 lb. 60 GP Military 30 lb. 20 GP Riding 25 lb. 10 GP Sled 300 lb. 20 GP Stabling per day — 5 SP Wagon 400 lb. 35 GP The Airborne and Waterborne Vehicles table provides statistics for various types of large vehicles. The following notes apply. A ship sailing against a strong wind moves at half speed. In a dead calm (no wind), waterborne ships can’t move under sail and must be rowed. Keelboats and Rowboats are used on lakes and rivers. If going downstream, add the speed of the current (typically 3 miles per hour) to the speed of the vehicle. These vehicles can’t be rowed against any significant current, but they can be pulled upstream by draft animals on the shores. A Rowboat can be carried and weighs 100 pounds.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-waterskin",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "5 lb. (full)",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-calligrapher-s-supplies-1",
-        "name": "Calligrapher's Supplies",
-        "type": "tool",
-        "qty": "",
-        "value": "10 GP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Tool\n\nAbility: Dexterity Weight: 5 lb. Utilize: Write text with impressive flourishes that guard against forgery (DC 15) Craft: Ink, Spell Scroll\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-calligraphers-supplies",
-        "source": "SRD 5.2.1",
-        "category": "Tool",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-fine-clothes-1",
-        "name": "Fine Clothes",
-        "type": "gear",
-        "qty": "",
-        "value": "15 GP",
-        "location": "",
-        "details": "Adventuring Gear · Weight: 6 lb.\n\nFine Clothes are made of expensive fabrics and adorned with expertly crafted details. Some events and locations admit only people wearing these clothes.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-clothes-fine",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "6 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-book-about-thalassic-mythology-1",
-        "name": "Book about Thalassic Mythology",
-        "type": "gear",
-        "qty": "",
-        "value": "",
-        "location": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "id": "item-a0f2d0e2-arcane-focus-crystal-1",
-        "name": "Arcane Focus (crystal)",
-        "type": "gear",
-        "qty": "",
-        "value": "Varies",
-        "location": "worn",
-        "details": "Adventuring Gear · Weight: Varies\n\nAn Arcane Focus takes one of the forms in the Arcane Focuses table and is bejeweled or carved to channel arcane magic. A Sorcerer, Warlock, or Wizard can use such an item as a Spellcasting Focus. Focus Weight Cost Crystal 1 lb. 10 GP Orb 3 lb. 20 GP Rod 2 lb. 10 GP Staff (also a Quarterstaff) 4 lb. 5 GP Wand 1 lb. 10 GP\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-arcane-focus",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "Varies",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-dungeoneer-s-pack-1",
-        "name": "Dungeoneer's Pack",
-        "type": "gear",
-        "qty": "",
-        "value": "12 GP",
-        "location": "",
-        "details": "Adventuring Gear · Weight: 55 lb.\n\nA Dungeoneer’s Pack contains the following items: Backpack, Caltrops, Crowbar, 2 flasks of Oil, 10 days of Rations, Rope, Tinderbox, 10 Torches, and Waterskin.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-dungeoneers-pack",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "55 lb.",
-        "attunement": false
+        "type": "Swimming",
+        "customType": "",
+        "value": "30"
       }
     ],
-    "inventoryEquipment": [
-      {
-        "id": "item-a0f2d0e2-spear-1",
-        "name": "Spear",
-        "type": "gear",
-        "qty": "",
-        "value": "1 GP",
-        "location": "worn",
-        "details": "Weapon · Weight: 3 lb.\n\n1d6 Piercing; Thrown (Range 20/60), Versatile (1d8); Sap\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-spear",
-        "source": "SRD 5.2.1",
-        "category": "Weapon",
-        "weight": "3 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-daggers-1",
-        "name": "Daggers",
-        "type": "gear",
-        "qty": "2",
-        "value": "2 GP",
-        "location": "worn",
-        "details": "Weapon · Weight: 1 lb.\n\n1d4 Piercing; Finesse, Light, Thrown (Range 20/60); Nick\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-dagger",
-        "source": "SRD 5.2.1",
-        "category": "Weapon",
-        "weight": "1 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-backpack-1",
-        "name": "Backpack",
-        "type": "gear",
-        "qty": "",
-        "value": "2 GP",
-        "location": "worn",
-        "details": "Adventuring Gear · Weight: 5 lb.\n\nA Backpack holds up to 30 pounds within 1 cubic foot. It can also serve as a saddlebag.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-backpack",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "5 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-caltrops-1",
-        "name": "Caltrops",
-        "type": "gear",
-        "qty": "",
-        "value": "1 GP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 2 lb.\n\nAs a Utilize action, you can spread Caltrops from their bag to cover a 5-footsquare area within 5 feet of yourself. A creature that enters this area for the first time on a turn must succeed on a DC 15 Dexterity saving throw or take 1 Piercing damage and have its Speed reduced to 0 until the start of its next turn. It takes 10 minutes to recover the Caltrops.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-caltrops",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "2 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-crowbar-1",
-        "name": "Crowbar",
-        "type": "gear",
-        "qty": "",
-        "value": "2 GP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 5 lb.\n\nUsing a Crowbar gives you Advantage on Strength checks where the Crowbar’s leverage can be applied.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-crowbar",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "5 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-rope-1",
-        "name": "Rope",
-        "type": "gear",
-        "qty": "",
-        "value": "1 GP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 5 lb.\n\nAs a Utilize action, you can tie a knot with Rope if you succeed on a DC 10 Dexterity (Sleight of Hand) check. The Rope can be burst with a successful DC 20 Strength (Athletics) check. You can bind an unwilling creature with the Rope only if the creature has the Grappled, Incapacitated, or Restrained condition. If the creature’s legs are bound, the creature has the Restrained condition until it escapes. Escaping the Rope requires the creature to make a successful DC 15 Dexterity (Acrobatics) check as an action.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-rope",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "5 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-tinderbox-1",
-        "name": "Tinderbox",
-        "type": "gear",
-        "qty": "",
-        "value": "5 SP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 1 lb.\n\nA Tinderbox is a small container holding flint, fire steel, and tinder (usually dry cloth soaked in light oil) used to kindle a fire. Using it to light a Candle, Lamp, Lantern, or Torch—or anything else with exposed fuel—takes a Bonus Action. Lighting any other fire takes 1 minute.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-tinderbox",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "1 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-torches-1",
-        "name": "Torches",
-        "type": "gear",
-        "qty": "10",
-        "value": "1 CP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 1 lb.\n\nA Torch burns for 1 hour, casting Bright Light in a 20-foot radius and Dim Light for an additional 20 feet. When you take the Attack action, you can attack with the Torch, using it as a Simple Melee weapon. On a hit, the target takes 1 Fire damage.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-torch",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "1 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-waterskin-1",
-        "name": "Waterskin",
-        "type": "gear",
-        "qty": "",
-        "value": "2 SP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 5 lb. (full)\n\nA Waterskin holds up to 4 pints. If you don’t drink sufficient water, you risk dehydration (see “Rules Glossary”). A mount can help you move more quickly through the wilderness, but its primary purpose is to carry gear that would otherwise slow you down. The Mounts and Other Animals table shows each animal’s carrying capacity. See “Monsters” for the animals’ stat blocks. An animal pulling a carriage, cart, chariot, sled, or wagon can move weight up to five times its base carrying capacity, including the weight of the vehicle. If multiple animals pull the same vehicle, add their carrying capacities together. Barding is armor designed for a mount. Any type of armor on the Armor table in “Equipment” can be purchased as barding. The cost is four times the normal cost, and it weighs twice as much. A saddle comes with a bit, a bridle, reins, and any other equipment needed to use the saddle. A Military Saddle gives Advantage on any ability check you make to remain mounted. An Exotic Saddle is required for riding an aquatic or a flying mount. Mounts and Other Animals Item Carrying Capacity Cost Camel 450 lb. 50 GP Elephant 1,320 lb. 200 GP Horse, Draft 540 lb. 50 GP Horse, Riding 480 lb. 75 GP Mastiff 195 lb. 25 GP Mule 420 lb. 8 GP Pony 225 lb. 30 GP Warhorse 540 lb. 400 GP Item Weight Cost Carriage 600 lb. 100 GP Cart 200 lb. 15 GP Chariot 100 lb. 250 GP Feed per day 10 lb. 5 CP Saddle Exotic 40 lb. 60 GP Military 30 lb. 20 GP Riding 25 lb. 10 GP Sled 300 lb. 20 GP Stabling per day — 5 SP Wagon 400 lb. 35 GP The Airborne and Waterborne Vehicles table provides statistics for various types of large vehicles. The following notes apply. A ship sailing against a strong wind moves at half speed. In a dead calm (no wind), waterborne ships can’t move under sail and must be rowed. Keelboats and Rowboats are used on lakes and rivers. If going downstream, add the speed of the current (typically 3 miles per hour) to the speed of the vehicle. These vehicles can’t be rowed against any significant current, but they can be pulled upstream by draft animals on the shores. A Rowboat can be carried and weighs 100 pounds.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-waterskin",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "5 lb. (full)",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-calligrapher-s-supplies-1",
-        "name": "Calligrapher's Supplies",
-        "type": "tool",
-        "qty": "",
-        "value": "10 GP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Tool\n\nAbility: Dexterity Weight: 5 lb. Utilize: Write text with impressive flourishes that guard against forgery (DC 15) Craft: Ink, Spell Scroll\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-calligraphers-supplies",
-        "source": "SRD 5.2.1",
-        "category": "Tool",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-fine-clothes-1",
-        "name": "Fine Clothes",
-        "type": "gear",
-        "qty": "",
-        "value": "15 GP",
-        "location": "",
-        "details": "Adventuring Gear · Weight: 6 lb.\n\nFine Clothes are made of expensive fabrics and adorned with expertly crafted details. Some events and locations admit only people wearing these clothes.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-clothes-fine",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "6 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-book-about-thalassic-mythology-1",
-        "name": "Book about Thalassic Mythology",
-        "type": "gear",
-        "qty": "",
-        "value": "",
-        "location": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "id": "item-a0f2d0e2-arcane-focus-crystal-1",
-        "name": "Arcane Focus (crystal)",
-        "type": "gear",
-        "qty": "",
-        "value": "Varies",
-        "location": "worn",
-        "details": "Adventuring Gear · Weight: Varies\n\nAn Arcane Focus takes one of the forms in the Arcane Focuses table and is bejeweled or carved to channel arcane magic. A Sorcerer, Warlock, or Wizard can use such an item as a Spellcasting Focus. Focus Weight Cost Crystal 1 lb. 10 GP Orb 3 lb. 20 GP Rod 2 lb. 10 GP Staff (also a Quarterstaff) 4 lb. 5 GP Wand 1 lb. 10 GP\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-arcane-focus",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "Varies",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-dungeoneer-s-pack-1",
-        "name": "Dungeoneer's Pack",
-        "type": "gear",
-        "qty": "",
-        "value": "12 GP",
-        "location": "",
-        "details": "Adventuring Gear · Weight: 55 lb.\n\nA Dungeoneer’s Pack contains the following items: Backpack, Caltrops, Crowbar, 2 flasks of Oil, 10 days of Rations, Rope, Tinderbox, 10 Torches, and Waterskin.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-dungeoneers-pack",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "55 lb.",
-        "attunement": false
-      }
-    ],
-    "magicItems": [],
-    "consumables": [
-      {
-        "id": "item-a0f2d0e2-flasks-of-oil-1",
-        "name": "Flasks of Oil",
-        "type": "consumable",
-        "qty": "2",
-        "value": "1 SP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 1 lb.\n\nYou can douse a creature, object, or space with Oil or use it as fuel, as detailed below. Dousing a Creature or an Object. When you take the Attack action, you can replace one of your attacks with throwing an Oil flask. Target one creature or object within 20 feet of yourself. The target must succeed on a Dexterity saving throw (DC 8 plus your Dexterity modifier and Proficiency Bonus) or be covered in oil. If the target takes Fire damage before the oil dries (after 1 minute), the target takes an extra 5 Fire damage from burning oil. Dousing a Space. You can take the Utilize action to pour an Oil flask on level ground to cover a 5-footsquare area within 5 feet of yourself. If lit, the oil burns until the end of the turn 2 rounds from when the oil was lit (or 12 seconds) and deals 5 Fire damage to any creature that enters the area or ends its turn there. A creature can take this damage only once per turn. 99 Fuel. Oil serves as fuel for Lamps and Lanterns. Once lit, a flask of Oil burns for 6 hours in a Lamp or Lantern. That duration doesn’t need to be consecutive; you can extinguish the burning Oil (as a Utilize action) and rekindle it again until it has burned for a total of 6 hours.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-oil",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "1 lb.",
-        "attunement": false
-      },
-      {
-        "id": "item-a0f2d0e2-rations-1",
-        "name": "Rations",
-        "type": "consumable",
-        "qty": "10",
-        "value": "5 SP",
-        "location": "storage:storage-a0f2d0e2-backpack",
-        "details": "Adventuring Gear · Weight: 2 lb.\n\nRations consist of travelready food, including jerky, dried fruit, hardtack, and nuts. See “Malnutrition” in “Rules Glossary” for the risks of not eating.\n\nSource: SRD 5.2.1",
-        "open": false,
-        "sourceId": "srd-item-rations",
-        "source": "SRD 5.2.1",
-        "category": "Adventuring Gear",
-        "weight": "2 lb.",
-        "attunement": false
-      }
-    ]
+    "armorClass": {
+      "base": "13",
+      "modifiers": []
+    }
   }
 }
