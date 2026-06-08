@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "a0f2d0e2-3dc5-46ab-9b65-8ce9d0e8b5f1",
-  "updatedAt": "2026-06-08T00:20:09.070Z",
+  "updatedAt": "2026-06-08T00:21:41.511Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "13",
@@ -595,7 +595,7 @@
       },
       {
         "id": "item-a0f2d0e2-daggers-1",
-        "name": "Daggers",
+        "name": "Dagger",
         "type": "gear",
         "qty": "2",
         "value": "",
@@ -701,16 +701,6 @@
         "value": "",
         "location": "worn",
         "details": "",
-        "open": false
-      },
-      {
-        "id": "item-a0f2d0e2-dungeoneer-s-pack-1",
-        "name": "Dungeoneer's Pack",
-        "type": "gear",
-        "qty": "",
-        "value": "",
-        "location": "",
-        "details": "Imported as a pack entry. Its contents were not expanded because the original note also listed individual carried items.",
         "open": false
       },
       {
@@ -757,7 +747,7 @@
       },
       {
         "id": "item-a0f2d0e2-daggers-1",
-        "name": "Daggers",
+        "name": "Dagger",
         "type": "gear",
         "qty": "2",
         "value": "",
@@ -863,16 +853,6 @@
         "value": "",
         "location": "worn",
         "details": "",
-        "open": false
-      },
-      {
-        "id": "item-a0f2d0e2-dungeoneer-s-pack-1",
-        "name": "Dungeoneer's Pack",
-        "type": "gear",
-        "qty": "",
-        "value": "",
-        "location": "",
-        "details": "Imported as a pack entry. Its contents were not expanded because the original note also listed individual carried items.",
         "open": false
       },
       {
@@ -934,12 +914,12 @@
     ],
     "equippedSlots": {
       "head": "",
-      "neck": "",
+      "neck": "item-a0f2d0e2-arcane-focus-crystal-1",
       "cape": "",
       "armor": "",
-      "clothing": "",
+      "clothing": "item-a0f2d0e2-fine-clothes-1",
       "mainHand": "item-a0f2d0e2-spear-1",
-      "offHand": "",
+      "offHand": "item-a0f2d0e2-daggers-1",
       "ring1": "",
       "ring2": "",
       "belt": "",
