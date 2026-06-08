@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "c6c1c2a0-92d9-41b8-85a1-1d5f2fe7e6db",
-  "updatedAt": "2026-06-03T21:15:58.128Z",
+  "updatedAt": "2026-06-08T00:10:08.528Z",
   "summary": {
     "name": "Lillith",
     "armorClass": "15",
@@ -14,12 +14,12 @@
   },
   "fields": {
     "characterName": "Lillith",
-    "background": "Courier",
-    "classLevel": "Cleric",
-    "experience": "0",
     "speciesRace": "Drow",
-    "subclass": "Primordial Nautic Domain",
+    "background": "Courier",
     "alignment": "Chaotic Neutral",
+    "level": "",
+    "class": "Cleric",
+    "subclass": "Primordial Nautic Domain",
     "initiative": "+1",
     "speed": "30",
     "armorClass": "15",
@@ -67,12 +67,6 @@
     "persuasion": "+1",
     "hitDice": "1d8",
     "hitDiceSpent": "",
-    "copperPieces": "",
-    "silverPieces": "",
-    "electrumPieces": "",
-    "goldPieces": "28",
-    "platinumPieces": "",
-    "treasureNotes": "",
     "spellcastingAbility": "WIS",
     "spellSaveDc": "12",
     "spellAttackBonus": "+4",
@@ -89,10 +83,17 @@
     "personalityIdealsBonds": "Lillith serves her own interest first, but she is not foolish enough to waste a useful alliance. She was raised in a world where survival belonged to the ruthless, and that instinct has not left her. She respects sharp minds, blunt words, dry humour, and people who can hold their liquor without becoming sentimental.\n\nOnce, Lillith was narrow-minded, cold, alone, and individualistic because that was what her house rewarded. Now, she is still difficult, still sarcastic, still hard to impress, but something in her has shifted into determination. Her past is not something she denies. It is hers to own, to change, and if needed, to scream into the world until something answers.\n\nHer trust is rarely given freely, but once someone has proven useful, loyal, or strangely tolerable, she is more protective than she would ever admit. She finds comfort in odd minds, strange creatures, and people who do not ask her to explain herself too neatly. During her odd jobs, she often lingers at docks, drinking beside sailors, smugglers, travellers, and other half-lost things that smell of salt, smoke, and bad decisions.\n\nShe is most herself in the midst of night, beneath a bright sky, following the trajectories of stars as if they might one day draw her a route no map has managed to hold. She has no fixed destination. She only knows she wants to meet new species and races, learn from them, and let them learn from her.\n\nHer favourite food is squid ink pasta.\n\nIdeal:\nFreedom. Lillith wants enough coin to leave the delivery business behind, buy a ship, and vanish beyond the mapped world. No matron. No house. No throne. No leash.\n\nIn the future, she wishes to become a powerful cleric of Thalassa, carrying the word of her past and future far and wide. She does not seek one holy city, one temple, or one final shore. The road, the sea, and the people she meets along the way are the pilgrimage.\n\nBond:\nLillith is devoted to Thalassa, the primordial goddess of life, water, and chaos. She sees her faith as a way to kill the past without denying that it shaped her. If her first mother made her into a weapon, Thalassa offers the possibility of being remade into something living.\n\nFlaw:\nLillith often mistakes emotional distance for strength. She assumes every bond will eventually become a transaction, a weakness, or a trap, and may push people away before they can prove otherwise.\n\nAnyone who questions her drowness, or compares her to a Matron Mother, risks setting off something violent and immediate. A blade at the throat. A threat spoken too calmly. A look that makes it clear she has killed the comparison before she has killed the person making it.\n\nSlightly below average drow height (aka still pretty tall), lean, with too-long white hair and deep dark purple-black eyes, Lillith wears a scrambled-together ensemble of cloth, leather, and blade.\n\nLillith carries a dark iron spear shaped like a harpoon, its haft wrapped in salt-stained leather and threaded with small shells, broken beads, and scraps of sea-worn bone.",
     "appearance": "Above average height, lean, too long white hair, deep dark black eyes, wearing a scrambled together ensamble of cloth leather and blade. \n\nLillith carries a dark iron spear shaped like a harpoon, its haft wrapped in salt-stained leather and threaded with small shells, broken beads, and scraps of sea-worn bone.",
     "languages": "",
-    "attunement": "",
-    "equipmentInventory": "",
+    "journalNotes": "",
+    "copperPieces": "",
+    "silverPieces": "",
+    "electrumPieces": "",
+    "goldPieces": "28",
+    "platinumPieces": "",
+    "otherInventory": "",
     "equipment": "Chain Shirt (Med. Armor)\nAmulet (Holy Symbol)\n1x Vial of alchemist fire (U can chuck it)\n1x Antitoxin\n5x healing potions",
-    "otherInventory": ""
+    "equipmentInventory": "",
+    "treasureNotes": "",
+    "attunement": ""
   },
   "uiState": {
     "inspiration": false,
@@ -210,64 +211,124 @@
     ],
     "spells": [
       {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "school": "Homebrew",
+        "duration": "",
+        "componentsText": "",
+        "classes": "",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "school": "Homebrew",
+        "duration": "",
+        "componentsText": "",
+        "classes": "",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "school": "Homebrew",
+        "duration": "",
+        "componentsText": "",
+        "classes": "",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
+      },
+      {
+        "level": "",
+        "name": "",
+        "castTime": "",
+        "range": "",
+        "concentration": false,
+        "ritual": false,
+        "material": false,
+        "effect": "",
+        "details": "",
+        "open": false,
+        "sourceId": "",
+        "source": "",
+        "school": "Homebrew",
+        "duration": "",
+        "componentsText": "",
+        "classes": "",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
+      },
+      {
         "level": "C",
         "name": "Dancing Lights",
         "castTime": "Action",
-        "range": "120 ft",
+        "range": "120 feet",
         "concentration": true,
         "ritual": false,
         "material": true,
-        "effect": "4 lights within range, 10ft radius, bonus action to move.",
-        "details": "Illusion Cantrip (Artificer, Bard, Sorcerer, Wizard)\n\nCasting Time: Action\nRange: 120 feet\nComponents: V, S, M (a bit of phosphorus)\nDuration: Concentration, up to 1 minute\n\nYou create up to four torch-size lights within range, making them appear as torches, lanterns, or glowing orbs that hover for the duration. Alternatively, you combine the four lights into one glowing Medium form that is vaguely humanlike. Whichever form you choose, each light sheds Dim Light in a 10-foot radius.\n\nAs a Bonus Action, you can move the lights up to 60 feet to a space within range. A light must be within 20 feet of another light created by this spell, and a light vanishes if it exceeds the spell’s range.",
-        "open": false
-      },
-      {
-        "level": "",
-        "name": "",
-        "castTime": "",
-        "range": "",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "",
-        "name": "",
-        "castTime": "",
-        "range": "",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "",
-        "name": "",
-        "castTime": "",
-        "range": "",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
-      },
-      {
-        "level": "",
-        "name": "",
-        "castTime": "",
-        "range": "",
-        "concentration": false,
-        "ritual": false,
-        "material": false,
-        "effect": "",
-        "details": "",
-        "open": false
+        "effect": "You create up to four torch-size lights within range, making them appear as torches, lanterns, or glowing orbs that hover for the duration.",
+        "details": "You create up to four torch-size lights within range,\nmaking them appear as torches, lanterns, or glowing orbs that hover for the duration. Alternatively,\nyou combine the four lights into one glowing Medium form that is vaguely humanlike. Whichever\nform you choose, each light sheds Dim Light in a 10foot radius.\nAs a Bonus Action, you can move the lights up\nto 60 feet to a space within range. A light must be\nwithin 20 feet of another light created by this spell,\nand a light vanishes if it exceeds the spell’s range.",
+        "open": false,
+        "sourceId": "srd-dancing-lights",
+        "source": "SRD 5.2.1",
+        "school": "Illusion",
+        "duration": "Concentration, up to 1 minute",
+        "componentsText": "V, S, M (a bit of phosphorus)",
+        "classes": "Bard, Sorcerer, Wizard",
+        "attackSave": "",
+        "damageHealing": "",
+        "damageType": "",
+        "areaShape": "",
+        "areaSize": "",
+        "prepared": false
       }
     ],
     "proficiencies": {
@@ -279,28 +340,6 @@
       ]
     },
     "journalNotes": [],
-    "gems": [],
-    "attunementSlots": [
-      {
-        "item": "",
-        "notes": ""
-      },
-      {
-        "item": "",
-        "notes": ""
-      },
-      {
-        "item": "",
-        "notes": ""
-      }
-    ],
-    "storageLocations": [],
-    "equippedSlots": {
-      "armor": "item-c6c1c2a0-chain-shirt-1",
-      "neck": "item-c6c1c2a0-amulet-1"
-    },
-    "customEquippedSlots": [],
-    "inventoryView": "list",
     "inventoryItems": [
       {
         "id": "item-c6c1c2a0-chain-shirt-1",
@@ -407,6 +446,45 @@
         "details": "",
         "open": false
       }
-    ]
+    ],
+    "gems": [],
+    "attunementSlots": [
+      {
+        "item": "",
+        "notes": ""
+      },
+      {
+        "item": "",
+        "notes": ""
+      },
+      {
+        "item": "",
+        "notes": ""
+      }
+    ],
+    "storageLocations": [],
+    "equippedSlots": {
+      "head": "",
+      "neck": "item-c6c1c2a0-amulet-1",
+      "cape": "",
+      "armor": "item-c6c1c2a0-chain-shirt-1",
+      "clothing": "",
+      "mainHand": "",
+      "offHand": "",
+      "ring1": "",
+      "ring2": "",
+      "belt": "",
+      "glovesBracers": "",
+      "footwear": "",
+      "backStorage": "",
+      "otherWorn": ""
+    },
+    "customEquippedSlots": [],
+    "inventoryView": "list",
+    "speeds": [],
+    "armorClass": {
+      "base": "15",
+      "modifiers": []
+    }
   }
 }
