@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="color-scheme" content="only light" />
+<title>Mythical Blue · DM Screen</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/accessibility.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/dm-screen.css" />
+</head>
+<body class="dm-body">
+  <main class="dm-screen-shell">
+    <header class="dm-screen-header">
+      <div>
+        <div class="dm-screen-kicker">Mythical Blue · The Great Depth</div>
+        <h1>DM Screen</h1>
+        <p>Initiative tracker</p>
+      </div>
+
+      <div class="dm-header-actions">
+        <a class="dm-nav-button" href="index.html">← Character Overview</a>
+        <div class="accessibility-row">
+          <div class="accessibility-controls" role="group" aria-label="Text size controls">
+            <button type="button" class="accessibility-toggle" aria-label="Adjust text size" title="Adjust text size" aria-expanded="false">Aa</button>
+            <span class="accessibility-extra">
+              <button type="button" class="accessibility-size-btn accessibility-decrease" data-size-action="decrease" aria-label="Decrease text size" title="Decrease text size">A−</button>
+              <button type="button" class="accessibility-size-btn accessibility-reset" data-size-action="reset" aria-label="Reset text size" title="Reset text size">A</button>
+              <button type="button" class="accessibility-size-btn accessibility-increase" data-size-action="increase" aria-label="Increase text size" title="Increase text size">A+</button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="initiative-panel" aria-labelledby="initiativeTrackerTitle">
+      <div class="initiative-panel-header">
+        <div>
+          <div class="dm-section-label">Combat Order</div>
+          <h2 id="initiativeTrackerTitle">Initiative Tracker</h2>
+        </div>
+        <div class="round-display" aria-live="polite">
+          <span>Round</span>
+          <strong id="roundNumber">1</strong>
+        </div>
+      </div>
+
+      <div class="initiative-toolbar">
+        <button id="nextTurnBtn" type="button" class="dm-primary-button">Next Turn →</button>
+        <button id="addNpcBtn" type="button" class="dm-secondary-button">+ Add NPC</button>
+        <button id="resetCombatBtn" type="button" class="dm-subtle-button">Reset Combat</button>
+        <span id="activeTurnText" class="active-turn-text" aria-live="polite">Add initiative values to begin.</span>
+      </div>
+
+      <div class="tracker-legend" aria-hidden="true">
+        <span></span>
+        <span class="legend-name">Combatant</span>
+        <span>Init.</span>
+        <span>HP</span>
+        <span>AC</span>
+        <span>Conditions</span>
+        <span>Conc.</span>
+        <span></span>
+      </div>
+
+      <div id="initiativeList" class="initiative-list" aria-live="polite"></div>
+      <p id="initiativeEmptyState" class="initiative-empty-state" hidden>No combatants available.</p>
+    </section>
+  </main>
+
+  <div id="npcPickerBackdrop" class="npc-picker-backdrop is-hidden" aria-hidden="true">
+    <section class="npc-picker-modal" role="dialog" aria-modal="true" aria-labelledby="npcPickerTitle">
+      <header class="npc-picker-header">
+        <div>
+          <div class="dm-section-label">Creature Library</div>
+          <h2 id="npcPickerTitle">Add NPC</h2>
+          <p>Choose a custom combatant or add an SRD statblock with its hit points and Armor Class already filled in.</p>
+        </div>
+        <button id="closeNpcPickerBtn" class="npc-picker-close" type="button" aria-label="Close NPC picker">×</button>
+      </header>
+
+      <div class="npc-picker-actions">
+        <button id="addCustomNpcBtn" type="button" class="dm-primary-button">+ Custom NPC</button>
+        <span>or select a statblock below</span>
+      </div>
+
+      <div class="npc-picker-filters">
+        <label class="npc-filter-search">
+          <span>Search</span>
+          <input id="statblockSearchInput" type="search" placeholder="Search by name, trait, or action…" autocomplete="off" />
+        </label>
+        <label>
+          <span>Library</span>
+          <select id="statblockSectionFilter"><option value="">All entries</option></select>
+        </label>
+        <label>
+          <span>Type</span>
+          <select id="statblockTypeFilter"><option value="">All types</option></select>
+        </label>
+        <label>
+          <span>Size</span>
+          <select id="statblockSizeFilter"><option value="">All sizes</option></select>
+        </label>
+        <label>
+          <span>CR</span>
+          <select id="statblockCrFilter"><option value="">All CRs</option></select>
+        </label>
+      </div>
+
+      <div class="npc-picker-results-header">
+        <strong id="statblockResultCount">Loading statblocks…</strong>
+        <button id="clearStatblockFiltersBtn" type="button" class="dm-subtle-button">Clear filters</button>
+      </div>
+      <div id="statblockResults" class="statblock-results" aria-live="polite"></div>
+    </section>
+  </div>
+
+<script src="js/conditions.js"></script>
+<script src="js/storage-config.js"></script>
+<script src="js/storage-adapter.js"></script>
+<script src="js/dm-screen.js"></script>
+<script src="js/accessibility.js"></script>
+</body>
+</html>

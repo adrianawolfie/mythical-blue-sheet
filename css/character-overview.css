@@ -293,3 +293,145 @@
   opacity: .9;
   outline: none !important;
 }
+
+/* ─── CHARACTER OVERVIEW — TOP ACTIONS ─────────────────────── */
+.overview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 14px;
+}
+
+.overview-action-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--gold-deep);
+  background: var(--navy);
+  color: #fff;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: .4px;
+  text-decoration: none;
+  transition: background .16s ease, transform .16s ease;
+}
+
+.overview-action-link:hover,
+.overview-action-link:focus-visible {
+  background: var(--navy-soft);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+@media (max-width: 768px) {
+  .overview-action-link {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ─── CHARACTER OVERVIEW — MYTHICAL BLUE FRAME ─────────────── */
+.start-page {
+  position: relative;
+  overflow: hidden;
+  background-color: #ede1c0;
+  background-image: url('../assets/parchment-seamless.png');
+  background-size: 100% auto;
+  background-repeat: repeat-y;
+  background-position: top center;
+  box-shadow: 0 8px 38px rgba(0,0,0,.40), inset 0 0 0 1px rgba(255,248,218,.38);
+}
+
+.start-page::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(184,144,44,.36);
+  pointer-events: none;
+}
+
+.start-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+.start-page-heading-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(184,144,44,.68);
+}
+
+.start-page h1 {
+  margin-bottom: 0;
+  font-size: 28px;
+}
+
+.overview-actions {
+  display: flex;
+  justify-content: center;
+  padding: 14px 0 4px;
+}
+
+.overview-action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 210px;
+  padding: 10px 16px;
+  border: 1px solid var(--gold-deep);
+  background: linear-gradient(180deg, var(--navy-soft), var(--navy-deep));
+  box-shadow: 0 3px 7px rgba(28,39,80,.24), inset 0 1px 0 rgba(255,255,255,.16);
+  color: #fff7dc;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+}
+
+.overview-action-link::before,
+.overview-action-link::after {
+  content: '✦';
+  color: var(--gold-light);
+  font-size: 10px;
+}
+
+.overview-action-link:hover,
+.overview-action-link:focus-visible {
+  background: linear-gradient(180deg, #46598f, var(--navy));
+  box-shadow: 0 5px 10px rgba(28,39,80,.28), inset 0 1px 0 rgba(255,255,255,.20);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.start-page .character-card {
+  border-color: rgba(184,144,44,.72);
+  background: rgba(255,253,245,.34);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.20), 0 2px 6px rgba(43,56,102,.05);
+  transition: background .16s ease, border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+
+.start-page .character-card:hover {
+  border-color: var(--gold-deep);
+  background: rgba(255,253,245,.54);
+  box-shadow: 0 4px 10px rgba(43,56,102,.10);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+  .start-page h1 { font-size: 22px; }
+  .overview-action-link {
+    width: 100%;
+    min-width: 0;
+    padding: 9px 11px;
+    font-size: 11px;
+  }
+}
