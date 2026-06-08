@@ -5,18 +5,6 @@ exports.handler = async () => {
     const branch = process.env.GITHUB_BRANCH || "main";
     const path = "campaign/campaign-state.json";
 
-    const defaultState = {
-      schemaVersion: 1,
-      updatedAt: null,
-      calendarDate: {
-        year: 4520,
-        month: 3,
-        day: 28,
-        special: null
-      },
-      daysTraveled: 0
-    };
-
     const response = await fetch(
       `https://api.github.com/repos/${repo}/contents/${path}?ref=${branch}&t=${Date.now()}`,
       {
@@ -27,17 +15,6 @@ exports.handler = async () => {
         }
       }
     );
-
-    if (response.status === 404) {
-      return {
-        statusCode: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store"
-        },
-        body: JSON.stringify(defaultState)
-      };
-    }
 
     if (!response.ok) {
       return {
