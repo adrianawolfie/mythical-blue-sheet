@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "a0f2d0e2-3dc5-46ab-9b65-8ce9d0e8b5f1",
-  "updatedAt": "2026-06-08T15:03:39.744Z",
+  "updatedAt": "2026-06-10T07:48:41.444Z",
   "summary": {
     "name": "Nimue",
     "armorClass": "13",
@@ -151,7 +151,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Origin Feat"
       },
       {
         "name": "Goose: Corrupted Egg",
@@ -162,7 +162,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Origin Feat"
       },
       {
         "name": "Amphibious",
@@ -173,7 +173,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Species Trait"
       },
       {
         "name": "Cold Climate Adept",
@@ -184,7 +184,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Species Trait"
       },
       {
         "name": "Bioluminescence",
@@ -195,7 +195,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Species Trait"
       },
       {
         "name": "Aquatic Affiliation",
@@ -206,7 +206,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Species Trait"
       },
       {
         "name": "Siren's Call",
@@ -217,7 +217,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Species Trait"
       },
       {
         "name": "Versatile: Cleric Initiate",
@@ -228,7 +228,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Species Trait"
       },
       {
         "name": "Resourceful",
@@ -239,7 +239,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Species Trait"
       },
       {
         "name": "Innate Sorcery",
@@ -250,7 +250,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Class Feature"
       },
       {
         "name": "Font of Magic",
@@ -261,7 +261,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Class Feature"
       },
       {
         "name": "Metamagic",
@@ -269,10 +269,10 @@
         "hasResource": false,
         "resource": "",
         "details": "Heightened: Cost: 2 Sorcery Points\nWhen you cast a spell that forces a creature to make a saving throw, you can spend 2 Sorcery Points to give one target of the spell Disadvantage on saves against the spell.\n\nTwinned: Source: Cost: 1 Sorcery Point\nWhen you cast a spell, such as Charm Person, that can be cast with a higher-level spell slot to target an additional creature, you can spend 1 Sorcery Point to increase the spell’s effective level by 1.\n\nBecause your magic flows from within, you can alter your spells to suit your needs; you gain two Metamagic options of your choice from “Metamagic Options” later in this class’s description. You use the chosen options to temporarily modify spells you cast. To use an option, you must spend the number of Sorcery Points that it costs.\n\nYou can use only one Metamagic option on a spell when you cast it unless otherwise noted in one of those options.\n\nWhenever you gain a Sorcerer level, you can replace one of your Metamagic options with one you don’t know. You gain two more options at Sorcerer level 10 and two more at Sorcerer level 17.",
-        "open": true,
+        "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Class Feature"
       }
     ],
     "weapons": [
@@ -616,6 +616,11 @@
       "other": [
         "Darkvision: 60ft"
       ]
+    },
+    "defenses": {
+      "resistances": [],
+      "immunities": [],
+      "vulnerabilities": []
     },
     "journalNotes": [],
     "inventoryItems": [
