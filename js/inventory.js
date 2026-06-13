@@ -1034,10 +1034,26 @@ function attachItemRowBehavior(mainRow, detailsRow) {
     refreshInventoryDependentOptions();
   });
 
-  nameInput?.addEventListener("input", () => {
+  const commitInventoryNameChange = () => {
     refreshAllEquippedSelects();
     updateMobileInventorySummary(mainRow);
     inventorySortState.key === "name" ? applyInventorySort() : applyInventoryFilters();
+  };
+
+  nameInput?.addEventListener("input", () => {
+    // Keep typing smooth: do not re-sort or rebuild the mobile inventory groups
+    // after every keystroke, because moving the active row can make the browser
+    // drop focus and force the user to reselect the field after each letter.
+    refreshAllEquippedSelects();
+    updateMobileInventorySummary(mainRow);
+  });
+
+  nameInput?.addEventListener("change", commitInventoryNameChange);
+  nameInput?.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      nameInput.blur();
+    }
   });
 
   mainRow
