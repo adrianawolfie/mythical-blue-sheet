@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
   "id": "f7399244-4d80-4b0d-9dd1-c2d4ea53d26a",
-  "updatedAt": "2026-06-17T22:21:01.160Z",
+  "updatedAt": "2026-06-17T22:21:34.132Z",
   "summary": {
     "name": "Mara Flint",
     "armorClass": "15",
     "hpCurrent": "1",
-    "hpMax": "20",
+    "hpMax": "12",
     "tempHp": "",
     "hitDice": "1d10",
     "passivePerception": "14",
@@ -24,7 +24,7 @@
     "speed": "30",
     "armorClass": "15",
     "hpCurrent": "1",
-    "hpMax": "20",
+    "hpMax": "12",
     "tempHp": "",
     "currentConditions": "",
     "proficiencyBonus": "+2",
