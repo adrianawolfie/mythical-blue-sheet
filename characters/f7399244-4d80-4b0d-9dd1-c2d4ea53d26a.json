@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "f7399244-4d80-4b0d-9dd1-c2d4ea53d26a",
-  "updatedAt": "2026-06-17T22:30:28.691Z",
+  "updatedAt": "2026-06-17T22:31:34.131Z",
   "summary": {
     "name": "Mara Flint",
     "armorClass": "15",
@@ -235,7 +235,7 @@
         "short": "Ignore loading, Firing in Melee, Dual Wielding",
         "hasResource": false,
         "resource": "",
-        "details": "",
+        "details": "Ignore Loading. You ignore the Loading property of the Hand Crossbow, Heavy Crossbow, and Light Crossbow (all called crossbows elsewhere in this feat). If you're holding one of them, you can load a piece of ammunition into it even if you lack a free hand.\n\nFiring in Melee. Being within 5 feet of an enemy doesn't impose Disadvantage on your attack rolls with crossbows.\n\nDual Wielding. When you make the extra attack of the Light property, you can add your ability modifier to the damage of the extra attack if that attack is with a crossbow that has the Light property and you aren't already adding that modifier to the damage.",
         "open": true,
         "sourceId": "",
         "source": "",
