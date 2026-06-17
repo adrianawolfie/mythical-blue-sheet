@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "f7399244-4d80-4b0d-9dd1-c2d4ea53d26a",
-  "updatedAt": "2026-06-08T12:16:58.558Z",
+  "updatedAt": "2026-06-17T17:34:01.148Z",
   "summary": {
     "name": "Mara Flint",
     "armorClass": "15",
@@ -34,7 +34,7 @@
     "strengthSavingThrow": "+2",
     "athletics": "+0",
     "dexterityModifier": "+3",
-    "dexterityScore": "16",
+    "dexterityScore": "17",
     "dexteritySavingThrow": "+5",
     "acrobatics": "+3",
     "sleightOfHand": "+3",
@@ -56,7 +56,7 @@
     "animalHandling": "+2",
     "insight": "+2",
     "medicine": "+2",
-    "perception": "+4",
+    "perception": "+8",
     "survival": "+4",
     "charismaModifier": "+2",
     "charismaScore": "14",
@@ -151,7 +151,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Friend of Fauna",
@@ -162,7 +162,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Fey Ancestry",
@@ -173,7 +173,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Natural Adept",
@@ -184,7 +184,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Selkie's Nature",
@@ -195,7 +195,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Favored Enemy",
@@ -206,7 +206,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Weapon Mastery",
@@ -217,7 +217,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       }
     ],
     "weapons": [
@@ -484,6 +484,11 @@
       "other": [
         "Darkvision: 60 ft."
       ]
+    },
+    "defenses": {
+      "resistances": [],
+      "immunities": [],
+      "vulnerabilities": []
     },
     "journalNotes": [],
     "inventoryItems": [
