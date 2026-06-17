@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "id": "9ae003a4-8e79-4c11-8f1b-3259d3acb54b",
-  "updatedAt": "2026-06-17T17:14:18.160Z",
+  "updatedAt": "2026-06-17T17:14:25.446Z",
   "summary": {
-    "name": "Crowley",
+    "name": "Crowley2",
     "armorClass": "15",
     "hpCurrent": "17",
     "hpMax": "17",
@@ -13,7 +13,7 @@
     "currentConditions": ""
   },
   "fields": {
-    "characterName": "Crowley",
+    "characterName": "Crowley2",
     "speciesRace": "Anansi",
     "background": "Drifter",
     "alignment": "Chaotic Good",
