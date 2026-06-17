@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "c2d9f7e6-44d2-4777-8608-47cf157bcb98",
-  "updatedAt": "2026-06-17T20:22:52.700Z",
+  "updatedAt": "2026-06-17T20:22:54.347Z",
   "summary": {
     "name": "Crowley",
     "armorClass": "15",
@@ -10,7 +10,7 @@
     "tempHp": "",
     "hitDice": "1d8",
     "passivePerception": "13",
-    "currentConditions": "Exhaustion"
+    "currentConditions": "Exhaustion, Frightened"
   },
   "fields": {
     "characterName": "Crowley",
@@ -26,7 +26,7 @@
     "hpCurrent": "0",
     "hpMax": "10",
     "tempHp": "",
-    "currentConditions": "Exhaustion",
+    "currentConditions": "Exhaustion, Frightened",
     "proficiencyBonus": "+2",
     "passivePerception": "13",
     "strengthModifier": "-1",
