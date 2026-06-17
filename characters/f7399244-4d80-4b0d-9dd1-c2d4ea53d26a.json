@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "f7399244-4d80-4b0d-9dd1-c2d4ea53d26a",
-  "updatedAt": "2026-06-17T17:34:01.148Z",
+  "updatedAt": "2026-06-17T18:11:58.009Z",
   "summary": {
     "name": "Mara Flint",
     "armorClass": "15",
@@ -56,7 +56,7 @@
     "animalHandling": "+2",
     "insight": "+2",
     "medicine": "+2",
-    "perception": "+8",
+    "perception": "+4",
     "survival": "+4",
     "charismaModifier": "+2",
     "charismaScore": "14",
