@@ -1,6 +1,6 @@
 (() => {
   const config = window.APP_CONFIG || {};
-  const mode = config.storageMode || "netlify";
+  const mode = config.storageMode || "api";
 
   function clone(value) {
     return JSON.parse(JSON.stringify(value));
@@ -38,32 +38,26 @@
     };
   }
 
-  function createNetlifyAdapter() {
+  function createApiAdapter() {
     return {
       canReset: false,
 
       async init() {},
 
       async listCharacterData() {
-        const response = await fetch(
-          `/.netlify/functions/get-character-index?cacheBust=${Date.now()}`,
-          { cache: "no-store" }
-        );
+        const response = await fetch(`/api/characters?cacheBust=${Date.now()}`, { cache: "no-store" });
 
         return parseJsonResponse(response, "Could not load character index.");
       },
 
       async loadCharacterData(id) {
-        const response = await fetch(
-          `/.netlify/functions/get-character?id=${encodeURIComponent(id)}&cacheBust=${Date.now()}`,
-          { cache: "no-store" }
-        );
+        const response = await fetch(`/api/characters/${encodeURIComponent(id)}?cacheBust=${Date.now()}`, { cache: "no-store" });
 
         return parseJsonResponse(response, "Could not load character.");
       },
 
       async saveCharacterData(character) {
-        const response = await fetch("/.netlify/functions/save-character", {
+        const response = await fetch("/api/characters", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(character)
@@ -81,7 +75,7 @@
         armorClassState,
         currentConditions
       }) {
-        const response = await fetch("/.netlify/functions/save-character-status", {
+        const response = await fetch(`/api/characters/${encodeURIComponent(id)}/status`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -99,8 +93,8 @@
       },
 
       async deleteCharacterData(payload) {
-        const response = await fetch("/.netlify/functions/delete-character", {
-          method: "POST",
+        const response = await fetch(`/api/characters/${encodeURIComponent(payload.id)}`, {
+          method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
@@ -300,5 +294,5 @@
   }
 
   window.characterStorage =
-    mode === "local" ? createLocalAdapter() : createNetlifyAdapter();
+    mode === "local" ? createLocalAdapter() : createApiAdapter();
 })();

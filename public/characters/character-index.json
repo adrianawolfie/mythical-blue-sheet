@@ -1,0 +1,68 @@
+[
+  {
+    "id": "c2d9f7e6-44d2-4777-8608-47cf157bcb98",
+    "name": "Crowley",
+    "armorClass": "15",
+    "hpCurrent": "0",
+    "hpMax": "10",
+    "passivePerception": "13",
+    "currentConditions": "",
+    "file": "characters/c2d9f7e6-44d2-4777-8608-47cf157bcb98.json",
+    "updatedAt": "2026-06-17T20:23:04.379Z"
+  },
+  {
+    "id": "9ae003a4-8e79-4c11-8f1b-3259d3acb54b",
+    "name": "Crowley2",
+    "armorClass": "15",
+    "hpCurrent": "17",
+    "hpMax": "17",
+    "passivePerception": "13",
+    "currentConditions": "",
+    "file": "characters/9ae003a4-8e79-4c11-8f1b-3259d3acb54b.json",
+    "updatedAt": "2026-06-17T20:10:38.286Z"
+  },
+  {
+    "id": "c6c1c2a0-92d9-41b8-85a1-1d5f2fe7e6db",
+    "name": "Lillith",
+    "armorClass": "15",
+    "hpCurrent": "5",
+    "hpMax": "10",
+    "passivePerception": "16",
+    "currentConditions": "",
+    "file": "characters/c6c1c2a0-92d9-41b8-85a1-1d5f2fe7e6db.json",
+    "updatedAt": "2026-06-17T20:18:14.779Z"
+  },
+  {
+    "id": "f7399244-4d80-4b0d-9dd1-c2d4ea53d26a",
+    "name": "Mara Flint",
+    "armorClass": "15",
+    "hpCurrent": "12",
+    "hpMax": "20",
+    "passivePerception": "14",
+    "currentConditions": "",
+    "file": "characters/f7399244-4d80-4b0d-9dd1-c2d4ea53d26a.json",
+    "updatedAt": "2026-06-17T22:31:34.131Z"
+  },
+  {
+    "id": "a0f2d0e2-3dc5-46ab-9b65-8ce9d0e8b5f1",
+    "name": "Nimue",
+    "armorClass": "13",
+    "hpCurrent": "8",
+    "hpMax": "14",
+    "passivePerception": "11",
+    "currentConditions": "Restrained",
+    "file": "characters/a0f2d0e2-3dc5-46ab-9b65-8ce9d0e8b5f1.json",
+    "updatedAt": "2026-06-17T19:22:46.858Z"
+  },
+  {
+    "id": "c5430ee3-3274-47eb-aa4e-9696ab8fcd87",
+    "name": "Vasir Serpentis",
+    "armorClass": "14",
+    "hpCurrent": "7",
+    "hpMax": "7",
+    "passivePerception": "12",
+    "currentConditions": "",
+    "file": "characters/c5430ee3-3274-47eb-aa4e-9696ab8fcd87.json",
+    "updatedAt": "2026-06-10T16:30:13.539Z"
+  }
+]

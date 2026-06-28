@@ -1,6 +1,6 @@
 // Mythical Blue · shared campaign state
 // GitHub Pages uses browser-local test state.
-// Netlify production stores one shared campaign-state JSON file.
+// Local server mode stores one shared campaign-state JSON file.
 
 (() => {
   const config = window.APP_CONFIG || {};
@@ -116,15 +116,12 @@
     };
   }
 
-  function createNetlifyAdapter() {
+  function createApiAdapter() {
     return {
       async init() {},
 
       async loadCampaignState() {
-        const response = await fetch(
-          `/.netlify/functions/get-campaign-state?cacheBust=${Date.now()}`,
-          { cache: "no-store" }
-        );
+        const response = await fetch(`/api/campaign-state?cacheBust=${Date.now()}`, { cache: "no-store" });
 
         return normalizeState(
           await parseJsonResponse(
@@ -135,16 +132,13 @@
       },
 
       async saveCampaignState(state) {
-        const response = await fetch(
-          "/.netlify/functions/save-campaign-state",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(normalizeState(state))
-          }
-        );
+        const response = await fetch("/api/campaign-state", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(normalizeState(state))
+        });
 
         return normalizeState(
           await parseJsonResponse(
@@ -157,7 +151,7 @@
   }
 
   window.campaignStateStorage =
-    mode === "netlify"
-      ? createNetlifyAdapter()
+    mode === "api"
+      ? createApiAdapter()
       : createLocalAdapter();
 })();

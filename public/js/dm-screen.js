@@ -869,9 +869,9 @@
   async function loadCampaignCustomStatblocks() {
     const legacyLocal = Array.isArray(state.customStatblocks) ? state.customStatblocks : [];
 
-    if ((window.APP_CONFIG || {}).storageMode === "netlify") {
+    if ((window.APP_CONFIG || {}).storageMode === "api") {
       try {
-        const response = await fetch(`/.netlify/functions/get-custom-statblocks?cacheBust=${Date.now()}`, { cache: "no-store" });
+        const response = await fetch(`/api/custom-statblocks?cacheBust=${Date.now()}`, { cache: "no-store" });
         const body = await parseCustomStatblockResponse(response, "Could not load campaign custom statblocks.");
         return combineStatblockLists(legacyLocal, Array.isArray(body) ? body : body.statblocks || []);
       } catch (error) {
@@ -895,8 +895,8 @@
       source: statblock.source || "Custom Monster"
     }));
 
-    if ((window.APP_CONFIG || {}).storageMode === "netlify") {
-      const response = await fetch("/.netlify/functions/save-custom-statblocks", {
+    if ((window.APP_CONFIG || {}).storageMode === "api") {
+      const response = await fetch("/api/custom-statblocks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ statblocks: normalized })

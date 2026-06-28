@@ -13,9 +13,13 @@ The same `js/storage-config.js` file works in both environments:
 GitHub Pages / localhost
 → browser localStorage test data
 
-Netlify production
-→ shared Netlify Functions
-→ GitHub character JSON files
+Local server
+→ shared /api filesystem handlers
+→ public/characters and public/campaign JSON files
+
+`MYTHICAL_BLUE_STORAGE_MODE` can force the server to use `api`, `local`, or `s3` mode.
+
+If a `.env` file exists at startup, it is loaded after the process environment and wins on conflicts.
 ```
 
 This prevents an accidental repository copy from silently switching production
@@ -48,7 +52,7 @@ css/
 js/
   conditions.js              condition reference data
   storage-config.js          automatic environment detection
-  storage-adapter.js         localStorage / Netlify abstraction
+  storage-adapter.js         localStorage / API abstraction
 
   core.js                    schema, migrations, load/save, navigation
   tables.js                  weapons and spells
@@ -64,13 +68,10 @@ js/
   calendar.js                Materra calendar behavior
   accessibility.js           font-size controls
 
-netlify/
-  functions/
-    get-character-index.js
-    get-character.js
-    save-character.js
-    save-character-status.js
-    delete-character.js
+api/
+  characters
+  campaign-state
+  custom-statblocks
 ```
 
 ## Save structure
@@ -81,7 +82,7 @@ for this cleanup.
 Frequently changing values are saved through:
 
 ```text
-netlify/functions/save-character-status.js
+/api/characters/:id/status
 ```
 
 This handles:
