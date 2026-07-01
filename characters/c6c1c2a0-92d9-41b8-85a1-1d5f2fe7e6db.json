@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "c6c1c2a0-92d9-41b8-85a1-1d5f2fe7e6db",
-  "updatedAt": "2026-07-01T20:22:33.938Z",
+  "updatedAt": "2026-07-01T20:22:43.425Z",
   "summary": {
     "name": "Lillith",
     "armorClass": "16",
@@ -17,7 +17,7 @@
     "speciesRace": "Drow",
     "background": "Courier",
     "alignment": "Chaotic Neutral",
-    "level": "",
+    "level": "2",
     "class": "Cleric",
     "subclass": "Primordial Nautic Domain",
     "initiative": "+1",
