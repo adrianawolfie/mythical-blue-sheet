@@ -273,7 +273,7 @@ func (h apiHandler) handleSaveCharacterStatus(w http.ResponseWriter, r *http.Req
 	}
 
 	characterPath := filepath.Join(h.publicDir, "characters", characterID+".json")
-	character, err := readCharacterFile(characterPath)
+	raw, err := os.ReadFile(characterPath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			writeJSON(w, http.StatusNotFound, apiError{Error: "Character not found."})
@@ -283,34 +283,20 @@ func (h apiHandler) handleSaveCharacterStatus(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	character.Summary.HpCurrent = stringValue(body, "hpCurrent")
-	character.Summary.HpMax = stringValue(body, "hpMax")
-	character.Summary.TempHp = stringValue(body, "tempHp")
-	character.Summary.ArmorClass = stringValue(body, "armorClass")
-	character.Summary.CurrentConditions = stringValue(body, "currentConditions")
-	fields := ensureMap(character.Fields)
-	fields["hpCurrent"] = stringValue(body, "hpCurrent")
-	fields["hpMax"] = stringValue(body, "hpMax")
-	fields["tempHp"] = stringValue(body, "tempHp")
-	fields["armorClass"] = stringValue(body, "armorClass")
-	fields["currentConditions"] = stringValue(body, "currentConditions")
-	character.Fields = fields
-
-	if acState, ok := body["armorClassState"].(map[string]any); ok {
-		customLists := ensureMap(character.CustomLists)
-		customLists["armorClass"] = acState
-		character.CustomLists = customLists
+	updated, err := updateCharacterStatusRecordToMap(raw, body, time.Now().UTC().Format(time.RFC3339Nano))
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		return
 	}
 
-	character.UpdatedAt = time.Now().UTC().Format(time.RFC3339Nano)
-	if err := writeJSONObject(characterPath, character); err != nil {
+	if err := writeJSONObject(characterPath, updated); err != nil {
 		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
 		return
 	}
 
 	writeJSON(w, http.StatusOK, map[string]any{
 		"success":   true,
-		"updatedAt": character.UpdatedAt,
+		"updatedAt": updated["updatedAt"],
 	})
 }
 
@@ -733,6 +719,52 @@ func ensureMap(value map[string]any) map[string]any {
 		return map[string]any{}
 	}
 	return value
+}
+
+func ensureMapValue(value any) map[string]any {
+	if value == nil {
+		return map[string]any{}
+	}
+	if valueMap, ok := value.(map[string]any); ok && valueMap != nil {
+		return valueMap
+	}
+	return map[string]any{}
+}
+
+func updateCharacterStatusRecordToMap(raw []byte, body map[string]any, updatedAt string) (map[string]any, error) {
+	var character map[string]any
+	if err := json.Unmarshal(raw, &character); err != nil {
+		return nil, err
+	}
+	if character == nil {
+		character = map[string]any{}
+	}
+
+	summary := ensureMapValue(character["summary"])
+	fields := ensureMapValue(character["fields"])
+	customLists := ensureMapValue(character["customLists"])
+
+	summary["hpCurrent"] = stringValue(body, "hpCurrent")
+	summary["hpMax"] = stringValue(body, "hpMax")
+	summary["tempHp"] = stringValue(body, "tempHp")
+	summary["armorClass"] = stringValue(body, "armorClass")
+	summary["currentConditions"] = stringValue(body, "currentConditions")
+	character["summary"] = summary
+
+	fields["hpCurrent"] = stringValue(body, "hpCurrent")
+	fields["hpMax"] = stringValue(body, "hpMax")
+	fields["tempHp"] = stringValue(body, "tempHp")
+	fields["armorClass"] = stringValue(body, "armorClass")
+	fields["currentConditions"] = stringValue(body, "currentConditions")
+	character["fields"] = fields
+
+	if acState, ok := body["armorClassState"].(map[string]any); ok {
+		customLists["armorClass"] = acState
+		character["customLists"] = customLists
+	}
+
+	character["updatedAt"] = updatedAt
+	return character, nil
 }
 
 func (h apiHandler) countCharacters() (int, error) {

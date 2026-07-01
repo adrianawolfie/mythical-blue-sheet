@@ -45,7 +45,6 @@ func (h apiHandler) handleGetCharacterS3(w http.ResponseWriter, characterID stri
 		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
 		return
 	}
-
 	if character.ID != characterID {
 		writeJSON(w, http.StatusConflict, apiError{Error: "Character file mismatch: the filename and internal ID do not match."})
 		return
@@ -148,7 +147,7 @@ func (h apiHandler) handleSaveCharacterStatusS3(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	character, err := h.loadCharacterS3(r.Context(), characterID)
+	raw, err := h.spaces.Get(r.Context(), s3CharacterKey(characterID))
 	if err != nil {
 		if errors.Is(err, spaces.ErrNotFound) {
 			writeJSON(w, http.StatusNotFound, apiError{Error: "Character not found."})
@@ -158,27 +157,23 @@ func (h apiHandler) handleSaveCharacterStatusS3(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	character.Summary.HpCurrent = stringValue(body, "hpCurrent")
-	character.Summary.HpMax = stringValue(body, "hpMax")
-	character.Summary.TempHp = stringValue(body, "tempHp")
-	character.Summary.ArmorClass = stringValue(body, "armorClass")
-	character.Summary.CurrentConditions = stringValue(body, "currentConditions")
-	fields := ensureMap(character.Fields)
-	fields["hpCurrent"] = stringValue(body, "hpCurrent")
-	fields["hpMax"] = stringValue(body, "hpMax")
-	fields["tempHp"] = stringValue(body, "tempHp")
-	fields["armorClass"] = stringValue(body, "armorClass")
-	fields["currentConditions"] = stringValue(body, "currentConditions")
-	character.Fields = fields
-
-	if acState, ok := body["armorClassState"].(map[string]any); ok {
-		customLists := ensureMap(character.CustomLists)
-		customLists["armorClass"] = acState
-		character.CustomLists = customLists
+	character, err := readCharacterBytes(raw)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		return
+	}
+	if character.ID != characterID {
+		writeJSON(w, http.StatusConflict, apiError{Error: "Character file mismatch: the filename and internal ID do not match."})
+		return
 	}
 
-	character.UpdatedAt = currentTimestamp()
-	characterBytes, err := marshalLimitedJSON(character)
+	updated, err := updateCharacterStatusRecordToMap(raw, body, currentTimestamp())
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		return
+	}
+
+	characterBytes, err := marshalLimitedJSON(updated)
 	if err != nil {
 		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
 		return
@@ -189,19 +184,25 @@ func (h apiHandler) handleSaveCharacterStatusS3(w http.ResponseWriter, r *http.R
 		return
 	}
 
+	updatedCharacter, err := readCharacterBytes(characterBytes)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		return
+	}
+
 	entries, err := h.loadCharacterIndex(r.Context())
 	if err != nil {
 		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
 		return
 	}
 
-	entries = upsertCharacterIndex(entries, character)
+	entries = upsertCharacterIndex(entries, updatedCharacter)
 	if err := h.saveCharacterIndex(r.Context(), entries); err != nil {
 		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
 		return
 	}
 
-	writeJSON(w, http.StatusOK, map[string]any{"success": true, "updatedAt": character.UpdatedAt})
+	writeJSON(w, http.StatusOK, map[string]any{"success": true, "updatedAt": updatedCharacter.UpdatedAt})
 }
 
 func (h apiHandler) handleDeleteCharacterS3(w http.ResponseWriter, r *http.Request, characterID string) {
