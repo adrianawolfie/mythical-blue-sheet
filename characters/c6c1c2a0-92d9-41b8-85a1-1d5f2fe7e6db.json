@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
   "id": "c6c1c2a0-92d9-41b8-85a1-1d5f2fe7e6db",
-  "updatedAt": "2026-07-01T20:20:26.888Z",
+  "updatedAt": "2026-07-01T20:20:35.432Z",
   "summary": {
     "name": "Lillith",
     "armorClass": "16",
     "hpCurrent": "10",
-    "hpMax": "10",
+    "hpMax": "17",
     "tempHp": "",
     "hitDice": "1d8",
     "passivePerception": "16",
@@ -24,7 +24,7 @@
     "speed": "30",
     "armorClass": "16",
     "hpCurrent": "10",
-    "hpMax": "10",
+    "hpMax": "17",
     "tempHp": "",
     "currentConditions": "",
     "proficiencyBonus": "+2",
