@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "c6c1c2a0-92d9-41b8-85a1-1d5f2fe7e6db",
-  "updatedAt": "2026-07-01T20:20:44.620Z",
+  "updatedAt": "2026-07-01T20:22:33.938Z",
   "summary": {
     "name": "Lillith",
     "armorClass": "16",
@@ -223,26 +223,26 @@
     "weapons": [
       {
         "name": "Kukri Blade",
-        "atk": "+2",
+        "atk": "+4",
         "damage": "1d6   (slashing)",
         "notes": ""
       },
       {
         "name": "Guiding Bolt",
-        "atk": "+4",
+        "atk": "+7",
         "damage": "4d6 (radiant damage)",
         "notes": ""
       },
       {
         "name": "Divinity: Turn Undead",
-        "atk": "WIS 14 (Reach)",
+        "atk": "WIS 15 (Reach)",
         "damage": "Frightened & Capacitated for 1 min",
         "notes": "As a Magic action, you present your Holy Symbol and censure Undead creatures. Each Undead of your choice within 30 feet of you must make a Wisdom saving throw. If the creature fails its save, it has the Frightened and Incapacitated conditions for 1 minute. For that duration, it tries to move as far from you as it can on its turns. This effect ends early on the creature if it takes any damage, if you have the Incapacitated condition, or if you die."
       },
       {
         "name": "Divninity: Devine Spark",
-        "atk": "CON 14",
-        "damage": "1d8 Heal or Necro/Radiant Damage",
+        "atk": "CON 15",
+        "damage": "1d8+5 Heal or Necro/Radiant Damage",
         "notes": "As a Magic action, you point your Holy Symbol at another creature you can see within 30 feet of yourself and focus divine energy at it. Roll 1d8 and add your Wisdom modifier. You either restore Hit Points to the creature equal to that total or force the creature to make a Constitution saving throw. On a failed save, the creature takes Necrotic or Radiant damage (your choice) equal to that total. On a successful save, the creature takes half as much damage (round down).  You roll an additional d8 when you reach Cleric levels 7 (2d8), 13 (3d8), and 18 (4d8)."
       },
       {
