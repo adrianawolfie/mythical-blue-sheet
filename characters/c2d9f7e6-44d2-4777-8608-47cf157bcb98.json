@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "c2d9f7e6-44d2-4777-8608-47cf157bcb98",
-  "updatedAt": "2026-06-17T20:23:04.379Z",
+  "updatedAt": "2026-07-01T17:44:18.153Z",
   "summary": {
     "name": "Crowley",
     "armorClass": "15",
@@ -146,34 +146,34 @@
         "name": "Bardic Inspiration (Class)",
         "short": "1 creature receives 1d6 for D20 Test.",
         "hasResource": true,
-        "resource": "(3/4) 4/1 Long Rest",
+        "resource": "(0/4) 4/1 Long Rest",
         "details": "As a Bonus Action, you can inspire another creature within 60 ft. that can see or hear you. That creature gains one of your Bardic Inspiration dice (1d6). Once within the next hour, when the creature fails a D20 Test, the creature can roll the Bardic Inspiration die and add the number rolled to the total, potentially turning the failure into a success.",
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Darkvision (Species)",
-        "short": "Yay not a human",
+        "short": "Yay, not a human",
         "hasResource": false,
         "resource": "",
         "details": "",
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Reactive (Background)",
-        "short": "PB to Initiative",
+        "short": "Kill, Kill, Kill!",
         "hasResource": false,
         "resource": "",
         "details": "Your survival instincts sharpen your reflexes- add PB to Initiative (+2 at Level 1). ",
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Poison Resilience (Species)",
@@ -184,7 +184,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Spider Sense (Species)",
@@ -195,7 +195,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Spider Climb (Species)",
@@ -206,7 +206,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Arachnid Bite (Species)",
@@ -214,10 +214,10 @@
         "hasResource": false,
         "resource": "",
         "details": "Must grapple target first, then use bonus action for a poisonous bite,. Damage is 1d6+CON modifier. Target risks being poisoned for 1 minute unless they pass a Constitution save (DC = 8 + PB + CON modifier). ",
-        "open": false,
+        "open": true,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Arachnid Casting (Species)",
@@ -228,7 +228,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       },
       {
         "name": "Everything is Edible (Background)",
@@ -239,7 +239,7 @@
         "open": false,
         "sourceId": "",
         "source": "",
-        "category": ""
+        "category": "Other"
       }
     ],
     "weapons": [
@@ -251,7 +251,7 @@
       },
       {
         "name": "Scimitar",
-        "atk": "+6",
+        "atk": "+4",
         "damage": "1d6+4",
         "notes": "Finesse"
       },
@@ -440,6 +440,13 @@
         "Fiddle"
       ]
     },
+    "defenses": {
+      "resistances": [
+        "Poison"
+      ],
+      "immunities": [],
+      "vulnerabilities": []
+    },
     "journalNotes": [],
     "inventoryItems": [
       {
@@ -468,7 +475,7 @@
         "type": "gear",
         "qty": "15",
         "value": "1 GP",
-        "location": "",
+        "location": "worn",
         "details": "Adventuring Gear · Weight: 2 lb.\n\nAs a Utilize action, you can spread Caltrops from their bag to cover a 5-footsquare area within 5 feet of yourself. A creature that enters this area for the first time on a turn must succeed on a DC 15 Dexterity saving throw or take 1 Piercing damage and have its Speed reduced to 0 until the start of its next turn. It takes 10 minutes to recover the Caltrops.\n\nSource: SRD 5.2.1",
         "open": false
       },
@@ -516,10 +523,20 @@
         "id": "item-c2d9f7e6-net-1",
         "name": "Net",
         "type": "gear",
-        "qty": "",
+        "qty": "4",
         "value": "1 GP",
-        "location": "",
+        "location": "worn",
         "details": "Adventuring Gear · Weight: 3 lb.\n\nWhen you take the Attack action, you can replace one of your attacks with throwing a Net. Target a creature you can see within 15 feet of yourself. The target must succeed on a Dexterity saving throw (DC 8 plus your Dexterity modifier and Proficiency Bonus) or have the Restrained condition until it escapes. The target succeeds automatically if it is Huge or larger. To escape, the target or a creature within 5 feet of it must take an action to make a DC 10 Strength (Athletics) check, freeing the Restrained creature on a success. Destroying the Net (AC 10; 5 HP; Immunity to Bludgeoning, Poison, and Psychic damage) also frees the target, ending the effect.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
+      {
+        "id": "consumable-71e24f09-60f2-47fa-9714-0bc1a4c3f03e",
+        "name": "Potion of Healing",
+        "type": "consumable",
+        "qty": "1",
+        "value": "50 GP",
+        "location": "worn",
+        "details": "Adventuring Gear · Weight: 1/2 lb.\n\nThis potion is a magic item. As a Bonus Action, you can drink it or administer it to another creature within 5 feet of yourself. The creature that drinks the magical red fluid in this vial regains 2d4 + 2 Hit Points.\n\nSource: SRD 5.2.1",
         "open": false
       },
       {
@@ -580,7 +597,7 @@
         "type": "gear",
         "qty": "15",
         "value": "1 GP",
-        "location": "",
+        "location": "worn",
         "details": "Adventuring Gear · Weight: 2 lb.\n\nAs a Utilize action, you can spread Caltrops from their bag to cover a 5-footsquare area within 5 feet of yourself. A creature that enters this area for the first time on a turn must succeed on a DC 15 Dexterity saving throw or take 1 Piercing damage and have its Speed reduced to 0 until the start of its next turn. It takes 10 minutes to recover the Caltrops.\n\nSource: SRD 5.2.1",
         "open": false
       },
@@ -628,9 +645,9 @@
         "id": "item-c2d9f7e6-net-1",
         "name": "Net",
         "type": "gear",
-        "qty": "",
+        "qty": "4",
         "value": "1 GP",
-        "location": "",
+        "location": "worn",
         "details": "Adventuring Gear · Weight: 3 lb.\n\nWhen you take the Attack action, you can replace one of your attacks with throwing a Net. Target a creature you can see within 15 feet of yourself. The target must succeed on a Dexterity saving throw (DC 8 plus your Dexterity modifier and Proficiency Bonus) or have the Restrained condition until it escapes. The target succeeds automatically if it is Huge or larger. To escape, the target or a creature within 5 feet of it must take an action to make a DC 10 Strength (Athletics) check, freeing the Restrained creature on a success. Destroying the Net (AC 10; 5 HP; Immunity to Bludgeoning, Poison, and Psychic damage) also frees the target, ending the effect.\n\nSource: SRD 5.2.1",
         "open": false
       },
@@ -678,6 +695,16 @@
       }
     ],
     "consumables": [
+      {
+        "id": "consumable-71e24f09-60f2-47fa-9714-0bc1a4c3f03e",
+        "name": "Potion of Healing",
+        "type": "consumable",
+        "qty": "1",
+        "value": "50 GP",
+        "location": "worn",
+        "details": "Adventuring Gear · Weight: 1/2 lb.\n\nThis potion is a magic item. As a Bonus Action, you can drink it or administer it to another creature within 5 feet of yourself. The creature that drinks the magical red fluid in this vial regains 2d4 + 2 Hit Points.\n\nSource: SRD 5.2.1",
+        "open": false
+      },
       {
         "id": "item-c2d9f7e6-rations-1",
         "name": "Rations",
