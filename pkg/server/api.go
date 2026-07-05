@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"raperonzolo/character-sheet/pkg/config"
 	"regexp"
 	"sort"
 	"strings"
@@ -22,6 +23,7 @@ const maxCharacterCount = 50
 
 type apiHandler struct {
 	publicDir   string
+	dataDir     string
 	storageMode string
 	spaces      *spaces.Client
 }
@@ -30,15 +32,15 @@ type apiError struct {
 	Error string `json:"error"`
 }
 
-func NewAPIHandler(publicDir string) (http.Handler, error) {
-	mode := strings.TrimSpace(strings.ToLower(os.Getenv("MYTHICAL_BLUE_STORAGE_MODE")))
+func NewAPIHandler(publicDir string, dataDir string) (http.Handler, error) {
+	mode := strings.TrimSpace(strings.ToLower(config.StorageMode))
 	if mode == "" {
 		mode = "api"
 	}
 
-	h := apiHandler{publicDir: publicDir, storageMode: mode}
+	h := apiHandler{publicDir: publicDir, dataDir: dataDir, storageMode: mode}
 	if mode == "s3" {
-		client, err := spaces.NewFromEnv()
+		client, err := spaces.New()
 		if err != nil {
 			return nil, err
 		}
@@ -107,7 +109,7 @@ func (h apiHandler) handleListCharacters(w http.ResponseWriter, _ *http.Request)
 		return
 	}
 
-	entries, err := os.ReadDir(filepath.Join(h.publicDir, "characters"))
+	entries, err := os.ReadDir(filepath.Join(h.dataDir, "characters"))
 	if err != nil {
 		writeJSON(w, http.StatusOK, []characterIndexEntry{})
 		return
@@ -122,7 +124,7 @@ func (h apiHandler) handleListCharacters(w http.ResponseWriter, _ *http.Request)
 			continue
 		}
 
-		characterPath := filepath.Join(h.publicDir, "characters", entry.Name())
+		characterPath := filepath.Join(h.dataDir, "characters", entry.Name())
 		character, err := readCharacterFile(characterPath)
 		if err != nil || character.ID == "" {
 			continue
@@ -159,7 +161,7 @@ func (h apiHandler) handleGetCharacter(w http.ResponseWriter, characterID string
 		return
 	}
 
-	characterPath := filepath.Join(h.publicDir, "characters", characterID+".json")
+	characterPath := filepath.Join(h.dataDir, "characters", characterID+".json")
 	raw, err := os.ReadFile(characterPath)
 	if err != nil {
 		writeJSON(w, http.StatusNotFound, apiError{Error: "Character not found."})
@@ -202,7 +204,7 @@ func (h apiHandler) handleSaveCharacter(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	characterPath := filepath.Join(h.publicDir, "characters", characterID+".json")
+	characterPath := filepath.Join(h.dataDir, "characters", characterID+".json")
 	existing, existingErr := readCharacterFile(characterPath)
 	if existingErr != nil && !os.IsNotExist(existingErr) {
 		writeJSON(w, http.StatusInternalServerError, apiError{Error: existingErr.Error()})
@@ -272,7 +274,7 @@ func (h apiHandler) handleSaveCharacterStatus(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	characterPath := filepath.Join(h.publicDir, "characters", characterID+".json")
+	characterPath := filepath.Join(h.dataDir, "characters", characterID+".json")
 	raw, err := os.ReadFile(characterPath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -312,7 +314,7 @@ func (h apiHandler) handleDeleteCharacter(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	characterPath := filepath.Join(h.publicDir, "characters", characterID+".json")
+	characterPath := filepath.Join(h.dataDir, "characters", characterID+".json")
 	character, err := readCharacterFile(characterPath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -347,7 +349,7 @@ func (h apiHandler) handleCampaignState(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	path := filepath.Join(h.publicDir, "campaign", "campaign-state.json")
+	path := filepath.Join(h.dataDir, "campaign", "campaign-state.json")
 
 	switch r.Method {
 	case http.MethodGet:
@@ -419,7 +421,7 @@ func (h apiHandler) handleCustomStatblocks(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	path := filepath.Join(h.publicDir, "campaign", "custom-statblocks.json")
+	path := filepath.Join(h.dataDir, "campaign", "custom-statblocks.json")
 
 	switch r.Method {
 	case http.MethodGet:
@@ -768,7 +770,7 @@ func updateCharacterStatusRecordToMap(raw []byte, body map[string]any, updatedAt
 }
 
 func (h apiHandler) countCharacters() (int, error) {
-	entries, err := os.ReadDir(filepath.Join(h.publicDir, "characters"))
+	entries, err := os.ReadDir(filepath.Join(h.dataDir, "characters"))
 	if err != nil {
 		if os.IsNotExist(err) {
 			return 0, nil

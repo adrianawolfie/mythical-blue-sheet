@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"raperonzolo/character-sheet/pkg/config"
 	"strings"
 )
 
@@ -12,7 +13,7 @@ func NewConfigHandler() http.Handler {
 		w.Header().Set("Content-Type", "application/javascript")
 		w.Header().Set("Cache-Control", "no-store")
 
-		mode := strings.TrimSpace(os.Getenv("MYTHICAL_BLUE_STORAGE_MODE"))
+		mode := strings.TrimSpace(os.Getenv(config.StorageMode))
 		switch mode {
 		case "local", "api":
 		default:

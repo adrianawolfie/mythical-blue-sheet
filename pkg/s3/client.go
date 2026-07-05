@@ -10,7 +10,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"os"
+	"raperonzolo/character-sheet/pkg/config"
 	"sort"
 	"strings"
 	"time"
@@ -31,9 +31,9 @@ type Client struct {
 	httpClient *http.Client
 }
 
-func NewFromEnv() (*Client, error) {
-	accessKey := strings.TrimSpace(os.Getenv("S3_KEY"))
-	secretKey := strings.TrimSpace(os.Getenv("S3_SECRET"))
+func New() (*Client, error) {
+	accessKey := strings.TrimSpace(config.S3Key)
+	secretKey := strings.TrimSpace(config.S3Secret)
 	if accessKey == "" || secretKey == "" {
 		return nil, fmt.Errorf("S3_KEY and S3_SECRET are required for s3 storage mode")
 	}
