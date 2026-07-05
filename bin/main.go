@@ -4,25 +4,28 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"raperonzolo/character-sheet/pkg/config"
+	"raperonzolo/character-sheet/pkg/s3"
 	"raperonzolo/character-sheet/pkg/server"
 	"raperonzolo/character-sheet/pkg/users"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Println("Skipping .env")
+	config.Load()
+
+	client, err := s3.New()
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	userRepository, err := users.New()
+	userRepository, err := users.New(users.WithS3(client, "users.jsonl"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	mux := http.NewServeMux()
 	mux.Handle("/config.js", server.NewConfigHandler())
-	apiHandler, err := server.NewAPIHandler(filepath.Join("public"), filepath.Join("data"))
+	apiHandler, err := server.NewAPIHandler(client, filepath.Join("public"), filepath.Join("data"))
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -3,6 +3,7 @@ package server
 import (
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"html/template"
 	"net/http"
 	"raperonzolo/character-sheet/pkg/users"
@@ -34,6 +35,10 @@ func PostUser(u users.Repository) http.HandlerFunc {
 			return
 		}
 		if err := u.Create(user); err != nil {
+			if errors.Is(err, users.ErrPasswordInvalid) {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
 			renderErrorPage(w, err)
 			return
 		}
@@ -65,6 +70,6 @@ func PostLogin(u users.Repository) http.HandlerFunc {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 			return
 		}
-		http.Redirect(w, r, "/register", http.StatusSeeOther)
+		w.WriteHeader(http.StatusNotFound)
 	}
 }

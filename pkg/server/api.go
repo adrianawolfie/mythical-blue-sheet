@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	spaces "raperonzolo/character-sheet/pkg/s3"
+	"raperonzolo/character-sheet/pkg/s3"
 )
 
 var safeID = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
@@ -25,27 +25,20 @@ type apiHandler struct {
 	publicDir   string
 	dataDir     string
 	storageMode string
-	spaces      *spaces.Client
+	spaces      *s3.Client
 }
 
 type apiError struct {
 	Error string `json:"error"`
 }
 
-func NewAPIHandler(publicDir string, dataDir string) (http.Handler, error) {
+func NewAPIHandler(client *s3.Client, publicDir string, dataDir string) (http.Handler, error) {
 	mode := strings.TrimSpace(strings.ToLower(config.StorageMode))
 	if mode == "" {
 		mode = "api"
 	}
 
-	h := apiHandler{publicDir: publicDir, dataDir: dataDir, storageMode: mode}
-	if mode == "s3" {
-		client, err := spaces.New()
-		if err != nil {
-			return nil, err
-		}
-		h.spaces = client
-	}
+	h := apiHandler{publicDir: publicDir, dataDir: dataDir, storageMode: mode, spaces: client}
 
 	return h, nil
 }

@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"raperonzolo/character-sheet/pkg/s3"
 	"sync"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -38,9 +40,9 @@ func WithLocal(path string) Option {
 	}
 }
 
-func WithS3(client s3.Client, path string) Option {
+func WithS3(client *s3.Client, path string) Option {
 	return func(r *Repository) error {
-		r.storage = s3.NewReadWriter(&client, path)
+		r.storage = s3.NewReadWriter(client, path)
 		return nil
 	}
 }
@@ -91,6 +93,9 @@ func (l *Repository) Create(user User) error {
 	if user.Email == "" {
 		return ErrUserEmailRequired
 	}
+	if err := validatePassword(user.Password); err != nil {
+		return err
+	}
 
 	if len(l.users) >= maxUserLimit {
 		return ErrUserLimitReached
@@ -103,6 +108,7 @@ func (l *Repository) Create(user User) error {
 		return ErrUserAlreadyExists
 	}
 
+	user.ID = uuid.Must(uuid.NewV7())
 	user.Password = encryptPassword(user.Password + os.Getenv("USERS_SECRET"))
 
 	if err := json.NewEncoder(l.storage).Encode(user); err != nil {
