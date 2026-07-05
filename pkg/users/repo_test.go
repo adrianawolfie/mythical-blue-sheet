@@ -3,6 +3,7 @@ package users
 import (
 	"errors"
 	"path/filepath"
+	"raperonzolo/character-sheet/pkg/config"
 	"testing"
 
 	"github.com/google/uuid"
@@ -11,7 +12,7 @@ import (
 
 func newTestRepo(t *testing.T) Repository {
 	t.Helper()
-	t.Setenv("USERS_SECRET", "secret")
+	t.Setenv("USER_SECRET", "secret")
 
 	repo, err := New(WithLocal(filepath.Join(t.TempDir(), "users.jsonl")))
 	require.NoError(t, err)
@@ -20,7 +21,9 @@ func newTestRepo(t *testing.T) Repository {
 
 func TestLocalCreateAppendsUserToJSONL(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "users.jsonl")
-	t.Setenv("USERS_SECRET", "secret")
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+
 	repo, err := New(WithLocal(path))
 	require.NoError(t, err)
 
@@ -57,7 +60,7 @@ func TestLocalCreateAppendsUserToJSONL(t *testing.T) {
 
 func TestLocalCreateRejectsDuplicateUser(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "users.jsonl")
-	t.Setenv("USERS_SECRET", "secret")
+	t.Setenv("USER_SECRET", "secret")
 	repo, err := New(WithLocal(path))
 	require.NoError(t, err)
 
@@ -75,7 +78,7 @@ func TestLocalCreateRejectsDuplicateUser(t *testing.T) {
 func TestLocalCreateRejectsShortPassword(t *testing.T) {
 	repo := newTestRepo(t)
 	err := repo.Create(User{Email: "ada@example.com", Password: "Ab1!xyz"})
-	if !errors.Is(err, ErrPasswordTooShort) {
+	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordTooShort, got %v", err)
 	}
 }
@@ -83,7 +86,7 @@ func TestLocalCreateRejectsShortPassword(t *testing.T) {
 func TestLocalCreateRejectsPasswordWithoutNumber(t *testing.T) {
 	repo := newTestRepo(t)
 	err := repo.Create(User{Email: "ada@example.com", Password: "Abcdefg!"})
-	if !errors.Is(err, ErrPasswordNoNumber) {
+	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordNoNumber, got %v", err)
 	}
 }
@@ -91,7 +94,7 @@ func TestLocalCreateRejectsPasswordWithoutNumber(t *testing.T) {
 func TestLocalCreateRejectsPasswordWithoutSpecialCharacter(t *testing.T) {
 	repo := newTestRepo(t)
 	err := repo.Create(User{Email: "ada@example.com", Password: "Abcdefg1"})
-	if !errors.Is(err, ErrPasswordNoSpecial) {
+	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordNoSpecial, got %v", err)
 	}
 }
@@ -99,7 +102,7 @@ func TestLocalCreateRejectsPasswordWithoutSpecialCharacter(t *testing.T) {
 func TestLocalCreateRejectsPasswordWithoutUppercase(t *testing.T) {
 	repo := newTestRepo(t)
 	err := repo.Create(User{Email: "ada@example.com", Password: "abcdefg1!"})
-	if !errors.Is(err, ErrPasswordNoCaseMix) {
+	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordNoCaseMix, got %v", err)
 	}
 }
@@ -107,7 +110,7 @@ func TestLocalCreateRejectsPasswordWithoutUppercase(t *testing.T) {
 func TestLocalCreateRejectsPasswordWithoutLowercase(t *testing.T) {
 	repo := newTestRepo(t)
 	err := repo.Create(User{Email: "ada@example.com", Password: "ABCDEFG1!"})
-	if !errors.Is(err, ErrPasswordNoCaseMix) {
+	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordNoCaseMix, got %v", err)
 	}
 }

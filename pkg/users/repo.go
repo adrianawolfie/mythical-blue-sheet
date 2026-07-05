@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"raperonzolo/character-sheet/pkg/config"
 	"raperonzolo/character-sheet/pkg/s3"
 	"sync"
 
@@ -109,7 +110,7 @@ func (l *Repository) Create(user User) error {
 	}
 
 	user.ID = uuid.Must(uuid.NewV7())
-	user.Password = encryptPassword(user.Password + os.Getenv("USERS_SECRET"))
+	user.Password = encryptPassword(user.Password + config.UserSecret)
 
 	if err := json.NewEncoder(l.storage).Encode(user); err != nil {
 		return err

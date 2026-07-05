@@ -5,7 +5,7 @@ import (
 	"crypto/subtle"
 	"encoding/hex"
 	"fmt"
-	"os"
+	"raperonzolo/character-sheet/pkg/config"
 	"unicode"
 
 	"github.com/google/uuid"
@@ -18,8 +18,7 @@ type User struct {
 }
 
 func (u User) ValidatePassword(p string) bool {
-	salt := os.Getenv("USERS_SECRET")
-	given := encryptPassword(p + salt)
+	given := encryptPassword(p + config.UserSecret)
 	return subtle.ConstantTimeCompare([]byte(given), []byte(u.Password)) == 1
 }
 
@@ -30,7 +29,7 @@ func encryptPassword(p string) string {
 
 func validatePassword(p string) error {
 	if len([]rune(p)) < 8 {
-		return fmt.Errorf("password must be at least 8 characters long")
+		return fmt.Errorf("%w, password must be at least 8 characters long", ErrPasswordInvalid)
 	}
 
 	var (
@@ -54,13 +53,13 @@ func validatePassword(p string) error {
 	}
 
 	if !hasNumber {
-		return fmt.Errorf("password must contain at least one number")
+		return fmt.Errorf("%w, password must contain at least one number", ErrPasswordInvalid)
 	}
 	if !hasSpecial {
-		return fmt.Errorf("password must contain at least one special character")
+		return fmt.Errorf("%w, password must contain at least one special character", ErrPasswordInvalid)
 	}
 	if !hasLower || !hasUpper {
-		return fmt.Errorf("password must contain at least one uppercase and one lowercase letter")
+		return fmt.Errorf("%w, password must contain at least one uppercase and one lowercase letter", ErrPasswordInvalid)
 	}
 
 	return nil

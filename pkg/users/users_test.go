@@ -3,7 +3,7 @@ package users
 import "testing"
 
 func TestUserValidatePassword(t *testing.T) {
-	t.Setenv("USERS_SECRET", "secret")
+	t.Setenv("USER_SECRET", "secret")
 
 	user := User{Password: encryptPassword("passwordsecret")}
 
