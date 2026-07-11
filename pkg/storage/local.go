@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -20,10 +21,14 @@ func New(dir string) (Storage, error) {
 	}, nil
 }
 
-func (l local) Reader(path string) (io.ReadCloser, error) {
+func (l local) Reader(ctx context.Context, path string) (io.ReadCloser, error) {
 	return os.OpenFile(filepath.Join(l.dir, path), os.O_CREATE|os.O_RDONLY, 0644)
 }
 
-func (l local) Writer(path string) (io.WriteCloser, error) {
+func (l local) Writer(ctx context.Context, path string) (io.WriteCloser, error) {
 	return os.OpenFile(filepath.Join(l.dir, path), os.O_CREATE|os.O_RDWR, 0644)
+}
+
+func (l local) Delete(ctx context.Context, path string) error {
+	return os.Remove(filepath.Join(l.dir, path))
 }

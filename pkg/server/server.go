@@ -1,14 +1,14 @@
 package server
 
-import "raperonzolo/character-sheet/pkg/users"
+import "raperonzolo/character-sheet/pkg/user"
 
 type Server struct {
-	users users.Repository
+	users user.Repository
 }
 
 type Option func(*Server)
 
-func WithUsers(u users.Repository) Option {
+func WithUsers(u user.Repository) Option {
 	return func(s *Server) {
 		s.users = u
 	}

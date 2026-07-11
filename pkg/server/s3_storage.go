@@ -23,7 +23,7 @@ const (
 func (h apiHandler) handleListCharactersS3(w http.ResponseWriter) {
 	entries, err := h.loadCharacterIndex(context.Background())
 	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 	writeJSON(w, http.StatusOK, entries)
@@ -33,20 +33,20 @@ func (h apiHandler) handleGetCharacterS3(w http.ResponseWriter, characterID stri
 	raw, err := h.spaces.Get(context.Background(), s3CharacterKey(characterID))
 	if err != nil {
 		if errors.Is(err, s3.ErrNotFound) {
-			writeJSON(w, http.StatusNotFound, apiError{Error: "Character not found."})
+			writeJSON(w, http.StatusNotFound, fmt.Errorf("Character not found."))
 			return
 		}
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	character, err := readCharacterBytes(raw)
 	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 	if character.ID != characterID {
-		writeJSON(w, http.StatusConflict, apiError{Error: "Character file mismatch: the filename and internal ID do not match."})
+		writeJSON(w, http.StatusConflict, fmt.Errorf("Character file mismatch: the filename and internal ID do not match."))
 		return
 	}
 
@@ -56,23 +56,23 @@ func (h apiHandler) handleGetCharacterS3(w http.ResponseWriter, characterID stri
 func (h apiHandler) handleSaveCharacterS3(w http.ResponseWriter, r *http.Request) {
 	body, err := readJSONBody(w, r)
 	if err != nil {
-		writeJSON(w, http.StatusBadRequest, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusBadRequest, err)
 		return
 	}
 
 	characterID, ok := stringField(body, "id")
 	if !ok {
-		writeJSON(w, http.StatusBadRequest, apiError{Error: "Character ID is missing."})
+		writeJSON(w, http.StatusBadRequest, fmt.Errorf("Character ID is missing."))
 		return
 	}
 	if !safeID.MatchString(characterID) {
-		writeJSON(w, http.StatusBadRequest, apiError{Error: "Character ID contains invalid characters."})
+		writeJSON(w, http.StatusBadRequest, fmt.Errorf("Character ID contains invalid characters."))
 		return
 	}
 
 	entries, err := h.loadCharacterIndex(r.Context())
 	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -80,13 +80,13 @@ func (h apiHandler) handleSaveCharacterS3(w http.ResponseWriter, r *http.Request
 	_, inIndex := findCharacterIndex(entries, characterID)
 	creatingNewCharacter := !inIndex
 	if creatingNewCharacter && len(entries) >= maxCharacterCount {
-		writeJSON(w, http.StatusTooManyRequests, apiError{Error: "Character limit reached."})
+		writeJSON(w, http.StatusTooManyRequests, fmt.Errorf("Character limit reached."))
 		return
 	}
 
 	_, getErr := h.spaces.Get(r.Context(), characterPath)
 	if getErr != nil && !errors.Is(getErr, s3.ErrNotFound) {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: getErr.Error()})
+		writeJSON(w, http.StatusInternalServerError, getErr)
 		return
 	}
 
@@ -94,20 +94,20 @@ func (h apiHandler) handleSaveCharacterS3(w http.ResponseWriter, r *http.Request
 		current, err := h.loadCharacterS3(r.Context(), characterID)
 		if err != nil {
 			if errors.Is(err, s3.ErrNotFound) {
-				writeJSON(w, http.StatusNotFound, apiError{Error: "Character not found."})
+				writeJSON(w, http.StatusNotFound, fmt.Errorf("character not found"))
 				return
 			}
-			writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+			writeJSON(w, http.StatusInternalServerError, err)
 			return
 		}
 
 		expectedUpdatedAt := stringValue(body, "expectedUpdatedAt")
 		if expectedUpdatedAt == "" {
-			writeJSON(w, http.StatusConflict, apiError{Error: "Save blocked: this character already exists, but the browser does not have a valid edit version. Return to the index, reopen the character, and try again."})
+			writeJSON(w, http.StatusConflict, fmt.Errorf("save blocked: this character already exists, but the browser does not have a valid edit version. Return to the index, reopen the character, and try again"))
 			return
 		}
 		if current.UpdatedAt != "" && expectedUpdatedAt != current.UpdatedAt {
-			writeJSON(w, http.StatusConflict, apiError{Error: "Save blocked: someone else updated this character after you opened it. Copy any important changes, reopen the character from the index, and try again."})
+			writeJSON(w, http.StatusConflict, fmt.Errorf("save blocked: someone else updated this character after you opened it. Copy any important changes, reopen the character from the index, and try again"))
 			return
 		}
 	}
@@ -116,24 +116,24 @@ func (h apiHandler) handleSaveCharacterS3(w http.ResponseWriter, r *http.Request
 	body["updatedAt"] = currentTimestamp()
 	characterBytes, err := marshalLimitedJSON(body)
 	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	if err := h.spaces.Put(r.Context(), characterPath, characterBytes); err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	character, err := readCharacterBytes(characterBytes)
 	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	entries = upsertCharacterIndex(entries, character)
 	if err := h.saveCharacterIndex(r.Context(), entries); err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -143,62 +143,62 @@ func (h apiHandler) handleSaveCharacterS3(w http.ResponseWriter, r *http.Request
 func (h apiHandler) handleSaveCharacterStatusS3(w http.ResponseWriter, r *http.Request, characterID string) {
 	body, err := readJSONBody(w, r)
 	if err != nil {
-		writeJSON(w, http.StatusBadRequest, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusBadRequest, err)
 		return
 	}
 
 	raw, err := h.spaces.Get(r.Context(), s3CharacterKey(characterID))
 	if err != nil {
 		if errors.Is(err, s3.ErrNotFound) {
-			writeJSON(w, http.StatusNotFound, apiError{Error: "Character not found."})
+			writeJSON(w, http.StatusNotFound, fmt.Errorf("character not found"))
 			return
 		}
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	character, err := readCharacterBytes(raw)
 	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 	if character.ID != characterID {
-		writeJSON(w, http.StatusConflict, apiError{Error: "Character file mismatch: the filename and internal ID do not match."})
+		writeJSON(w, http.StatusConflict, fmt.Errorf("character file mismatch: the filename and internal ID do not match"))
 		return
 	}
 
 	updated, err := updateCharacterStatusRecordToMap(raw, body, currentTimestamp())
 	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	characterBytes, err := marshalLimitedJSON(updated)
 	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	if err := h.spaces.Put(r.Context(), s3CharacterKey(characterID), characterBytes); err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	updatedCharacter, err := readCharacterBytes(characterBytes)
 	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	entries, err := h.loadCharacterIndex(r.Context())
 	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	entries = upsertCharacterIndex(entries, updatedCharacter)
 	if err := h.saveCharacterIndex(r.Context(), entries); err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -208,43 +208,43 @@ func (h apiHandler) handleSaveCharacterStatusS3(w http.ResponseWriter, r *http.R
 func (h apiHandler) handleDeleteCharacterS3(w http.ResponseWriter, r *http.Request, characterID string) {
 	body, err := readJSONBody(w, r)
 	if err != nil {
-		writeJSON(w, http.StatusBadRequest, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusBadRequest, err)
 		return
 	}
 
 	character, err := h.loadCharacterS3(r.Context(), characterID)
 	if err != nil {
 		if errors.Is(err, s3.ErrNotFound) {
-			writeJSON(w, http.StatusNotFound, apiError{Error: "Character file was not found."})
+			writeJSON(w, http.StatusNotFound, fmt.Errorf("character file was not found"))
 			return
 		}
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	if character.ID != characterID {
-		writeJSON(w, http.StatusConflict, apiError{Error: "Delete blocked: the filename and internal character ID do not match."})
+		writeJSON(w, http.StatusConflict, fmt.Errorf("delete blocked: the filename and internal character ID do not match"))
 		return
 	}
 
 	if expectedUpdatedAt, _ := body["expectedUpdatedAt"].(string); expectedUpdatedAt != "" && character.UpdatedAt != "" && expectedUpdatedAt != character.UpdatedAt {
-		writeJSON(w, http.StatusConflict, apiError{Error: "Delete blocked: someone else updated this character after you opened it. Return to the index and reopen the character before deleting it."})
+		writeJSON(w, http.StatusConflict, fmt.Errorf("delete blocked: someone else updated this character after you opened it. Return to the index and reopen the character before deleting it"))
 		return
 	}
 
 	if err := h.spaces.Delete(r.Context(), s3CharacterKey(characterID)); err != nil && !errors.Is(err, s3.ErrNotFound) {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	entries, err := h.loadCharacterIndex(r.Context())
 	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 	entries = removeCharacterIndex(entries, characterID)
 	if err := h.saveCharacterIndex(r.Context(), entries); err != nil {
-		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+		writeJSON(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -260,7 +260,7 @@ func (h apiHandler) handleCampaignStateS3(w http.ResponseWriter, r *http.Request
 				writeJSON(w, http.StatusOK, defaultCampaignState())
 				return
 			}
-			writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+			writeJSON(w, http.StatusInternalServerError, err)
 			return
 		}
 		if !json.Valid(raw) {
@@ -271,27 +271,27 @@ func (h apiHandler) handleCampaignStateS3(w http.ResponseWriter, r *http.Request
 	case http.MethodPost:
 		body, err := readJSONBody(w, r)
 		if err != nil {
-			writeJSON(w, http.StatusBadRequest, apiError{Error: err.Error()})
+			writeJSON(w, http.StatusBadRequest, err)
 			return
 		}
 
 		date, _ := body["calendarDate"].(map[string]any)
 		year := intValue(date, "year")
 		if year < 1 {
-			writeJSON(w, http.StatusBadRequest, apiError{Error: "Campaign year is invalid."})
+			writeJSON(w, http.StatusBadRequest, fmt.Errorf("campaign year is invalid"))
 			return
 		}
 
 		special := stringValue(date, "special")
 		if special != "" && special != "intercalis" && special != "aenaris" {
-			writeJSON(w, http.StatusBadRequest, apiError{Error: "Campaign special day is invalid."})
+			writeJSON(w, http.StatusBadRequest, fmt.Errorf("campaign special day is invalid"))
 			return
 		}
 
 		month := intValue(date, "month")
 		day := intValue(date, "day")
 		if special == "" && (month < 1 || month > 13 || day < 1 || day > 28) {
-			writeJSON(w, http.StatusBadRequest, apiError{Error: "Campaign calendar date is invalid."})
+			writeJSON(w, http.StatusBadRequest, fmt.Errorf("campaign calendar date is invalid"))
 			return
 		}
 
@@ -309,17 +309,17 @@ func (h apiHandler) handleCampaignStateS3(w http.ResponseWriter, r *http.Request
 
 		data, err := marshalLimitedJSON(nextState)
 		if err != nil {
-			writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+			writeJSON(w, http.StatusInternalServerError, err)
 			return
 		}
 		if err := h.spaces.Put(r.Context(), s3CampaignStateKey, data); err != nil {
-			writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+			writeJSON(w, http.StatusInternalServerError, err)
 			return
 		}
 
 		writeJSON(w, http.StatusOK, nextState)
 	default:
-		writeJSON(w, http.StatusMethodNotAllowed, apiError{Error: "Method not allowed."})
+		writeJSON(w, http.StatusMethodNotAllowed, fmt.Errorf("method not allowed"))
 	}
 }
 
@@ -332,7 +332,7 @@ func (h apiHandler) handleCustomStatblocksS3(w http.ResponseWriter, r *http.Requ
 				writeJSON(w, http.StatusOK, map[string]any{"statblocks": []any{}})
 				return
 			}
-			writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+			writeJSON(w, http.StatusInternalServerError, err)
 			return
 		}
 		if !json.Valid(raw) {
@@ -343,18 +343,18 @@ func (h apiHandler) handleCustomStatblocksS3(w http.ResponseWriter, r *http.Requ
 	case http.MethodPost:
 		body, err := readJSONBody(w, r)
 		if err != nil {
-			writeJSON(w, http.StatusBadRequest, apiError{Error: err.Error()})
+			writeJSON(w, http.StatusBadRequest, err)
 			return
 		}
 
 		incoming, ok := body["statblocks"].([]any)
 		if !ok {
-			writeJSON(w, http.StatusBadRequest, apiError{Error: "Custom statblocks payload must be a list."})
+			writeJSON(w, http.StatusBadRequest, fmt.Errorf("custom statblocks payload must be a list"))
 			return
 		}
 
 		if len(incoming) > 250 {
-			writeJSON(w, http.StatusBadRequest, apiError{Error: "Too many custom statblocks."})
+			writeJSON(w, http.StatusBadRequest, fmt.Errorf("too many custom statblocks"))
 			return
 		}
 
@@ -373,17 +373,17 @@ func (h apiHandler) handleCustomStatblocksS3(w http.ResponseWriter, r *http.Requ
 
 		data, err := marshalLimitedJSON(normalized)
 		if err != nil {
-			writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+			writeJSON(w, http.StatusInternalServerError, err)
 			return
 		}
 		if err := h.spaces.Put(r.Context(), s3CustomStatsKey, data); err != nil {
-			writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
+			writeJSON(w, http.StatusInternalServerError, err)
 			return
 		}
 
 		writeJSON(w, http.StatusOK, map[string]any{"success": true, "statblocks": normalized})
 	default:
-		writeJSON(w, http.StatusMethodNotAllowed, apiError{Error: "Method not allowed."})
+		writeJSON(w, http.StatusMethodNotAllowed, fmt.Errorf("method not allowed"))
 	}
 }
 
@@ -482,7 +482,7 @@ func marshalLimitedJSON(value any) ([]byte, error) {
 		return nil, err
 	}
 	if int64(len(data)) > maxJSONBytes {
-		return nil, fmt.Errorf("JSON payload exceeds 5MB limit.")
+		return nil, fmt.Errorf("payload exceeds 5MB limit")
 	}
 	data = append(data, '\n')
 	return data, nil

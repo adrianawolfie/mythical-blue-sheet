@@ -1,6 +1,7 @@
-package users
+package user
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -17,37 +18,19 @@ const (
 )
 
 type Repository struct {
-	mu      *sync.RWMutex
+	*sync.RWMutex
 	users   map[string]User
 	storage storage.Storage
 }
 
-type Option func(*Repository) error
-
-func WithStorage(s storage.Storage) Option {
-	return func(r *Repository) error {
-		r.storage = s
-		return nil
-	}
-}
-
-func New(options ...Option) (Repository, error) {
+func NewRepository(ctx context.Context, s storage.Storage) (Repository, error) {
 	repo := Repository{
-		mu:    new(sync.RWMutex),
-		users: make(map[string]User),
+		RWMutex: new(sync.RWMutex),
+		users:   make(map[string]User),
+		storage: s,
 	}
 
-	for _, opt := range options {
-		if err := opt(&repo); err != nil {
-			return repo, err
-		}
-	}
-
-	if repo.storage == nil {
-		return repo, fmt.Errorf("storage is required")
-	}
-
-	reader, err := repo.storage.Reader(usersFilename)
+	reader, err := repo.storage.Reader(ctx, usersFilename)
 	if err != nil {
 		return repo, err
 	}
@@ -68,8 +51,8 @@ func New(options ...Option) (Repository, error) {
 }
 
 func (l *Repository) GetByUsername(email string) (User, error) {
-	l.mu.RLock()
-	defer l.mu.RUnlock()
+	l.RLock()
+	defer l.RUnlock()
 
 	user, ok := l.users[email]
 	if !ok {
@@ -79,7 +62,7 @@ func (l *Repository) GetByUsername(email string) (User, error) {
 	return user, nil
 }
 
-func (l *Repository) Create(user User) error {
+func (l *Repository) Create(ctx context.Context, user User) error {
 	if user.Email == "" {
 		return ErrUserEmailRequired
 	}
@@ -87,8 +70,8 @@ func (l *Repository) Create(user User) error {
 		return err
 	}
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
+	l.Lock()
+	defer l.Unlock()
 
 	if len(l.users) >= maxUserLimit {
 		return ErrUserLimitReached
@@ -101,7 +84,7 @@ func (l *Repository) Create(user User) error {
 	user.ID = uuid.Must(uuid.NewV7())
 	user.Password = encryptPassword(user.Password + config.UserSecret)
 
-	writer, err := l.storage.Writer(usersFilename)
+	writer, err := l.storage.Writer(ctx, usersFilename)
 	if err != nil {
 		return fmt.Errorf("failed to open user file, %w", err)
 	}

@@ -1,46 +1,56 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
-	"path/filepath"
+	"raperonzolo/character-sheet/pkg/character"
 	"raperonzolo/character-sheet/pkg/config"
 	"raperonzolo/character-sheet/pkg/server"
 	"raperonzolo/character-sheet/pkg/storage"
-	"raperonzolo/character-sheet/pkg/storage/s3"
-	"raperonzolo/character-sheet/pkg/users"
+	"raperonzolo/character-sheet/pkg/user"
 )
 
 func main() {
 	config.Load()
+
+	ctx := context.Background()
 
 	s, err := storage.New("data")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	client, err := s3.New()
+	// client, err := s3.New()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	users, err := user.NewRepository(ctx, s)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	userRepository, err := users.New(users.WithStorage(s))
+	characters, err := character.NewRepository(ctx, s)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	mux := http.NewServeMux()
 	mux.Handle("/config.js", server.NewConfigHandler())
-	apiHandler, err := server.NewAPIHandler(client, filepath.Join("public"), filepath.Join("data"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	mux.Handle("/api/", apiHandler)
+	mux.Handle("/api/", server.NewAPIHandler(s))
 	mux.Handle("/", http.FileServer(http.Dir("public")))
 	mux.Handle("GET /login", server.GetLogin())
-	mux.Handle("POST /login", server.PostLogin(userRepository))
+	mux.Handle("POST /login", server.PostLogin(users))
 	mux.Handle("GET /register", server.GetRegistration())
-	mux.Handle("POST /users", server.PostUser(userRepository))
+	mux.Handle("POST /users", server.PostUser(users))
+
+	// character routes
+	mux.Handle("GET /api/characters", server.GetCharacters(characters))
+	mux.Handle("GET /api/characters/{id}", server.GetCharacter(characters))
+	mux.Handle("POST /api/characters", server.PostCharacters(characters))
+	mux.Handle("POST /api/characters/{id}/status", server.PostStatus(characters))
+	mux.Handle("DELETE /api/characters/{id}", server.DeleteCharacter(characters))
 
 	log.Println("listening on :8080")
 	if err := http.ListenAndServe(":8080", mux); err != nil {

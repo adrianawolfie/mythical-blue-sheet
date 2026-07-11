@@ -1,4 +1,4 @@
-package users
+package user
 
 import (
 	"errors"
@@ -18,7 +18,7 @@ func TestLocalCreateAppendsUserToJSONL(t *testing.T) {
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := New(WithStorage(s))
+	repo, err := NewRepository(WithStorage(s))
 	require.NoError(t, err)
 
 	user := User{Email: "ada@example.com", Password: "Encrypted1!"}
@@ -40,7 +40,7 @@ func TestLocalCreateAppendsUserToJSONL(t *testing.T) {
 		t.Fatalf("expected created user %#v, got %#v", expected, created)
 	}
 
-	reloaded, err := New(WithStorage(s))
+	reloaded, err := NewRepository(WithStorage(s))
 	require.NoError(t, err)
 
 	reloadedUser, err := reloaded.GetByUsername("ada@example.com")
@@ -58,7 +58,7 @@ func TestLocalCreateRejectsDuplicateUser(t *testing.T) {
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := New(WithStorage(s))
+	repo, err := NewRepository(WithStorage(s))
 	require.NoError(t, err)
 
 	user := User{Email: "ada@example.com", Password: "Encrypted1!"}
@@ -76,7 +76,7 @@ func TestLocalCreateRejectsShortPassword(t *testing.T) {
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := New(WithStorage(s))
+	repo, err := NewRepository(WithStorage(s))
 	assert.NoError(t, err)
 
 	err = repo.Create(User{Email: "ada@example.com", Password: "Ab1!xyz"})
@@ -89,7 +89,7 @@ func TestLocalCreateRejectsPasswordWithoutNumber(t *testing.T) {
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := New(WithStorage(s))
+	repo, err := NewRepository(WithStorage(s))
 	assert.NoError(t, err)
 
 	err = repo.Create(User{Email: "ada@example.com", Password: "Abcdefg!"})
@@ -102,7 +102,7 @@ func TestLocalCreateRejectsPasswordWithoutSpecialCharacter(t *testing.T) {
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := New(WithStorage(s))
+	repo, err := NewRepository(WithStorage(s))
 	assert.NoError(t, err)
 
 	err = repo.Create(User{Email: "ada@example.com", Password: "Abcdefg1"})
@@ -115,7 +115,7 @@ func TestLocalCreateRejectsPasswordWithoutUppercase(t *testing.T) {
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := New(WithStorage(s))
+	repo, err := NewRepository(WithStorage(s))
 	assert.NoError(t, err)
 
 	err = repo.Create(User{Email: "ada@example.com", Password: "abcdefg1!"})
@@ -128,7 +128,7 @@ func TestLocalCreateRejectsPasswordWithoutLowercase(t *testing.T) {
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := New(WithStorage(s))
+	repo, err := NewRepository(WithStorage(s))
 	assert.NoError(t, err)
 
 	err = repo.Create(User{Email: "ada@example.com", Password: "ABCDEFG1!"})

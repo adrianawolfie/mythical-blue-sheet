@@ -6,7 +6,7 @@ import (
 	"errors"
 	"html/template"
 	"net/http"
-	"raperonzolo/character-sheet/pkg/users"
+	"raperonzolo/character-sheet/pkg/user"
 )
 
 func GetLogin() http.HandlerFunc {
@@ -27,15 +27,15 @@ func GetRegistration() http.HandlerFunc {
 	}
 }
 
-func PostUser(u users.Repository) http.HandlerFunc {
+func PostUser(repo user.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var user users.User
-		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		var u user.User
+		if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
 			renderErrorPage(w, err)
 			return
 		}
-		if err := u.Create(user); err != nil {
-			if errors.Is(err, users.ErrPasswordInvalid) {
+		if err := repo.Create(r.Context(), u); err != nil {
+			if errors.Is(err, user.ErrPasswordInvalid) {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
@@ -46,7 +46,7 @@ func PostUser(u users.Repository) http.HandlerFunc {
 	}
 }
 
-func PostLogin(u users.Repository) http.HandlerFunc {
+func PostLogin(u user.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var login struct {
 			Username string `json:"username"`

@@ -1,8 +1,12 @@
 package storage
 
-import "io"
+import (
+	"context"
+	"io"
+)
 
 type Storage interface {
-	Reader(string) (io.ReadCloser, error)
-	Writer(string) (io.WriteCloser, error)
+	Reader(context.Context, string) (io.ReadCloser, error)
+	Writer(context.Context, string) (io.WriteCloser, error)
+	Delete(context.Context, string) error
 }

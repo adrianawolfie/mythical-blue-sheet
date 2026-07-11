@@ -46,11 +46,11 @@ func New() (*Client, error) {
 	}, nil
 }
 
-func (c *Client) Reader(path string) (io.ReadCloser, error) {
+func (c *Client) Reader(ctx context.Context, path string) (io.ReadCloser, error) {
 	return &readWriterCloser{client: c, path: path}, nil
 }
 
-func (c *Client) Writer(path string) (io.WriteCloser, error) {
+func (c *Client) Writer(ctx context.Context, path string) (io.WriteCloser, error) {
 	return &readWriterCloser{client: c, path: path}, nil
 }
 
