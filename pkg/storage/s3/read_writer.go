@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-type ReadWriter struct {
+type readWriterCloser struct {
 	client *Client
 	path   string
 	mu     sync.Mutex
@@ -17,11 +17,7 @@ type ReadWriter struct {
 	loaded bool
 }
 
-func NewReadWriter(client *Client, path string) *ReadWriter {
-	return &ReadWriter{client: client, path: path}
-}
-
-func (rw *ReadWriter) Read(p []byte) (n int, err error) {
+func (rw *readWriterCloser) Read(p []byte) (n int, err error) {
 	rw.mu.Lock()
 	defer rw.mu.Unlock()
 
@@ -38,7 +34,7 @@ func (rw *ReadWriter) Read(p []byte) (n int, err error) {
 	return n, nil
 }
 
-func (rw *ReadWriter) Write(p []byte) (n int, err error) {
+func (rw *readWriterCloser) Write(p []byte) (n int, err error) {
 	rw.mu.Lock()
 	defer rw.mu.Unlock()
 
@@ -62,7 +58,11 @@ func (rw *ReadWriter) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-func (rw *ReadWriter) load() error {
+func (rw *readWriterCloser) Close() error {
+	return nil
+}
+
+func (rw *readWriterCloser) load() error {
 	if rw.loaded {
 		return nil
 	}

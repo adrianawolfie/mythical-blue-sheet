@@ -5,20 +5,26 @@ import (
 	"net/http"
 	"path/filepath"
 	"raperonzolo/character-sheet/pkg/config"
-	"raperonzolo/character-sheet/pkg/s3"
 	"raperonzolo/character-sheet/pkg/server"
+	"raperonzolo/character-sheet/pkg/storage"
+	"raperonzolo/character-sheet/pkg/storage/s3"
 	"raperonzolo/character-sheet/pkg/users"
 )
 
 func main() {
 	config.Load()
 
+	s, err := storage.New("data")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	client, err := s3.New()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	userRepository, err := users.New(users.WithS3(client, "users.jsonl"))
+	userRepository, err := users.New(users.WithStorage(s))
 	if err != nil {
 		log.Fatal(err)
 	}

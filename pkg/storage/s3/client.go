@@ -46,6 +46,14 @@ func New() (*Client, error) {
 	}, nil
 }
 
+func (c *Client) Reader(path string) (io.ReadCloser, error) {
+	return &readWriterCloser{client: c, path: path}, nil
+}
+
+func (c *Client) Writer(path string) (io.WriteCloser, error) {
+	return &readWriterCloser{client: c, path: path}, nil
+}
+
 func (c *Client) Get(ctx context.Context, key string) ([]byte, error) {
 	response, err := c.do(ctx, http.MethodGet, key, nil)
 	if err != nil {

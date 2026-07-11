@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"raperonzolo/character-sheet/pkg/s3"
+	"raperonzolo/character-sheet/pkg/storage/s3"
 )
 
 var safeID = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)

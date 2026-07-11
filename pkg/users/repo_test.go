@@ -2,29 +2,23 @@ package users
 
 import (
 	"errors"
-	"path/filepath"
 	"raperonzolo/character-sheet/pkg/config"
+	"raperonzolo/character-sheet/pkg/storage"
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func newTestRepo(t *testing.T) Repository {
-	t.Helper()
-	t.Setenv("USER_SECRET", "secret")
-
-	repo, err := New(WithLocal(filepath.Join(t.TempDir(), "users.jsonl")))
-	require.NoError(t, err)
-	return repo
-}
-
 func TestLocalCreateAppendsUserToJSONL(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "users.jsonl")
 	t.Setenv("USER_SECRET", "secret")
 	config.Load()
 
-	repo, err := New(WithLocal(path))
+	s, err := storage.New(t.TempDir())
+	assert.NoError(t, err)
+
+	repo, err := New(WithStorage(s))
 	require.NoError(t, err)
 
 	user := User{Email: "ada@example.com", Password: "Encrypted1!"}
@@ -46,7 +40,7 @@ func TestLocalCreateAppendsUserToJSONL(t *testing.T) {
 		t.Fatalf("expected created user %#v, got %#v", expected, created)
 	}
 
-	reloaded, err := New(WithLocal(path))
+	reloaded, err := New(WithStorage(s))
 	require.NoError(t, err)
 
 	reloadedUser, err := reloaded.GetByUsername("ada@example.com")
@@ -59,9 +53,12 @@ func TestLocalCreateAppendsUserToJSONL(t *testing.T) {
 }
 
 func TestLocalCreateRejectsDuplicateUser(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "users.jsonl")
 	t.Setenv("USER_SECRET", "secret")
-	repo, err := New(WithLocal(path))
+
+	s, err := storage.New(t.TempDir())
+	assert.NoError(t, err)
+
+	repo, err := New(WithStorage(s))
 	require.NoError(t, err)
 
 	user := User{Email: "ada@example.com", Password: "Encrypted1!"}
@@ -76,40 +73,65 @@ func TestLocalCreateRejectsDuplicateUser(t *testing.T) {
 }
 
 func TestLocalCreateRejectsShortPassword(t *testing.T) {
-	repo := newTestRepo(t)
-	err := repo.Create(User{Email: "ada@example.com", Password: "Ab1!xyz"})
+	s, err := storage.New(t.TempDir())
+	assert.NoError(t, err)
+
+	repo, err := New(WithStorage(s))
+	assert.NoError(t, err)
+
+	err = repo.Create(User{Email: "ada@example.com", Password: "Ab1!xyz"})
 	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordTooShort, got %v", err)
 	}
 }
 
 func TestLocalCreateRejectsPasswordWithoutNumber(t *testing.T) {
-	repo := newTestRepo(t)
-	err := repo.Create(User{Email: "ada@example.com", Password: "Abcdefg!"})
+	s, err := storage.New(t.TempDir())
+	assert.NoError(t, err)
+
+	repo, err := New(WithStorage(s))
+	assert.NoError(t, err)
+
+	err = repo.Create(User{Email: "ada@example.com", Password: "Abcdefg!"})
 	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordNoNumber, got %v", err)
 	}
 }
 
 func TestLocalCreateRejectsPasswordWithoutSpecialCharacter(t *testing.T) {
-	repo := newTestRepo(t)
-	err := repo.Create(User{Email: "ada@example.com", Password: "Abcdefg1"})
+	s, err := storage.New(t.TempDir())
+	assert.NoError(t, err)
+
+	repo, err := New(WithStorage(s))
+	assert.NoError(t, err)
+
+	err = repo.Create(User{Email: "ada@example.com", Password: "Abcdefg1"})
 	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordNoSpecial, got %v", err)
 	}
 }
 
 func TestLocalCreateRejectsPasswordWithoutUppercase(t *testing.T) {
-	repo := newTestRepo(t)
-	err := repo.Create(User{Email: "ada@example.com", Password: "abcdefg1!"})
+	s, err := storage.New(t.TempDir())
+	assert.NoError(t, err)
+
+	repo, err := New(WithStorage(s))
+	assert.NoError(t, err)
+
+	err = repo.Create(User{Email: "ada@example.com", Password: "abcdefg1!"})
 	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordNoCaseMix, got %v", err)
 	}
 }
 
 func TestLocalCreateRejectsPasswordWithoutLowercase(t *testing.T) {
-	repo := newTestRepo(t)
-	err := repo.Create(User{Email: "ada@example.com", Password: "ABCDEFG1!"})
+	s, err := storage.New(t.TempDir())
+	assert.NoError(t, err)
+
+	repo, err := New(WithStorage(s))
+	assert.NoError(t, err)
+
+	err = repo.Create(User{Email: "ada@example.com", Password: "ABCDEFG1!"})
 	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordNoCaseMix, got %v", err)
 	}

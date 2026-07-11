@@ -209,3 +209,13 @@ Inventory   + Add Item | + Custom Item
 SRD picker entries can be previewed before adding them. Imported entries remain
 editable character snapshots, and custom spells, feats, traits, and items remain
 supported.
+
+
+Campaign -> Character
+
+Player Login -> Campaign List -> Character List
+
+Campaign
+- Characters
+- Homebrew
+- 

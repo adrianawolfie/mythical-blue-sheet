@@ -4,46 +4,29 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"raperonzolo/character-sheet/pkg/config"
-	"raperonzolo/character-sheet/pkg/s3"
+	"raperonzolo/character-sheet/pkg/storage"
 	"sync"
 
 	"github.com/google/uuid"
 )
 
 const (
-	defaultLocalPath = "data/users.jsonl"
-	maxUserLimit     = 50
+	usersFilename = "users.jsonl"
+	maxUserLimit  = 50
 )
 
 type Repository struct {
 	mu      *sync.RWMutex
 	users   map[string]User
-	storage io.ReadWriter
+	storage storage.Storage
 }
 
 type Option func(*Repository) error
 
-func WithLocal(path string) Option {
+func WithStorage(s storage.Storage) Option {
 	return func(r *Repository) error {
-		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
-			return fmt.Errorf("failed to create user data directory: %w", err)
-		}
-
-		file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0600)
-		if err != nil {
-			return fmt.Errorf("failed to open user data file: %w", err)
-		}
-		r.storage = file
-		return nil
-	}
-}
-
-func WithS3(client *s3.Client, path string) Option {
-	return func(r *Repository) error {
-		r.storage = s3.NewReadWriter(client, path)
+		r.storage = s
 		return nil
 	}
 }
@@ -54,17 +37,23 @@ func New(options ...Option) (Repository, error) {
 		users: make(map[string]User),
 	}
 
-	if len(options) == 0 {
-		options = []Option{WithLocal(defaultLocalPath)}
-	}
-
 	for _, opt := range options {
 		if err := opt(&repo); err != nil {
 			return repo, err
 		}
 	}
 
-	decoder := json.NewDecoder(repo.storage)
+	if repo.storage == nil {
+		return repo, fmt.Errorf("storage is required")
+	}
+
+	reader, err := repo.storage.Reader(usersFilename)
+	if err != nil {
+		return repo, err
+	}
+	defer reader.Close()
+
+	decoder := json.NewDecoder(reader)
 	for {
 		var user User
 		if err := decoder.Decode(&user); err == io.EOF {
@@ -98,12 +87,12 @@ func (l *Repository) Create(user User) error {
 		return err
 	}
 
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	if len(l.users) >= maxUserLimit {
 		return ErrUserLimitReached
 	}
-
-	l.mu.Lock()
-	defer l.mu.Unlock()
 
 	if _, ok := l.users[user.Email]; ok {
 		return ErrUserAlreadyExists
@@ -112,10 +101,20 @@ func (l *Repository) Create(user User) error {
 	user.ID = uuid.Must(uuid.NewV7())
 	user.Password = encryptPassword(user.Password + config.UserSecret)
 
-	if err := json.NewEncoder(l.storage).Encode(user); err != nil {
-		return err
+	writer, err := l.storage.Writer(usersFilename)
+	if err != nil {
+		return fmt.Errorf("failed to open user file, %w", err)
 	}
+	defer writer.Close()
 
 	l.users[user.Email] = user
+
+	encoder := json.NewEncoder(writer)
+	for _, u := range l.users {
+		if err := encoder.Encode(u); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }

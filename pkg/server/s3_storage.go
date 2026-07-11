@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	spaces "raperonzolo/character-sheet/pkg/s3"
+	"raperonzolo/character-sheet/pkg/storage/s3"
 )
 
 const (
@@ -32,7 +32,7 @@ func (h apiHandler) handleListCharactersS3(w http.ResponseWriter) {
 func (h apiHandler) handleGetCharacterS3(w http.ResponseWriter, characterID string) {
 	raw, err := h.spaces.Get(context.Background(), s3CharacterKey(characterID))
 	if err != nil {
-		if errors.Is(err, spaces.ErrNotFound) {
+		if errors.Is(err, s3.ErrNotFound) {
 			writeJSON(w, http.StatusNotFound, apiError{Error: "Character not found."})
 			return
 		}
@@ -85,7 +85,7 @@ func (h apiHandler) handleSaveCharacterS3(w http.ResponseWriter, r *http.Request
 	}
 
 	_, getErr := h.spaces.Get(r.Context(), characterPath)
-	if getErr != nil && !errors.Is(getErr, spaces.ErrNotFound) {
+	if getErr != nil && !errors.Is(getErr, s3.ErrNotFound) {
 		writeJSON(w, http.StatusInternalServerError, apiError{Error: getErr.Error()})
 		return
 	}
@@ -93,7 +93,7 @@ func (h apiHandler) handleSaveCharacterS3(w http.ResponseWriter, r *http.Request
 	if !creatingNewCharacter {
 		current, err := h.loadCharacterS3(r.Context(), characterID)
 		if err != nil {
-			if errors.Is(err, spaces.ErrNotFound) {
+			if errors.Is(err, s3.ErrNotFound) {
 				writeJSON(w, http.StatusNotFound, apiError{Error: "Character not found."})
 				return
 			}
@@ -149,7 +149,7 @@ func (h apiHandler) handleSaveCharacterStatusS3(w http.ResponseWriter, r *http.R
 
 	raw, err := h.spaces.Get(r.Context(), s3CharacterKey(characterID))
 	if err != nil {
-		if errors.Is(err, spaces.ErrNotFound) {
+		if errors.Is(err, s3.ErrNotFound) {
 			writeJSON(w, http.StatusNotFound, apiError{Error: "Character not found."})
 			return
 		}
@@ -214,7 +214,7 @@ func (h apiHandler) handleDeleteCharacterS3(w http.ResponseWriter, r *http.Reque
 
 	character, err := h.loadCharacterS3(r.Context(), characterID)
 	if err != nil {
-		if errors.Is(err, spaces.ErrNotFound) {
+		if errors.Is(err, s3.ErrNotFound) {
 			writeJSON(w, http.StatusNotFound, apiError{Error: "Character file was not found."})
 			return
 		}
@@ -232,7 +232,7 @@ func (h apiHandler) handleDeleteCharacterS3(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	if err := h.spaces.Delete(r.Context(), s3CharacterKey(characterID)); err != nil && !errors.Is(err, spaces.ErrNotFound) {
+	if err := h.spaces.Delete(r.Context(), s3CharacterKey(characterID)); err != nil && !errors.Is(err, s3.ErrNotFound) {
 		writeJSON(w, http.StatusInternalServerError, apiError{Error: err.Error()})
 		return
 	}
@@ -256,7 +256,7 @@ func (h apiHandler) handleCampaignStateS3(w http.ResponseWriter, r *http.Request
 	case http.MethodGet:
 		raw, err := h.spaces.Get(r.Context(), s3CampaignStateKey)
 		if err != nil {
-			if errors.Is(err, spaces.ErrNotFound) {
+			if errors.Is(err, s3.ErrNotFound) {
 				writeJSON(w, http.StatusOK, defaultCampaignState())
 				return
 			}
@@ -328,7 +328,7 @@ func (h apiHandler) handleCustomStatblocksS3(w http.ResponseWriter, r *http.Requ
 	case http.MethodGet:
 		raw, err := h.spaces.Get(r.Context(), s3CustomStatsKey)
 		if err != nil {
-			if errors.Is(err, spaces.ErrNotFound) {
+			if errors.Is(err, s3.ErrNotFound) {
 				writeJSON(w, http.StatusOK, map[string]any{"statblocks": []any{}})
 				return
 			}
@@ -390,7 +390,7 @@ func (h apiHandler) handleCustomStatblocksS3(w http.ResponseWriter, r *http.Requ
 func (h apiHandler) loadCharacterIndex(ctx context.Context) ([]characterIndexEntry, error) {
 	raw, err := h.spaces.Get(ctx, s3CharacterIndexKey)
 	if err != nil {
-		if errors.Is(err, spaces.ErrNotFound) {
+		if errors.Is(err, s3.ErrNotFound) {
 			return []characterIndexEntry{}, nil
 		}
 		return nil, err
@@ -414,7 +414,7 @@ func (h apiHandler) saveCharacterIndex(ctx context.Context, entries []characterI
 func (h apiHandler) loadCharacterS3(ctx context.Context, characterID string) (characterFile, error) {
 	raw, err := h.spaces.Get(ctx, s3CharacterKey(characterID))
 	if err != nil {
-		if errors.Is(err, spaces.ErrNotFound) {
+		if errors.Is(err, s3.ErrNotFound) {
 			return characterFile{}, err
 		}
 		return characterFile{}, err
