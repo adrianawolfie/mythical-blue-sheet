@@ -99,3 +99,29 @@ func TestCreateOrReplaceChangesCharacterDetails(t *testing.T) {
 		t.Fatalf("expected updated character name field, got %#v", updated.Fields["characterName"])
 	}
 }
+
+func TestCreateOrReplaceDoesNotUpdateIndexForExistingCharacter(t *testing.T) {
+	ctx, repo := newRequestedTestRepository(t)
+
+	character := requestedTestCharacter("ada", "Ada")
+	if err := repo.CreateOrReplace(ctx, character); err != nil {
+		t.Fatalf("create character: %v", err)
+	}
+
+	character.Summary.Name = "Ada Storm"
+	character.Summary.ArmorClass = "18"
+	if err := repo.CreateOrReplace(ctx, character); err != nil {
+		t.Fatalf("replace character: %v", err)
+	}
+
+	idx, err := repo.List(ctx)
+	if err != nil {
+		t.Fatalf("list characters: %v", err)
+	}
+	if len(idx) != 1 {
+		t.Fatalf("expected one index entry, got %d", len(idx))
+	}
+	if idx[0].Name != "Ada" || idx[0].ArmorClass != "16" {
+		t.Fatalf("expected original index entry, got %#v", idx[0])
+	}
+}

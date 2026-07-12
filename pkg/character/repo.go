@@ -147,6 +147,12 @@ func (repo Repository) saveCharacter(ctx context.Context, c Character) error {
 }
 
 func (repo Repository) addCharacter(ctx context.Context, idx []Index, c Character) error {
+	for _, i := range idx {
+		if i.ID == c.ID {
+			return nil
+		}
+	}
+
 	idx = append(idx, Index{
 		ID:                c.ID,
 		Name:              c.Summary.Name,
