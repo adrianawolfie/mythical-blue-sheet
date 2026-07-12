@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"raperonzolo/character-sheet/pkg/campaign"
 	"raperonzolo/character-sheet/pkg/character"
 	"raperonzolo/character-sheet/pkg/config"
 	"raperonzolo/character-sheet/pkg/server"
@@ -36,10 +37,17 @@ func main() {
 		log.Fatal(err)
 	}
 
+	campaigns, err := campaign.NewRepository(ctx, s)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	mux := http.NewServeMux()
 	mux.Handle("/config.js", server.NewConfigHandler())
 	mux.Handle("/api/", server.NewAPIHandler(s))
 	mux.Handle("/", http.FileServer(http.Dir("public")))
+
+	// user routes
 	mux.Handle("GET /login", server.GetLogin())
 	mux.Handle("POST /login", server.PostLogin(users))
 	mux.Handle("GET /register", server.GetRegistration())
@@ -51,6 +59,10 @@ func main() {
 	mux.Handle("POST /api/characters", server.PostCharacters(characters))
 	mux.Handle("POST /api/characters/{id}/status", server.PostStatus(characters))
 	mux.Handle("DELETE /api/characters/{id}", server.DeleteCharacter(characters))
+
+	// campaign routes
+	mux.Handle("GET /api/campaign-state", server.GetCampaignState(campaigns))
+	mux.Handle("POST /api/campaign-state", server.PostCampaignState(campaigns))
 
 	handler := server.LimitPostBody(mux)
 

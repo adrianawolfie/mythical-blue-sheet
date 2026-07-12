@@ -34,84 +34,10 @@ func (h apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-store")
 
 	switch {
-	case r.URL.Path == "/api/campaign-state":
-		h.handleCampaignState(w, r)
 	case r.URL.Path == "/api/custom-statblocks":
 		h.handleCustomStatblocks(w, r)
 	default:
 		writeJSON(w, http.StatusNotFound, fmt.Errorf("Not found."))
-	}
-}
-
-func (h apiHandler) handleCampaignState(w http.ResponseWriter, r *http.Request) {
-	// if h.storageMode == "s3" {
-	// 	h.handleCampaignStateS3(w, r)
-	// 	return
-	// }
-
-	path := filepath.Join("data", "campaign", "campaign-state.json")
-
-	switch r.Method {
-	case http.MethodGet:
-		raw, err := os.ReadFile(path)
-		if err != nil {
-			writeJSON(w, http.StatusOK, defaultCampaignState())
-			return
-		}
-
-		if !json.Valid(raw) {
-			writeJSON(w, http.StatusOK, defaultCampaignState())
-			return
-		}
-
-		writeRawJSON(w, http.StatusOK, raw)
-	case http.MethodPost:
-		body, err := readJSONBody(w, r)
-		if err != nil {
-			writeJSON(w, http.StatusBadRequest, err)
-			return
-		}
-
-		date, _ := body["calendarDate"].(map[string]any)
-		year := intValue(date, "year")
-		if year < 1 {
-			writeJSON(w, http.StatusBadRequest, fmt.Errorf("Campaign year is invalid."))
-			return
-		}
-
-		special := stringValue(date, "special")
-		if special != "" && special != "intercalis" && special != "aenaris" {
-			writeJSON(w, http.StatusBadRequest, fmt.Errorf("Campaign special day is invalid."))
-			return
-		}
-
-		month := intValue(date, "month")
-		day := intValue(date, "day")
-		if special == "" && (month < 1 || month > 13 || day < 1 || day > 28) {
-			writeJSON(w, http.StatusBadRequest, fmt.Errorf("Campaign calendar date is invalid."))
-			return
-		}
-
-		nextState := map[string]any{
-			"schemaVersion": 1,
-			"updatedAt":     time.Now().UTC().Format(time.RFC3339Nano),
-			"calendarDate": map[string]any{
-				"year":    year,
-				"month":   nilIfSpecial(special, month),
-				"day":     nilIfSpecial(special, day),
-				"special": nilIfEmpty(special),
-			},
-			"daysTraveled": maxInt(0, intValue(body, "daysTraveled")),
-		}
-
-		if err := writeJSONObject(path, nextState); err != nil {
-			writeJSON(w, http.StatusInternalServerError, err)
-			return
-		}
-
-		writeJSON(w, http.StatusOK, nextState)
-	default:
-		writeJSON(w, http.StatusMethodNotAllowed, fmt.Errorf("Method not allowed."))
 	}
 }
 
@@ -246,14 +172,6 @@ func readCharacterBytes(raw []byte) (characterFile, error) {
 		character.CustomLists = map[string]any{}
 	}
 	return character, nil
-}
-
-func readCharacterFile(path string) (characterFile, error) {
-	raw, err := os.ReadFile(path)
-	if err != nil {
-		return characterFile{}, err
-	}
-	return readCharacterBytes(raw)
 }
 
 func writeJSONObject(path string, value any) error {
