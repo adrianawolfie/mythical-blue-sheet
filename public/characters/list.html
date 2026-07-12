@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
+  <title>Mythical Blue · Characters</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/accessibility.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/theme-mode.css" />
+  <style>
+    .character-list-page { max-width: 1000px; margin: 0 auto; position: relative; overflow: hidden; }
+    .character-list-page::before { content: ""; position: absolute; inset: 8px; border: 1px solid rgba(184, 144, 44, .36); pointer-events: none; }
+    .character-list-content { position: relative; z-index: 1; }
+    .character-list-theme-toggle { position: absolute; top: 16px; right: 16px; z-index: 2; }
+    .character-list-header { display: grid; justify-items: center; gap: 14px; margin-bottom: 22px; text-align: center; }
+    .character-list-brand { display: grid; justify-items: center; gap: 8px; }
+    .character-list-brand img { width: min(320px, 88vw); height: auto; filter: drop-shadow(0 2px 3px rgba(43, 56, 102, .16)); }
+    .character-list-kicker { color: var(--gold-deep); font-family: "Cinzel", serif; font-size: .74rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
+    .character-list-title { font-family: "Cinzel Decorative", serif; color: var(--navy-deep); margin: 0; }
+    .character-list-copy { max-width: 620px; margin: 8px 0 0; color: rgba(39, 28, 8, .82); font: .98rem/1.5 "Lora", Georgia, serif; }
+    .character-list-grid { display: grid; gap: 10px; }
+    .character-list-card { display: block; border: 1px solid var(--gold); background: rgba(255, 255, 255, .35); color: var(--ink); padding: 12px 14px; text-decoration: none; }
+    .character-list-card:hover, .character-list-card:focus-visible { background: rgba(255, 255, 255, .6); outline: 2px solid var(--gold-deep); outline-offset: 2px; }
+    .character-list-name { display: block; color: var(--navy-deep); font-family: "Cinzel", serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+    .character-list-meta { display: flex; flex-wrap: wrap; gap: 12px; font: .9rem/1.4 "Lora", Georgia, serif; }
+    .character-list-meta span { border-left: 2px solid rgba(184, 144, 44, .42); padding-left: 8px; }
+    .character-list-empty { margin: 0; border: 1px solid rgba(184, 144, 44, .7); background: rgba(255,255,255,.25); padding: 18px; font: .98rem/1.5 "Lora", Georgia, serif; }
+    html[data-theme="moonlight"] .character-list-page::before { border-color: rgba(196, 229, 255, .20); }
+    html[data-theme="moonlight"] .character-list-title, html[data-theme="moonlight"] .character-list-name { color: var(--moon-heading); }
+    html[data-theme="moonlight"] .character-list-kicker { color: var(--moon-accent); }
+    html[data-theme="moonlight"] .character-list-copy, html[data-theme="moonlight"] .character-list-empty { color: var(--moon-text-soft); }
+    html[data-theme="moonlight"] .character-list-card { border-color: var(--moon-line); background: var(--moon-surface-glass); color: var(--moon-text); }
+    html[data-theme="moonlight"] .character-list-card:hover, html[data-theme="moonlight"] .character-list-card:focus-visible { background: rgba(24, 49, 94, .76); outline-color: var(--moon-accent); }
+    html[data-theme="moonlight"] .character-list-empty { border-color: var(--moon-line); background: var(--moon-surface-glass); }
+    html[data-theme="moonlight"] .character-list-meta span { border-color: rgba(149, 204, 255, .42); }
+  </style>
+</head>
+<body>
+  <main class="start-page character-list-page" aria-labelledby="charactersTitle">
+    <div class="character-list-content">
+      <div class="character-list-header">
+        <div class="character-list-brand">
+          <img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" />
+          <div>
+            <p class="character-list-kicker">Your Characters</p>
+            <h1 class="character-list-title" id="charactersTitle">Character Roster</h1>
+            <p class="character-list-copy">These are the characters assigned to your account. Choose one to open its full sheet.</p>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="theme-toggle character-list-theme-toggle" data-theme-toggle aria-label="Switch visual theme">
+        <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-orb"></span></span>
+        <span class="theme-toggle-label">Moonlight Mode</span>
+      </button>
+
+      <div class="character-list-grid">
+        {{range .Characters}}
+        <a class="character-list-card" href="/characters/{{.ID}}">
+          <span class="character-list-name">{{.Name}}</span>
+          <span class="character-list-meta">
+            <span>Class: {{.Class}}</span>
+            <span>Species: {{.Species}}</span>
+            <span>Subclass: {{.Subclass}}</span>
+            <span>Level: {{.Level}}</span>
+          </span>
+        </a>
+        {{else}}
+        <p class="character-list-empty">No characters are assigned to your account yet.</p>
+        {{end}}
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/theme-mode.js"></script>
+</body>
+</html>

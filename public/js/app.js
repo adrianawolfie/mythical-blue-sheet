@@ -52,6 +52,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   document.getElementById("backToStartBtn").addEventListener("click", async () => {
+    if (window.location.pathname.startsWith("/characters/")) {
+      window.location.href = "/characters";
+      return;
+    }
     if (!confirmDiscardUnsavedCharacterChanges("return to the character list")) return;
     currentCharacterId = null;
     loadedCharacterUpdatedAt = null;

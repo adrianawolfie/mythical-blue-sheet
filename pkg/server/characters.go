@@ -2,10 +2,29 @@ package server
 
 import (
 	"encoding/json"
+	"html/template"
 	"net/http"
 	"raperonzolo/character-sheet/pkg/character"
+	"raperonzolo/character-sheet/pkg/user"
 	"time"
 )
+
+type characterDetailPageData struct {
+	CharacterJSON template.JS
+}
+
+type characterListPageData struct {
+	Characters []characterListView
+}
+
+type characterListView struct {
+	ID       string
+	Name     string
+	Class    string
+	Species  string
+	Subclass string
+	Level    string
+}
 
 func GetCharacters(c character.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -33,6 +52,75 @@ func GetCharacter(c character.Repository) http.HandlerFunc {
 		if err := json.NewEncoder(w).Encode(c); err != nil {
 			writeError(w, err)
 			return
+		}
+	}
+}
+
+func GetCharacterListPage(users user.Repository, repo character.Repository) http.HandlerFunc {
+	tmpl := template.Must(template.ParseFiles("public/characters/list.html"))
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		cookie, err := r.Cookie("user")
+		if err != nil || cookie.Value == "" {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+
+		currentUser, err := users.GetByUsername(cookie.Value)
+		if err != nil {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+
+		idx, err := repo.List(r.Context())
+		if err != nil {
+			renderErrorPage(w, err)
+			return
+		}
+
+		filtered := make([]characterListView, 0, len(idx))
+		for _, item := range idx {
+			c, err := repo.GetByID(r.Context(), item.ID)
+			if err != nil {
+				renderErrorPage(w, err)
+				return
+			}
+			if c.UserID == currentUser.ID.String() {
+				filtered = append(filtered, characterListView{
+					ID:       item.ID,
+					Name:     item.Name,
+					Class:    c.Fields["class"],
+					Species:  c.Fields["speciesRace"],
+					Subclass: c.Fields["subclass"],
+					Level:    c.Fields["level"],
+				})
+			}
+		}
+
+		if err := tmpl.Execute(w, characterListPageData{Characters: filtered}); err != nil {
+			renderErrorPage(w, err)
+		}
+	}
+}
+
+func GetCharacterDetail(repo character.Repository) http.HandlerFunc {
+	tmpl := template.Must(template.ParseFiles("public/characters/detail.html"))
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		c, err := repo.GetByID(r.Context(), r.PathValue("id"))
+		if err != nil {
+			renderErrorPage(w, err)
+			return
+		}
+
+		data, err := json.Marshal(c)
+		if err != nil {
+			renderErrorPage(w, err)
+			return
+		}
+
+		if err := tmpl.Execute(w, characterDetailPageData{CharacterJSON: template.JS(data)}); err != nil {
+			renderErrorPage(w, err)
 		}
 	}
 }

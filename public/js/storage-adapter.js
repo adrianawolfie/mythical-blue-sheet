@@ -21,6 +21,12 @@
     async init() {},
 
     async listCharacterData() {
+      if (window.__MYTHICAL_BLUE_CHARACTERS__) {
+        const characters = window.__MYTHICAL_BLUE_CHARACTERS__;
+        delete window.__MYTHICAL_BLUE_CHARACTERS__;
+        return characters;
+      }
+
       const response = await fetch(`/api/characters?cacheBust=${Date.now()}`, { cache: "no-store" });
 
       return parseJsonResponse(response, "Could not load character index.");
