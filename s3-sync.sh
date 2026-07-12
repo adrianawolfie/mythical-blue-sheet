@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+source .env
+
+S3_BUCKET="${S3_BUCKET:-raperonzolo}"
+S3_REGION="${S3_REGION:-ams3}"
+S3_ENDPOINT="${S3_ENDPOINT:-${S3_REGION}.digitaloceanspaces.com}"
+DATA_DIR="${DATA_DIR:-./data/}"
+
+if [[ -z "${S3_KEY:-}" ]]; then
+  echo "S3_KEY is required" >&2
+  exit 1
+fi
+
+if [[ -z "${S3_SECRET:-}" ]]; then
+  echo "S3_SECRET is required" >&2
+  exit 1
+fi
+
+mode="${1:---dry-run}"
+case "$mode" in
+  --dry-run)
+    dry_run=(--dry-run)
+    ;;
+  --download)
+    dry_run=()
+    ;;
+  *)
+    echo "Usage: $0 [--dry-run|--download]" >&2
+    exit 1
+    ;;
+esac
+
+s3cmd \
+  --access_key="$S3_KEY" \
+  --secret_key="$S3_SECRET" \
+  --host="$S3_ENDPOINT" \
+  --host-bucket="%(bucket)s.$S3_ENDPOINT" \
+  "${dry_run[@]}" \
+  sync "s3://$S3_BUCKET/" "$DATA_DIR"
