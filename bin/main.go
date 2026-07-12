@@ -52,8 +52,10 @@ func main() {
 	mux.Handle("POST /api/characters/{id}/status", server.PostStatus(characters))
 	mux.Handle("DELETE /api/characters/{id}", server.DeleteCharacter(characters))
 
+	handler := server.LimitPostBody(mux)
+
 	log.Println("listening on :8080")
-	if err := http.ListenAndServe(":8080", mux); err != nil {
+	if err := http.ListenAndServe(":8080", handler); err != nil {
 		log.Fatal(err)
 	}
 }
