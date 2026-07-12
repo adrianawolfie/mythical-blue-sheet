@@ -25,18 +25,15 @@ func main() {
 	)
 
 	if config.Storage == "s3" {
+		log.Println("using s3 storage")
 		s, err = s3.New()
 	} else {
+		log.Println("using local storage")
 		s, err = storage.New("data")
 	}
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// client, err := s3.New()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 
 	users, err := user.NewRepository(ctx, s)
 	if err != nil {

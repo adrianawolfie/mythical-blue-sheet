@@ -62,10 +62,13 @@ func (repo Repository) Save(ctx context.Context, statblocks []Statblock) ([]Stat
 	if err != nil {
 		return nil, fmt.Errorf("failed to write custom statblocks: %w", err)
 	}
-	defer w.Close()
 
 	if err := json.NewEncoder(w).Encode(normalized); err != nil {
+		_ = w.Close()
 		return nil, fmt.Errorf("failed to encode custom statblocks: %w", err)
+	}
+	if err := w.Close(); err != nil {
+		return nil, fmt.Errorf("failed to close custom statblocks: %w", err)
 	}
 
 	return normalized, nil

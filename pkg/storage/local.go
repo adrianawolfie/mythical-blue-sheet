@@ -26,7 +26,11 @@ func (l local) Reader(ctx context.Context, path string) (io.ReadCloser, error) {
 }
 
 func (l local) Writer(ctx context.Context, path string) (io.WriteCloser, error) {
-	return os.OpenFile(filepath.Join(l.dir, path), os.O_CREATE|os.O_RDWR, 0644)
+	fullPath := filepath.Join(l.dir, path)
+	if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
+		return nil, fmt.Errorf("failed to create directory: %w", err)
+	}
+	return os.OpenFile(fullPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 }
 
 func (l local) Delete(ctx context.Context, path string) error {

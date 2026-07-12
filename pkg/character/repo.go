@@ -110,8 +110,13 @@ func (repo Repository) Delete(ctx context.Context, id string) error {
 	if err != nil {
 		return fmt.Errorf("failed to write character index: %w", err)
 	}
+
 	if err := json.NewEncoder(w).Encode(updatedIdx); err != nil {
+		_ = w.Close()
 		return fmt.Errorf("failed to encode character index: %w", err)
+	}
+	if err := w.Close(); err != nil {
+		return fmt.Errorf("failed to close character index: %w", err)
 	}
 
 	return nil
@@ -129,10 +134,13 @@ func (repo Repository) saveCharacter(ctx context.Context, c Character) error {
 	if err != nil {
 		return err
 	}
-	defer w.Close()
 
 	if err := json.NewEncoder(w).Encode(c); err != nil {
+		_ = w.Close()
 		return fmt.Errorf("failed to write character: %w", err)
+	}
+	if err := w.Close(); err != nil {
+		return fmt.Errorf("failed to close character: %w", err)
 	}
 
 	return nil
@@ -155,10 +163,13 @@ func (repo Repository) addCharacter(ctx context.Context, idx []Index, c Characte
 	if err != nil {
 		return fmt.Errorf("failed to write character index: %w", err)
 	}
-	defer w.Close()
 
 	if err := json.NewEncoder(w).Encode(idx); err != nil {
+		_ = w.Close()
 		return fmt.Errorf("failed to encode character index: %w", err)
+	}
+	if err := w.Close(); err != nil {
+		return fmt.Errorf("failed to close character index: %w", err)
 	}
 
 	return nil

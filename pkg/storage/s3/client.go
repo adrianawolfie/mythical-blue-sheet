@@ -51,7 +51,7 @@ func (c *Client) Reader(ctx context.Context, path string) (io.ReadCloser, error)
 }
 
 func (c *Client) Writer(ctx context.Context, path string) (io.WriteCloser, error) {
-	return &readWriterCloser{client: c, path: path}, nil
+	return &readWriterCloser{client: c, path: path, write: true}, nil
 }
 
 func (c *Client) Get(ctx context.Context, key string) ([]byte, error) {

@@ -59,10 +59,13 @@ func (repo Repository) Save(ctx context.Context, state State) (State, error) {
 	if err != nil {
 		return State{}, fmt.Errorf("failed to write campaign state: %w", err)
 	}
-	defer w.Close()
 
 	if err := json.NewEncoder(w).Encode(next); err != nil {
+		_ = w.Close()
 		return State{}, fmt.Errorf("failed to encode campaign state: %w", err)
+	}
+	if err := w.Close(); err != nil {
+		return State{}, fmt.Errorf("failed to close campaign state: %w", err)
 	}
 
 	return next, nil

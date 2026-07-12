@@ -14,10 +14,10 @@ func newRequestedTestRepository(t *testing.T) (context.Context, Repository) {
 	t.Helper()
 
 	dir := t.TempDir()
-	if err := os.MkdirAll(filepath.Join(dir, "characters"), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Join(dir, "character"), 0o755); err != nil {
 		t.Fatalf("create characters dir: %v", err)
 	}
-	if err := os.WriteFile(filepath.Join(dir, "characters", "character-index.json"), []byte("[]"), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "character", "character-index.json"), []byte("[]"), 0o644); err != nil {
 		t.Fatalf("seed character index: %v", err)
 	}
 

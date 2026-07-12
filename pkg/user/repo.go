@@ -88,15 +88,18 @@ func (l *Repository) Create(ctx context.Context, user User) error {
 	if err != nil {
 		return fmt.Errorf("failed to open user file, %w", err)
 	}
-	defer writer.Close()
 
 	l.users[user.Email] = user
 
 	encoder := json.NewEncoder(writer)
 	for _, u := range l.users {
 		if err := encoder.Encode(u); err != nil {
+			_ = writer.Close()
 			return err
 		}
+	}
+	if err := writer.Close(); err != nil {
+		return fmt.Errorf("failed to close user file, %w", err)
 	}
 
 	return nil
