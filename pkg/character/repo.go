@@ -10,6 +10,11 @@ import (
 	"sync"
 )
 
+const (
+	characterIndexPath = "character/character-index.json"
+	characterRootPath  = "character"
+)
+
 type Repository struct {
 	*sync.RWMutex
 	storage storage.Storage
@@ -51,7 +56,7 @@ func (repo Repository) List(ctx context.Context) ([]Index, error) {
 	repo.RLock()
 	defer repo.RUnlock()
 
-	r, err := repo.storage.Reader(ctx, path.Join("characters", "character-index.json"))
+	r, err := repo.storage.Reader(ctx, characterIndexPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read character: %w", err)
 	}
@@ -68,7 +73,7 @@ func (repo Repository) GetByID(ctx context.Context, id string) (Character, error
 	repo.RLock()
 	defer repo.RUnlock()
 
-	r, err := repo.storage.Reader(ctx, filepath.Join("characters", id+".json"))
+	r, err := repo.storage.Reader(ctx, filepath.Join(characterRootPath, id+".json"))
 	if err != nil {
 		return Character{}, fmt.Errorf("failed to read character: %w", err)
 	}
@@ -97,11 +102,11 @@ func (repo Repository) Delete(ctx context.Context, id string) error {
 		}
 	}
 
-	if err := repo.storage.Delete(ctx, filepath.Join("characters", id+".json")); err != nil {
+	if err := repo.storage.Delete(ctx, filepath.Join(characterRootPath, id+".json")); err != nil {
 		return fmt.Errorf("failed to delete character: %w", err)
 	}
 
-	w, err := repo.storage.Writer(ctx, path.Join("characters", "character-index.json"))
+	w, err := repo.storage.Writer(ctx, characterIndexPath)
 	if err != nil {
 		return fmt.Errorf("failed to write character index: %w", err)
 	}
@@ -120,7 +125,7 @@ func (repo Repository) saveCharacter(ctx context.Context, c Character) error {
 		return fmt.Errorf("character ID is required")
 	}
 
-	w, err := repo.storage.Writer(ctx, path.Join("characters", c.ID+".json"))
+	w, err := repo.storage.Writer(ctx, path.Join(characterRootPath, c.ID+".json"))
 	if err != nil {
 		return err
 	}
@@ -142,11 +147,11 @@ func (repo Repository) addCharacter(ctx context.Context, idx []Index, c Characte
 		HpMax:             c.Summary.HpMax,
 		PassivePerception: c.Summary.PassivePerception,
 		CurrentConditions: c.Summary.CurrentConditions,
-		File:              filepath.Join("characters", c.ID+".json"),
+		File:              filepath.Join(characterRootPath, c.ID+".json"),
 		UpdatedAt:         c.UpdatedAt,
 	})
 
-	w, err := repo.storage.Writer(ctx, path.Join("characters", "character-index.json"))
+	w, err := repo.storage.Writer(ctx, characterIndexPath)
 	if err != nil {
 		return fmt.Errorf("failed to write character index: %w", err)
 	}
