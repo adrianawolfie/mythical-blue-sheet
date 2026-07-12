@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -145,6 +146,43 @@ func TestGetAdminCharactersShowsClassLevelAndUserName(t *testing.T) {
 		if !strings.Contains(body, expected) {
 			t.Fatalf("expected response to contain %q", expected)
 		}
+	}
+}
+
+func TestPostAdminCharacterAssignmentPersistsUserID(t *testing.T) {
+	chdirRepoRoot(t)
+
+	users := newUserTestRepository(t, `{"id":"018fe68a-01a8-70b1-8ea3-2d0b819a2d29","name":"Admin User","email":"admin@example.com","password":"hash","isAdmin":true}`+"\n")
+	characters := newCharacterTestRepository(t, character.Character{
+		ID: "ada-character",
+		Summary: character.Summary{
+			Name: "Ada Storm",
+		},
+		Fields: character.Fields{
+			"class": "Wizard",
+			"level": "7",
+		},
+	})
+	req := httptest.NewRequest(
+		http.MethodPost,
+		"/admin/characters/ada-character/assignment",
+		bytes.NewBufferString(`{"userId":"018fe68a-01a8-70b1-8ea3-2d0b819a2d29"}`),
+	)
+	req.SetPathValue("id", "ada-character")
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	PostAdminCharacterAssignment(users, characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	updated, err := characters.GetByID(context.Background(), "ada-character")
+	if err != nil {
+		t.Fatalf("get updated character: %v", err)
+	}
+	if updated.UserID != "018fe68a-01a8-70b1-8ea3-2d0b819a2d29" {
+		t.Fatalf("expected assigned user id, got %q", updated.UserID)
 	}
 }
 

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -26,6 +27,7 @@ type adminUsersPageData struct {
 type adminCharactersPageData struct {
 	CurrentUser adminUserView
 	Characters  []adminCharacterView
+	Users       []adminUserView
 	Count       int
 }
 
@@ -35,6 +37,11 @@ type adminCharacterView struct {
 	Class    string
 	Level    string
 	UserName string
+	Assigned bool
+}
+
+type adminAssignCharacterRequest struct {
+	UserID string `json:"userId"`
 }
 
 type adminCampaignsPageData struct {
@@ -93,13 +100,21 @@ func GetAdminCharacters(users user.Repository, characters character.Repository) 
 			return
 		}
 
+		allUsers := users.List(r.Context())
+		userViews := make([]adminUserView, 0, len(allUsers))
 		userNamesByID := make(map[string]string)
-		for _, u := range users.List(r.Context()) {
+		for _, u := range allUsers {
 			name := u.Name
 			if name == "" {
 				name = u.Email
 			}
 			userNamesByID[u.ID.String()] = name
+			userViews = append(userViews, adminUserView{
+				ID:      u.ID.String(),
+				Name:    u.Name,
+				Email:   u.Email,
+				IsAdmin: u.IsAdmin,
+			})
 		}
 
 		views := make([]adminCharacterView, 0, len(idx))
@@ -124,17 +139,63 @@ func GetAdminCharacters(users user.Repository, characters character.Repository) 
 				Class:    c.Fields["class"],
 				Level:    c.Fields["level"],
 				UserName: userName,
+				Assigned: c.UserID != "",
 			})
 		}
 
 		data := adminCharactersPageData{
 			CurrentUser: adminUserView{ID: currentUser.ID.String(), Name: currentUser.Name, Email: currentUser.Email, IsAdmin: currentUser.IsAdmin},
 			Characters:  views,
+			Users:       userViews,
 			Count:       len(views),
 		}
 		if err := tmpl.Execute(w, data); err != nil {
 			renderErrorPage(w, err)
 		}
+	}
+}
+
+func PostAdminCharacterAssignment(users user.Repository, characters character.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := requireAdmin(w, r, users); !ok {
+			return
+		}
+
+		var req adminAssignCharacterRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeJSON(w, http.StatusBadRequest, err)
+			return
+		}
+		if req.UserID == "" {
+			http.Error(w, "userId is required", http.StatusBadRequest)
+			return
+		}
+
+		found := false
+		for _, u := range users.List(r.Context()) {
+			if u.ID.String() == req.UserID {
+				found = true
+				break
+			}
+		}
+		if !found {
+			http.Error(w, "user not found", http.StatusBadRequest)
+			return
+		}
+
+		c, err := characters.GetByID(r.Context(), r.PathValue("id"))
+		if err != nil {
+			renderErrorPage(w, err)
+			return
+		}
+		c.UserID = req.UserID
+
+		if err := characters.CreateOrReplace(r.Context(), c); err != nil {
+			renderErrorPage(w, err)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
 	}
 }
 

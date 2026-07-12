@@ -284,6 +284,116 @@ body.admin-body {
   color: var(--gold-deep);
 }
 
+.admin-inline-action {
+  border: 0;
+  background: transparent;
+  color: var(--navy);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(43, 56, 102, .38);
+  text-underline-offset: 3px;
+}
+
+.admin-inline-action:hover,
+.admin-inline-action:focus-visible {
+  color: var(--navy-deep);
+  outline: none;
+  text-decoration-color: var(--navy-deep);
+}
+
+.admin-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(12, 14, 24, .62);
+}
+
+.admin-modal[hidden] {
+  display: none;
+}
+
+.admin-modal-card {
+  width: min(420px, 100%);
+  border: 2px solid var(--gold);
+  background-color: #ede1c0;
+  background-image: url("../assets/parchment-seamless.png");
+  background-size: 100% auto;
+  box-shadow: 0 12px 42px rgba(0, 0, 0, .48);
+  color: var(--ink);
+  padding: 24px;
+}
+
+.admin-modal-card h2 {
+  color: var(--navy-deep);
+  font-family: "Cinzel Decorative", serif;
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+
+.admin-modal-copy {
+  margin-top: 10px;
+  font: .95rem/1.5 "Lora", Georgia, serif;
+}
+
+.admin-modal-field {
+  display: grid;
+  gap: 6px;
+  margin-top: 18px;
+}
+
+.admin-modal-field span {
+  color: var(--gold-deep);
+  font-family: "Cinzel", serif;
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.admin-modal-field select {
+  min-height: 42px;
+  border: 1px solid rgba(138, 105, 24, .72);
+  background: rgba(255, 253, 245, .72);
+  color: var(--ink);
+  padding: 8px 10px;
+  font: 1rem "Lora", Georgia, serif;
+}
+
+.admin-modal-error {
+  min-height: 20px;
+  margin-top: 10px;
+  color: #7a1c1c;
+  font: .9rem/1.35 "Lora", Georgia, serif;
+}
+
+.admin-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.admin-modal-actions button {
+  min-height: 38px;
+  border: 1px solid var(--gold-deep);
+  background: var(--navy);
+  color: #fff;
+  cursor: pointer;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  padding: 8px 12px;
+  text-transform: uppercase;
+}
+
+.admin-modal-actions button[type="button"] {
+  background: rgba(255, 255, 255, .34);
+  color: var(--navy-deep);
+}
+
 .admin-empty {
   padding: 32px 16px;
   color: rgba(31, 41, 82, .75);
@@ -335,6 +445,44 @@ html[data-theme="moonlight"] .admin-badge {
 }
 
 html[data-theme="moonlight"] .admin-badge-on { color: var(--moon-accent); }
+
+html[data-theme="moonlight"] .admin-inline-action {
+  color: var(--moon-accent);
+  text-decoration-color: rgba(149, 204, 255, .46);
+}
+
+html[data-theme="moonlight"] .admin-modal-card {
+  border-color: var(--moon-line-strong);
+  background:
+    linear-gradient(135deg, rgba(4, 27, 66, .94), rgba(8, 42, 89, .82)),
+    url("../assets/themes/moonlight/backgrounds/parchment-seamless.png");
+  color: var(--moon-text);
+}
+
+html[data-theme="moonlight"] .admin-modal-card h2,
+html[data-theme="moonlight"] .admin-modal-field span {
+  color: var(--moon-accent);
+}
+
+html[data-theme="moonlight"] .admin-modal-field select {
+  border-color: var(--moon-line);
+  background: rgba(2, 20, 52, .74);
+  color: var(--moon-text);
+}
+
+html[data-theme="moonlight"] .admin-modal-error {
+  color: #ffd2d2;
+}
+
+html[data-theme="moonlight"] .admin-modal-actions button {
+  border-color: var(--moon-line);
+  background: var(--moon-button-to);
+  color: var(--moon-text);
+}
+
+html[data-theme="moonlight"] .admin-modal-actions button[type="button"] {
+  background: var(--moon-surface-glass);
+}
 
 @media (max-width: 820px) {
   body.admin-body { padding: 18px 10px; }
