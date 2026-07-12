@@ -1,14 +1,7 @@
 // Mythical Blue · shared campaign state
-// GitHub Pages uses browser-local test state.
-// Local server mode stores one shared campaign-state JSON file.
+// Stores one shared campaign-state JSON file through the server API.
 
 (() => {
-  const config = window.APP_CONFIG || {};
-  const mode = config.storageMode || "local";
-
-  const LOCAL_STORAGE_KEY = "mythicalBlueCampaignStateV1";
-  const SEED_URL = "campaign/campaign-state.json";
-
   const DEFAULT_STATE = {
     schemaVersion: 1,
     updatedAt: null,
@@ -20,10 +13,6 @@
     },
     daysTraveled: 0
   };
-
-  function clone(value) {
-    return JSON.parse(JSON.stringify(value));
-  }
 
   function normalizeState(state = {}) {
     const date = state.calendarDate || {};
@@ -60,98 +49,35 @@
     return body;
   }
 
-  function createLocalAdapter() {
-    async function loadSeed() {
-      try {
-        const response = await fetch(`${SEED_URL}?cacheBust=${Date.now()}`, {
-          cache: "no-store"
-        });
+  window.campaignStateStorage = {
+    async init() {},
 
-        if (!response.ok) return clone(DEFAULT_STATE);
+    async loadCampaignState() {
+      const response = await fetch(`/api/campaign-state?cacheBust=${Date.now()}`, { cache: "no-store" });
 
-        return normalizeState(await response.json());
-      } catch {
-        return clone(DEFAULT_STATE);
-      }
+      return normalizeState(
+        await parseJsonResponse(
+          response,
+          "Could not load shared campaign state."
+        )
+      );
+    },
+
+    async saveCampaignState(state) {
+      const response = await fetch("/api/campaign-state", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(normalizeState(state))
+      });
+
+      return normalizeState(
+        await parseJsonResponse(
+          response,
+          "Could not save shared campaign state."
+        )
+      );
     }
-
-    return {
-      async init() {
-        if (!localStorage.getItem(LOCAL_STORAGE_KEY)) {
-          localStorage.setItem(
-            LOCAL_STORAGE_KEY,
-            JSON.stringify(await loadSeed())
-          );
-        }
-      },
-
-      async loadCampaignState() {
-        await this.init();
-
-        return normalizeState(
-          JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || "{}")
-        );
-      },
-
-      async saveCampaignState(state) {
-        const normalized = normalizeState({
-          ...state,
-          updatedAt: new Date().toISOString()
-        });
-
-        localStorage.setItem(
-          LOCAL_STORAGE_KEY,
-          JSON.stringify(normalized)
-        );
-
-        return clone(normalized);
-      },
-
-      async resetTestData() {
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
-        await this.init();
-
-        return this.loadCampaignState();
-      }
-    };
-  }
-
-  function createApiAdapter() {
-    return {
-      async init() {},
-
-      async loadCampaignState() {
-        const response = await fetch(`/api/campaign-state?cacheBust=${Date.now()}`, { cache: "no-store" });
-
-        return normalizeState(
-          await parseJsonResponse(
-            response,
-            "Could not load shared campaign state."
-          )
-        );
-      },
-
-      async saveCampaignState(state) {
-        const response = await fetch("/api/campaign-state", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(normalizeState(state))
-        });
-
-        return normalizeState(
-          await parseJsonResponse(
-            response,
-            "Could not save shared campaign state."
-          )
-        );
-      }
-    };
-  }
-
-  window.campaignStateStorage =
-    mode === "api"
-      ? createApiAdapter()
-      : createLocalAdapter();
+  };
 })();

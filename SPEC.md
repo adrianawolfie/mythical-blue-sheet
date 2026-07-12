@@ -6,22 +6,15 @@ Mythical Blue is a plain HTML, CSS, and JavaScript app. It does not require a fr
 
 ## Environment Behavior
 
-The same `js/storage-config.js` file works in both environments:
+The frontend uses the shared server API for persisted data:
 
 ```text
-GitHub Pages / localhost
--> browser localStorage test data
-
 Local server
 -> shared /api filesystem handlers
--> public/characters and public/campaign JSON files
-
-`MYTHICAL_BLUE_STORAGE_MODE` can force the server to use `api`, `local`, or `s3` mode.
+-> data/characters and data/campaign JSON files
 
 If a `.env` file exists at startup, it is loaded after the process environment and wins on conflicts.
 ```
-
-This prevents an accidental repository copy from silently switching production into localStorage mode.
 
 ## Frontend Structure
 
@@ -50,8 +43,7 @@ css/
 
 js/
   conditions.js              condition reference data
-  storage-config.js          automatic environment detection
-  storage-adapter.js         localStorage / API abstraction
+  storage-adapter.js         character API abstraction
 
   core.js                    schema, migrations, load/save, navigation
   tables.js                  weapons and spells

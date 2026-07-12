@@ -7,7 +7,6 @@
   const SYNC_STORAGE_KEY = "mythicalBlueHPBroadcastV1";
   const STATBLOCK_LIBRARY_URL = "data/srd-statblocks.json";
   const CUSTOM_STATBLOCK_SEED_URL = "data/custom-statblocks.json";
-  const LOCAL_CUSTOM_STATBLOCKS_KEY = "mythicalBlueCampaignCustomStatblocksV1";
   const CUSTOM_MONSTER_SECTION = "Custom Monsters";
   const SAVE_DELAY = 550;
   const POLL_DELAY = 5000;
@@ -869,21 +868,12 @@
   async function loadCampaignCustomStatblocks() {
     const legacyLocal = Array.isArray(state.customStatblocks) ? state.customStatblocks : [];
 
-    if ((window.APP_CONFIG || {}).storageMode === "api") {
-      try {
-        const response = await fetch(`/api/custom-statblocks?cacheBust=${Date.now()}`, { cache: "no-store" });
-        const body = await parseCustomStatblockResponse(response, "Could not load campaign custom statblocks.");
-        return combineStatblockLists(legacyLocal, Array.isArray(body) ? body : body.statblocks || []);
-      } catch (error) {
-        console.warn(error.message);
-        return combineStatblockLists(legacyLocal);
-      }
-    }
-
     try {
-      const localCustom = JSON.parse(localStorage.getItem(LOCAL_CUSTOM_STATBLOCKS_KEY) || "[]");
-      return combineStatblockLists(legacyLocal, Array.isArray(localCustom) ? localCustom : []);
-    } catch {
+      const response = await fetch(`/api/custom-statblocks?cacheBust=${Date.now()}`, { cache: "no-store" });
+      const body = await parseCustomStatblockResponse(response, "Could not load campaign custom statblocks.");
+      return combineStatblockLists(legacyLocal, Array.isArray(body) ? body : body.statblocks || []);
+    } catch (error) {
+      console.warn(error.message);
       return combineStatblockLists(legacyLocal);
     }
   }
@@ -895,18 +885,13 @@
       source: statblock.source || "Custom Monster"
     }));
 
-    if ((window.APP_CONFIG || {}).storageMode === "api") {
-      const response = await fetch("/api/custom-statblocks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ statblocks: normalized })
-      });
-      const body = await parseCustomStatblockResponse(response, "Could not save campaign custom statblocks.");
-      return combineStatblockLists(Array.isArray(body) ? body : body.statblocks || normalized);
-    }
-
-    localStorage.setItem(LOCAL_CUSTOM_STATBLOCKS_KEY, JSON.stringify(normalized));
-    return normalized;
+    const response = await fetch("/api/custom-statblocks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ statblocks: normalized })
+    });
+    const body = await parseCustomStatblockResponse(response, "Could not save campaign custom statblocks.");
+    return combineStatblockLists(Array.isArray(body) ? body : body.statblocks || normalized);
   }
 
   async function loadStatblockLibrary() {

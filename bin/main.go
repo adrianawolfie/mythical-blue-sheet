@@ -48,7 +48,6 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("/config.js", server.NewConfigHandler())
 	mux.Handle("/", http.FileServer(http.Dir("public")))
 
 	// user routes
