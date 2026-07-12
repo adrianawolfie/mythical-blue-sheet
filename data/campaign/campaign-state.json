@@ -1,11 +1,11 @@
 {
-  "schemaVersion": 1,
-  "updatedAt": null,
   "calendarDate": {
-    "year": 4520,
-    "month": 3,
-    "day": 28,
-    "special": null
+    "day": 1,
+    "month": 4,
+    "special": null,
+    "year": 4520
   },
-  "daysTraveled": 0
+  "daysTraveled": 1,
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-01T20:19:55.81690828Z"
 }
