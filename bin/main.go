@@ -8,6 +8,7 @@ import (
 	"raperonzolo/character-sheet/pkg/character"
 	"raperonzolo/character-sheet/pkg/config"
 	"raperonzolo/character-sheet/pkg/server"
+	"raperonzolo/character-sheet/pkg/statblock"
 	"raperonzolo/character-sheet/pkg/storage"
 	"raperonzolo/character-sheet/pkg/user"
 )
@@ -41,10 +42,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	statblocks, err := statblock.NewRepository(ctx, s)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	mux := http.NewServeMux()
 	mux.Handle("/config.js", server.NewConfigHandler())
-	mux.Handle("/api/", server.NewAPIHandler(s))
 	mux.Handle("/", http.FileServer(http.Dir("public")))
 
 	// user routes
@@ -63,6 +67,8 @@ func main() {
 	// campaign routes
 	mux.Handle("GET /api/campaign-state", server.GetCampaignState(campaigns))
 	mux.Handle("POST /api/campaign-state", server.PostCampaignState(campaigns))
+	mux.Handle("GET /api/custom-statblocks", server.GetCustomStatblocks(statblocks))
+	mux.Handle("POST /api/custom-statblocks", server.PostCustomStatblocks(statblocks))
 
 	handler := server.LimitPostBody(mux)
 
