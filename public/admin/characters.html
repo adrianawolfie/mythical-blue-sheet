@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
+  <title>Mythical Blue · Admin Characters</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/accessibility.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/theme-mode.css" />
+  <link rel="stylesheet" href="/admin/admin.css" />
+</head>
+<body class="admin-body">
+  <main class="admin-shell" aria-labelledby="adminTitle">
+    <nav class="admin-nav"><a class="admin-back-link" href="/">Back to Sheet</a><button type="button" class="admin-theme-toggle" data-theme-toggle aria-label="Switch visual theme"><span class="admin-theme-track" aria-hidden="true"><span class="admin-theme-knob"><span class="admin-theme-sun">☀</span><span class="admin-theme-moon">☾</span></span></span></button></nav>
+    <div class="admin-layout">
+      <aside class="admin-sidebar"><div class="admin-sidebar-inner"><p class="admin-sidebar-title">Admin</p><nav class="admin-sidebar-nav"><a class="admin-sidebar-link" href="/admin/users">Users</a><a class="admin-sidebar-link active" href="/admin/characters">Characters</a><a class="admin-sidebar-link" href="/admin/campaigns">Campaigns</a></nav></div></aside>
+      <section class="admin-card"><div class="admin-content"><header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><p class="admin-accent">Captain's Ledger</p><h1 id="adminTitle">Characters</h1></div></header><div class="admin-summary"><article class="admin-panel"><p class="admin-panel-label">Signed In</p><p class="admin-panel-value">{{.CurrentUser.Email}}</p></article><article class="admin-panel"><p class="admin-panel-label">Saved Characters</p><p class="admin-count">{{.Count}}</p></article></div><section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Name</th><th>Class</th><th>Level</th><th>User</th></tr></thead><tbody>{{range .Characters}}<tr><td class="admin-break">{{.Name}}</td><td>{{.Class}}</td><td>{{.Level}}</td><td class="admin-break">{{.UserName}}</td></tr>{{else}}<tr><td class="admin-empty" colspan="4">No saved characters found.</td></tr>{{end}}</tbody></table></div></section></div></section>
+    </div>
+  </main>
+  <script src="/js/theme-mode.js"></script>
+</body>
+</html>

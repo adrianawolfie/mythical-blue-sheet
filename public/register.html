@@ -267,6 +267,11 @@
 
       <form class="login-form" id="registerForm" action="/users" method="post">
         <label class="login-field">
+          <span>Name</span>
+          <input id="name" name="name" type="text" autocomplete="name" required />
+        </label>
+
+        <label class="login-field">
           <span>Email</span>
           <input id="email" name="email" type="email" autocomplete="email" required />
         </label>
@@ -338,6 +343,7 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
+              name: form.name.value,
               email: form.email.value,
               password: form.password.value
             })

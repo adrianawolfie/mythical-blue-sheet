@@ -63,7 +63,10 @@ func main() {
 	mux.Handle("POST /login", server.PostLogin(users))
 	mux.Handle("GET /register", server.GetRegistration())
 	mux.Handle("POST /users", server.PostUser(users))
-	mux.Handle("GET /admin", server.GetAdmin(users))
+	mux.Handle("GET /admin", server.GetAdmin())
+	mux.Handle("GET /admin/users", server.GetAdminUsers(users))
+	mux.Handle("GET /admin/characters", server.GetAdminCharacters(users, characters))
+	mux.Handle("GET /admin/campaigns", server.GetAdminCampaigns(users, campaigns))
 
 	// character routes
 	mux.Handle("GET /api/characters", server.GetCharacters(characters))

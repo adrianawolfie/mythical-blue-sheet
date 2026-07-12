@@ -15,6 +15,7 @@ type Index struct {
 type Character struct {
 	SchemaVersion int         `json:"schemaVersion"`
 	ID            string      `json:"id"`
+	UserID        string      `json:"userId"`
 	Summary       Summary     `json:"summary"`
 	Fields        Fields      `json:"fields"`
 	CustomLists   CustomLists `json:"customLists"`

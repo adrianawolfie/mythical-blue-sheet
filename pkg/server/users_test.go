@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"raperonzolo/character-sheet/pkg/character"
 	"raperonzolo/character-sheet/pkg/storage"
 	"raperonzolo/character-sheet/pkg/user"
 )
@@ -31,6 +33,39 @@ func newUserTestRepository(t *testing.T, usersJSONL string) user.Repository {
 	return repo
 }
 
+func newCharacterTestRepository(t *testing.T, c character.Character) character.Repository {
+	t.Helper()
+
+	dir := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(dir, "character"), 0o755); err != nil {
+		t.Fatalf("create character dir: %v", err)
+	}
+	idx := []character.Index{{ID: c.ID, Name: c.Summary.Name}}
+	idxData, err := json.Marshal(idx)
+	if err != nil {
+		t.Fatalf("marshal index: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "character", "character-index.json"), idxData, 0o644); err != nil {
+		t.Fatalf("write character index: %v", err)
+	}
+	cData, err := json.Marshal(c)
+	if err != nil {
+		t.Fatalf("marshal character: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "character", c.ID+".json"), cData, 0o644); err != nil {
+		t.Fatalf("write character: %v", err)
+	}
+	s, err := storage.New(dir)
+	if err != nil {
+		t.Fatalf("new storage: %v", err)
+	}
+	repo, err := character.NewRepository(context.Background(), s)
+	if err != nil {
+		t.Fatalf("new character repository: %v", err)
+	}
+	return repo
+}
+
 func chdirRepoRoot(t *testing.T) {
 	t.Helper()
 
@@ -48,15 +83,15 @@ func chdirRepoRoot(t *testing.T) {
 	})
 }
 
-func TestGetAdminRendersForAdminUser(t *testing.T) {
+func TestGetAdminUsersRendersForAdminUser(t *testing.T) {
 	chdirRepoRoot(t)
 
-	repo := newUserTestRepository(t, `{"id":"018fe68a-01a8-70b1-8ea3-2d0b819a2d29","email":"admin@example.com","password":"hash","isAdmin":true}`+"\n")
-	req := httptest.NewRequest(http.MethodGet, "/admin", nil)
+	repo := newUserTestRepository(t, `{"id":"018fe68a-01a8-70b1-8ea3-2d0b819a2d29","name":"Admin User","email":"admin@example.com","password":"hash","isAdmin":true}`+"\n")
+	req := httptest.NewRequest(http.MethodGet, "/admin/users", nil)
 	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
 	w := httptest.NewRecorder()
 
-	GetAdmin(repo).ServeHTTP(w, req)
+	GetAdminUsers(repo).ServeHTTP(w, req)
 
 	if w.Code != http.StatusOK {
 		t.Fatalf("expected status 200, got %d", w.Code)
@@ -66,17 +101,63 @@ func TestGetAdminRendersForAdminUser(t *testing.T) {
 	}
 }
 
-func TestGetAdminRejectsNonAdminUser(t *testing.T) {
+func TestGetAdminUsersRejectsNonAdminUser(t *testing.T) {
 	chdirRepoRoot(t)
 
-	repo := newUserTestRepository(t, `{"id":"018fe68a-01a8-70b1-8ea3-2d0b819a2d29","email":"ada@example.com","password":"hash","isAdmin":false}`+"\n")
-	req := httptest.NewRequest(http.MethodGet, "/admin", nil)
+	repo := newUserTestRepository(t, `{"id":"018fe68a-01a8-70b1-8ea3-2d0b819a2d29","name":"Ada","email":"ada@example.com","password":"hash","isAdmin":false}`+"\n")
+	req := httptest.NewRequest(http.MethodGet, "/admin/users", nil)
 	req.AddCookie(&http.Cookie{Name: "user", Value: "ada@example.com"})
 	w := httptest.NewRecorder()
 
-	GetAdmin(repo).ServeHTTP(w, req)
+	GetAdminUsers(repo).ServeHTTP(w, req)
 
 	if w.Code != http.StatusForbidden {
 		t.Fatalf("expected status 403, got %d", w.Code)
+	}
+}
+
+func TestGetAdminCharactersShowsClassLevelAndUserName(t *testing.T) {
+	chdirRepoRoot(t)
+
+	users := newUserTestRepository(t, `{"id":"018fe68a-01a8-70b1-8ea3-2d0b819a2d29","name":"Admin User","email":"admin@example.com","password":"hash","isAdmin":true}`+"\n")
+	characters := newCharacterTestRepository(t, character.Character{
+		ID:     "ada-character",
+		UserID: "018fe68a-01a8-70b1-8ea3-2d0b819a2d29",
+		Summary: character.Summary{
+			Name: "Ada Storm",
+		},
+		Fields: character.Fields{
+			"class": "Wizard",
+			"level": "7",
+		},
+	})
+	req := httptest.NewRequest(http.MethodGet, "/admin/characters", nil)
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	GetAdminCharacters(users, characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	body := w.Body.String()
+	for _, expected := range []string{"Ada Storm", "Wizard", "7", "Admin User"} {
+		if !strings.Contains(body, expected) {
+			t.Fatalf("expected response to contain %q", expected)
+		}
+	}
+}
+
+func TestGetAdminRedirectsToUsers(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "/admin", nil)
+	w := httptest.NewRecorder()
+
+	GetAdmin().ServeHTTP(w, req)
+
+	if w.Code != http.StatusSeeOther {
+		t.Fatalf("expected status 303, got %d", w.Code)
+	}
+	if location := w.Header().Get("Location"); location != "/admin/users" {
+		t.Fatalf("expected redirect to /admin/users, got %q", location)
 	}
 }

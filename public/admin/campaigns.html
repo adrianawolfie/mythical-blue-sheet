@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
+  <title>Mythical Blue · Admin Campaigns</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/accessibility.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/theme-mode.css" />
+  <link rel="stylesheet" href="/admin/admin.css" />
+</head>
+<body class="admin-body">
+  <main class="admin-shell" aria-labelledby="adminTitle">
+    <nav class="admin-nav"><a class="admin-back-link" href="/">Back to Sheet</a><button type="button" class="admin-theme-toggle" data-theme-toggle aria-label="Switch visual theme"><span class="admin-theme-track" aria-hidden="true"><span class="admin-theme-knob"><span class="admin-theme-sun">☀</span><span class="admin-theme-moon">☾</span></span></span></button></nav>
+    <div class="admin-layout">
+      <aside class="admin-sidebar"><div class="admin-sidebar-inner"><p class="admin-sidebar-title">Admin</p><nav class="admin-sidebar-nav"><a class="admin-sidebar-link" href="/admin/users">Users</a><a class="admin-sidebar-link" href="/admin/characters">Characters</a><a class="admin-sidebar-link active" href="/admin/campaigns">Campaigns</a></nav></div></aside>
+      <section class="admin-card"><div class="admin-content"><header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><p class="admin-accent">Captain's Ledger</p><h1 id="adminTitle">Campaigns</h1></div></header><div class="admin-summary"><article class="admin-panel"><p class="admin-panel-label">Signed In</p><p class="admin-panel-value">{{.CurrentUser.Email}}</p></article><article class="admin-panel"><p class="admin-panel-label">Days Traveled</p><p class="admin-count">{{.State.DaysTraveled}}</p></article></div><section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Campaign State</th><th>Value</th></tr></thead><tbody><tr><td>Calendar Date</td><td>{{.Calendar}}</td></tr><tr><td>Schema Version</td><td>{{.State.SchemaVersion}}</td></tr><tr><td>Updated At</td><td>{{.State.UpdatedAt}}</td></tr></tbody></table></div></section></div></section>
+    </div>
+  </main>
+  <script src="/js/theme-mode.js"></script>
+</body>
+</html>

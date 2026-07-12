@@ -4,6 +4,7 @@
 
 - Make the smallest possible changes that satisfy the request.
 - Prefer small inline changes over introducing helper functions.
+- In templates, render required data directly instead of adding fallback branches for missing fields; missing required data should be visible during development.
 
 ## Architecture Guidance
 
