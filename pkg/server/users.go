@@ -9,6 +9,18 @@ import (
 	"raperonzolo/character-sheet/pkg/user"
 )
 
+type adminPageData struct {
+	CurrentUser adminUserView
+	Users       []adminUserView
+	UserCount   int
+}
+
+type adminUserView struct {
+	ID      string
+	Email   string
+	IsAdmin bool
+}
+
 func GetLogin() http.HandlerFunc {
 	tmpl := template.Must(template.ParseFiles("public/login.html"))
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -22,6 +34,46 @@ func GetRegistration() http.HandlerFunc {
 	tmpl := template.Must(template.ParseFiles("public/register.html"))
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := tmpl.Execute(w, nil); err != nil {
+			renderErrorPage(w, err)
+		}
+	}
+}
+
+func GetAdmin(repo user.Repository) http.HandlerFunc {
+	tmpl := template.Must(template.ParseFiles("public/admin.html"))
+	return func(w http.ResponseWriter, r *http.Request) {
+		cookie, err := r.Cookie("user")
+		if err != nil || cookie.Value == "" {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+
+		currentUser, err := repo.GetByUsername(cookie.Value)
+		if err != nil {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		if !currentUser.IsAdmin {
+			http.Error(w, "forbidden", http.StatusForbidden)
+			return
+		}
+
+		users := repo.List(r.Context())
+		views := make([]adminUserView, 0, len(users))
+		for _, u := range users {
+			views = append(views, adminUserView{
+				ID:      u.ID.String(),
+				Email:   u.Email,
+				IsAdmin: u.IsAdmin,
+			})
+		}
+
+		data := adminPageData{
+			CurrentUser: adminUserView{ID: currentUser.ID.String(), Email: currentUser.Email, IsAdmin: currentUser.IsAdmin},
+			Users:       views,
+			UserCount:   len(views),
+		}
+		if err := tmpl.Execute(w, data); err != nil {
 			renderErrorPage(w, err)
 		}
 	}

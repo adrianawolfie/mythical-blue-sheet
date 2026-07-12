@@ -10,6 +10,11 @@ type customStatblocksRequest struct {
 	Statblocks []statblock.Statblock `json:"statblocks"`
 }
 
+type customStatblocksResponse struct {
+	Success    bool                  `json:"success"`
+	Statblocks []statblock.Statblock `json:"statblocks"`
+}
+
 func GetCustomStatblocks(repo statblock.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		statblocks, err := repo.List(r.Context())
@@ -39,7 +44,7 @@ func PostCustomStatblocks(repo statblock.Repository) http.HandlerFunc {
 			return
 		}
 
-		if err := json.NewEncoder(w).Encode(map[string]any{"success": true, "statblocks": statblocks}); err != nil {
+		if err := json.NewEncoder(w).Encode(customStatblocksResponse{Success: true, Statblocks: statblocks}); err != nil {
 			writeError(w, err)
 			return
 		}

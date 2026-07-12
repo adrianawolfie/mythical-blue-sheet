@@ -7,6 +7,7 @@ import (
 	"io"
 	"raperonzolo/character-sheet/pkg/config"
 	"raperonzolo/character-sheet/pkg/storage"
+	"sort"
 	"sync"
 
 	"github.com/google/uuid"
@@ -60,6 +61,25 @@ func (l *Repository) GetByUsername(email string) (User, error) {
 	}
 
 	return user, nil
+}
+
+func (l *Repository) List(ctx context.Context) []User {
+	l.RLock()
+	defer l.RUnlock()
+
+	users := make([]User, 0, len(l.users))
+	for _, user := range l.users {
+		users = append(users, user)
+	}
+	sort.Slice(users, func(i, j int) bool {
+		return users[i].Email < users[j].Email
+	})
+	return users
+}
+
+func (l *Repository) IsAdmin(ctx context.Context, email string) bool {
+	user, err := l.GetByUsername(email)
+	return err == nil && user.IsAdmin
 }
 
 func (l *Repository) Create(ctx context.Context, user User) error {

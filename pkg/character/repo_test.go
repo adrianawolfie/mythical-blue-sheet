@@ -46,11 +46,11 @@ func requestedTestCharacter(id, name string) Character {
 			HpMax:             "20",
 			PassivePerception: "14",
 		},
-		Fields: map[string]any{
+		Fields: Fields{
 			"characterName": name,
 		},
-		CustomLists: map[string]any{},
-		UIState:     map[string]any{},
+		CustomLists: CustomLists{},
+		UIState:     UIState{},
 		UpdatedAt:   "2026-07-12T10:00:00Z",
 	}
 }

@@ -52,11 +52,7 @@ func PostCharacters(repo character.Repository) http.HandlerFunc {
 			return
 		}
 
-		resp := map[string]any{"success": true, "updatedAt": c.UpdatedAt}
-		if err := json.NewEncoder(w).Encode(resp); err != nil {
-			writeError(w, err)
-			return
-		}
+		w.WriteHeader(http.StatusOK)
 	}
 }
 
@@ -66,11 +62,7 @@ func DeleteCharacter(c character.Repository) http.HandlerFunc {
 			writeError(w, err)
 			return
 		}
-		resp := map[string]any{"success": true}
-		if err := json.NewEncoder(w).Encode(resp); err != nil {
-			writeError(w, err)
-			return
-		}
+		w.WriteHeader(http.StatusOK)
 	}
 }
 
@@ -94,6 +86,9 @@ func PostStatus(repo character.Repository) http.HandlerFunc {
 		c.Summary.ArmorClass = u.ArmorClass
 		c.Summary.CurrentConditions = u.CurrentConditions
 
+		if c.Fields == nil {
+			c.Fields = character.Fields{}
+		}
 		c.Fields["hpCurrent"] = u.HpCurrent
 		c.Fields["hpMax"] = u.HpMax
 		c.Fields["tempHp"] = u.TempHp
@@ -101,7 +96,7 @@ func PostStatus(repo character.Repository) http.HandlerFunc {
 		c.Fields["currentConditions"] = u.CurrentConditions
 
 		if u.ArmorClassState != nil {
-			c.CustomLists["armorClass"] = u.ArmorClassState
+			c.CustomLists.ArmorClass = *u.ArmorClassState
 		}
 
 		c.UpdatedAt = time.Now().UTC().Format(time.RFC3339)
@@ -111,10 +106,6 @@ func PostStatus(repo character.Repository) http.HandlerFunc {
 			return
 		}
 
-		resp := map[string]any{"success": true, "updatedAt": c.UpdatedAt}
-		if err := json.NewEncoder(w).Encode(resp); err != nil {
-			writeError(w, err)
-			return
-		}
+		w.WriteHeader(http.StatusOK)
 	}
 }

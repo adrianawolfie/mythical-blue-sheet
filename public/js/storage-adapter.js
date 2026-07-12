@@ -39,7 +39,8 @@
         body: JSON.stringify(character)
       });
 
-      return parseJsonResponse(response, "Failed to save character.");
+      if (response.status !== 200) throw new Error("Failed to save character.");
+      return {};
     },
 
     async saveCharacterStatus({
@@ -65,7 +66,8 @@
         })
       });
 
-      return parseJsonResponse(response, "Failed to save live character summary.");
+      if (response.status !== 200) throw new Error("Failed to save live character summary.");
+      return {};
     },
 
     async deleteCharacterData(payload) {
@@ -75,7 +77,8 @@
         body: JSON.stringify(payload)
       });
 
-      return parseJsonResponse(response, "Failed to delete character.");
+      if (response.status !== 200) throw new Error("Failed to delete character.");
+      return {};
     }
   };
 })();

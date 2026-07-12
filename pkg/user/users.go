@@ -15,6 +15,7 @@ type User struct {
 	ID       uuid.UUID `json:"id"`
 	Email    string    `json:"email"`
 	Password string    `json:"password"`
+	IsAdmin  bool      `json:"isAdmin"`
 }
 
 func (u User) ValidatePassword(p string) bool {

@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"errors"
 	"raperonzolo/character-sheet/pkg/config"
 	"raperonzolo/character-sheet/pkg/storage"
@@ -14,17 +15,18 @@ import (
 func TestLocalCreateAppendsUserToJSONL(t *testing.T) {
 	t.Setenv("USER_SECRET", "secret")
 	config.Load()
+	ctx := context.Background()
 
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := NewRepository(WithStorage(s))
+	repo, err := NewRepository(ctx, s)
 	require.NoError(t, err)
 
 	user := User{Email: "ada@example.com", Password: "Encrypted1!"}
 	expected := User{Email: user.Email, Password: encryptPassword(user.Password + "secret")}
 
-	if err := repo.Create(user); err != nil {
+	if err := repo.Create(ctx, user); err != nil {
 		t.Fatal(err)
 	}
 
@@ -40,7 +42,7 @@ func TestLocalCreateAppendsUserToJSONL(t *testing.T) {
 		t.Fatalf("expected created user %#v, got %#v", expected, created)
 	}
 
-	reloaded, err := NewRepository(WithStorage(s))
+	reloaded, err := NewRepository(ctx, s)
 	require.NoError(t, err)
 
 	reloadedUser, err := reloaded.GetByUsername("ada@example.com")
@@ -54,85 +56,131 @@ func TestLocalCreateAppendsUserToJSONL(t *testing.T) {
 
 func TestLocalCreateRejectsDuplicateUser(t *testing.T) {
 	t.Setenv("USER_SECRET", "secret")
+	ctx := context.Background()
 
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := NewRepository(WithStorage(s))
+	repo, err := NewRepository(ctx, s)
 	require.NoError(t, err)
 
 	user := User{Email: "ada@example.com", Password: "Encrypted1!"}
 
-	if err := repo.Create(user); err != nil {
+	if err := repo.Create(ctx, user); err != nil {
 		t.Fatal(err)
 	}
 
-	if err := repo.Create(user); !errors.Is(err, ErrUserAlreadyExists) {
+	if err := repo.Create(ctx, user); !errors.Is(err, ErrUserAlreadyExists) {
 		t.Fatalf("expected ErrUserAlreadyExists, got %v", err)
 	}
 }
 
 func TestLocalCreateRejectsShortPassword(t *testing.T) {
+	ctx := context.Background()
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := NewRepository(WithStorage(s))
+	repo, err := NewRepository(ctx, s)
 	assert.NoError(t, err)
 
-	err = repo.Create(User{Email: "ada@example.com", Password: "Ab1!xyz"})
+	err = repo.Create(ctx, User{Email: "ada@example.com", Password: "Ab1!xyz"})
 	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordTooShort, got %v", err)
 	}
 }
 
 func TestLocalCreateRejectsPasswordWithoutNumber(t *testing.T) {
+	ctx := context.Background()
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := NewRepository(WithStorage(s))
+	repo, err := NewRepository(ctx, s)
 	assert.NoError(t, err)
 
-	err = repo.Create(User{Email: "ada@example.com", Password: "Abcdefg!"})
+	err = repo.Create(ctx, User{Email: "ada@example.com", Password: "Abcdefg!"})
 	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordNoNumber, got %v", err)
 	}
 }
 
 func TestLocalCreateRejectsPasswordWithoutSpecialCharacter(t *testing.T) {
+	ctx := context.Background()
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := NewRepository(WithStorage(s))
+	repo, err := NewRepository(ctx, s)
 	assert.NoError(t, err)
 
-	err = repo.Create(User{Email: "ada@example.com", Password: "Abcdefg1"})
+	err = repo.Create(ctx, User{Email: "ada@example.com", Password: "Abcdefg1"})
 	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordNoSpecial, got %v", err)
 	}
 }
 
 func TestLocalCreateRejectsPasswordWithoutUppercase(t *testing.T) {
+	ctx := context.Background()
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := NewRepository(WithStorage(s))
+	repo, err := NewRepository(ctx, s)
 	assert.NoError(t, err)
 
-	err = repo.Create(User{Email: "ada@example.com", Password: "abcdefg1!"})
+	err = repo.Create(ctx, User{Email: "ada@example.com", Password: "abcdefg1!"})
 	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordNoCaseMix, got %v", err)
 	}
 }
 
 func TestLocalCreateRejectsPasswordWithoutLowercase(t *testing.T) {
+	ctx := context.Background()
 	s, err := storage.New(t.TempDir())
 	assert.NoError(t, err)
 
-	repo, err := NewRepository(WithStorage(s))
+	repo, err := NewRepository(ctx, s)
 	assert.NoError(t, err)
 
-	err = repo.Create(User{Email: "ada@example.com", Password: "ABCDEFG1!"})
+	err = repo.Create(ctx, User{Email: "ada@example.com", Password: "ABCDEFG1!"})
 	if !errors.Is(err, ErrPasswordInvalid) {
 		t.Fatalf("expected ErrPasswordNoCaseMix, got %v", err)
 	}
+}
+
+func TestListReturnsUsersSortedByEmail(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	ctx := context.Background()
+
+	s, err := storage.New(t.TempDir())
+	require.NoError(t, err)
+
+	repo, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	require.NoError(t, repo.Create(ctx, User{Email: "zelda@example.com", Password: "Encrypted1!"}))
+	require.NoError(t, repo.Create(ctx, User{Email: "ada@example.com", Password: "Encrypted1!"}))
+
+	users := repo.List(ctx)
+	require.Len(t, users, 2)
+	assert.Equal(t, "ada@example.com", users[0].Email)
+	assert.Equal(t, "zelda@example.com", users[1].Email)
+	assert.False(t, users[0].IsAdmin)
+}
+
+func TestIsAdminReturnsTrueOnlyForAdminUsers(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	ctx := context.Background()
+
+	s, err := storage.New(t.TempDir())
+	require.NoError(t, err)
+
+	repo, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	require.NoError(t, repo.Create(ctx, User{Email: "ada@example.com", Password: "Encrypted1!"}))
+
+	ada := repo.users["ada@example.com"]
+	ada.IsAdmin = true
+	repo.users["ada@example.com"] = ada
+
+	assert.True(t, repo.IsAdmin(ctx, "ada@example.com"))
+	assert.False(t, repo.IsAdmin(ctx, "missing@example.com"))
 }
