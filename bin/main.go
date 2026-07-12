@@ -10,6 +10,7 @@ import (
 	"raperonzolo/character-sheet/pkg/server"
 	"raperonzolo/character-sheet/pkg/statblock"
 	"raperonzolo/character-sheet/pkg/storage"
+	"raperonzolo/character-sheet/pkg/storage/s3"
 	"raperonzolo/character-sheet/pkg/user"
 )
 
@@ -18,7 +19,16 @@ func main() {
 
 	ctx := context.Background()
 
-	s, err := storage.New("data")
+	var (
+		s   storage.Storage
+		err error
+	)
+
+	if config.Storage == "s3" {
+		s, err = s3.New()
+	} else {
+		s, err = storage.New("data")
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,6 +52,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	statblocks, err := statblock.NewRepository(ctx, s)
 	if err != nil {
 		log.Fatal(err)
@@ -66,6 +77,8 @@ func main() {
 	// campaign routes
 	mux.Handle("GET /api/campaign-state", server.GetCampaignState(campaigns))
 	mux.Handle("POST /api/campaign-state", server.PostCampaignState(campaigns))
+
+	// statblock routes
 	mux.Handle("GET /api/custom-statblocks", server.GetCustomStatblocks(statblocks))
 	mux.Handle("POST /api/custom-statblocks", server.PostCustomStatblocks(statblocks))
 
