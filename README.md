@@ -5,21 +5,17 @@
 This app intentionally uses plain HTML, CSS, and JavaScript. It does not require
 a framework or build process.
 
-## Environment behavior
+## Environment Behavior
 
-The same `js/storage-config.js` file works in both environments:
+The frontend uses the shared server API for persisted data:
 
 ```text
-GitHub Pages / localhost
-→ browser localStorage test data
+Local server
+-> shared /api filesystem handlers
+-> data/characters and data/campaign JSON files
 
-Netlify production
-→ shared Netlify Functions
-→ GitHub character JSON files
+If a `.env` file exists at startup, it is loaded after the process environment and wins on conflicts.
 ```
-
-This prevents an accidental repository copy from silently switching production
-into localStorage mode.
 
 ## Frontend structure
 
@@ -47,8 +43,7 @@ css/
 
 js/
   conditions.js              condition reference data
-  storage-config.js          automatic environment detection
-  storage-adapter.js         localStorage / Netlify abstraction
+  storage-adapter.js         character API abstraction
 
   core.js                    schema, migrations, load/save, navigation
   tables.js                  weapons and spells
@@ -64,13 +59,10 @@ js/
   calendar.js                Materra calendar behavior
   accessibility.js           font-size controls
 
-netlify/
-  functions/
-    get-character-index.js
-    get-character.js
-    save-character.js
-    save-character-status.js
-    delete-character.js
+api/
+  characters
+  campaign-state
+  custom-statblocks
 ```
 
 ## Save structure
@@ -81,7 +73,7 @@ for this cleanup.
 Frequently changing values are saved through:
 
 ```text
-netlify/functions/save-character-status.js
+/api/characters/:id/status
 ```
 
 This handles:
@@ -208,3 +200,13 @@ Inventory   + Add Item | + Custom Item
 SRD picker entries can be previewed before adding them. Imported entries remain
 editable character snapshots, and custom spells, feats, traits, and items remain
 supported.
+
+
+Campaign -> Character
+
+Player Login -> Campaign List -> Character List
+
+Campaign
+- Characters
+- Homebrew
+- 
