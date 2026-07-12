@@ -66,16 +66,28 @@ type WeaponRow struct {
 }
 
 type SpellRow struct {
-	Level         string `json:"level"`
-	Name          string `json:"name"`
-	CastTime      string `json:"castTime"`
-	Range         string `json:"range"`
-	Concentration bool   `json:"concentration"`
-	Ritual        bool   `json:"ritual"`
-	Material      bool   `json:"material"`
-	Effect        string `json:"effect"`
-	Details       string `json:"details"`
-	Open          bool   `json:"open"`
+	Level          string `json:"level"`
+	Name           string `json:"name"`
+	CastTime       string `json:"castTime"`
+	Range          string `json:"range"`
+	Concentration  bool   `json:"concentration"`
+	Ritual         bool   `json:"ritual"`
+	Material       bool   `json:"material"`
+	Effect         string `json:"effect"`
+	Details        string `json:"details"`
+	Open           bool   `json:"open"`
+	SourceID       string `json:"sourceId"`
+	Source         string `json:"source"`
+	School         string `json:"school"`
+	Duration       string `json:"duration"`
+	ComponentsText string `json:"componentsText"`
+	Classes        string `json:"classes"`
+	AttackSave     string `json:"attackSave"`
+	DamageHealing  string `json:"damageHealing"`
+	DamageType     string `json:"damageType"`
+	AreaShape      string `json:"areaShape"`
+	AreaSize       string `json:"areaSize"`
+	Prepared       bool   `json:"prepared"`
 }
 
 type JournalNote struct {

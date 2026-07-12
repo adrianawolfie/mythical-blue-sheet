@@ -23,8 +23,8 @@ func TestLocalCreateAppendsUserToJSONL(t *testing.T) {
 	repo, err := NewRepository(ctx, s)
 	require.NoError(t, err)
 
-	user := User{Email: "ada@example.com", Password: "Encrypted1!"}
-	expected := User{Email: user.Email, Password: encryptPassword(user.Password + "secret")}
+	user := User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}
+	expected := User{Name: user.Name, Email: user.Email, Password: encryptPassword(user.Password + "secret")}
 
 	if err := repo.Create(ctx, user); err != nil {
 		t.Fatal(err)
