@@ -121,6 +121,53 @@
       font: .84rem/1.45 "Lora", Georgia, serif;
     }
 
+    .login-requirements {
+      margin: 4px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 6px;
+    }
+
+    .login-requirement {
+      position: relative;
+      padding-left: 1.3rem;
+      color: rgba(39, 28, 8, .46);
+      font: .84rem/1.45 "Lora", Georgia, serif;
+      transition: color .18s ease, opacity .18s ease;
+      opacity: .78;
+    }
+
+    .login-requirement::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .14rem;
+      width: .95rem;
+      height: .95rem;
+      border: 1px solid rgba(39, 28, 8, .28);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .22);
+      color: transparent;
+      display: grid;
+      place-items: center;
+      font-size: .72rem;
+      line-height: 1;
+      transition: background-color .18s ease, border-color .18s ease, color .18s ease;
+    }
+
+    .login-requirement.is-met {
+      color: #2c7a45;
+      opacity: 1;
+    }
+
+    .login-requirement.is-met::before {
+      content: "✓";
+      border-color: rgba(44, 122, 69, .45);
+      background: rgba(44, 122, 69, .12);
+      color: #2c7a45;
+    }
+
     .login-actions {
       display: grid;
       gap: 10px;
@@ -218,6 +265,25 @@
       color: rgba(232, 245, 255, .76);
     }
 
+    html[data-theme="moonlight"] .login-requirement {
+      color: rgba(232, 245, 255, .42);
+    }
+
+    html[data-theme="moonlight"] .login-requirement::before {
+      border-color: rgba(190, 232, 255, .22);
+      background: rgba(2, 20, 52, .44);
+    }
+
+    html[data-theme="moonlight"] .login-requirement.is-met {
+      color: #9be8b2;
+    }
+
+    html[data-theme="moonlight"] .login-requirement.is-met::before {
+      border-color: rgba(155, 232, 178, .42);
+      background: rgba(155, 232, 178, .12);
+      color: #9be8b2;
+    }
+
     html[data-theme="moonlight"] .login-submit {
       border-color: rgba(170, 222, 255, .62);
       background: rgba(2, 16, 42, .92);
@@ -279,7 +345,12 @@
         <label class="login-field">
           <span>Password</span>
           <input id="password" name="password" type="password" autocomplete="new-password" required />
-          <p class="login-help">Use at least 8 characters with a number, a special character, and both lowercase and uppercase letters.</p>
+          <ul class="login-requirements" aria-label="Password requirements">
+            <li class="login-requirement" data-requirement="length">At least 8 characters</li>
+            <li class="login-requirement" data-requirement="number">Includes a number</li>
+            <li class="login-requirement" data-requirement="special">Includes a special character</li>
+            <li class="login-requirement" data-requirement="case">Includes lowercase and uppercase letters</li>
+          </ul>
         </label>
 
         <label class="login-field">
@@ -304,22 +375,45 @@
       const form = document.getElementById("registerForm");
       const error = document.getElementById("registerError");
       const submit = form.querySelector("button[type='submit']");
+      const passwordInput = document.getElementById("password");
+      const requirementEls = Array.from(document.querySelectorAll(".login-requirement"));
+
+      function getPasswordState(password) {
+        return {
+          length: password.length >= 8,
+          number: /[0-9]/.test(password),
+          special: /[^A-Za-z0-9]/.test(password),
+          case: /[a-z]/.test(password) && /[A-Z]/.test(password)
+        };
+      }
 
       function validatePassword(password) {
-        if (password.length < 8) {
+        const state = getPasswordState(password);
+
+        if (!state.length) {
           return "Password must be at least 8 characters.";
         }
-        if (!/[0-9]/.test(password)) {
+        if (!state.number) {
           return "Password must include a number.";
         }
-        if (!/[^A-Za-z0-9]/.test(password)) {
+        if (!state.special) {
           return "Password must include a special character.";
         }
-        if (!/[a-z]/.test(password) || !/[A-Z]/.test(password)) {
+        if (!state.case) {
           return "Password must include both lowercase and uppercase letters.";
         }
         return "";
       }
+
+      function updatePasswordRequirements() {
+        const state = getPasswordState(passwordInput.value);
+        requirementEls.forEach((el) => {
+          el.classList.toggle("is-met", state[el.dataset.requirement] || false);
+        });
+      }
+
+      updatePasswordRequirements();
+      passwordInput.addEventListener("input", updatePasswordRequirements);
 
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
