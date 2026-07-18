@@ -1,5 +1,16 @@
 # Mythical Blue · The Great Depth
 
+## Pages
+
+- [Home / Character Sheet](/)
+- [Characters](/characters)
+- [Login](/login)
+- [Register](/register)
+- [Admin Users](/admin/users)
+- [Admin Characters](/admin/characters)
+- [Admin Campaigns](/admin/campaigns)
+- [DM Screen](/dm-screen.html)
+
 ## Architecture
 
 This app intentionally uses plain HTML, CSS, and JavaScript. It does not require
