@@ -33,12 +33,20 @@ func (repo Repository) CreateOrReplace(ctx context.Context, c Character) error {
 		return fmt.Errorf("failed to list characters: %w", err)
 	}
 
-	if len(idx) >= 50 {
-		return fmt.Errorf("maximum number of characters reached")
-	}
-
 	if c.ID == "" {
 		return fmt.Errorf("character ID is required")
+	}
+
+	exists := false
+	for _, i := range idx {
+		if i.ID == c.ID {
+			exists = true
+			break
+		}
+	}
+
+	if !exists && len(idx) >= 50 {
+		return fmt.Errorf("maximum number of characters reached")
 	}
 
 	if err := repo.saveCharacter(ctx, c); err != nil {
@@ -147,13 +155,7 @@ func (repo Repository) saveCharacter(ctx context.Context, c Character) error {
 }
 
 func (repo Repository) addCharacter(ctx context.Context, idx []Index, c Character) error {
-	for _, i := range idx {
-		if i.ID == c.ID {
-			return nil
-		}
-	}
-
-	idx = append(idx, Index{
+	next := Index{
 		ID:                c.ID,
 		Name:              c.Summary.Name,
 		ArmorClass:        c.Summary.ArmorClass,
@@ -163,8 +165,20 @@ func (repo Repository) addCharacter(ctx context.Context, idx []Index, c Characte
 		CurrentConditions: c.Summary.CurrentConditions,
 		File:              filepath.Join(characterRootPath, c.ID+".json"),
 		UpdatedAt:         c.UpdatedAt,
-	})
+	}
 
+	for n, i := range idx {
+		if i.ID == c.ID {
+			idx[n] = next
+			return repo.saveIndex(ctx, idx)
+		}
+	}
+
+	idx = append(idx, next)
+	return repo.saveIndex(ctx, idx)
+}
+
+func (repo Repository) saveIndex(ctx context.Context, idx []Index) error {
 	w, err := repo.storage.Writer(ctx, characterIndexPath)
 	if err != nil {
 		return fmt.Errorf("failed to write character index: %w", err)

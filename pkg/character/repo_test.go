@@ -100,7 +100,7 @@ func TestCreateOrReplaceChangesCharacterDetails(t *testing.T) {
 	}
 }
 
-func TestCreateOrReplaceDoesNotUpdateIndexForExistingCharacter(t *testing.T) {
+func TestCreateOrReplaceUpdatesIndexForExistingCharacter(t *testing.T) {
 	ctx, repo := newRequestedTestRepository(t)
 
 	character := requestedTestCharacter("ada", "Ada")
@@ -110,6 +110,10 @@ func TestCreateOrReplaceDoesNotUpdateIndexForExistingCharacter(t *testing.T) {
 
 	character.Summary.Name = "Ada Storm"
 	character.Summary.ArmorClass = "18"
+	character.Summary.HpCurrent = "10"
+	character.Summary.HpMax = "25"
+	character.Summary.CurrentConditions = "Poisoned"
+	character.UpdatedAt = "2026-07-12T11:00:00Z"
 	if err := repo.CreateOrReplace(ctx, character); err != nil {
 		t.Fatalf("replace character: %v", err)
 	}
@@ -121,7 +125,7 @@ func TestCreateOrReplaceDoesNotUpdateIndexForExistingCharacter(t *testing.T) {
 	if len(idx) != 1 {
 		t.Fatalf("expected one index entry, got %d", len(idx))
 	}
-	if idx[0].Name != "Ada" || idx[0].ArmorClass != "16" {
-		t.Fatalf("expected original index entry, got %#v", idx[0])
+	if idx[0].Name != "Ada Storm" || idx[0].ArmorClass != "18" || idx[0].HpCurrent != "10" || idx[0].HpMax != "25" || idx[0].CurrentConditions != "Poisoned" || idx[0].UpdatedAt != "2026-07-12T11:00:00Z" {
+		t.Fatalf("expected updated index entry, got %#v", idx[0])
 	}
 }
