@@ -264,6 +264,10 @@ body.admin-body {
 .admin-break { word-break: break-word; }
 .admin-mono { font: .78rem/1.4 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
 .admin-muted { color: rgba(31, 41, 82, .75); }
+.admin-campaign-id {
+  color: rgba(245, 245, 245, .82);
+  font-size: .64rem;
+}
 
 .admin-badge {
   display: inline-flex;

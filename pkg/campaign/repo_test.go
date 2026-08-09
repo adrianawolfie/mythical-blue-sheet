@@ -2,6 +2,7 @@ package campaign
 
 import (
 	"context"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -48,6 +49,53 @@ func TestGetReturnsDefaultWhenStateFileMissing(t *testing.T) {
 	}
 	if state.CalendarDate.Day == nil || *state.CalendarDate.Day != 28 {
 		t.Fatalf("expected default day, got %#v", state.CalendarDate.Day)
+	}
+}
+
+func TestListLoadsCampaignsFromIndex(t *testing.T) {
+	ctx, repo, dir := newTestRepository(t)
+	month := 4
+	day := 1
+	updatedAt := "2026-07-12T16:06:07Z"
+	index := []Index{{ID: "campaign-1"}}
+	campaigns := []Campaign{{
+		ID:            "campaign-1",
+		Name:          "Adriana",
+		SchemaVersion: 1,
+		UpdatedAt:     &updatedAt,
+		CalendarDate: CalendarDate{
+			Year:  4520,
+			Month: &month,
+			Day:   &day,
+		},
+		DaysTraveled: 2,
+		Players:      []string{"user-1", "user-2"},
+	}}
+
+	indexData, err := json.Marshal(index)
+	if err != nil {
+		t.Fatalf("marshal index: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, campaignIndexPath), indexData, 0o644); err != nil {
+		t.Fatalf("write campaign index: %v", err)
+	}
+	campaignData, err := json.Marshal(campaigns[0])
+	if err != nil {
+		t.Fatalf("marshal campaign: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "campaign", "campaign-1.json"), campaignData, 0o644); err != nil {
+		t.Fatalf("write campaign: %v", err)
+	}
+
+	loaded, err := repo.List(ctx)
+	if err != nil {
+		t.Fatalf("list campaigns: %v", err)
+	}
+	if len(loaded) != 1 {
+		t.Fatalf("expected one campaign, got %d", len(loaded))
+	}
+	if loaded[0].ID != "campaign-1" || loaded[0].Name != "Adriana" || loaded[0].DaysTraveled != 2 || len(loaded[0].Players) != 2 {
+		t.Fatalf("expected indexed campaign, got %#v", loaded[0])
 	}
 }
 

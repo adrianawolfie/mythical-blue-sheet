@@ -1,11 +1,17 @@
 package campaign
 
 type Campaign struct {
+	ID            string       `json:"id"`
+	Name          string       `json:"name"`
 	SchemaVersion int          `json:"schemaVersion"`
 	UpdatedAt     *string      `json:"updatedAt"`
 	CalendarDate  CalendarDate `json:"calendarDate"`
 	DaysTraveled  int          `json:"daysTraveled"`
 	Players       []string     `json:"players"`
+}
+
+type Index struct {
+	ID string `json:"id"`
 }
 
 type CalendarDate struct {

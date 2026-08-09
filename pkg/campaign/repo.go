@@ -11,7 +11,11 @@ import (
 	"time"
 )
 
-const statePath = "campaign/campaign-state.json"
+const (
+	campaignIndexPath = "campaign/index.json"
+	campaignRootPath  = "campaign"
+	statePath         = "campaign/campaign-state.json"
+)
 
 type Repository struct {
 	*sync.RWMutex
@@ -46,6 +50,36 @@ func (repo Repository) Get(ctx context.Context) (Campaign, error) {
 	return normalize(state), nil
 }
 
+func (repo Repository) List(ctx context.Context) ([]Campaign, error) {
+	repo.RLock()
+	defer repo.RUnlock()
+
+	r, err := repo.storage.Reader(ctx, campaignIndexPath)
+	if err != nil {
+		return []Campaign{}, nil
+	}
+	defer r.Close()
+
+	var idx []Index
+	if err := json.NewDecoder(r).Decode(&idx); err != nil {
+		if err == io.EOF {
+			return []Campaign{}, nil
+		}
+		return nil, fmt.Errorf("failed to decode campaign index: %w", err)
+	}
+
+	campaigns := make([]Campaign, 0, len(idx))
+	for _, item := range idx {
+		campaign, err := repo.getByID(ctx, item.ID)
+		if err != nil {
+			return nil, err
+		}
+		campaigns = append(campaigns, campaign)
+	}
+
+	return campaigns, nil
+}
+
 func (repo Repository) Save(ctx context.Context, state Campaign) (Campaign, error) {
 	repo.Lock()
 	defer repo.Unlock()
@@ -69,6 +103,21 @@ func (repo Repository) Save(ctx context.Context, state Campaign) (Campaign, erro
 	}
 
 	return next, nil
+}
+
+func (repo Repository) getByID(ctx context.Context, id string) (Campaign, error) {
+	r, err := repo.storage.Reader(ctx, path.Join(campaignRootPath, id+".json"))
+	if err != nil {
+		return Campaign{}, fmt.Errorf("failed to read campaign: %w", err)
+	}
+	defer r.Close()
+
+	var campaign Campaign
+	if err := json.NewDecoder(r).Decode(&campaign); err != nil {
+		return Campaign{}, fmt.Errorf("failed to decode campaign: %w", err)
+	}
+
+	return normalize(campaign), nil
 }
 
 func validateAndNormalize(state Campaign) (Campaign, error) {

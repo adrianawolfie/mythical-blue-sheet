@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strings"
+	"time"
 
 	"raperonzolo/character-sheet/pkg/campaign"
 	"raperonzolo/character-sheet/pkg/character"
@@ -45,9 +47,18 @@ type adminAssignCharacterRequest struct {
 }
 
 type adminCampaignsPageData struct {
-	CurrentUser adminUserView
-	State       campaign.Campaign
-	Calendar    string
+	CurrentUser   adminUserView
+	Campaigns     []adminCampaignView
+	CampaignCount int
+}
+
+type adminCampaignView struct {
+	ID           string
+	Name         string
+	Calendar     string
+	DaysTraveled int
+	Players      string
+	UpdatedAt    string
 }
 
 func GetAdmin() http.HandlerFunc {
@@ -207,16 +218,49 @@ func GetAdminCampaigns(users user.Repository, campaigns campaign.Repository) htt
 			return
 		}
 
-		state, err := campaigns.Get(r.Context())
+		campaignList, err := campaigns.List(r.Context())
 		if err != nil {
 			renderErrorPage(w, err)
 			return
 		}
+		userNamesByID := make(map[string]string)
+		for _, u := range users.List(r.Context()) {
+			name := u.Name
+			if name == "" {
+				name = u.Email
+			}
+			userNamesByID[u.ID.String()] = name
+		}
+
+		views := make([]adminCampaignView, 0, len(campaignList))
+		for _, campaign := range campaignList {
+			updatedAt := formatAdminTimestamp(campaign.UpdatedAt)
+			playerNames := make([]string, 0, len(campaign.Players))
+			for _, playerID := range campaign.Players {
+				name := userNamesByID[playerID]
+				if name == "" {
+					name = "Unknown user"
+				}
+				playerNames = append(playerNames, name)
+			}
+			players := strings.Join(playerNames, ", ")
+			if players == "" {
+				players = "No players"
+			}
+			views = append(views, adminCampaignView{
+				ID:           campaign.ID,
+				Name:         campaign.Name,
+				Calendar:     formatAdminCalendarDate(campaign.CalendarDate),
+				DaysTraveled: campaign.DaysTraveled,
+				Players:      players,
+				UpdatedAt:    updatedAt,
+			})
+		}
 
 		data := adminCampaignsPageData{
-			CurrentUser: adminUserView{ID: currentUser.ID.String(), Name: currentUser.Name, Email: currentUser.Email, IsAdmin: currentUser.IsAdmin},
-			State:       state,
-			Calendar:    formatAdminCalendarDate(state.CalendarDate),
+			CurrentUser:   adminUserView{ID: currentUser.ID.String(), Name: currentUser.Name, Email: currentUser.Email, IsAdmin: currentUser.IsAdmin},
+			Campaigns:     views,
+			CampaignCount: len(views),
 		}
 		if err := tmpl.Execute(w, data); err != nil {
 			renderErrorPage(w, err)
@@ -252,4 +296,15 @@ func formatAdminCalendarDate(date campaign.CalendarDate) string {
 		return "Unknown"
 	}
 	return fmt.Sprintf("Year %d, Month %d, Day %d", date.Year, *date.Month, *date.Day)
+}
+
+func formatAdminTimestamp(value *string) string {
+	if value == nil || *value == "" {
+		return ""
+	}
+	parsed, err := time.Parse(time.RFC3339Nano, *value)
+	if err != nil {
+		return *value
+	}
+	return parsed.UTC().Format("Jan 2, 2006 15:04 UTC")
 }

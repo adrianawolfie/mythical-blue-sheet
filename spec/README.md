@@ -90,4 +90,4 @@ An admin-only page that lists characters, shows ownership, and supports assignin
 
 Template: `public/admin/campaigns.html`
 
-An admin-only page that shows shared campaign state and the formatted campaign calendar date.
+An admin-only page that lists campaigns loaded from `campaign/index.json` and the full `campaign/{id}.json` records, including player names resolved from user IDs.
