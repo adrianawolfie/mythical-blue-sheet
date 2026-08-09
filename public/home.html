@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
+  <title>Mythical Blue · Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/accessibility.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/home.css" />
+  <link rel="stylesheet" href="css/theme-mode.css" />
+</head>
+<body>
+  <main class="home-page" aria-labelledby="homeTitle">
+    <header class="home-header">
+      <img src="assets/title-banner.png" data-daylight-src="assets/title-banner.png" data-moonlight-src="assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" />
+      <div class="home-heading-copy">
+        <p class="home-kicker">Ship's Ledger</p>
+        <h1 id="homeTitle">Your Home Port</h1>
+        <p>Review your campaigns and open the character sheets assigned to your account.</p>
+      </div>
+      <button type="button" class="theme-toggle home-theme-toggle" data-theme-toggle aria-label="Switch visual theme">
+        <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-orb"></span></span>
+        <span class="theme-toggle-label">Moonlight Mode</span>
+      </button>
+    </header>
+
+    <section class="home-grid" aria-live="polite">
+      <section class="home-panel" aria-labelledby="homeCampaignsTitle">
+        <div class="home-panel-header">
+          <h2 id="homeCampaignsTitle">Your Campaigns</h2>
+        </div>
+        <div id="homeCampaigns" class="home-card-list">
+          <p class="home-muted">Loading campaigns...</p>
+        </div>
+      </section>
+
+      <section class="home-panel" aria-labelledby="homeCharactersTitle">
+        <div class="home-panel-header">
+          <h2 id="homeCharactersTitle">Your Characters</h2>
+        </div>
+        <div id="homeCharacters" class="home-card-list">
+          <p class="home-muted">Loading characters...</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="js/theme-mode.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

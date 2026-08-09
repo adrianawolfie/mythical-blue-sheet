@@ -50,9 +50,14 @@ func (repo Repository) Get(ctx context.Context) (Campaign, error) {
 	return normalize(state), nil
 }
 
-func (repo Repository) List(ctx context.Context) ([]Campaign, error) {
+func (repo Repository) List(ctx context.Context, opts ...ListOption) ([]Campaign, error) {
 	repo.RLock()
 	defer repo.RUnlock()
+
+	options := ListOptions{}
+	for _, opt := range opts {
+		opt(&options)
+	}
 
 	r, err := repo.storage.Reader(ctx, campaignIndexPath)
 	if err != nil {
@@ -74,10 +79,32 @@ func (repo Repository) List(ctx context.Context) ([]Campaign, error) {
 		if err != nil {
 			return nil, err
 		}
+		if !campaignMatchesListOptions(campaign, options) {
+			continue
+		}
 		campaigns = append(campaigns, campaign)
 	}
 
 	return campaigns, nil
+}
+
+func campaignMatchesListOptions(campaign Campaign, options ListOptions) bool {
+	if options.DM != "" && campaign.DM != options.DM {
+		return false
+	}
+	if options.PlayerID != "" && !campaignHasPlayer(campaign, options.PlayerID) {
+		return false
+	}
+	return true
+}
+
+func campaignHasPlayer(campaign Campaign, playerID string) bool {
+	for _, existing := range campaign.Players {
+		if existing == playerID {
+			return true
+		}
+	}
+	return false
 }
 
 func (repo Repository) GetByID(ctx context.Context, id string) (Campaign, error) {

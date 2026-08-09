@@ -8,7 +8,7 @@ The Character domain stores player character sheets and a lightweight character 
 
 ## Repository Behavior
 
-- `List` returns the character index.
+- `List` returns the character index and accepts functional options such as filtering by user ID.
 - `GetByID` loads a full character by ID.
 - `CreateOrReplace` saves a character and updates the index.
 - `Delete` removes a character and updates the index.
@@ -20,6 +20,7 @@ The Character domain stores player character sheets and a lightweight character 
 ## HTTP Routes
 
 - `GET /api/characters` returns the character index.
+- `GET /api/characters?mine=1` returns only character index records assigned to the user identified by the `user` cookie, or `401` when no valid user cookie is present.
 - `GET /api/characters/{id}` returns one character.
 - `POST /api/characters` creates or replaces one character.
 - `POST /api/characters/{id}/status` updates frequently changing status fields such as HP, temp HP, armor class, and conditions.

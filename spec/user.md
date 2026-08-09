@@ -14,6 +14,8 @@ The User domain stores users for login, registration, character ownership, and a
 
 ## HTTP Routes
 
+- `GET /api/me` returns the current user ID, name, and email from the `user` cookie, or `401` when no valid user cookie is present.
+
 - `GET /login` renders the login page.
 - `POST /login` authenticates a user and sets the `user` cookie.
 - `GET /register` renders the registration page.

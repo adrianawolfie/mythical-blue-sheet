@@ -13,10 +13,30 @@ type Campaign struct {
 	CalendarDate  CalendarDate `json:"calendarDate"`
 	DaysTraveled  int          `json:"daysTraveled"`
 	Players       []string     `json:"players"`
+	DM            string       `json:"dm"`
 }
 
 type Index struct {
 	ID string `json:"id"`
+}
+
+type ListOptions struct {
+	PlayerID string
+	DM       string
+}
+
+type ListOption func(*ListOptions)
+
+func WithPlayerID(playerID string) ListOption {
+	return func(options *ListOptions) {
+		options.PlayerID = playerID
+	}
+}
+
+func WithDM(dm string) ListOption {
+	return func(options *ListOptions) {
+		options.DM = dm
+	}
 }
 
 type UserReader interface {

@@ -18,7 +18,7 @@
     <nav class="admin-nav"><a class="admin-back-link" href="/">Back to Sheet</a><button type="button" class="admin-theme-toggle" data-theme-toggle aria-label="Switch visual theme"><span class="admin-theme-track" aria-hidden="true"><span class="admin-theme-knob"><span class="admin-theme-sun">☀</span><span class="admin-theme-moon">☾</span></span></span></button></nav>
     <div class="admin-layout">
       <aside class="admin-sidebar"><div class="admin-sidebar-inner"><p class="admin-sidebar-title">Admin</p><nav class="admin-sidebar-nav"><a class="admin-sidebar-link" href="/admin/users">Users</a><a class="admin-sidebar-link active" href="/admin/characters">Characters</a><a class="admin-sidebar-link" href="/admin/campaigns">Campaigns</a></nav></div></aside>
-      <section class="admin-card"><div class="admin-content"><header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><p class="admin-accent">Captain's Ledger</p><h1 id="adminTitle">Characters</h1></div></header><div class="admin-summary"><article class="admin-panel"><p class="admin-panel-label">Signed In</p><p class="admin-panel-value">{{.CurrentUser.Email}}</p></article><article class="admin-panel"><p class="admin-panel-label">Saved Characters</p><p class="admin-count">{{.Count}}</p></article></div><section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Name</th><th>Class</th><th>Level</th><th>User</th></tr></thead><tbody>{{range .Characters}}<tr><td class="admin-break">{{.Name}}</td><td>{{.Class}}</td><td>{{.Level}}</td><td class="admin-break">{{if .Assigned}}{{.UserName}}{{else}}<button type="button" class="admin-inline-action" data-assign-character-id="{{.ID}}" data-assign-character-name="{{.Name}}">{{.UserName}}</button>{{end}}</td></tr>{{else}}<tr><td class="admin-empty" colspan="4">No saved characters found.</td></tr>{{end}}</tbody></table></div></section></div></section>
+      <section class="admin-card"><div class="admin-content"><header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><p class="admin-accent">Captain's Ledger</p><h1 id="adminTitle">Characters</h1></div></header><div class="admin-summary"><article class="admin-panel"><p class="admin-panel-label">Signed In</p><p class="admin-panel-value">{{.CurrentUser.Email}}</p></article><article class="admin-panel"><p class="admin-panel-label">Saved Characters</p><p class="admin-count">{{.Count}}</p></article></div><section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Name</th><th>Class</th><th>Level</th><th>User</th></tr></thead><tbody>{{range .Characters}}<tr><td class="admin-break">{{.Name}}</td><td>{{.Class}}</td><td>{{.Level}}</td><td class="admin-break"><button type="button" class="admin-inline-action" data-assign-character-id="{{.ID}}" data-assign-character-name="{{.Name}}" data-assign-user-id="{{.UserID}}">{{.UserName}}</button></td></tr>{{else}}<tr><td class="admin-empty" colspan="4">No saved characters found.</td></tr>{{end}}</tbody></table></div></section></div></section>
     </div>
   </main>
   <div class="admin-modal" id="assignCharacterModal" hidden>
@@ -61,6 +61,11 @@
         button.addEventListener("click", () => {
           characterId = button.dataset.assignCharacterId;
           name.textContent = button.dataset.assignCharacterName;
+          if (button.dataset.assignUserId) {
+            user.value = button.dataset.assignUserId;
+          } else {
+            user.selectedIndex = 0;
+          }
           error.textContent = "";
           modal.hidden = false;
           user.focus();

@@ -1769,7 +1769,8 @@ html[data-theme="moonlight"] .start-page-heading-row {
 .start-page button.theme-toggle-compact,
 .sheet-toolbar button.theme-toggle,
 .dm-header-actions button.theme-toggle,
-.dm-header-actions button.theme-toggle-compact {
+.dm-header-actions button.theme-toggle-compact,
+.home-theme-toggle {
   flex: 0 0 58px !important;
   width: 58px !important;
   min-width: 58px !important;
@@ -1796,7 +1797,8 @@ html[data-theme="moonlight"] .start-page-heading-row {
   .start-page button.theme-toggle-compact,
   .sheet-toolbar button.theme-toggle,
   .dm-header-actions button.theme-toggle,
-  .dm-header-actions button.theme-toggle-compact {
+  .dm-header-actions button.theme-toggle-compact,
+  .home-theme-toggle {
     flex: 0 0 46px !important;
     width: 46px !important;
     min-width: 46px !important;

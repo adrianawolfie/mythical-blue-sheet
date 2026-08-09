@@ -64,9 +64,14 @@ func (repo Repository) CreateOrReplace(ctx context.Context, c Character) error {
 	return nil
 }
 
-func (repo Repository) List(ctx context.Context) ([]Index, error) {
+func (repo Repository) List(ctx context.Context, opts ...ListOption) ([]Index, error) {
 	repo.RLock()
 	defer repo.RUnlock()
+
+	options := ListOptions{}
+	for _, opt := range opts {
+		opt(&options)
+	}
 
 	r, err := repo.storage.Reader(ctx, characterIndexPath)
 	if err != nil {
@@ -78,17 +83,38 @@ func (repo Repository) List(ctx context.Context) ([]Index, error) {
 		return nil, fmt.Errorf("failed to decode character: %w", err)
 	}
 
-	return idx, nil
+	if options.UserID == "" {
+		return idx, nil
+	}
+
+	filtered := make([]Index, 0, len(idx))
+	for _, item := range idx {
+		c, err := repo.getByID(ctx, item.ID)
+		if err != nil {
+			return nil, err
+		}
+		if c.UserID == options.UserID {
+			filtered = append(filtered, item)
+		}
+	}
+
+	return filtered, nil
 }
 
 func (repo Repository) GetByID(ctx context.Context, id string) (Character, error) {
 	repo.RLock()
 	defer repo.RUnlock()
 
+	return repo.getByID(ctx, id)
+}
+
+func (repo Repository) getByID(ctx context.Context, id string) (Character, error) {
+
 	r, err := repo.storage.Reader(ctx, filepath.Join(characterRootPath, id+".json"))
 	if err != nil {
 		return Character{}, fmt.Errorf("failed to read character: %w", err)
 	}
+	defer r.Close()
 
 	var c Character
 	if err := json.NewDecoder(r).Decode(&c); err != nil {
@@ -98,13 +124,8 @@ func (repo Repository) GetByID(ctx context.Context, id string) (Character, error
 	return c, nil
 }
 
-func (repo Repository) ListForUser(ctx context.Context, users UserReader, email string) ([]ListView, error) {
-	currentUser, err := users.GetByUsername(email)
-	if err != nil {
-		return nil, err
-	}
-
-	idx, err := repo.List(ctx)
+func (repo Repository) ListViews(ctx context.Context, opts ...ListOption) ([]ListView, error) {
+	idx, err := repo.List(ctx, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -115,8 +136,35 @@ func (repo Repository) ListForUser(ctx context.Context, users UserReader, email 
 		if err != nil {
 			return nil, err
 		}
-		if c.UserID != currentUser.ID.String() {
-			continue
+		views = append(views, ListView{
+			ID:       item.ID,
+			Name:     item.Name,
+			Class:    c.Fields["class"],
+			Species:  c.Fields["speciesRace"],
+			Subclass: c.Fields["subclass"],
+			Level:    c.Fields["level"],
+		})
+	}
+
+	return views, nil
+}
+
+func (repo Repository) ListForUser(ctx context.Context, users UserReader, email string) ([]ListView, error) {
+	currentUser, err := users.GetByUsername(email)
+	if err != nil {
+		return nil, err
+	}
+
+	idx, err := repo.List(ctx, WithUserID(currentUser.ID.String()))
+	if err != nil {
+		return nil, err
+	}
+
+	views := make([]ListView, 0, len(idx))
+	for _, item := range idx {
+		c, err := repo.GetByID(ctx, item.ID)
+		if err != nil {
+			return nil, err
 		}
 		views = append(views, ListView{
 			ID:       item.ID,
@@ -166,6 +214,7 @@ func (repo Repository) ListAdmin(ctx context.Context, users UserReader) ([]Admin
 			Name:     c.Summary.Name,
 			Class:    c.Fields["class"],
 			Level:    c.Fields["level"],
+			UserID:   c.UserID,
 			UserName: userName,
 			Assigned: c.UserID != "",
 		})

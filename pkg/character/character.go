@@ -32,6 +32,18 @@ type ListView struct {
 	Level    string
 }
 
+type ListOptions struct {
+	UserID string
+}
+
+type ListOption func(*ListOptions)
+
+func WithUserID(userID string) ListOption {
+	return func(options *ListOptions) {
+		options.UserID = userID
+	}
+}
+
 type AdminUserView struct {
 	ID      string
 	Name    string
@@ -44,6 +56,7 @@ type AdminView struct {
 	Name     string
 	Class    string
 	Level    string
+	UserID   string
 	UserName string
 	Assigned bool
 }

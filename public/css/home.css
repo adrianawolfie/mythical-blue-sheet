@@ -1,0 +1,236 @@
+.home-page {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+  border: 2px solid var(--gold);
+  background-color: #ede1c0;
+  background-image: url("../assets/parchment-seamless.png");
+  background-size: 100% auto;
+  background-repeat: repeat-y;
+  color: var(--ink);
+  box-shadow: 0 8px 38px rgba(0, 0, 0, .40), inset 0 0 0 1px rgba(255, 248, 218, .38);
+}
+
+.home-page::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(184, 144, 44, .36);
+  pointer-events: none;
+}
+
+.home-header,
+.home-grid {
+  position: relative;
+  z-index: 1;
+}
+
+.home-header {
+  display: grid;
+  grid-template-columns: minmax(180px, 300px) 1fr auto;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.home-header img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 2px 3px rgba(43, 56, 102, .16));
+}
+
+.home-heading-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.home-kicker {
+  color: var(--gold-deep);
+  font-family: "Cinzel", serif;
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+.home-heading-copy h1 {
+  margin: 0;
+  color: var(--navy-deep);
+  font-family: "Cinzel Decorative", serif;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+}
+
+.home-heading-copy p:last-child {
+  max-width: 620px;
+  color: rgba(39, 28, 8, .82);
+  font: 1rem/1.5 "Lora", Georgia, serif;
+}
+
+.home-theme-toggle {
+  align-self: start;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.home-panel {
+  border: 1px solid var(--gold);
+  background: rgba(255, 253, 245, .28);
+  padding: 14px;
+}
+
+.home-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(184, 144, 44, .44);
+  padding-bottom: 10px;
+}
+
+.home-panel h2 {
+  margin: 0;
+  color: var(--navy-deep);
+  font-family: "Cinzel", serif;
+  font-size: 1rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.home-panel-header a,
+.home-card {
+  color: var(--navy-deep);
+  text-decoration: none;
+}
+
+.home-panel-header a {
+  border-bottom: 1px solid rgba(43, 56, 102, .38);
+  font-family: "Cinzel", serif;
+  font-size: .78rem;
+  font-weight: 700;
+}
+
+.home-card-list {
+  display: grid;
+  gap: 10px;
+}
+
+.home-card {
+  display: grid;
+  gap: 6px;
+  border: 1px solid rgba(184, 144, 44, .70);
+  background: rgba(255, 255, 255, .30);
+  padding: 12px;
+}
+
+.home-card[href]:hover,
+.home-card[href]:focus-visible {
+  background: rgba(255, 255, 255, .56);
+  outline: 2px solid var(--gold-deep);
+  outline-offset: 2px;
+}
+
+.home-card-title {
+  color: var(--navy-deep);
+  font-family: "Cinzel", serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.home-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: rgba(39, 28, 8, .78);
+  font: .9rem/1.35 "Lora", Georgia, serif;
+}
+
+.home-card-meta span {
+  border-left: 2px solid rgba(184, 144, 44, .42);
+  padding-left: 8px;
+}
+
+.home-muted {
+  margin: 0;
+  border: 1px solid rgba(184, 144, 44, .55);
+  background: rgba(255, 255, 255, .22);
+  color: rgba(39, 28, 8, .74);
+  padding: 14px;
+  font: .95rem/1.45 "Lora", Georgia, serif;
+}
+
+html[data-theme="moonlight"] .home-page {
+  border-color: var(--moon-line-strong);
+  background-color: var(--moon-surface);
+  background-image: url("../assets/themes/moonlight/backgrounds/parchment-seamless.png");
+  color: var(--moon-text);
+  box-shadow: 0 10px 42px rgba(0, 0, 0, .46), inset 0 0 0 1px rgba(197, 229, 255, .08);
+}
+
+html[data-theme="moonlight"] .home-page::before {
+  border-color: rgba(196, 229, 255, .20);
+}
+
+html[data-theme="moonlight"] .home-heading-copy h1,
+html[data-theme="moonlight"] .home-panel h2,
+html[data-theme="moonlight"] .home-card-title,
+html[data-theme="moonlight"] .home-panel-header a,
+html[data-theme="moonlight"] .home-card {
+  color: var(--moon-heading);
+}
+
+html[data-theme="moonlight"] .home-kicker {
+  color: var(--moon-accent);
+}
+
+html[data-theme="moonlight"] .home-heading-copy p:last-child,
+html[data-theme="moonlight"] .home-card-meta,
+html[data-theme="moonlight"] .home-muted {
+  color: var(--moon-text-soft);
+}
+
+html[data-theme="moonlight"] .home-panel,
+html[data-theme="moonlight"] .home-card,
+html[data-theme="moonlight"] .home-muted {
+  border-color: var(--moon-line);
+  background: var(--moon-surface-glass);
+}
+
+html[data-theme="moonlight"] .home-card[href]:hover,
+html[data-theme="moonlight"] .home-card[href]:focus-visible {
+  background: rgba(24, 49, 94, .76);
+  outline-color: var(--moon-accent);
+}
+
+html[data-theme="moonlight"] .home-card-meta span {
+  border-color: rgba(149, 204, 255, .42);
+}
+
+@media (max-width: 780px) {
+  .home-page {
+    padding: 18px;
+  }
+
+  .home-header {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .home-header img {
+    max-width: 300px;
+  }
+
+  .home-theme-toggle {
+    justify-self: center;
+  }
+
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
+}

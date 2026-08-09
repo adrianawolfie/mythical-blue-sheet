@@ -197,6 +197,26 @@ func requireCookie(w http.ResponseWriter, r *http.Request) (string, bool) {
 	return cookie.Value, true
 }
 
+func currentUserFromCookie(w http.ResponseWriter, r *http.Request, repo user.Repository) (user.User, bool) {
+	cookie, err := r.Cookie("user")
+	if err != nil || cookie.Value == "" {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return user.User{}, false
+	}
+
+	currentUser, err := repo.GetByUsername(cookie.Value)
+	if err != nil {
+		if err == user.ErrUserNotFound {
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
+			return user.User{}, false
+		}
+		renderErrorPage(w, err)
+		return user.User{}, false
+	}
+
+	return currentUser, true
+}
+
 func handleAdminError(w http.ResponseWriter, r *http.Request, err error) {
 	if err == user.ErrForbidden {
 		http.Error(w, "forbidden", http.StatusForbidden)

@@ -16,9 +16,22 @@ type characterListPageData struct {
 	Characters []character.ListView
 }
 
-func GetCharacters(c character.Repository) http.HandlerFunc {
+func GetCharacters(c character.Repository, users ...user.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		idx, err := c.List(r.Context())
+		var opts []character.ListOption
+		if r.URL.Query().Get("mine") == "1" {
+			if len(users) == 0 {
+				http.Error(w, "unauthorized", http.StatusUnauthorized)
+				return
+			}
+			currentUser, ok := currentUserFromCookie(w, r, users[0])
+			if !ok {
+				return
+			}
+			opts = append(opts, character.WithUserID(currentUser.ID.String()))
+		}
+
+		idx, err := c.List(r.Context(), opts...)
 		if err != nil {
 			writeError(w, err)
 			return

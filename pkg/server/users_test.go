@@ -292,7 +292,7 @@ func TestGetAdminCharactersShowsClassLevelAndUserName(t *testing.T) {
 		t.Fatalf("expected status 200, got %d", w.Code)
 	}
 	body := w.Body.String()
-	for _, expected := range []string{"Ada Storm", "Wizard", "7", "Admin User"} {
+	for _, expected := range []string{"Ada Storm", "Wizard", "7", "Admin User", `data-assign-character-id="ada-character"`, `data-assign-user-id="018fe68a-01a8-70b1-8ea3-2d0b819a2d29"`} {
 		if !strings.Contains(body, expected) {
 			t.Fatalf("expected response to contain %q", expected)
 		}
@@ -390,6 +390,39 @@ func TestGetCharactersReturnsCharacterIndex(t *testing.T) {
 	}
 	if len(idx) != 1 || idx[0].ID != "ada-character" || idx[0].Name != "Ada Storm" {
 		t.Fatalf("expected character index, got %#v", idx)
+	}
+}
+
+func TestGetCharactersMineReturnsOnlyCurrentUsersCharacters(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Ada Storm", Email: "ada@example.com", Password: "hash"}})
+	characters := newCharacterTestRepository(t, []character.Character{{
+		ID:     "ada-character",
+		UserID: "018fe68a-01a8-70b1-8ea3-2d0b819a2d29",
+		Summary: character.Summary{
+			Name: "Ada Storm",
+		},
+	}, {
+		ID:     "other-character",
+		UserID: "018fe68a-01a8-70b1-8ea3-2d0b819a2d30",
+		Summary: character.Summary{
+			Name: "Other Sailor",
+		},
+	}})
+	req := httptest.NewRequest(http.MethodGet, "/api/characters?mine=1", nil)
+	req.AddCookie(&http.Cookie{Name: "user", Value: "ada@example.com"})
+	w := httptest.NewRecorder()
+
+	GetCharacters(characters, users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var idx []character.Index
+	if err := json.NewDecoder(w.Body).Decode(&idx); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if len(idx) != 1 || idx[0].ID != "ada-character" {
+		t.Fatalf("expected only current user's character, got %#v", idx)
 	}
 }
 
@@ -600,6 +633,68 @@ func TestGetCampaignReturnsCampaignState(t *testing.T) {
 	}
 	if state.CalendarDate.Year != 4520 || state.DaysTraveled != 0 {
 		t.Fatalf("expected default campaign state, got %#v", state)
+	}
+}
+
+func TestGetCampaignsMineReturnsOnlyCurrentUsersCampaigns(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Ada Storm", Email: "ada@example.com", Password: "hash"}})
+	month := 4
+	day := 1
+	campaigns := newCampaignTestRepository(t, []campaign.Campaign{{
+		ID:           "campaign-1",
+		Name:         "Adriana",
+		CalendarDate: campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
+		Players:      []string{"018fe68a-01a8-70b1-8ea3-2d0b819a2d29"},
+	}, {
+		ID:           "campaign-2",
+		Name:         "DM Waters",
+		CalendarDate: campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
+		DM:           "018fe68a-01a8-70b1-8ea3-2d0b819a2d29",
+	}, {
+		ID:           "campaign-3",
+		Name:         "Other Waters",
+		CalendarDate: campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
+		Players:      []string{"018fe68a-01a8-70b1-8ea3-2d0b819a2d30"},
+	}})
+	req := httptest.NewRequest(http.MethodGet, "/api/campaigns?mine=1", nil)
+	req.AddCookie(&http.Cookie{Name: "user", Value: "ada@example.com"})
+	w := httptest.NewRecorder()
+
+	GetCampaigns(users, campaigns).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var response []campaign.Campaign
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if len(response) != 1 || response[0].ID != "campaign-1" {
+		t.Fatalf("expected only current user's player campaign, got %#v", response)
+	}
+}
+
+func TestGetCurrentUserReturnsCookieUser(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Ada Storm", Email: "ada@example.com", Password: "hash"}})
+	req := httptest.NewRequest(http.MethodGet, "/api/me", nil)
+	req.AddCookie(&http.Cookie{Name: "user", Value: "ada@example.com"})
+	w := httptest.NewRecorder()
+
+	GetCurrentUser(users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var response struct {
+		ID    string `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
+	}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if response.ID != "018fe68a-01a8-70b1-8ea3-2d0b819a2d29" || response.Email != "ada@example.com" {
+		t.Fatalf("expected current user, got %#v", response)
 	}
 }
 

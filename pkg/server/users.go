@@ -27,6 +27,24 @@ func GetRegistration() http.HandlerFunc {
 	}
 }
 
+func GetCurrentUser(repo user.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		currentUser, ok := currentUserFromCookie(w, r, repo)
+		if !ok {
+			return
+		}
+
+		if err := json.NewEncoder(w).Encode(struct {
+			ID    string `json:"id"`
+			Name  string `json:"name"`
+			Email string `json:"email"`
+		}{ID: currentUser.ID.String(), Name: currentUser.Name, Email: currentUser.Email}); err != nil {
+			writeError(w, err)
+			return
+		}
+	}
+}
+
 func PostUser(repo user.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var u user.User
