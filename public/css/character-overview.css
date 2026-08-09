@@ -344,6 +344,18 @@
   box-shadow: 0 8px 38px rgba(0,0,0,.40), inset 0 0 0 1px rgba(255,248,218,.38);
 }
 
+.character-detail-page #startPage {
+  display: none !important;
+}
+
+#resetTestDataBtn {
+  display: none;
+}
+
+#resetTestDataBtn.is-visible {
+  display: inline-block;
+}
+
 .start-page::before {
   content: '';
   position: absolute;

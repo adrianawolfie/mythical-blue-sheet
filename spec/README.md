@@ -38,6 +38,8 @@ Static assets and static HTML are served from `public/` by the root file server.
 
 The frontend uses plain HTML, CSS, and JavaScript. Prefer server-side rendered templates for page UI when adding or changing pages.
 
+All page CSS lives in static CSS files under `public/css/` or another served CSS path. Pages should link only the CSS files they need. Pages and templates should not use `<style>` blocks or `style` attributes; add or reuse classes in CSS files instead.
+
 ### `/`
 
 File: `public/index.html`

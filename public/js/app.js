@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const resetButton = document.getElementById("resetTestDataBtn");
     if (characterStorage.canReset && resetButton) {
-      resetButton.style.display = "inline-block";
+      resetButton.classList.add("is-visible");
       resetButton.addEventListener("click", async () => {
         if (!confirmDiscardUnsavedCharacterChanges("reset the test data")) return;
         if (!confirm("Reset local test data to the repository seed characters?")) return;
