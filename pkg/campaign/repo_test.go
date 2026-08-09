@@ -99,6 +99,51 @@ func TestListLoadsCampaignsFromIndex(t *testing.T) {
 	}
 }
 
+func TestGetByIDLoadsCampaign(t *testing.T) {
+	ctx, repo, dir := newTestRepository(t)
+	month := 4
+	day := 1
+	campaign := Campaign{ID: "campaign-1", Name: "Adriana", SchemaVersion: 1, CalendarDate: CalendarDate{Year: 4520, Month: &month, Day: &day}}
+	campaignData, err := json.Marshal(campaign)
+	if err != nil {
+		t.Fatalf("marshal campaign: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "campaign", "campaign-1.json"), campaignData, 0o644); err != nil {
+		t.Fatalf("write campaign: %v", err)
+	}
+
+	loaded, err := repo.GetByID(ctx, "campaign-1")
+	if err != nil {
+		t.Fatalf("get campaign: %v", err)
+	}
+	if loaded.ID != "campaign-1" || loaded.Name != "Adriana" {
+		t.Fatalf("expected campaign, got %#v", loaded)
+	}
+}
+
+func TestSaveCampaignPersistsCampaignFile(t *testing.T) {
+	ctx, repo, _ := newTestRepository(t)
+	month := 4
+	day := 1
+	campaign := Campaign{
+		ID:           "campaign-1",
+		Name:         "Adriana",
+		CalendarDate: CalendarDate{Year: 4520, Month: &month, Day: &day},
+		Players:      []string{"user-1"},
+	}
+
+	if _, err := repo.SaveCampaign(ctx, campaign); err != nil {
+		t.Fatalf("save campaign: %v", err)
+	}
+	loaded, err := repo.GetByID(ctx, "campaign-1")
+	if err != nil {
+		t.Fatalf("get campaign: %v", err)
+	}
+	if loaded.Name != "Adriana" || len(loaded.Players) != 1 || loaded.UpdatedAt == nil {
+		t.Fatalf("expected persisted campaign, got %#v", loaded)
+	}
+}
+
 func TestGetReturnsDefaultWhenStateFileInvalid(t *testing.T) {
 	ctx, repo, dir := newTestRepository(t)
 	if err := os.WriteFile(filepath.Join(dir, statePath), []byte("{"), 0o644); err != nil {

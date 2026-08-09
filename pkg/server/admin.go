@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"strings"
 	"time"
 
 	"raperonzolo/character-sheet/pkg/campaign"
@@ -52,13 +51,23 @@ type adminCampaignsPageData struct {
 	CampaignCount int
 }
 
+type adminCampaignPlayerView struct {
+	ID   string
+	Name string
+}
+
 type adminCampaignView struct {
-	ID           string
-	Name         string
-	Calendar     string
-	DaysTraveled int
-	Players      string
-	UpdatedAt    string
+	ID             string
+	Name           string
+	Calendar       string
+	DaysTraveled   int
+	Players        []adminCampaignPlayerView
+	AvailableUsers []adminUserView
+	UpdatedAt      string
+}
+
+type adminCampaignPlayerRequest struct {
+	UserID string `json:"userId"`
 }
 
 func GetAdmin() http.HandlerFunc {
@@ -223,37 +232,41 @@ func GetAdminCampaigns(users user.Repository, campaigns campaign.Repository) htt
 			renderErrorPage(w, err)
 			return
 		}
+		allUsers := users.List(r.Context())
 		userNamesByID := make(map[string]string)
-		for _, u := range users.List(r.Context()) {
-			name := u.Name
-			if name == "" {
-				name = u.Email
-			}
-			userNamesByID[u.ID.String()] = name
+		for _, u := range allUsers {
+			userNamesByID[u.ID.String()] = adminUserName(u)
 		}
 
 		views := make([]adminCampaignView, 0, len(campaignList))
 		for _, campaign := range campaignList {
 			updatedAt := formatAdminTimestamp(campaign.UpdatedAt)
-			playerNames := make([]string, 0, len(campaign.Players))
+			players := make([]adminCampaignPlayerView, 0, len(campaign.Players))
+			playerIDs := make(map[string]bool)
 			for _, playerID := range campaign.Players {
 				name := userNamesByID[playerID]
 				if name == "" {
 					name = "Unknown user"
 				}
-				playerNames = append(playerNames, name)
+				playerIDs[playerID] = true
+				players = append(players, adminCampaignPlayerView{ID: playerID, Name: name})
 			}
-			players := strings.Join(playerNames, ", ")
-			if players == "" {
-				players = "No players"
+
+			availableUsers := make([]adminUserView, 0, len(allUsers))
+			for _, u := range allUsers {
+				if playerIDs[u.ID.String()] {
+					continue
+				}
+				availableUsers = append(availableUsers, adminUserView{ID: u.ID.String(), Name: u.Name, Email: u.Email, IsAdmin: u.IsAdmin})
 			}
 			views = append(views, adminCampaignView{
-				ID:           campaign.ID,
-				Name:         campaign.Name,
-				Calendar:     formatAdminCalendarDate(campaign.CalendarDate),
-				DaysTraveled: campaign.DaysTraveled,
-				Players:      players,
-				UpdatedAt:    updatedAt,
+				ID:             campaign.ID,
+				Name:           campaign.Name,
+				Calendar:       formatAdminCalendarDate(campaign.CalendarDate),
+				DaysTraveled:   campaign.DaysTraveled,
+				Players:        players,
+				AvailableUsers: availableUsers,
+				UpdatedAt:      updatedAt,
 			})
 		}
 
@@ -265,6 +278,86 @@ func GetAdminCampaigns(users user.Repository, campaigns campaign.Repository) htt
 		if err := tmpl.Execute(w, data); err != nil {
 			renderErrorPage(w, err)
 		}
+	}
+}
+
+func PostAdminCampaignPlayer(users user.Repository, campaigns campaign.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := requireAdmin(w, r, users); !ok {
+			return
+		}
+
+		var req adminCampaignPlayerRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeJSON(w, http.StatusBadRequest, err)
+			return
+		}
+		if req.UserID == "" {
+			http.Error(w, "userId is required", http.StatusBadRequest)
+			return
+		}
+
+		found := false
+		for _, u := range users.List(r.Context()) {
+			if u.ID.String() == req.UserID {
+				found = true
+				break
+			}
+		}
+		if !found {
+			http.Error(w, "user not found", http.StatusBadRequest)
+			return
+		}
+
+		campaign, err := campaigns.GetByID(r.Context(), r.PathValue("id"))
+		if err != nil {
+			renderErrorPage(w, err)
+			return
+		}
+		for _, playerID := range campaign.Players {
+			if playerID == req.UserID {
+				w.WriteHeader(http.StatusOK)
+				return
+			}
+		}
+		campaign.Players = append(campaign.Players, req.UserID)
+
+		if _, err := campaigns.SaveCampaign(r.Context(), campaign); err != nil {
+			renderErrorPage(w, err)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func DeleteAdminCampaignPlayer(users user.Repository, campaigns campaign.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := requireAdmin(w, r, users); !ok {
+			return
+		}
+
+		campaign, err := campaigns.GetByID(r.Context(), r.PathValue("id"))
+		if err != nil {
+			renderErrorPage(w, err)
+			return
+		}
+
+		playerID := r.PathValue("userId")
+		players := make([]string, 0, len(campaign.Players))
+		for _, existing := range campaign.Players {
+			if existing != playerID {
+				players = append(players, existing)
+			}
+		}
+		campaign.Players = players
+
+		if _, err := campaigns.SaveCampaign(r.Context(), campaign); err != nil {
+			renderErrorPage(w, err)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
 	}
 }
 
@@ -296,6 +389,13 @@ func formatAdminCalendarDate(date campaign.CalendarDate) string {
 		return "Unknown"
 	}
 	return fmt.Sprintf("Year %d, Month %d, Day %d", date.Year, *date.Month, *date.Day)
+}
+
+func adminUserName(u user.User) string {
+	if u.Name != "" {
+		return u.Name
+	}
+	return u.Email
 }
 
 func formatAdminTimestamp(value *string) string {

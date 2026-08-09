@@ -269,6 +269,78 @@ body.admin-body {
   font-size: .64rem;
 }
 
+.admin-player-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.admin-player-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(31, 41, 82, .20);
+  background: rgba(255, 255, 255, .20);
+  padding: 4px 8px;
+}
+
+.admin-player-remove {
+  border: 0;
+  background: transparent;
+  color: #7a1c1c;
+  cursor: pointer;
+  font: 700 1rem/1 "Cinzel", serif;
+  padding: 0;
+}
+
+.admin-player-add {
+  margin-top: 8px;
+}
+
+.admin-player-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.admin-player-picker[hidden] {
+  display: none;
+}
+
+.admin-player-picker select,
+.admin-player-picker button {
+  min-height: 32px;
+  border: 1px solid rgba(138, 105, 24, .72);
+  background: rgba(255, 253, 245, .72);
+  color: var(--ink);
+  padding: 4px 8px;
+  font: .82rem "Lora", Georgia, serif;
+}
+
+.admin-player-add button,
+.admin-player-picker button {
+  min-height: 34px;
+  border: 1px solid var(--gold-deep);
+  background: var(--navy);
+  color: #fff;
+  cursor: pointer;
+  font-family: "Cinzel", serif;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  padding: 6px 10px;
+  text-transform: uppercase;
+}
+
+.admin-player-add button:hover,
+.admin-player-add button:focus-visible,
+.admin-player-picker button:hover,
+.admin-player-picker button:focus-visible {
+  background: var(--navy-deep);
+  outline: none;
+}
+
 .admin-badge {
   display: inline-flex;
   border: 1px solid rgba(31, 41, 82, .20);
@@ -453,6 +525,26 @@ html[data-theme="moonlight"] .admin-badge-on { color: var(--moon-accent); }
 html[data-theme="moonlight"] .admin-inline-action {
   color: var(--moon-accent);
   text-decoration-color: rgba(149, 204, 255, .46);
+}
+
+html[data-theme="moonlight"] .admin-player-picker select {
+  border-color: var(--moon-line);
+  background: rgba(2, 20, 52, .74);
+  color: var(--moon-text);
+}
+
+html[data-theme="moonlight"] .admin-player-add button,
+html[data-theme="moonlight"] .admin-player-picker button {
+  border-color: var(--moon-line);
+  background: var(--moon-button-to);
+  color: var(--moon-text);
+}
+
+html[data-theme="moonlight"] .admin-player-add button:hover,
+html[data-theme="moonlight"] .admin-player-add button:focus-visible,
+html[data-theme="moonlight"] .admin-player-picker button:hover,
+html[data-theme="moonlight"] .admin-player-picker button:focus-visible {
+  background: var(--moon-surface-glass);
 }
 
 html[data-theme="moonlight"] .admin-modal-card {

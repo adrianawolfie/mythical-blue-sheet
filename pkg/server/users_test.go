@@ -407,9 +407,103 @@ func TestGetAdminCampaignsListsCampaigns(t *testing.T) {
 		t.Fatalf("expected status 200, got %d", w.Code)
 	}
 	body := w.Body.String()
-	for _, expected := range []string{"Adriana", "campaign-1", "Year 4520, Month 4, Day 1", ">2</td>", "Admin User, Ada Storm", "Jul 12, 2026 16:06 UTC"} {
+	for _, expected := range []string{"Adriana", "campaign-1", "Year 4520, Month 4, Day 1", ">2</td>", "Admin User", "Ada Storm", "admin-player-remove", "+ Add Player", "Jul 12, 2026 16:06 UTC"} {
 		if !strings.Contains(body, expected) {
 			t.Fatalf("expected response to contain %q", expected)
 		}
+	}
+}
+
+func TestPostAdminCampaignPlayerPersistsUserID(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{
+		{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true},
+		{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d30"), Name: "Ada Storm", Email: "ada@example.com", Password: "hash", IsAdmin: false},
+	})
+	month := 4
+	day := 1
+	campaigns := newCampaignTestRepository(t, []campaign.Campaign{{
+		ID:            "campaign-1",
+		Name:          "Adriana",
+		SchemaVersion: 1,
+		CalendarDate:  campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
+		Players:       []string{"018fe68a-01a8-70b1-8ea3-2d0b819a2d29"},
+	}})
+	req := httptest.NewRequest(http.MethodPost, "/admin/campaigns/campaign-1/players", bytes.NewBufferString(`{"userId":"018fe68a-01a8-70b1-8ea3-2d0b819a2d30"}`))
+	req.SetPathValue("id", "campaign-1")
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	PostAdminCampaignPlayer(users, campaigns).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	updated, err := campaigns.GetByID(context.Background(), "campaign-1")
+	if err != nil {
+		t.Fatalf("get updated campaign: %v", err)
+	}
+	if len(updated.Players) != 2 || updated.Players[1] != "018fe68a-01a8-70b1-8ea3-2d0b819a2d30" {
+		t.Fatalf("expected added player, got %#v", updated.Players)
+	}
+}
+
+func TestPostAdminCampaignPlayerDoesNotDuplicateUserID(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	month := 4
+	day := 1
+	campaigns := newCampaignTestRepository(t, []campaign.Campaign{{
+		ID:            "campaign-1",
+		Name:          "Adriana",
+		SchemaVersion: 1,
+		CalendarDate:  campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
+		Players:       []string{"018fe68a-01a8-70b1-8ea3-2d0b819a2d29"},
+	}})
+	req := httptest.NewRequest(http.MethodPost, "/admin/campaigns/campaign-1/players", bytes.NewBufferString(`{"userId":"018fe68a-01a8-70b1-8ea3-2d0b819a2d29"}`))
+	req.SetPathValue("id", "campaign-1")
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	PostAdminCampaignPlayer(users, campaigns).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	updated, err := campaigns.GetByID(context.Background(), "campaign-1")
+	if err != nil {
+		t.Fatalf("get updated campaign: %v", err)
+	}
+	if len(updated.Players) != 1 {
+		t.Fatalf("expected no duplicate players, got %#v", updated.Players)
+	}
+}
+
+func TestDeleteAdminCampaignPlayerPersistsRemoval(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	month := 4
+	day := 1
+	campaigns := newCampaignTestRepository(t, []campaign.Campaign{{
+		ID:            "campaign-1",
+		Name:          "Adriana",
+		SchemaVersion: 1,
+		CalendarDate:  campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
+		Players:       []string{"018fe68a-01a8-70b1-8ea3-2d0b819a2d29", "018fe68a-01a8-70b1-8ea3-2d0b819a2d30"},
+	}})
+	req := httptest.NewRequest(http.MethodDelete, "/admin/campaigns/campaign-1/players/018fe68a-01a8-70b1-8ea3-2d0b819a2d30", nil)
+	req.SetPathValue("id", "campaign-1")
+	req.SetPathValue("userId", "018fe68a-01a8-70b1-8ea3-2d0b819a2d30")
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	DeleteAdminCampaignPlayer(users, campaigns).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	updated, err := campaigns.GetByID(context.Background(), "campaign-1")
+	if err != nil {
+		t.Fatalf("get updated campaign: %v", err)
+	}
+	if len(updated.Players) != 1 || updated.Players[0] != "018fe68a-01a8-70b1-8ea3-2d0b819a2d29" {
+		t.Fatalf("expected removed player, got %#v", updated.Players)
 	}
 }

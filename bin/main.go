@@ -68,6 +68,8 @@ func main() {
 	mux.Handle("GET /admin/characters", server.GetAdminCharacters(users, characters))
 	mux.Handle("POST /admin/characters/{id}/assignment", server.PostAdminCharacterAssignment(users, characters))
 	mux.Handle("GET /admin/campaigns", server.GetAdminCampaigns(users, campaigns))
+	mux.Handle("POST /admin/campaigns/{id}/players", server.PostAdminCampaignPlayer(users, campaigns))
+	mux.Handle("DELETE /admin/campaigns/{id}/players/{userId}", server.DeleteAdminCampaignPlayer(users, campaigns))
 	mux.Handle("GET /characters", server.GetCharacterListPage(users, characters))
 	mux.Handle("GET /characters/{id}", server.GetCharacterDetail(characters))
 

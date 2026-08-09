@@ -80,6 +80,13 @@ func (repo Repository) List(ctx context.Context) ([]Campaign, error) {
 	return campaigns, nil
 }
 
+func (repo Repository) GetByID(ctx context.Context, id string) (Campaign, error) {
+	repo.RLock()
+	defer repo.RUnlock()
+
+	return repo.getByID(ctx, id)
+}
+
 func (repo Repository) Save(ctx context.Context, state Campaign) (Campaign, error) {
 	repo.Lock()
 	defer repo.Unlock()
@@ -100,6 +107,34 @@ func (repo Repository) Save(ctx context.Context, state Campaign) (Campaign, erro
 	}
 	if err := w.Close(); err != nil {
 		return Campaign{}, fmt.Errorf("failed to close campaign state: %w", err)
+	}
+
+	return next, nil
+}
+
+func (repo Repository) SaveCampaign(ctx context.Context, campaign Campaign) (Campaign, error) {
+	repo.Lock()
+	defer repo.Unlock()
+
+	if campaign.ID == "" {
+		return Campaign{}, fmt.Errorf("campaign ID is required")
+	}
+	next, err := validateAndNormalize(campaign)
+	if err != nil {
+		return Campaign{}, err
+	}
+
+	w, err := repo.storage.Writer(ctx, path.Join(campaignRootPath, next.ID+".json"))
+	if err != nil {
+		return Campaign{}, fmt.Errorf("failed to write campaign: %w", err)
+	}
+
+	if err := json.NewEncoder(w).Encode(next); err != nil {
+		_ = w.Close()
+		return Campaign{}, fmt.Errorf("failed to encode campaign: %w", err)
+	}
+	if err := w.Close(); err != nil {
+		return Campaign{}, fmt.Errorf("failed to close campaign: %w", err)
 	}
 
 	return next, nil
