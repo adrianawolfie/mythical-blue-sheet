@@ -46,7 +46,7 @@ type adminAssignCharacterRequest struct {
 
 type adminCampaignsPageData struct {
 	CurrentUser adminUserView
-	State       campaign.State
+	State       campaign.Campaign
 	Calendar    string
 }
 

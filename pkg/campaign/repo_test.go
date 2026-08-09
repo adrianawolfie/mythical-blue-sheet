@@ -71,7 +71,7 @@ func TestSavePersistsCampaignState(t *testing.T) {
 	month := 4
 	day := 12
 
-	saved, err := repo.Save(ctx, State{
+	saved, err := repo.Save(ctx, Campaign{
 		CalendarDate: CalendarDate{
 			Year:  4521,
 			Month: &month,
@@ -100,7 +100,7 @@ func TestSaveRejectsInvalidYear(t *testing.T) {
 	month := 4
 	day := 12
 
-	_, err := repo.Save(ctx, State{CalendarDate: CalendarDate{Year: 0, Month: &month, Day: &day}})
+	_, err := repo.Save(ctx, Campaign{CalendarDate: CalendarDate{Year: 0, Month: &month, Day: &day}})
 	if err == nil || !strings.Contains(err.Error(), "campaign year is invalid") {
 		t.Fatalf("expected invalid year error, got %v", err)
 	}
@@ -110,7 +110,7 @@ func TestSaveRejectsInvalidSpecialDay(t *testing.T) {
 	ctx, repo, _ := newTestRepository(t)
 	special := "not-special"
 
-	_, err := repo.Save(ctx, State{CalendarDate: CalendarDate{Year: 4521, Special: &special}})
+	_, err := repo.Save(ctx, Campaign{CalendarDate: CalendarDate{Year: 4521, Special: &special}})
 	if err == nil || !strings.Contains(err.Error(), "campaign special day is invalid") {
 		t.Fatalf("expected invalid special day error, got %v", err)
 	}
@@ -121,7 +121,7 @@ func TestSaveRejectsInvalidMonthDay(t *testing.T) {
 	month := 14
 	day := 1
 
-	_, err := repo.Save(ctx, State{CalendarDate: CalendarDate{Year: 4521, Month: &month, Day: &day}})
+	_, err := repo.Save(ctx, Campaign{CalendarDate: CalendarDate{Year: 4521, Month: &month, Day: &day}})
 	if err == nil || !strings.Contains(err.Error(), "campaign calendar date is invalid") {
 		t.Fatalf("expected invalid calendar date error, got %v", err)
 	}
@@ -132,7 +132,7 @@ func TestSaveClampsNegativeDaysTraveled(t *testing.T) {
 	month := 4
 	day := 12
 
-	saved, err := repo.Save(ctx, State{CalendarDate: CalendarDate{Year: 4521, Month: &month, Day: &day}, DaysTraveled: -5})
+	saved, err := repo.Save(ctx, Campaign{CalendarDate: CalendarDate{Year: 4521, Month: &month, Day: &day}, DaysTraveled: -5})
 	if err != nil {
 		t.Fatalf("save state: %v", err)
 	}
@@ -147,7 +147,7 @@ func TestSaveNullsMonthAndDayForSpecialDay(t *testing.T) {
 	day := 12
 	special := "intercalis"
 
-	saved, err := repo.Save(ctx, State{CalendarDate: CalendarDate{Year: 4521, Month: &month, Day: &day, Special: &special}})
+	saved, err := repo.Save(ctx, Campaign{CalendarDate: CalendarDate{Year: 4521, Month: &month, Day: &day, Special: &special}})
 	if err != nil {
 		t.Fatalf("save state: %v", err)
 	}

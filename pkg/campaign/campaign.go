@@ -1,10 +1,11 @@
 package campaign
 
-type State struct {
+type Campaign struct {
 	SchemaVersion int          `json:"schemaVersion"`
 	UpdatedAt     *string      `json:"updatedAt"`
 	CalendarDate  CalendarDate `json:"calendarDate"`
 	DaysTraveled  int          `json:"daysTraveled"`
+	Players       []string     `json:"players"`
 }
 
 type CalendarDate struct {
@@ -14,11 +15,11 @@ type CalendarDate struct {
 	Special *string `json:"special"`
 }
 
-func DefaultState() State {
+func DefaultState() Campaign {
 	month := 3
 	day := 28
 
-	return State{
+	return Campaign{
 		SchemaVersion: 1,
 		UpdatedAt:     nil,
 		CalendarDate: CalendarDate{
@@ -28,5 +29,6 @@ func DefaultState() State {
 			Special: nil,
 		},
 		DaysTraveled: 0,
+		Players:      make([]string, 10),
 	}
 }

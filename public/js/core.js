@@ -9,6 +9,7 @@ function sw(name, btn) {
   }
 
 let currentCharacterId = null;
+let currentCharacterCampaignId = "";
 let loadedCharacterUpdatedAt = null;
 let characterHasUnsavedChanges = false;
 
@@ -396,6 +397,7 @@ function collectCharacterData() {
 return {
   schemaVersion: CURRENT_SCHEMA_VERSION,
   id: currentCharacterId || crypto.randomUUID(),
+  campaignId: currentCharacterCampaignId || "",
   expectedUpdatedAt: loadedCharacterUpdatedAt,
   updatedAt: new Date().toISOString(),
 summary: {
@@ -435,6 +437,7 @@ customLists: {
 
 function loadCharacter(character) {
   currentCharacterId = character.id;
+  currentCharacterCampaignId = character.campaignId || "";
   loadedCharacterUpdatedAt = character.updatedAt || null;
 
   const normalizedFields = migrateLegacyClassFields(
@@ -529,6 +532,7 @@ async function saveCurrentCharacter(showAlert = true) {
 }
 function newCharacter() {
   currentCharacterId = crypto.randomUUID();
+  currentCharacterCampaignId = "";
   loadedCharacterUpdatedAt = null;
 
   getFields().forEach(field => {
@@ -568,6 +572,7 @@ async function deleteCurrentCharacter() {
     });
 
     currentCharacterId = null;
+    currentCharacterCampaignId = "";
     loadedCharacterUpdatedAt = null;
     markCharacterClean();
 

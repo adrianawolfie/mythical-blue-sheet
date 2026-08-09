@@ -2,7 +2,9 @@
 
 Package: `pkg/character`
 
-The Character domain stores player character sheets and a lightweight character index. Character data includes summary fields, raw sheet fields, custom lists, inventory, spells, features, journal notes, UI state, and status values.
+The Character domain stores player character sheets and a lightweight character index. Character data includes user assignment, campaign assignment, summary fields, raw sheet fields, custom lists, inventory, spells, features, journal notes, UI state, and status values.
+
+`campaignId` links a character to a campaign. An empty `campaignId` means the character is not assigned to a campaign.
 
 ## Repository Behavior
 

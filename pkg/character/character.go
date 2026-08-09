@@ -2,6 +2,7 @@ package character
 
 type Index struct {
 	ID                string `json:"id"`
+	CampaignID        string `json:"campaignId"`
 	Name              string `json:"name"`
 	ArmorClass        string `json:"armorClass"`
 	HpCurrent         string `json:"hpCurrent"`
@@ -16,6 +17,7 @@ type Character struct {
 	SchemaVersion int         `json:"schemaVersion"`
 	ID            string      `json:"id"`
 	UserID        string      `json:"userId"`
+	CampaignID    string      `json:"campaignId"`
 	Summary       Summary     `json:"summary"`
 	Fields        Fields      `json:"fields"`
 	CustomLists   CustomLists `json:"customLists"`

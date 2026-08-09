@@ -6,7 +6,7 @@ import (
 	"raperonzolo/character-sheet/pkg/campaign"
 )
 
-func GetCampaignState(repo campaign.Repository) http.HandlerFunc {
+func GetCampaign(repo campaign.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		state, err := repo.Get(r.Context())
 		if err != nil {
@@ -21,9 +21,9 @@ func GetCampaignState(repo campaign.Repository) http.HandlerFunc {
 	}
 }
 
-func PostCampaignState(repo campaign.Repository) http.HandlerFunc {
+func PostCampaign(repo campaign.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var state campaign.State
+		var state campaign.Campaign
 		if err := json.NewDecoder(r.Body).Decode(&state); err != nil {
 			writeJSON(w, http.StatusBadRequest, err)
 			return

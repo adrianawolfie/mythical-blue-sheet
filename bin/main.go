@@ -79,8 +79,8 @@ func main() {
 	mux.Handle("DELETE /api/characters/{id}", server.DeleteCharacter(characters))
 
 	// campaign routes
-	mux.Handle("GET /api/campaign-state", server.GetCampaignState(campaigns))
-	mux.Handle("POST /api/campaign-state", server.PostCampaignState(campaigns))
+	mux.Handle("GET /api/campaign-state", server.GetCampaign(campaigns))
+	mux.Handle("POST /api/campaign-state", server.PostCampaign(campaigns))
 
 	// statblock routes
 	mux.Handle("GET /api/custom-statblocks", server.GetCustomStatblocks(statblocks))

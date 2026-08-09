@@ -157,6 +157,7 @@ func (repo Repository) saveCharacter(ctx context.Context, c Character) error {
 func (repo Repository) addCharacter(ctx context.Context, idx []Index, c Character) error {
 	next := Index{
 		ID:                c.ID,
+		CampaignID:        c.CampaignID,
 		Name:              c.Summary.Name,
 		ArmorClass:        c.Summary.ArmorClass,
 		HpCurrent:         c.Summary.HpCurrent,

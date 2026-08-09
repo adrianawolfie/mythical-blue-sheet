@@ -229,7 +229,8 @@ func TestGetCharacterDetailBootstrapsCharacter(t *testing.T) {
 	chdirRepoRoot(t)
 
 	characters := newCharacterTestRepository(t, character.Character{
-		ID: "ada-character",
+		ID:         "ada-character",
+		CampaignID: "campaign-1",
 		Summary: character.Summary{
 			Name: "Ada Storm",
 		},
@@ -256,7 +257,7 @@ func TestGetCharacterDetailBootstrapsCharacter(t *testing.T) {
 		t.Fatalf("expected status 200, got %d", w.Code)
 	}
 	body := w.Body.String()
-	for _, expected := range []string{`<base href="/">`, "window.__MYTHICAL_BLUE_CHARACTER__", "Ada Storm", `"prepared":true`, `"name":"Shield"`} {
+	for _, expected := range []string{`<base href="/">`, "window.__MYTHICAL_BLUE_CHARACTER__", "Ada Storm", `"campaignId":"campaign-1"`, `"prepared":true`, `"name":"Shield"`} {
 		if !strings.Contains(body, expected) {
 			t.Fatalf("expected response to contain %q", expected)
 		}

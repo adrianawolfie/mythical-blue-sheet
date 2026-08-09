@@ -1,0 +1,16 @@
+{
+  "id": "019fe6b4-48bd-7758-8b54-ca9975520b19",
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-12T16:06:07.168329439Z",
+  "calendarDate": {
+    "year": 4520,
+    "month": 4,
+    "day": 1,
+    "special": null
+  },
+  "daysTraveled": 2,
+  "players": [
+    "019f3369-e5b5-7cbd-a471-8015a340f7e3",
+    "019f3395-ea86-7b08-b469-de6df708e025"
+  ]
+}

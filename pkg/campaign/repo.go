@@ -25,7 +25,7 @@ func NewRepository(ctx context.Context, s storage.Storage) (Repository, error) {
 	}, nil
 }
 
-func (repo Repository) Get(ctx context.Context) (State, error) {
+func (repo Repository) Get(ctx context.Context) (Campaign, error) {
 	repo.RLock()
 	defer repo.RUnlock()
 
@@ -35,7 +35,7 @@ func (repo Repository) Get(ctx context.Context) (State, error) {
 	}
 	defer r.Close()
 
-	var state State
+	var state Campaign
 	if err := json.NewDecoder(r).Decode(&state); err != nil {
 		if err == io.EOF {
 			return DefaultState(), nil
@@ -46,44 +46,44 @@ func (repo Repository) Get(ctx context.Context) (State, error) {
 	return normalize(state), nil
 }
 
-func (repo Repository) Save(ctx context.Context, state State) (State, error) {
+func (repo Repository) Save(ctx context.Context, state Campaign) (Campaign, error) {
 	repo.Lock()
 	defer repo.Unlock()
 
 	next, err := validateAndNormalize(state)
 	if err != nil {
-		return State{}, err
+		return Campaign{}, err
 	}
 
 	w, err := repo.storage.Writer(ctx, path.Clean(statePath))
 	if err != nil {
-		return State{}, fmt.Errorf("failed to write campaign state: %w", err)
+		return Campaign{}, fmt.Errorf("failed to write campaign state: %w", err)
 	}
 
 	if err := json.NewEncoder(w).Encode(next); err != nil {
 		_ = w.Close()
-		return State{}, fmt.Errorf("failed to encode campaign state: %w", err)
+		return Campaign{}, fmt.Errorf("failed to encode campaign state: %w", err)
 	}
 	if err := w.Close(); err != nil {
-		return State{}, fmt.Errorf("failed to close campaign state: %w", err)
+		return Campaign{}, fmt.Errorf("failed to close campaign state: %w", err)
 	}
 
 	return next, nil
 }
 
-func validateAndNormalize(state State) (State, error) {
+func validateAndNormalize(state Campaign) (Campaign, error) {
 	if state.CalendarDate.Year < 1 {
-		return State{}, fmt.Errorf("campaign year is invalid")
+		return Campaign{}, fmt.Errorf("campaign year is invalid")
 	}
 
 	if state.CalendarDate.Special != nil {
 		if *state.CalendarDate.Special != "intercalis" && *state.CalendarDate.Special != "aenaris" {
-			return State{}, fmt.Errorf("campaign special day is invalid")
+			return Campaign{}, fmt.Errorf("campaign special day is invalid")
 		}
 	} else if state.CalendarDate.Month == nil || state.CalendarDate.Day == nil ||
 		*state.CalendarDate.Month < 1 || *state.CalendarDate.Month > 13 ||
 		*state.CalendarDate.Day < 1 || *state.CalendarDate.Day > 28 {
-		return State{}, fmt.Errorf("campaign calendar date is invalid")
+		return Campaign{}, fmt.Errorf("campaign calendar date is invalid")
 	}
 
 	updatedAt := time.Now().UTC().Format(time.RFC3339Nano)
@@ -100,7 +100,7 @@ func validateAndNormalize(state State) (State, error) {
 	return state, nil
 }
 
-func normalize(state State) State {
+func normalize(state Campaign) Campaign {
 	if state.SchemaVersion == 0 {
 		state.SchemaVersion = 1
 	}
