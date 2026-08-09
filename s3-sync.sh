@@ -20,12 +20,21 @@ mode="${1:---dry-run}"
 case "$mode" in
   --dry-run)
     dry_run=(--dry-run)
+    source_path="s3://$S3_BUCKET/"
+    destination_path="$DATA_DIR"
     ;;
   --download)
     dry_run=()
+    source_path="s3://$S3_BUCKET/"
+    destination_path="$DATA_DIR"
+    ;;
+  --upload)
+    dry_run=()
+    source_path="$DATA_DIR"
+    destination_path="s3://$S3_BUCKET/"
     ;;
   *)
-    echo "Usage: $0 [--dry-run|--download]" >&2
+    echo "Usage: $0 [--dry-run|--download|--upload]" >&2
     exit 1
     ;;
 esac
@@ -36,4 +45,4 @@ s3cmd \
   --host="$S3_ENDPOINT" \
   --host-bucket="%(bucket)s.$S3_ENDPOINT" \
   "${dry_run[@]}" \
-  sync "s3://$S3_BUCKET/" "$DATA_DIR"
+  sync "$source_path" "$destination_path"
