@@ -13,6 +13,7 @@ import (
 
 	"raperonzolo/character-sheet/pkg/campaign"
 	"raperonzolo/character-sheet/pkg/character"
+	"raperonzolo/character-sheet/pkg/statblock"
 	"raperonzolo/character-sheet/pkg/storage"
 	"raperonzolo/character-sheet/pkg/user"
 
@@ -124,6 +125,31 @@ func newCampaignTestRepository(t *testing.T, campaigns []campaign.Campaign) camp
 	return repo
 }
 
+func newStatblockTestRepository(t *testing.T, statblocks []statblock.Statblock) statblock.Repository {
+	t.Helper()
+
+	dir := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(dir, "campaign"), 0o755); err != nil {
+		t.Fatalf("create campaign dir: %v", err)
+	}
+	statblockData, err := json.Marshal(statblocks)
+	if err != nil {
+		t.Fatalf("marshal statblocks: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "campaign", "custom-statblocks.json"), statblockData, 0o644); err != nil {
+		t.Fatalf("write statblocks: %v", err)
+	}
+	s, err := storage.New(dir)
+	if err != nil {
+		t.Fatalf("new storage: %v", err)
+	}
+	repo, err := statblock.NewRepository(context.Background(), s)
+	if err != nil {
+		t.Fatalf("new statblock repository: %v", err)
+	}
+	return repo
+}
+
 func chdirRepoRoot(t *testing.T) {
 	t.Helper()
 
@@ -139,6 +165,73 @@ func chdirRepoRoot(t *testing.T) {
 			t.Fatalf("restore working directory: %v", err)
 		}
 	})
+}
+
+func TestGetLoginRendersLoginPage(t *testing.T) {
+	chdirRepoRoot(t)
+	req := httptest.NewRequest(http.MethodGet, "/login", nil)
+	w := httptest.NewRecorder()
+
+	GetLogin().ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	if !strings.Contains(w.Body.String(), "Crew Login") {
+		t.Fatalf("expected login page in response")
+	}
+}
+
+func TestGetRegistrationRendersRegistrationPage(t *testing.T) {
+	chdirRepoRoot(t)
+	req := httptest.NewRequest(http.MethodGet, "/register", nil)
+	w := httptest.NewRecorder()
+
+	GetRegistration().ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	if !strings.Contains(w.Body.String(), "Create Account") {
+		t.Fatalf("expected registration page in response")
+	}
+}
+
+func TestPostLoginSetsCookieAndRedirects(t *testing.T) {
+	users := newUserTestRepository(t, nil)
+	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}); err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(`{"username":"ada@example.com","password":"Encrypted1!"}`))
+	w := httptest.NewRecorder()
+
+	PostLogin(users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusSeeOther {
+		t.Fatalf("expected status 303, got %d", w.Code)
+	}
+	if location := w.Header().Get("Location"); location != "/" {
+		t.Fatalf("expected redirect to /, got %q", location)
+	}
+	cookies := w.Result().Cookies()
+	if len(cookies) != 1 || cookies[0].Name != "user" || cookies[0].Value != "ada@example.com" {
+		t.Fatalf("expected user cookie, got %#v", cookies)
+	}
+}
+
+func TestPostLoginRejectsInvalidPassword(t *testing.T) {
+	users := newUserTestRepository(t, nil)
+	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}); err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(`{"username":"ada@example.com","password":"wrong"}`))
+	w := httptest.NewRecorder()
+
+	PostLogin(users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected status 404, got %d", w.Code)
+	}
 }
 
 func TestGetAdminUsersRendersForAdminUser(t *testing.T) {
@@ -277,6 +370,123 @@ func TestPostUserPersistsName(t *testing.T) {
 	}
 }
 
+func TestGetCharactersReturnsCharacterIndex(t *testing.T) {
+	characters := newCharacterTestRepository(t, []character.Character{{
+		ID:         "ada-character",
+		CampaignID: "campaign-1",
+		Summary:    character.Summary{Name: "Ada Storm", ArmorClass: "17", HpCurrent: "21", HpMax: "30"},
+	}})
+	req := httptest.NewRequest(http.MethodGet, "/api/characters", nil)
+	w := httptest.NewRecorder()
+
+	GetCharacters(characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var idx []character.Index
+	if err := json.NewDecoder(w.Body).Decode(&idx); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if len(idx) != 1 || idx[0].ID != "ada-character" || idx[0].Name != "Ada Storm" {
+		t.Fatalf("expected character index, got %#v", idx)
+	}
+}
+
+func TestGetCharacterReturnsCharacter(t *testing.T) {
+	characters := newCharacterTestRepository(t, []character.Character{{
+		ID:      "ada-character",
+		Summary: character.Summary{Name: "Ada Storm"},
+	}})
+	req := httptest.NewRequest(http.MethodGet, "/api/characters/ada-character", nil)
+	req.SetPathValue("id", "ada-character")
+	w := httptest.NewRecorder()
+
+	GetCharacter(characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var c character.Character
+	if err := json.NewDecoder(w.Body).Decode(&c); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if c.ID != "ada-character" || c.Summary.Name != "Ada Storm" {
+		t.Fatalf("expected character, got %#v", c)
+	}
+}
+
+func TestPostCharactersPersistsCharacter(t *testing.T) {
+	characters := newCharacterTestRepository(t, nil)
+	body := `{"id":"ada-character","summary":{"name":"Ada Storm","armorClass":"17","hpCurrent":"21","hpMax":"30"},"fields":{"class":"Wizard"}}`
+	req := httptest.NewRequest(http.MethodPost, "/api/characters", strings.NewReader(body))
+	w := httptest.NewRecorder()
+
+	PostCharacters(characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	c, err := characters.GetByID(context.Background(), "ada-character")
+	if err != nil {
+		t.Fatalf("get character: %v", err)
+	}
+	if c.Summary.Name != "Ada Storm" || c.Fields["class"] != "Wizard" || c.UpdatedAt == "" {
+		t.Fatalf("expected persisted character, got %#v", c)
+	}
+}
+
+func TestDeleteCharacterRemovesCharacter(t *testing.T) {
+	characters := newCharacterTestRepository(t, []character.Character{{
+		ID:      "ada-character",
+		Summary: character.Summary{Name: "Ada Storm"},
+	}})
+	req := httptest.NewRequest(http.MethodDelete, "/api/characters/ada-character", nil)
+	req.SetPathValue("id", "ada-character")
+	w := httptest.NewRecorder()
+
+	DeleteCharacter(characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	idx, err := characters.List(context.Background())
+	if err != nil {
+		t.Fatalf("list characters: %v", err)
+	}
+	if len(idx) != 0 {
+		t.Fatalf("expected empty character index, got %#v", idx)
+	}
+}
+
+func TestPostStatusUpdatesCharacterStatus(t *testing.T) {
+	characters := newCharacterTestRepository(t, []character.Character{{
+		ID:      "ada-character",
+		Summary: character.Summary{Name: "Ada Storm"},
+		Fields:  character.Fields{},
+	}})
+	body := `{"hpCurrent":"12","hpMax":"30","tempHp":"5","armorClass":"18","currentConditions":"Poisoned","armorClassState":{"base":"13","modifiers":[{"name":"Shield","value":"5","active":true}]}}`
+	req := httptest.NewRequest(http.MethodPost, "/api/characters/ada-character/status", strings.NewReader(body))
+	req.SetPathValue("id", "ada-character")
+	w := httptest.NewRecorder()
+
+	PostStatus(characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	c, err := characters.GetByID(context.Background(), "ada-character")
+	if err != nil {
+		t.Fatalf("get character: %v", err)
+	}
+	if c.Summary.HpCurrent != "12" || c.Summary.HpMax != "30" || c.Summary.TempHp != "5" || c.Summary.ArmorClass != "18" || c.Summary.CurrentConditions != "Poisoned" {
+		t.Fatalf("expected updated summary, got %#v", c.Summary)
+	}
+	if c.Fields["hpCurrent"] != "12" || c.Fields["armorClass"] != "18" || c.CustomLists.ArmorClass.Base != "13" || c.UpdatedAt == "" {
+		t.Fatalf("expected updated fields and armor class state, got %#v", c)
+	}
+}
+
 func TestGetCharacterDetailBootstrapsCharacter(t *testing.T) {
 	chdirRepoRoot(t)
 
@@ -371,6 +581,97 @@ func TestGetAdminRedirectsToUsers(t *testing.T) {
 	}
 	if location := w.Header().Get("Location"); location != "/admin/users" {
 		t.Fatalf("expected redirect to /admin/users, got %q", location)
+	}
+}
+
+func TestGetCampaignReturnsCampaignState(t *testing.T) {
+	campaigns := newCampaignTestRepository(t, nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/campaign-state", nil)
+	w := httptest.NewRecorder()
+
+	GetCampaign(campaigns).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var state campaign.Campaign
+	if err := json.NewDecoder(w.Body).Decode(&state); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if state.CalendarDate.Year != 4520 || state.DaysTraveled != 0 {
+		t.Fatalf("expected default campaign state, got %#v", state)
+	}
+}
+
+func TestPostCampaignSavesCampaignState(t *testing.T) {
+	campaigns := newCampaignTestRepository(t, nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/campaign-state", strings.NewReader(`{"calendarDate":{"year":4521,"month":4,"day":2},"daysTraveled":7,"players":["ada"]}`))
+	w := httptest.NewRecorder()
+
+	PostCampaign(campaigns).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var response campaign.Campaign
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if response.CalendarDate.Year != 4521 || response.DaysTraveled != 7 || response.UpdatedAt == nil {
+		t.Fatalf("expected saved campaign response, got %#v", response)
+	}
+	saved, err := campaigns.Get(context.Background())
+	if err != nil {
+		t.Fatalf("get campaign state: %v", err)
+	}
+	if saved.CalendarDate.Year != 4521 || saved.DaysTraveled != 7 || len(saved.Players) != 1 || saved.Players[0] != "ada" {
+		t.Fatalf("expected persisted campaign state, got %#v", saved)
+	}
+}
+
+func TestGetCustomStatblocksReturnsStatblocks(t *testing.T) {
+	statblocks := newStatblockTestRepository(t, []statblock.Statblock{{ID: "goblin", Name: "Goblin", Size: "Small", Type: "Humanoid"}})
+	req := httptest.NewRequest(http.MethodGet, "/api/custom-statblocks", nil)
+	w := httptest.NewRecorder()
+
+	GetCustomStatblocks(statblocks).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var response []statblock.Statblock
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if len(response) != 1 || response[0].ID != "goblin" || response[0].Name != "Goblin" || response[0].Section != "Custom Monsters" {
+		t.Fatalf("expected custom statblocks, got %#v", response)
+	}
+}
+
+func TestPostCustomStatblocksSavesStatblocks(t *testing.T) {
+	statblocks := newStatblockTestRepository(t, nil)
+	body := `{"statblocks":[{"id":"goblin","name":" Goblin ","size":"Small","type":"Humanoid","legendaryResistanceMax":-1}]}`
+	req := httptest.NewRequest(http.MethodPost, "/api/custom-statblocks", strings.NewReader(body))
+	w := httptest.NewRecorder()
+
+	PostCustomStatblocks(statblocks).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var response customStatblocksResponse
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if !response.Success || len(response.Statblocks) != 1 || response.Statblocks[0].Name != "Goblin" || response.Statblocks[0].LegendaryResistanceMax != 0 {
+		t.Fatalf("expected saved statblocks response, got %#v", response)
+	}
+	saved, err := statblocks.List(context.Background())
+	if err != nil {
+		t.Fatalf("list statblocks: %v", err)
+	}
+	if len(saved) != 1 || saved[0].ID != "goblin" {
+		t.Fatalf("expected persisted statblock, got %#v", saved)
 	}
 }
 

@@ -98,9 +98,14 @@ func (repo Repository) Delete(ctx context.Context, id string) error {
 	repo.Lock()
 	defer repo.Unlock()
 
-	idx, err := repo.List(ctx)
+	r, err := repo.storage.Reader(ctx, characterIndexPath)
 	if err != nil {
-		return fmt.Errorf("failed to list characters: %w", err)
+		return fmt.Errorf("failed to read character: %w", err)
+	}
+	defer r.Close()
+	var idx []Index
+	if err := json.NewDecoder(r).Decode(&idx); err != nil {
+		return fmt.Errorf("failed to decode character: %w", err)
 	}
 
 	updatedIdx := make([]Index, 0, len(idx))
