@@ -1,5 +1,10 @@
 package campaign
 
+import (
+	"context"
+	"raperonzolo/character-sheet/pkg/user"
+)
+
 type Campaign struct {
 	ID            string       `json:"id"`
 	Name          string       `json:"name"`
@@ -12,6 +17,32 @@ type Campaign struct {
 
 type Index struct {
 	ID string `json:"id"`
+}
+
+type UserReader interface {
+	List(ctx context.Context) []user.User
+}
+
+type AdminUserView struct {
+	ID      string
+	Name    string
+	Email   string
+	IsAdmin bool
+}
+
+type AdminPlayerView struct {
+	ID   string
+	Name string
+}
+
+type AdminView struct {
+	ID             string
+	Name           string
+	Calendar       string
+	DaysTraveled   int
+	Players        []AdminPlayerView
+	AvailableUsers []AdminUserView
+	UpdatedAt      string
 }
 
 type CalendarDate struct {

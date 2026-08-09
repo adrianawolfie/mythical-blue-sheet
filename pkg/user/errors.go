@@ -8,4 +8,5 @@ var (
 	ErrUserNotFound      = errors.New("user not found")
 	ErrUserLimitReached  = errors.New("user limit reached")
 	ErrPasswordInvalid   = errors.New("invalid password")
+	ErrForbidden         = errors.New("forbidden")
 )

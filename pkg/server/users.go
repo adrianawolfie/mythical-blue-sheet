@@ -56,12 +56,12 @@ func PostLogin(u user.Repository) http.HandlerFunc {
 			renderErrorPage(w, err)
 			return
 		}
-		user, err := u.GetByUsername(login.Username)
+		user, ok, err := u.Authenticate(r.Context(), login.Username, login.Password)
 		if err != nil {
 			renderErrorPage(w, err)
 			return
 		}
-		if user.ValidatePassword(login.Password) {
+		if ok {
 			http.SetCookie(w, &http.Cookie{
 				Name:     "user",
 				Value:    user.Email,

@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"raperonzolo/character-sheet/pkg/storage"
 	"sync"
+	"time"
 )
 
 const (
@@ -47,6 +48,9 @@ func (repo Repository) CreateOrReplace(ctx context.Context, c Character) error {
 
 	if !exists && len(idx) >= 50 {
 		return fmt.Errorf("maximum number of characters reached")
+	}
+	if c.UpdatedAt == "" {
+		c.UpdatedAt = time.Now().UTC().Format(time.RFC3339)
 	}
 
 	if err := repo.saveCharacter(ctx, c); err != nil {
@@ -92,6 +96,136 @@ func (repo Repository) GetByID(ctx context.Context, id string) (Character, error
 	}
 
 	return c, nil
+}
+
+func (repo Repository) ListForUser(ctx context.Context, users UserReader, email string) ([]ListView, error) {
+	currentUser, err := users.GetByUsername(email)
+	if err != nil {
+		return nil, err
+	}
+
+	idx, err := repo.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	views := make([]ListView, 0, len(idx))
+	for _, item := range idx {
+		c, err := repo.GetByID(ctx, item.ID)
+		if err != nil {
+			return nil, err
+		}
+		if c.UserID != currentUser.ID.String() {
+			continue
+		}
+		views = append(views, ListView{
+			ID:       item.ID,
+			Name:     item.Name,
+			Class:    c.Fields["class"],
+			Species:  c.Fields["speciesRace"],
+			Subclass: c.Fields["subclass"],
+			Level:    c.Fields["level"],
+		})
+	}
+
+	return views, nil
+}
+
+func (repo Repository) ListAdmin(ctx context.Context, users UserReader) ([]AdminView, []AdminUserView, error) {
+	idx, err := repo.List(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	allUsers := users.List(ctx)
+	userViews := make([]AdminUserView, 0, len(allUsers))
+	userNamesByID := make(map[string]string)
+	for _, u := range allUsers {
+		name := adminUserName(u.Name, u.Email)
+		userNamesByID[u.ID.String()] = name
+		userViews = append(userViews, AdminUserView{ID: u.ID.String(), Name: u.Name, Email: u.Email, IsAdmin: u.IsAdmin})
+	}
+
+	views := make([]AdminView, 0, len(idx))
+	for _, item := range idx {
+		c, err := repo.GetByID(ctx, item.ID)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		userName := "Unassigned"
+		if c.UserID != "" {
+			userName = userNamesByID[c.UserID]
+			if userName == "" {
+				userName = "Unknown user"
+			}
+		}
+
+		views = append(views, AdminView{
+			ID:       c.ID,
+			Name:     c.Summary.Name,
+			Class:    c.Fields["class"],
+			Level:    c.Fields["level"],
+			UserName: userName,
+			Assigned: c.UserID != "",
+		})
+	}
+
+	return views, userViews, nil
+}
+
+func (repo Repository) AssignToUser(ctx context.Context, users UserReader, characterID string, userID string) error {
+	if userID == "" {
+		return fmt.Errorf("userId is required")
+	}
+	found := false
+	for _, u := range users.List(ctx) {
+		if u.ID.String() == userID {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return fmt.Errorf("user not found")
+	}
+
+	c, err := repo.GetByID(ctx, characterID)
+	if err != nil {
+		return err
+	}
+	c.UserID = userID
+
+	return repo.CreateOrReplace(ctx, c)
+}
+
+func (repo Repository) UpdateStatus(ctx context.Context, id string, u Update) error {
+	c, err := repo.GetByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	c.Summary.HpCurrent = u.HpCurrent
+	c.Summary.HpMax = u.HpMax
+	c.Summary.TempHp = u.TempHp
+	c.Summary.ArmorClass = u.ArmorClass
+	c.Summary.CurrentConditions = u.CurrentConditions
+
+	if c.Fields == nil {
+		c.Fields = Fields{}
+	}
+	c.Fields["hpCurrent"] = u.HpCurrent
+	c.Fields["hpMax"] = u.HpMax
+	c.Fields["tempHp"] = u.TempHp
+	c.Fields["armorClass"] = u.ArmorClass
+	c.Fields["currentConditions"] = u.CurrentConditions
+
+	if u.ArmorClassState != nil {
+		c.CustomLists.ArmorClass = *u.ArmorClassState
+	}
+
+	c.UpdatedAt = time.Now().UTC().Format(time.RFC3339)
+
+	return repo.CreateOrReplace(ctx, c)
 }
 
 func (repo Repository) Delete(ctx context.Context, id string) error {
@@ -199,4 +333,11 @@ func (repo Repository) saveIndex(ctx context.Context, idx []Index) error {
 	}
 
 	return nil
+}
+
+func adminUserName(name string, email string) string {
+	if name != "" {
+		return name
+	}
+	return email
 }

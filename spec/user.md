@@ -9,6 +9,7 @@ The User domain stores users for login, registration, character ownership, and a
 - `GetByUsername` loads a user by email.
 - `List` returns users sorted by email.
 - `IsAdmin` checks admin access.
+- `Authenticate` validates login credentials.
 - `Create` validates and persists a new user.
 
 ## HTTP Routes

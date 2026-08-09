@@ -19,6 +19,13 @@ type User struct {
 	IsAdmin  bool      `json:"isAdmin"`
 }
 
+type AdminView struct {
+	ID      string
+	Name    string
+	Email   string
+	IsAdmin bool
+}
+
 func (u User) ValidatePassword(p string) bool {
 	given := encryptPassword(p + config.UserSecret)
 	return subtle.ConstantTimeCompare([]byte(given), []byte(u.Password)) == 1

@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"raperonzolo/character-sheet/pkg/character"
 	"raperonzolo/character-sheet/pkg/user"
-	"time"
 )
 
 type characterDetailPageData struct {
@@ -14,16 +13,7 @@ type characterDetailPageData struct {
 }
 
 type characterListPageData struct {
-	Characters []characterListView
-}
-
-type characterListView struct {
-	ID       string
-	Name     string
-	Class    string
-	Species  string
-	Subclass string
-	Level    string
+	Characters []character.ListView
 }
 
 func GetCharacters(c character.Repository) http.HandlerFunc {
@@ -66,38 +56,13 @@ func GetCharacterListPage(users user.Repository, repo character.Repository) http
 			return
 		}
 
-		currentUser, err := users.GetByUsername(cookie.Value)
+		characters, err := repo.ListForUser(r.Context(), &users, cookie.Value)
 		if err != nil {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 
-		idx, err := repo.List(r.Context())
-		if err != nil {
-			renderErrorPage(w, err)
-			return
-		}
-
-		filtered := make([]characterListView, 0, len(idx))
-		for _, item := range idx {
-			c, err := repo.GetByID(r.Context(), item.ID)
-			if err != nil {
-				renderErrorPage(w, err)
-				return
-			}
-			if c.UserID == currentUser.ID.String() {
-				filtered = append(filtered, characterListView{
-					ID:       item.ID,
-					Name:     item.Name,
-					Class:    c.Fields["class"],
-					Species:  c.Fields["speciesRace"],
-					Subclass: c.Fields["subclass"],
-					Level:    c.Fields["level"],
-				})
-			}
-		}
-
-		if err := tmpl.Execute(w, characterListPageData{Characters: filtered}); err != nil {
+		if err := tmpl.Execute(w, characterListPageData{Characters: characters}); err != nil {
 			renderErrorPage(w, err)
 		}
 	}
@@ -133,8 +98,6 @@ func PostCharacters(repo character.Repository) http.HandlerFunc {
 			return
 		}
 
-		c.UpdatedAt = time.Now().UTC().Format(time.RFC3339)
-
 		if err := repo.CreateOrReplace(r.Context(), c); err != nil {
 			writeError(w, err)
 			return
@@ -156,40 +119,13 @@ func DeleteCharacter(c character.Repository) http.HandlerFunc {
 
 func PostStatus(repo character.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		c, err := repo.GetByID(r.Context(), r.PathValue("id"))
-		if err != nil {
-			writeError(w, err)
-			return
-		}
-
 		var u character.Update
 		if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
 			writeError(w, err)
 			return
 		}
 
-		c.Summary.HpCurrent = u.HpCurrent
-		c.Summary.HpMax = u.HpMax
-		c.Summary.TempHp = u.TempHp
-		c.Summary.ArmorClass = u.ArmorClass
-		c.Summary.CurrentConditions = u.CurrentConditions
-
-		if c.Fields == nil {
-			c.Fields = character.Fields{}
-		}
-		c.Fields["hpCurrent"] = u.HpCurrent
-		c.Fields["hpMax"] = u.HpMax
-		c.Fields["tempHp"] = u.TempHp
-		c.Fields["armorClass"] = u.ArmorClass
-		c.Fields["currentConditions"] = u.CurrentConditions
-
-		if u.ArmorClassState != nil {
-			c.CustomLists.ArmorClass = *u.ArmorClassState
-		}
-
-		c.UpdatedAt = time.Now().UTC().Format(time.RFC3339)
-
-		if err := repo.CreateOrReplace(r.Context(), c); err != nil {
+		if err := repo.UpdateStatus(r.Context(), r.PathValue("id"), u); err != nil {
 			writeError(w, err)
 			return
 		}

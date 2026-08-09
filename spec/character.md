@@ -12,6 +12,10 @@ The Character domain stores player character sheets and a lightweight character 
 - `GetByID` loads a full character by ID.
 - `CreateOrReplace` saves a character and updates the index.
 - `Delete` removes a character and updates the index.
+- `ListForUser` resolves the current user and returns only characters owned by that user for the character list page.
+- `ListAdmin` resolves character ownership names for the admin character page.
+- `AssignToUser` validates the user assignment and persists it.
+- `UpdateStatus` applies frequently changing status fields and persists the character.
 
 ## HTTP Routes
 

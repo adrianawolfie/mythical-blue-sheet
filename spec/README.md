@@ -16,7 +16,7 @@ Each API domain owns the types and repository methods that describe the domain. 
 
 Repositories are decoupled from concrete storage through the `storage.Storage` interface. The application can use local filesystem storage or S3 storage without changing domain or server handler code.
 
-The API is the HTTP server implementation of those domain repositories. Keep request parsing, response writing, redirects, cookies, and templates in `pkg/server`. Keep storage paths, JSON persistence, validation, normalization, and domain rules in the owning repository package.
+The API is the HTTP server implementation of those domain repositories. Keep HTTP parameter decoding, request decoding, response encoding, redirects, cookies, and template execution in `pkg/server`. Keep storage paths, JSON persistence, validation, normalization, authorization lookups, cross-repository coordination, and domain rules in the owning repository package. When a domain rule requires data from another domain, the owning repository accepts an interface dependency on the other repository.
 
 ## API Domains
 

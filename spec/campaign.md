@@ -11,6 +11,9 @@ Campaign records are stored as `campaign/{id}.json`. The campaign list is stored
 - `List` loads `campaign/index.json`, reads each listed campaign file, and returns full campaigns.
 - `GetByID` loads one campaign from `campaign/{id}.json`.
 - `SaveCampaign` validates, normalizes, timestamps, and persists one campaign to `campaign/{id}.json`.
+- `ListAdmin` resolves player names and available users for the admin campaign page.
+- `AddPlayer` validates the user and adds the user ID to the campaign if it is not already present.
+- `RemovePlayer` removes a user ID from the campaign.
 - `Get` loads shared campaign state for `/api/campaign-state` and returns defaults when no persisted state exists.
 - `Save` validates, normalizes, timestamps, and persists campaign state.
 

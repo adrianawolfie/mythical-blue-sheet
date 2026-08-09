@@ -82,6 +82,42 @@ func (l *Repository) IsAdmin(ctx context.Context, email string) bool {
 	return err == nil && user.IsAdmin
 }
 
+func (l *Repository) RequireAdmin(ctx context.Context, email string) (User, error) {
+	user, err := l.GetByUsername(email)
+	if err != nil {
+		return User{}, err
+	}
+	if !user.IsAdmin {
+		return User{}, ErrForbidden
+	}
+	return user, nil
+}
+
+func (l *Repository) ListAdmin(ctx context.Context) []AdminView {
+	users := l.List(ctx)
+	views := make([]AdminView, 0, len(users))
+	for _, u := range users {
+		views = append(views, adminView(u))
+	}
+	return views
+}
+
+func (l *Repository) AdminUsersPage(ctx context.Context, email string) (AdminView, []AdminView, error) {
+	currentUser, err := l.RequireAdmin(ctx, email)
+	if err != nil {
+		return AdminView{}, nil, err
+	}
+	return adminView(currentUser), l.ListAdmin(ctx), nil
+}
+
+func (l *Repository) Authenticate(ctx context.Context, email string, password string) (User, bool, error) {
+	user, err := l.GetByUsername(email)
+	if err != nil {
+		return User{}, false, err
+	}
+	return user, user.ValidatePassword(password), nil
+}
+
 func (l *Repository) Create(ctx context.Context, user User) error {
 	if user.Email == "" {
 		return ErrUserEmailRequired
@@ -123,4 +159,8 @@ func (l *Repository) Create(ctx context.Context, user User) error {
 	}
 
 	return nil
+}
+
+func adminView(u User) AdminView {
+	return AdminView{ID: u.ID.String(), Name: u.Name, Email: u.Email, IsAdmin: u.IsAdmin}
 }

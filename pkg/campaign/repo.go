@@ -87,6 +87,99 @@ func (repo Repository) GetByID(ctx context.Context, id string) (Campaign, error)
 	return repo.getByID(ctx, id)
 }
 
+func (repo Repository) ListAdmin(ctx context.Context, users UserReader) ([]AdminView, error) {
+	campaigns, err := repo.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	allUsers := users.List(ctx)
+	userNamesByID := make(map[string]string)
+	for _, u := range allUsers {
+		userNamesByID[u.ID.String()] = adminUserName(u.Name, u.Email)
+	}
+
+	views := make([]AdminView, 0, len(campaigns))
+	for _, campaign := range campaigns {
+		players := make([]AdminPlayerView, 0, len(campaign.Players))
+		playerIDs := make(map[string]bool)
+		for _, playerID := range campaign.Players {
+			name := userNamesByID[playerID]
+			if name == "" {
+				name = "Unknown user"
+			}
+			playerIDs[playerID] = true
+			players = append(players, AdminPlayerView{ID: playerID, Name: name})
+		}
+
+		availableUsers := make([]AdminUserView, 0, len(allUsers))
+		for _, u := range allUsers {
+			if playerIDs[u.ID.String()] {
+				continue
+			}
+			availableUsers = append(availableUsers, AdminUserView{ID: u.ID.String(), Name: u.Name, Email: u.Email, IsAdmin: u.IsAdmin})
+		}
+		views = append(views, AdminView{
+			ID:             campaign.ID,
+			Name:           campaign.Name,
+			Calendar:       formatAdminCalendarDate(campaign.CalendarDate),
+			DaysTraveled:   campaign.DaysTraveled,
+			Players:        players,
+			AvailableUsers: availableUsers,
+			UpdatedAt:      formatAdminTimestamp(campaign.UpdatedAt),
+		})
+	}
+
+	return views, nil
+}
+
+func (repo Repository) AddPlayer(ctx context.Context, users UserReader, campaignID string, userID string) error {
+	if userID == "" {
+		return fmt.Errorf("userId is required")
+	}
+	found := false
+	for _, u := range users.List(ctx) {
+		if u.ID.String() == userID {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return fmt.Errorf("user not found")
+	}
+
+	campaign, err := repo.GetByID(ctx, campaignID)
+	if err != nil {
+		return err
+	}
+	for _, playerID := range campaign.Players {
+		if playerID == userID {
+			return nil
+		}
+	}
+	campaign.Players = append(campaign.Players, userID)
+
+	_, err = repo.SaveCampaign(ctx, campaign)
+	return err
+}
+
+func (repo Repository) RemovePlayer(ctx context.Context, campaignID string, userID string) error {
+	campaign, err := repo.GetByID(ctx, campaignID)
+	if err != nil {
+		return err
+	}
+
+	players := make([]string, 0, len(campaign.Players))
+	for _, existing := range campaign.Players {
+		if existing != userID {
+			players = append(players, existing)
+		}
+	}
+	campaign.Players = players
+
+	_, err = repo.SaveCampaign(ctx, campaign)
+	return err
+}
+
 func (repo Repository) Save(ctx context.Context, state Campaign) (Campaign, error) {
 	repo.Lock()
 	defer repo.Unlock()
@@ -182,6 +275,34 @@ func validateAndNormalize(state Campaign) (Campaign, error) {
 	}
 
 	return state, nil
+}
+
+func formatAdminCalendarDate(date CalendarDate) string {
+	if date.Special != nil {
+		return *date.Special
+	}
+	if date.Month == nil || date.Day == nil {
+		return "Unknown"
+	}
+	return fmt.Sprintf("Year %d, Month %d, Day %d", date.Year, *date.Month, *date.Day)
+}
+
+func adminUserName(name string, email string) string {
+	if name != "" {
+		return name
+	}
+	return email
+}
+
+func formatAdminTimestamp(value *string) string {
+	if value == nil || *value == "" {
+		return ""
+	}
+	parsed, err := time.Parse(time.RFC3339Nano, *value)
+	if err != nil {
+		return *value
+	}
+	return parsed.UTC().Format("Jan 2, 2006 15:04 UTC")
 }
 
 func normalize(state Campaign) Campaign {

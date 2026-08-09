@@ -1,5 +1,10 @@
 package character
 
+import (
+	"context"
+	"raperonzolo/character-sheet/pkg/user"
+)
+
 type Index struct {
 	ID                string `json:"id"`
 	CampaignID        string `json:"campaignId"`
@@ -11,6 +16,36 @@ type Index struct {
 	CurrentConditions string `json:"currentConditions"`
 	File              string `json:"file"`
 	UpdatedAt         string `json:"updatedAt"`
+}
+
+type UserReader interface {
+	List(ctx context.Context) []user.User
+	GetByUsername(email string) (user.User, error)
+}
+
+type ListView struct {
+	ID       string
+	Name     string
+	Class    string
+	Species  string
+	Subclass string
+	Level    string
+}
+
+type AdminUserView struct {
+	ID      string
+	Name    string
+	Email   string
+	IsAdmin bool
+}
+
+type AdminView struct {
+	ID       string
+	Name     string
+	Class    string
+	Level    string
+	UserName string
+	Assigned bool
 }
 
 type Character struct {
