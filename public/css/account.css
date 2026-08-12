@@ -111,8 +111,92 @@
 }
 
 .account-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   justify-self: end;
+  width: 76px;
+  height: 32px;
+  padding: 0;
   margin: 0;
+  border: 1px solid rgba(184, 144, 44, .65);
+  border-radius: 999px;
+  background: rgba(43, 56, 102, .1);
+  color: #1c2750;
+  cursor: pointer;
+}
+
+.account-theme-toggle:hover,
+.account-theme-toggle:focus-visible {
+  outline: 2px solid rgba(214, 168, 56, .45);
+  outline-offset: 2px;
+}
+
+.account-theme-track {
+  position: relative;
+  display: block;
+  width: 54px;
+  height: 24px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(31, 51, 92, .18);
+  box-shadow: inset 0 1px 5px rgba(0, 0, 0, .18);
+}
+
+.account-theme-track::before,
+.account-theme-track::after {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: Georgia, serif;
+  font-size: 12px;
+  line-height: 1;
+  opacity: .78;
+}
+
+.account-theme-track::before {
+  content: '☼';
+  left: 7px;
+  color: #d7a84c;
+}
+
+.account-theme-track::after {
+  content: '☾';
+  right: 7px;
+  color: #6d8bb5;
+}
+
+.account-theme-orb {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(142, 104, 35, .4);
+  border-radius: 50%;
+  background: #f4d37a;
+  box-shadow: 0 0 8px rgba(226, 181, 81, .34);
+  transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+html[data-theme="moonlight"] .account-theme-track {
+  background: rgba(1, 15, 40, .82);
+}
+
+html[data-theme="moonlight"] .account-theme-track::before {
+  color: rgba(131, 174, 215, .58);
+}
+
+html[data-theme="moonlight"] .account-theme-track::after {
+  color: #e0f5ff;
+  text-shadow: 0 0 6px rgba(149, 216, 255, .6);
+}
+
+html[data-theme="moonlight"] .account-theme-orb {
+  transform: translateX(30px);
+  border-color: rgba(186, 232, 255, .78);
+  background: #d8f2ff;
+  box-shadow: 0 0 10px rgba(148, 215, 255, .58);
 }
 
 .account-accessibility-controls {
