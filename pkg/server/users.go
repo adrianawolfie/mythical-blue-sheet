@@ -45,6 +45,39 @@ func GetCurrentUser(repo user.Repository) http.HandlerFunc {
 	}
 }
 
+func PutCurrentUser(repo user.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		currentUser, ok := currentUserFromCookie(w, r, repo)
+		if !ok {
+			return
+		}
+
+		var request struct {
+			Name            string `json:"name"`
+			CurrentPassword string `json:"currentPassword"`
+			NewPassword     string `json:"newPassword"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+			writeError(w, err)
+			return
+		}
+		updated, err := repo.UpdateProfile(r.Context(), currentUser.Email, request.Name, request.CurrentPassword, request.NewPassword)
+		if err != nil {
+			if errors.Is(err, user.ErrPasswordInvalid) || errors.Is(err, user.ErrPasswordMismatch) {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, struct {
+			ID    string `json:"id"`
+			Name  string `json:"name"`
+			Email string `json:"email"`
+		}{ID: updated.ID.String(), Name: updated.Name, Email: updated.Email})
+	}
+}
+
 func PostUser(repo user.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var u user.User

@@ -184,3 +184,69 @@ func TestIsAdminReturnsTrueOnlyForAdminUsers(t *testing.T) {
 	assert.True(t, repo.IsAdmin(ctx, "ada@example.com"))
 	assert.False(t, repo.IsAdmin(ctx, "missing@example.com"))
 }
+
+func TestUpdateProfileUpdatesNameWithoutCurrentPassword(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	ctx := context.Background()
+	s, err := storage.New(t.TempDir())
+	require.NoError(t, err)
+	repo, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	require.NoError(t, repo.Create(ctx, User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}))
+
+	updated, err := repo.UpdateProfile(ctx, "ada@example.com", "Captain Ada", "", "")
+	require.NoError(t, err)
+	assert.Equal(t, "Captain Ada", updated.Name)
+	assert.True(t, updated.ValidatePassword("Encrypted1!"))
+
+	reloaded, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	reloadedUser, err := reloaded.GetByUsername("ada@example.com")
+	require.NoError(t, err)
+	assert.Equal(t, "Captain Ada", reloadedUser.Name)
+}
+
+func TestUpdateProfileUpdatesPasswordWithCurrentPassword(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	ctx := context.Background()
+	s, err := storage.New(t.TempDir())
+	require.NoError(t, err)
+	repo, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	require.NoError(t, repo.Create(ctx, User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}))
+
+	updated, err := repo.UpdateProfile(ctx, "ada@example.com", "Ada Storm", "Encrypted1!", "Changed1!")
+	require.NoError(t, err)
+	assert.True(t, updated.ValidatePassword("Changed1!"))
+	assert.False(t, updated.ValidatePassword("Encrypted1!"))
+}
+
+func TestUpdateProfileRejectsWrongCurrentPassword(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	ctx := context.Background()
+	s, err := storage.New(t.TempDir())
+	require.NoError(t, err)
+	repo, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	require.NoError(t, repo.Create(ctx, User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}))
+
+	_, err = repo.UpdateProfile(ctx, "ada@example.com", "Ada Storm", "wrong", "Changed1!")
+	assert.ErrorIs(t, err, ErrPasswordMismatch)
+}
+
+func TestUpdateProfileRejectsInvalidNewPassword(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	ctx := context.Background()
+	s, err := storage.New(t.TempDir())
+	require.NoError(t, err)
+	repo, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	require.NoError(t, repo.Create(ctx, User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}))
+
+	_, err = repo.UpdateProfile(ctx, "ada@example.com", "Ada Storm", "Encrypted1!", "short")
+	assert.ErrorIs(t, err, ErrPasswordInvalid)
+}

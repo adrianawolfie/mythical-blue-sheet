@@ -40,11 +40,13 @@ The frontend uses plain HTML, CSS, and JavaScript. Prefer server-side rendered t
 
 All page CSS lives in static CSS files under `public/css/` or another served CSS path. Pages should link only the CSS files they need. Pages and templates should not use `<style>` blocks or `style` attributes; add or reuse classes in CSS files instead.
 
+Logged-in pages load `public/css/account.css` and `public/js/account.js` to show a fixed top-right account button using a Lucide-style user icon. The shared account overlay fetches `GET /api/me` and submits `PUT /api/me` so users can change their display name and optionally set a new password. Theme selection and text-size controls live in the account overlay instead of the individual page headers.
+
 ### `/`
 
 File: `public/index.html`
 
-The main character sheet application. It supports editing character details, stats, spells, features, inventory, journal notes, accessibility controls, and live status data.
+The main character sheet application. It supports editing character details, stats, spells, features, inventory, journal notes, and live status data.
 
 ### `/home.html`
 

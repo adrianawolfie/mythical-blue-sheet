@@ -64,6 +64,7 @@ func main() {
 	mux.Handle("GET /register", server.GetRegistration())
 	mux.Handle("POST /users", server.PostUser(users))
 	mux.Handle("GET /api/me", server.GetCurrentUser(users))
+	mux.Handle("PUT /api/me", server.PutCurrentUser(users))
 	mux.Handle("GET /admin", server.GetAdmin())
 	mux.Handle("GET /api/admin/users", server.GetAdminUsersData(users))
 	mux.Handle("GET /api/admin/characters", server.GetAdminCharactersData(users, characters))

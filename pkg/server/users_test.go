@@ -234,6 +234,80 @@ func TestPostLoginRejectsInvalidPassword(t *testing.T) {
 	}
 }
 
+func TestPutCurrentUserUpdatesName(t *testing.T) {
+	users := newUserTestRepository(t, nil)
+	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}); err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodPut, "/api/me", strings.NewReader(`{"name":"Captain Ada"}`))
+	req.AddCookie(&http.Cookie{Name: "user", Value: "ada@example.com"})
+	w := httptest.NewRecorder()
+
+	PutCurrentUser(users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	updated, err := users.GetByUsername("ada@example.com")
+	if err != nil {
+		t.Fatalf("get updated user: %v", err)
+	}
+	if updated.Name != "Captain Ada" || !updated.ValidatePassword("Encrypted1!") {
+		t.Fatalf("expected name-only update, got %#v", updated)
+	}
+}
+
+func TestPutCurrentUserUpdatesPasswordWithCurrentPassword(t *testing.T) {
+	users := newUserTestRepository(t, nil)
+	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}); err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodPut, "/api/me", strings.NewReader(`{"name":"Ada Storm","currentPassword":"Encrypted1!","newPassword":"Changed1!"}`))
+	req.AddCookie(&http.Cookie{Name: "user", Value: "ada@example.com"})
+	w := httptest.NewRecorder()
+
+	PutCurrentUser(users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	updated, err := users.GetByUsername("ada@example.com")
+	if err != nil {
+		t.Fatalf("get updated user: %v", err)
+	}
+	if !updated.ValidatePassword("Changed1!") || updated.ValidatePassword("Encrypted1!") {
+		t.Fatalf("expected changed password")
+	}
+}
+
+func TestPutCurrentUserRejectsPasswordChangeWithoutCurrentPassword(t *testing.T) {
+	users := newUserTestRepository(t, nil)
+	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}); err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodPut, "/api/me", strings.NewReader(`{"name":"Ada Storm","newPassword":"Changed1!"}`))
+	req.AddCookie(&http.Cookie{Name: "user", Value: "ada@example.com"})
+	w := httptest.NewRecorder()
+
+	PutCurrentUser(users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("expected status 400, got %d", w.Code)
+	}
+}
+
+func TestPutCurrentUserRejectsUnauthenticatedUser(t *testing.T) {
+	users := newUserTestRepository(t, nil)
+	req := httptest.NewRequest(http.MethodPut, "/api/me", strings.NewReader(`{"name":"Captain Ada"}`))
+	w := httptest.NewRecorder()
+
+	PutCurrentUser(users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusUnauthorized {
+		t.Fatalf("expected status 401, got %d", w.Code)
+	}
+}
+
 func TestGetAdminUsersDataReturnsUsersForAdminUser(t *testing.T) {
 	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
 	req := httptest.NewRequest(http.MethodGet, "/api/admin/users", nil)

@@ -1,0 +1,268 @@
+.account-action {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 1200;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(184, 144, 44, .78);
+  border-radius: 999px;
+  background: rgba(28, 39, 80, .92);
+  color: #fff7df;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .26);
+  cursor: pointer;
+}
+
+.account-action:hover,
+.account-action:focus-visible {
+  background: #2b3866;
+  outline: 2px solid rgba(214, 168, 56, .6);
+  outline-offset: 2px;
+}
+
+.account-action svg {
+  width: 23px;
+  height: 23px;
+  stroke-width: 2;
+}
+
+.account-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: grid;
+  place-items: start end;
+  padding: 72px 18px 18px;
+  background: rgba(12, 18, 36, .34);
+}
+
+.account-overlay[hidden] {
+  display: none;
+}
+
+.account-panel {
+  width: min(390px, 100%);
+  border: 2px solid #b8902c;
+  border-radius: 4px;
+  background: #ede1c0 url('../assets/parchment-seamless.png');
+  color: #1f2952;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .38);
+  padding: 20px;
+}
+
+.account-panel-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.account-panel-title {
+  font-family: 'Cinzel Decorative', Georgia, serif;
+  color: #1c2750;
+  font-size: 1.25rem;
+  line-height: 1.15;
+}
+
+.account-panel-email {
+  margin-top: 4px;
+  font-family: 'Lora', Georgia, serif;
+  font-size: .9rem;
+  color: #404e88;
+  overflow-wrap: anywhere;
+}
+
+.account-close {
+  border: 1px solid rgba(138, 105, 24, .7);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .36);
+  color: #1c2750;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.account-preferences {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 18px;
+  padding: 14px;
+  border: 1px solid rgba(184, 144, 44, .52);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, .2);
+}
+
+.account-preference-row {
+  display: grid;
+  grid-template-columns: 1fr 116px;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.account-theme-toggle {
+  justify-self: end;
+  margin: 0;
+}
+
+.account-accessibility-controls {
+  position: static;
+  display: flex;
+  justify-self: end;
+  gap: 5px;
+  padding: 3px;
+  border: 1px solid rgba(184, 144, 44, .65);
+  border-radius: 999px;
+  background: rgba(43, 56, 102, .1);
+  box-shadow: none;
+}
+
+.account-accessibility-controls .accessibility-size-btn {
+  position: static;
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.account-field {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.account-field input {
+  width: 100%;
+  border: 1px solid rgba(138, 105, 24, .8);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, .44);
+  color: #1f2952;
+  font: 1rem 'Lora', Georgia, serif;
+  padding: 10px 11px;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.account-help,
+.account-message {
+  font-family: 'Lora', Georgia, serif;
+  font-size: .9rem;
+  line-height: 1.4;
+}
+
+.account-help {
+  color: #404e88;
+}
+
+.account-message {
+  min-height: 1.3em;
+  margin-top: 10px;
+  color: #7a1d1d;
+}
+
+.account-message.success {
+  color: #1d6f4b;
+}
+
+.account-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.account-actions button {
+  border: 1px solid #8a6918;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 700;
+  padding: 9px 13px;
+}
+
+.account-secondary {
+  background: rgba(255, 255, 255, .28);
+  color: #1c2750;
+}
+
+.account-primary {
+  background: #2b3866;
+  color: #fff7df;
+}
+
+html[data-theme="moonlight"] .account-action {
+  border-color: rgba(222, 188, 97, .72);
+  background: rgba(15, 25, 58, .94);
+  color: #f5e6bd;
+}
+
+html[data-theme="moonlight"] .account-panel {
+  border-color: #debc61;
+  background: #101a38;
+  color: #f4ead0;
+}
+
+html[data-theme="moonlight"] .account-panel-title,
+html[data-theme="moonlight"] .account-close {
+  color: #f5e6bd;
+}
+
+html[data-theme="moonlight"] .account-panel-email,
+html[data-theme="moonlight"] .account-help {
+  color: #b7c4ee;
+}
+
+html[data-theme="moonlight"] .account-field input {
+  border-color: rgba(222, 188, 97, .62);
+  background: rgba(255, 255, 255, .08);
+  color: #f4ead0;
+}
+
+html[data-theme="moonlight"] .account-preferences {
+  border-color: rgba(222, 188, 97, .42);
+  background: rgba(255, 255, 255, .05);
+}
+
+html[data-theme="moonlight"] .account-accessibility-controls {
+  border-color: rgba(222, 188, 97, .52);
+  background: rgba(255, 255, 255, .08);
+}
+
+html[data-theme="moonlight"] .account-secondary {
+  background: rgba(255, 255, 255, .08);
+  color: #f5e6bd;
+}
+
+html[data-theme="moonlight"] .account-primary {
+  background: #debc61;
+  color: #101a38;
+}
+
+  @media (max-width: 620px) {
+  .account-action {
+    top: 12px;
+    right: 12px;
+  }
+
+  .account-overlay {
+    padding: 64px 12px 12px;
+  }
+
+  .account-preference-row {
+    grid-template-columns: 1fr auto;
+  }
+}

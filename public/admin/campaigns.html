@@ -10,17 +10,20 @@
   <link rel="stylesheet" href="/css/accessibility.css" />
   <link rel="stylesheet" href="/css/base.css" />
   <link rel="stylesheet" href="/css/theme-mode.css" />
+  <link rel="stylesheet" href="/css/account.css" />
   <link rel="stylesheet" href="/admin/admin.css" />
 </head>
 <body class="admin-body">
   <main class="admin-shell" aria-labelledby="adminTitle">
-    <nav class="admin-nav"><a class="admin-back-link" href="/">Back to Sheet</a><button type="button" class="admin-theme-toggle" data-theme-toggle aria-label="Switch visual theme"><span class="admin-theme-track" aria-hidden="true"><span class="admin-theme-knob"><span class="admin-theme-sun">☀</span><span class="admin-theme-moon">☾</span></span></span></button></nav>
+    <nav class="admin-nav"><a class="admin-back-link" href="/">Back to Sheet</a></nav>
     <div class="admin-layout">
       <aside class="admin-sidebar"><div class="admin-sidebar-inner"><p class="admin-sidebar-title">Admin</p><nav class="admin-sidebar-nav"><a class="admin-sidebar-link" href="/admin/users">Users</a><a class="admin-sidebar-link" href="/admin/characters">Characters</a><a class="admin-sidebar-link active" href="/admin/campaigns">Campaigns</a></nav></div></aside>
       <section class="admin-card"><div class="admin-content"><header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><p class="admin-accent">Captain's Ledger</p><h1 id="adminTitle">Campaigns</h1></div></header><div class="admin-summary"><article class="admin-panel"><p class="admin-panel-label">Signed In</p><p class="admin-panel-value" id="adminCurrentUser">Loading...</p></article><article class="admin-panel"><p class="admin-panel-label">Campaigns</p><p class="admin-count" id="adminCampaignCount">0</p></article></div><section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Campaign</th><th>Calendar Date</th><th>Days Traveled</th><th>Players</th><th>Updated At</th></tr></thead><tbody id="adminCampaignsBody"><tr><td class="admin-empty" colspan="5">Loading campaigns...</td></tr></tbody></table></div></section></div></section>
     </div>
   </main>
   <script src="/js/theme-mode.js"></script>
+  <script src="/js/accessibility.js"></script>
+  <script src="/js/account.js"></script>
   <script src="/admin/campaigns.js"></script>
 </body>
 </html>

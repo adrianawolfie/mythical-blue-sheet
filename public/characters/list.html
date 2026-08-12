@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/css/character-overview.css" />
   <link rel="stylesheet" href="/css/character-list.css" />
   <link rel="stylesheet" href="/css/theme-mode.css" />
+  <link rel="stylesheet" href="/css/account.css" />
 </head>
 <body>
   <main class="start-page character-list-page" aria-labelledby="charactersTitle">
@@ -26,11 +27,6 @@
           </div>
         </div>
       </div>
-
-      <button type="button" class="theme-toggle character-list-theme-toggle" data-theme-toggle aria-label="Switch visual theme">
-        <span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-orb"></span></span>
-        <span class="theme-toggle-label">Moonlight Mode</span>
-      </button>
 
       <div class="character-list-grid">
         {{range .Characters}}
@@ -51,5 +47,7 @@
   </main>
 
   <script src="/js/theme-mode.js"></script>
+  <script src="/js/accessibility.js"></script>
+  <script src="/js/account.js"></script>
 </body>
 </html>

@@ -161,6 +161,44 @@ func (l *Repository) Create(ctx context.Context, user User) error {
 	return nil
 }
 
+func (l *Repository) UpdateProfile(ctx context.Context, email string, name string, currentPassword string, newPassword string) (User, error) {
+	l.Lock()
+	defer l.Unlock()
+
+	u, ok := l.users[email]
+	if !ok {
+		return User{}, ErrUserNotFound
+	}
+	if newPassword != "" {
+		if !u.ValidatePassword(currentPassword) {
+			return User{}, ErrPasswordMismatch
+		}
+		if err := validatePassword(newPassword); err != nil {
+			return User{}, err
+		}
+		u.Password = encryptPassword(newPassword + config.UserSecret)
+	}
+	u.Name = name
+
+	writer, err := l.storage.Writer(ctx, usersFilename)
+	if err != nil {
+		return User{}, fmt.Errorf("failed to open user file, %w", err)
+	}
+	l.users[email] = u
+	encoder := json.NewEncoder(writer)
+	for _, user := range l.users {
+		if err := encoder.Encode(user); err != nil {
+			_ = writer.Close()
+			return User{}, err
+		}
+	}
+	if err := writer.Close(); err != nil {
+		return User{}, fmt.Errorf("failed to close user file, %w", err)
+	}
+
+	return u, nil
+}
+
 func adminView(u User) AdminView {
 	return AdminView{ID: u.ID.String(), Name: u.Name, Email: u.Email, IsAdmin: u.IsAdmin}
 }
