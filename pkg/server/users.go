@@ -107,15 +107,19 @@ func PostLogin(u user.Repository) http.HandlerFunc {
 			renderErrorPage(w, err)
 			return
 		}
-		user, ok, err := u.Authenticate(r.Context(), login.Username, login.Password)
+		currentUser, ok, err := u.Authenticate(r.Context(), login.Username, login.Password)
 		if err != nil {
+			if errors.Is(err, user.ErrUserDisabled) {
+				http.Error(w, "disabled", http.StatusForbidden)
+				return
+			}
 			renderErrorPage(w, err)
 			return
 		}
 		if ok {
 			http.SetCookie(w, &http.Cookie{
 				Name:     "user",
-				Value:    user.Email,
+				Value:    currentUser.Email,
 				HttpOnly: true,
 			})
 			http.Redirect(w, r, "/", http.StatusSeeOther)

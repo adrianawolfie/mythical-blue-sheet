@@ -115,6 +115,9 @@ func (l *Repository) Authenticate(ctx context.Context, email string, password st
 	if err != nil {
 		return User{}, false, err
 	}
+	if !user.Enabled {
+		return User{}, false, ErrUserDisabled
+	}
 	return user, user.ValidatePassword(password), nil
 }
 
@@ -199,6 +202,68 @@ func (l *Repository) UpdateProfile(ctx context.Context, email string, name strin
 	return u, nil
 }
 
+func (l *Repository) UpdateByID(ctx context.Context, id string, next User) (User, error) {
+	if id == "" {
+		return User{}, ErrUserIDRequired
+	}
+	if next.Email == "" {
+		return User{}, ErrUserEmailRequired
+	}
+	if next.Password != "" {
+		if err := validatePassword(next.Password); err != nil {
+			return User{}, err
+		}
+	}
+
+	l.Lock()
+	defer l.Unlock()
+
+	var existingEmail string
+	var existing User
+	for email, u := range l.users {
+		if u.ID.String() == id {
+			existingEmail = email
+			existing = u
+			break
+		}
+	}
+	if existingEmail == "" {
+		return User{}, ErrUserNotFound
+	}
+	if existingEmail != next.Email {
+		if _, ok := l.users[next.Email]; ok {
+			return User{}, ErrUserAlreadyExists
+		}
+	}
+
+	existing.Name = next.Name
+	existing.Email = next.Email
+	existing.IsAdmin = next.IsAdmin
+	existing.Enabled = next.Enabled
+	if next.Password != "" {
+		existing.Password = encryptPassword(next.Password + config.UserSecret)
+	}
+
+	writer, err := l.storage.Writer(ctx, usersFilename)
+	if err != nil {
+		return User{}, fmt.Errorf("failed to open user file, %w", err)
+	}
+	delete(l.users, existingEmail)
+	l.users[existing.Email] = existing
+	encoder := json.NewEncoder(writer)
+	for _, user := range l.users {
+		if err := encoder.Encode(user); err != nil {
+			_ = writer.Close()
+			return User{}, err
+		}
+	}
+	if err := writer.Close(); err != nil {
+		return User{}, fmt.Errorf("failed to close user file, %w", err)
+	}
+
+	return existing, nil
+}
+
 func adminView(u User) AdminView {
-	return AdminView{ID: u.ID.String(), Name: u.Name, Email: u.Email, IsAdmin: u.IsAdmin}
+	return AdminView{ID: u.ID.String(), Name: u.Name, Email: u.Email, IsAdmin: u.IsAdmin, Enabled: u.Enabled}
 }

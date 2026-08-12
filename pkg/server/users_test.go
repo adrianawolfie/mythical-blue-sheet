@@ -199,7 +199,7 @@ func TestGetRegistrationRendersRegistrationPage(t *testing.T) {
 
 func TestPostLoginSetsCookieAndRedirects(t *testing.T) {
 	users := newUserTestRepository(t, nil)
-	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}); err != nil {
+	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!", Enabled: true}); err != nil {
 		t.Fatalf("create user: %v", err)
 	}
 	req := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(`{"username":"ada@example.com","password":"Encrypted1!"}`))
@@ -221,7 +221,7 @@ func TestPostLoginSetsCookieAndRedirects(t *testing.T) {
 
 func TestPostLoginRejectsInvalidPassword(t *testing.T) {
 	users := newUserTestRepository(t, nil)
-	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}); err != nil {
+	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!", Enabled: true}); err != nil {
 		t.Fatalf("create user: %v", err)
 	}
 	req := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(`{"username":"ada@example.com","password":"wrong"}`))
@@ -234,9 +234,31 @@ func TestPostLoginRejectsInvalidPassword(t *testing.T) {
 	}
 }
 
-func TestPutCurrentUserUpdatesName(t *testing.T) {
+func TestPostLoginRejectsDisabledUser(t *testing.T) {
 	users := newUserTestRepository(t, nil)
 	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}); err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	created, err := users.GetByUsername("ada@example.com")
+	if err != nil {
+		t.Fatalf("get user: %v", err)
+	}
+	if _, err := users.UpdateByID(context.Background(), created.ID.String(), user.User{Name: "Ada Storm", Email: "ada@example.com", Enabled: false}); err != nil {
+		t.Fatalf("disable user: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(`{"username":"ada@example.com","password":"Encrypted1!"}`))
+	w := httptest.NewRecorder()
+
+	PostLogin(users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusForbidden {
+		t.Fatalf("expected status 403, got %d", w.Code)
+	}
+}
+
+func TestPutCurrentUserUpdatesName(t *testing.T) {
+	users := newUserTestRepository(t, nil)
+	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!", Enabled: true}); err != nil {
 		t.Fatalf("create user: %v", err)
 	}
 	req := httptest.NewRequest(http.MethodPut, "/api/me", strings.NewReader(`{"name":"Captain Ada"}`))
@@ -259,7 +281,7 @@ func TestPutCurrentUserUpdatesName(t *testing.T) {
 
 func TestPutCurrentUserUpdatesPasswordWithCurrentPassword(t *testing.T) {
 	users := newUserTestRepository(t, nil)
-	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}); err != nil {
+	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!", Enabled: true}); err != nil {
 		t.Fatalf("create user: %v", err)
 	}
 	req := httptest.NewRequest(http.MethodPut, "/api/me", strings.NewReader(`{"name":"Ada Storm","currentPassword":"Encrypted1!","newPassword":"Changed1!"}`))
@@ -282,7 +304,7 @@ func TestPutCurrentUserUpdatesPasswordWithCurrentPassword(t *testing.T) {
 
 func TestPutCurrentUserRejectsPasswordChangeWithoutCurrentPassword(t *testing.T) {
 	users := newUserTestRepository(t, nil)
-	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}); err != nil {
+	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!", Enabled: true}); err != nil {
 		t.Fatalf("create user: %v", err)
 	}
 	req := httptest.NewRequest(http.MethodPut, "/api/me", strings.NewReader(`{"name":"Ada Storm","newPassword":"Changed1!"}`))
@@ -335,6 +357,49 @@ func TestGetAdminUsersRejectsNonAdminUser(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	GetAdminUsersData(repo).ServeHTTP(w, req)
+
+	if w.Code != http.StatusForbidden {
+		t.Fatalf("expected status 403, got %d", w.Code)
+	}
+}
+
+func TestPutAdminUserUpdatesDetailsAndPassword(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}); err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	ada, err := users.GetByUsername("ada@example.com")
+	if err != nil {
+		t.Fatalf("get ada: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodPut, "/admin/users/"+ada.ID.String(), strings.NewReader(`{"name":"Captain Ada","email":"captain@example.com","password":"Changed1!","isAdmin":true,"enabled":true}`))
+	req.SetPathValue("id", ada.ID.String())
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	PutAdminUser(users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	updated, err := users.GetByUsername("captain@example.com")
+	if err != nil {
+		t.Fatalf("get updated user: %v", err)
+	}
+	if updated.Name != "Captain Ada" || !updated.IsAdmin || !updated.Enabled || !updated.ValidatePassword("Changed1!") {
+		t.Fatalf("expected updated user, got %#v", updated)
+	}
+}
+
+func TestPutAdminUserRejectsNonAdmin(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Ada", Email: "ada@example.com", Password: "hash"}})
+	req := httptest.NewRequest(http.MethodPut, "/admin/users/018fe68a-01a8-70b1-8ea3-2d0b819a2d29", strings.NewReader(`{"name":"Ada","email":"ada@example.com"}`))
+	req.SetPathValue("id", "018fe68a-01a8-70b1-8ea3-2d0b819a2d29")
+	req.AddCookie(&http.Cookie{Name: "user", Value: "ada@example.com"})
+	w := httptest.NewRecorder()
+
+	PutAdminUser(users).ServeHTTP(w, req)
 
 	if w.Code != http.StatusForbidden {
 		t.Fatalf("expected status 403, got %d", w.Code)
@@ -417,6 +482,56 @@ func TestPostAdminCharacterAssignmentPersistsUserID(t *testing.T) {
 	}
 }
 
+func TestPostAdminCharacterAssignmentCanUnassign(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	characters := newCharacterTestRepository(t, []character.Character{{
+		ID:     "ada-character",
+		UserID: "018fe68a-01a8-70b1-8ea3-2d0b819a2d29",
+		Summary: character.Summary{
+			Name: "Ada Storm",
+		},
+	}})
+	req := httptest.NewRequest(http.MethodPost, "/admin/characters/ada-character/assignment", bytes.NewBufferString(`{"userId":""}`))
+	req.SetPathValue("id", "ada-character")
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	PostAdminCharacterAssignment(users, characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	updated, err := characters.GetByID(context.Background(), "ada-character")
+	if err != nil {
+		t.Fatalf("get updated character: %v", err)
+	}
+	if updated.UserID != "" {
+		t.Fatalf("expected unassigned character, got %q", updated.UserID)
+	}
+}
+
+func TestDeleteAdminCharacterRemovesCharacter(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	characters := newCharacterTestRepository(t, []character.Character{{ID: "ada-character", Summary: character.Summary{Name: "Ada Storm"}}})
+	req := httptest.NewRequest(http.MethodDelete, "/admin/characters/ada-character", nil)
+	req.SetPathValue("id", "ada-character")
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	DeleteAdminCharacter(users, characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	idx, err := characters.List(context.Background())
+	if err != nil {
+		t.Fatalf("list characters: %v", err)
+	}
+	if len(idx) != 0 {
+		t.Fatalf("expected empty character index, got %#v", idx)
+	}
+}
+
 func TestPostUserPersistsName(t *testing.T) {
 	chdirRepoRoot(t)
 
@@ -496,6 +611,38 @@ func TestGetCharactersMineReturnsOnlyCurrentUsersCharacters(t *testing.T) {
 	}
 	if len(idx) != 1 || idx[0].ID != "ada-character" {
 		t.Fatalf("expected only current user's character, got %#v", idx)
+	}
+}
+
+func TestGetCharactersMineReturnsAllForAdmin(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	characters := newCharacterTestRepository(t, []character.Character{{
+		ID:     "ada-character",
+		UserID: "018fe68a-01a8-70b1-8ea3-2d0b819a2d29",
+		Summary: character.Summary{
+			Name: "Ada Storm",
+		},
+	}, {
+		ID: "unassigned-character",
+		Summary: character.Summary{
+			Name: "Unassigned Sailor",
+		},
+	}})
+	req := httptest.NewRequest(http.MethodGet, "/api/characters?mine=1", nil)
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	GetCharacters(characters, users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var idx []character.Index
+	if err := json.NewDecoder(w.Body).Decode(&idx); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if len(idx) != 2 {
+		t.Fatalf("expected all characters for admin, got %#v", idx)
 	}
 }
 
@@ -635,7 +782,7 @@ func TestGetCharacterDetailBootstrapsCharacter(t *testing.T) {
 func TestGetCharacterListPageShowsOnlyCurrentUsersCharacters(t *testing.T) {
 	chdirRepoRoot(t)
 
-	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Ada Storm", Email: "ada@example.com", Password: "hash"}})
 	characters := newCharacterTestRepository(t,
 		[]character.Character{{
 			ID:     "ada-character",
@@ -657,7 +804,7 @@ func TestGetCharacterListPageShowsOnlyCurrentUsersCharacters(t *testing.T) {
 		}},
 	)
 	req := httptest.NewRequest(http.MethodGet, "/characters", nil)
-	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	req.AddCookie(&http.Cookie{Name: "user", Value: "ada@example.com"})
 	w := httptest.NewRecorder()
 
 	GetCharacterListPage(users, characters).ServeHTTP(w, req)
@@ -676,6 +823,31 @@ func TestGetCharacterListPageShowsOnlyCurrentUsersCharacters(t *testing.T) {
 	}
 }
 
+func TestGetCharacterListPageShowsAllCharactersForAdmin(t *testing.T) {
+	chdirRepoRoot(t)
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	characters := newCharacterTestRepository(t, []character.Character{{
+		ID:      "ada-character",
+		UserID:  "018fe68a-01a8-70b1-8ea3-2d0b819a2d29",
+		Summary: character.Summary{Name: "Ada Storm"},
+	}, {
+		ID:      "unassigned-character",
+		Summary: character.Summary{Name: "Unassigned Sailor"},
+	}})
+	req := httptest.NewRequest(http.MethodGet, "/characters", nil)
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	GetCharacterListPage(users, characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	if !strings.Contains(w.Body.String(), "Ada Storm") || !strings.Contains(w.Body.String(), "Unassigned Sailor") {
+		t.Fatalf("expected all characters for admin, got %s", w.Body.String())
+	}
+}
+
 func TestGetAdminRedirectsToUsers(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/admin", nil)
 	w := httptest.NewRecorder()
@@ -685,8 +857,8 @@ func TestGetAdminRedirectsToUsers(t *testing.T) {
 	if w.Code != http.StatusSeeOther {
 		t.Fatalf("expected status 303, got %d", w.Code)
 	}
-	if location := w.Header().Get("Location"); location != "/admin/users" {
-		t.Fatalf("expected redirect to /admin/users, got %q", location)
+	if location := w.Header().Get("Location"); location != "/admin/users.html" {
+		t.Fatalf("expected redirect to /admin/users.html, got %q", location)
 	}
 }
 
@@ -744,6 +916,37 @@ func TestGetCampaignsMineReturnsOnlyCurrentUsersCampaigns(t *testing.T) {
 	}
 	if len(response) != 1 || response[0].ID != "campaign-1" {
 		t.Fatalf("expected only current user's player campaign, got %#v", response)
+	}
+}
+
+func TestGetCampaignsMineReturnsAllForAdmin(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	month := 4
+	day := 1
+	campaigns := newCampaignTestRepository(t, []campaign.Campaign{{
+		ID:           "campaign-1",
+		Name:         "Adriana",
+		CalendarDate: campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
+	}, {
+		ID:           "campaign-2",
+		Name:         "Other Waters",
+		CalendarDate: campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
+	}})
+	req := httptest.NewRequest(http.MethodGet, "/api/campaigns?mine=1", nil)
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	GetCampaigns(users, campaigns).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var response []campaign.Campaign
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if len(response) != 2 {
+		t.Fatalf("expected all campaigns for admin, got %#v", response)
 	}
 }
 

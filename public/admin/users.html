@@ -19,16 +19,33 @@
       <a class="admin-back-link" href="/">Back to Sheet</a>
     </nav>
     <div class="admin-layout">
-      <aside class="admin-sidebar"><div class="admin-sidebar-inner"><p class="admin-sidebar-title">Admin</p><nav class="admin-sidebar-nav"><a class="admin-sidebar-link active" href="/admin/users">Users</a><a class="admin-sidebar-link" href="/admin/characters">Characters</a><a class="admin-sidebar-link" href="/admin/campaigns">Campaigns</a></nav></div></aside>
+      <aside class="admin-sidebar"><div class="admin-sidebar-inner"><p class="admin-sidebar-title">Admin</p><nav class="admin-sidebar-nav"><a class="admin-sidebar-link active" href="/admin/users.html">Users</a><a class="admin-sidebar-link" href="/admin/characters.html">Characters</a><a class="admin-sidebar-link" href="/admin/campaigns.html">Campaigns</a></nav></div></aside>
       <section class="admin-card">
         <div class="admin-content">
-          <header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><p class="admin-accent">Captain's Ledger</p><h1 id="adminTitle">Users</h1></div></header>
-          <div class="admin-summary"><article class="admin-panel"><p class="admin-panel-label">Signed In</p><p class="admin-panel-value" id="adminCurrentUser">Loading...</p></article><article class="admin-panel"><p class="admin-panel-label">Registered Users</p><p class="admin-count" id="adminUserCount">0</p></article></div>
-          <section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Name</th><th>Email</th><th>User ID</th><th>Admin</th></tr></thead><tbody id="adminUsersBody"><tr><td class="admin-empty" colspan="4">Loading users...</td></tr></tbody></table></div></section>
+          <header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><h1 id="adminTitle">Users</h1></div></header>
+          <section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Name</th><th>Email</th><th>User ID</th><th>Admin</th><th>Status</th></tr></thead><tbody id="adminUsersBody"><tr><td class="admin-empty" colspan="5">Loading users...</td></tr></tbody></table></div></section>
         </div>
       </section>
     </div>
   </main>
+  <div class="admin-modal" id="editUserModal" hidden>
+    <section class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="editUserTitle">
+      <h2 id="editUserTitle">Edit User</h2>
+      <form id="editUserForm">
+        <label class="admin-modal-field"><span>Name</span><input id="editUserName" type="text" autocomplete="name"></label>
+        <label class="admin-modal-field"><span>Email</span><input id="editUserEmail" type="email" autocomplete="email" required></label>
+        <label class="admin-modal-field"><span>New Password</span><input id="editUserPassword" type="password" autocomplete="new-password"></label>
+        <label class="admin-modal-checkbox"><input id="editUserAdmin" type="checkbox"> Admin</label>
+        <label class="admin-modal-checkbox"><input id="editUserEnabled" type="checkbox"> Enabled</label>
+        <p class="admin-modal-error" id="editUserError" role="alert" aria-live="polite"></p>
+        <div class="admin-modal-actions">
+          <button type="submit">Save</button>
+          <button type="button" data-edit-user-cancel>Cancel</button>
+        </div>
+      </form>
+    </section>
+  </div>
+  <script src="/js/toast.js"></script>
   <script src="/js/theme-mode.js"></script>
   <script src="/js/accessibility.js"></script>
   <script src="/js/account.js"></script>

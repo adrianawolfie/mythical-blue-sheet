@@ -17,6 +17,7 @@ type User struct {
 	Email    string    `json:"email"`
 	Password string    `json:"password"`
 	IsAdmin  bool      `json:"isAdmin"`
+	Enabled  bool      `json:"enabled"`
 }
 
 type AdminView struct {
@@ -24,6 +25,7 @@ type AdminView struct {
 	Name    string
 	Email   string
 	IsAdmin bool
+	Enabled bool
 }
 
 func (u User) ValidatePassword(p string) bool {

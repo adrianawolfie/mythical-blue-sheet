@@ -8,7 +8,27 @@ import (
 	"testing"
 
 	"raperonzolo/character-sheet/pkg/storage"
+	"raperonzolo/character-sheet/pkg/user"
+
+	"github.com/google/uuid"
 )
+
+type testUserReader struct {
+	users []user.User
+}
+
+func (r testUserReader) List(ctx context.Context) []user.User {
+	return r.users
+}
+
+func (r testUserReader) GetByUsername(email string) (user.User, error) {
+	for _, u := range r.users {
+		if u.Email == email {
+			return u, nil
+		}
+	}
+	return user.User{}, user.ErrUserNotFound
+}
 
 func newRequestedTestRepository(t *testing.T) (context.Context, Repository) {
 	t.Helper()
@@ -128,5 +148,26 @@ func TestCreateOrReplaceUpdatesIndexForExistingCharacter(t *testing.T) {
 	}
 	if idx[0].Name != "Ada Storm" || idx[0].CampaignID != "campaign-1" || idx[0].ArmorClass != "18" || idx[0].HpCurrent != "10" || idx[0].HpMax != "25" || idx[0].CurrentConditions != "Poisoned" || idx[0].UpdatedAt != "2026-07-12T11:00:00Z" {
 		t.Fatalf("expected updated index entry, got %#v", idx[0])
+	}
+}
+
+func TestAssignToUserAllowsUnassign(t *testing.T) {
+	ctx, repo := newRequestedTestRepository(t)
+	users := testUserReader{users: []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Email: "ada@example.com"}}}
+	character := requestedTestCharacter("ada", "Ada")
+	character.UserID = "018fe68a-01a8-70b1-8ea3-2d0b819a2d29"
+	if err := repo.CreateOrReplace(ctx, character); err != nil {
+		t.Fatalf("create character: %v", err)
+	}
+
+	if err := repo.AssignToUser(ctx, users, "ada", ""); err != nil {
+		t.Fatalf("unassign character: %v", err)
+	}
+	updated, err := repo.GetByID(ctx, "ada")
+	if err != nil {
+		t.Fatalf("get updated character: %v", err)
+	}
+	if updated.UserID != "" {
+		t.Fatalf("expected unassigned character, got %q", updated.UserID)
 	}
 }

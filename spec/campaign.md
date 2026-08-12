@@ -19,7 +19,7 @@ Campaign records are stored as `campaign/{id}.json`. The campaign list is stored
 
 ## Admin Routes
 
-- `GET /admin/campaigns` is served from `public/admin/campaigns.html` by the static file server; admin data is protected by `/api/admin/campaigns`.
+- `GET /admin/campaigns.html` is served from `public/admin/campaigns.html` by the static file server; admin data is protected by `/api/admin/campaigns`.
 - `GET /api/admin/campaigns` returns campaign admin views for the static admin campaigns page.
 - `POST /admin/campaigns/{id}/players` adds a user ID to a campaign's players.
 - `DELETE /admin/campaigns/{id}/players/{userId}` removes a user ID from a campaign's players.
@@ -27,6 +27,6 @@ Campaign records are stored as `campaign/{id}.json`. The campaign list is stored
 ## HTTP Routes
 
 - `GET /api/campaigns` returns all full campaign records.
-- `GET /api/campaigns?mine=1` returns only campaigns where the user identified by the `user` cookie is included in `players`, or `401` when no valid user cookie is present.
+- `GET /api/campaigns?mine=1` returns only campaigns where the user identified by the `user` cookie is included in `players`, or all campaigns when the user is an admin, or `401` when no valid user cookie is present.
 - `GET /api/campaign-state` returns campaign state.
 - `POST /api/campaign-state` saves campaign state.

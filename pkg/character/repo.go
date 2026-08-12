@@ -155,7 +155,11 @@ func (repo Repository) ListForUser(ctx context.Context, users UserReader, email 
 		return nil, err
 	}
 
-	idx, err := repo.List(ctx, WithUserID(currentUser.ID.String()))
+	var opts []ListOption
+	if !currentUser.IsAdmin {
+		opts = append(opts, WithUserID(currentUser.ID.String()))
+	}
+	idx, err := repo.List(ctx, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -224,18 +228,17 @@ func (repo Repository) ListAdmin(ctx context.Context, users UserReader) ([]Admin
 }
 
 func (repo Repository) AssignToUser(ctx context.Context, users UserReader, characterID string, userID string) error {
-	if userID == "" {
-		return fmt.Errorf("userId is required")
-	}
-	found := false
-	for _, u := range users.List(ctx) {
-		if u.ID.String() == userID {
-			found = true
-			break
+	if userID != "" {
+		found := false
+		for _, u := range users.List(ctx) {
+			if u.ID.String() == userID {
+				found = true
+				break
+			}
 		}
-	}
-	if !found {
-		return fmt.Errorf("user not found")
+		if !found {
+			return fmt.Errorf("user not found")
+		}
 	}
 
 	c, err := repo.GetByID(ctx, characterID)

@@ -41,6 +41,7 @@ func TestLocalCreateAppendsUserToJSONL(t *testing.T) {
 	if created != expected {
 		t.Fatalf("expected created user %#v, got %#v", expected, created)
 	}
+	assert.False(t, created.Enabled)
 
 	reloaded, err := NewRepository(ctx, s)
 	require.NoError(t, err)
@@ -249,4 +250,81 @@ func TestUpdateProfileRejectsInvalidNewPassword(t *testing.T) {
 
 	_, err = repo.UpdateProfile(ctx, "ada@example.com", "Ada Storm", "Encrypted1!", "short")
 	assert.ErrorIs(t, err, ErrPasswordInvalid)
+}
+
+func TestUpdateByIDUpdatesUserDetails(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	ctx := context.Background()
+	s, err := storage.New(t.TempDir())
+	require.NoError(t, err)
+	repo, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	require.NoError(t, repo.Create(ctx, User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}))
+	created, err := repo.GetByUsername("ada@example.com")
+	require.NoError(t, err)
+
+	updated, err := repo.UpdateByID(ctx, created.ID.String(), User{Name: "Captain Ada", Email: "captain@example.com", IsAdmin: true, Enabled: true})
+	require.NoError(t, err)
+	assert.Equal(t, "Captain Ada", updated.Name)
+	assert.Equal(t, "captain@example.com", updated.Email)
+	assert.True(t, updated.IsAdmin)
+	assert.True(t, updated.Enabled)
+	assert.True(t, updated.ValidatePassword("Encrypted1!"))
+	_, err = repo.GetByUsername("ada@example.com")
+	assert.ErrorIs(t, err, ErrUserNotFound)
+}
+
+func TestAuthenticateRejectsDisabledUser(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	ctx := context.Background()
+	s, err := storage.New(t.TempDir())
+	require.NoError(t, err)
+	repo, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	require.NoError(t, repo.Create(ctx, User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}))
+	created, err := repo.GetByUsername("ada@example.com")
+	require.NoError(t, err)
+	_, err = repo.UpdateByID(ctx, created.ID.String(), User{Name: "Ada Storm", Email: "ada@example.com", Enabled: false})
+	require.NoError(t, err)
+
+	_, ok, err := repo.Authenticate(ctx, "ada@example.com", "Encrypted1!")
+	assert.False(t, ok)
+	assert.ErrorIs(t, err, ErrUserDisabled)
+}
+
+func TestUpdateByIDUpdatesPassword(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	ctx := context.Background()
+	s, err := storage.New(t.TempDir())
+	require.NoError(t, err)
+	repo, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	require.NoError(t, repo.Create(ctx, User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}))
+	created, err := repo.GetByUsername("ada@example.com")
+	require.NoError(t, err)
+
+	updated, err := repo.UpdateByID(ctx, created.ID.String(), User{Name: "Ada Storm", Email: "ada@example.com", Password: "Changed1!"})
+	require.NoError(t, err)
+	assert.True(t, updated.ValidatePassword("Changed1!"))
+	assert.False(t, updated.ValidatePassword("Encrypted1!"))
+}
+
+func TestUpdateByIDRejectsDuplicateEmail(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	ctx := context.Background()
+	s, err := storage.New(t.TempDir())
+	require.NoError(t, err)
+	repo, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	require.NoError(t, repo.Create(ctx, User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!"}))
+	require.NoError(t, repo.Create(ctx, User{Name: "Zed", Email: "zed@example.com", Password: "Encrypted1!"}))
+	created, err := repo.GetByUsername("ada@example.com")
+	require.NoError(t, err)
+
+	_, err = repo.UpdateByID(ctx, created.ID.String(), User{Name: "Ada Storm", Email: "zed@example.com"})
+	assert.ErrorIs(t, err, ErrUserAlreadyExists)
 }

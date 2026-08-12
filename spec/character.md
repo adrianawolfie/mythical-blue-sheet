@@ -12,18 +12,19 @@ The Character domain stores player character sheets and a lightweight character 
 - `GetByID` loads a full character by ID.
 - `CreateOrReplace` saves a character and updates the index.
 - `Delete` removes a character and updates the index.
-- `ListForUser` resolves the current user and returns only characters owned by that user for the character list page.
+- `ListForUser` resolves the current user and returns only characters owned by that user for the character list page. Admin users receive all characters.
 - `ListAdmin` resolves character ownership names for the admin character page.
-- `AssignToUser` validates the user assignment and persists it.
+- `AssignToUser` validates the user assignment and persists it. An empty user ID clears ownership.
 - `UpdateStatus` applies frequently changing status fields and persists the character.
 
 ## HTTP Routes
 
 - `GET /api/characters` returns the character index.
-- `GET /api/characters?mine=1` returns only character index records assigned to the user identified by the `user` cookie, or `401` when no valid user cookie is present.
+- `GET /api/characters?mine=1` returns only character index records assigned to the user identified by the `user` cookie, or all records when the user is an admin, or `401` when no valid user cookie is present.
 - `GET /api/characters/{id}` returns one character.
 - `POST /api/characters` creates or replaces one character.
 - `POST /api/characters/{id}/status` updates frequently changing status fields such as HP, temp HP, armor class, and conditions.
 - `DELETE /api/characters/{id}` deletes one character.
 - `GET /api/admin/characters` returns the current admin user, character admin views, assignable users, and character count for the static admin characters page.
-- `POST /admin/characters/{id}/assignment` assigns a character to a user.
+- `POST /admin/characters/{id}/assignment` assigns a character to a user or clears ownership when `userId` is empty.
+- `DELETE /admin/characters/{id}` deletes one character as an admin.

@@ -15,7 +15,9 @@ func GetCampaigns(users user.Repository, repo campaign.Repository) http.HandlerF
 			if !ok {
 				return
 			}
-			opts = append(opts, campaign.WithPlayerID(currentUser.ID.String()))
+			if !currentUser.IsAdmin {
+				opts = append(opts, campaign.WithPlayerID(currentUser.ID.String()))
+			}
 		}
 
 		campaigns, err := repo.List(r.Context(), opts...)

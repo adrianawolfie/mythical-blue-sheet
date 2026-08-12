@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"raperonzolo/character-sheet/pkg/campaign"
@@ -26,6 +27,14 @@ type adminAssignCharacterRequest struct {
 	UserID string `json:"userId"`
 }
 
+type adminUpdateUserRequest struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	IsAdmin  bool   `json:"isAdmin"`
+	Enabled  bool   `json:"enabled"`
+}
+
 type adminCampaignsPageData struct {
 	CurrentUser   user.AdminView
 	Campaigns     []campaign.AdminView
@@ -38,7 +47,7 @@ type adminCampaignPlayerRequest struct {
 
 func GetAdmin() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
+		http.Redirect(w, r, "/admin/users.html", http.StatusSeeOther)
 	}
 }
 
@@ -54,6 +63,30 @@ func GetAdminUsersData(repo user.Repository) http.HandlerFunc {
 			return
 		}
 		writeJSON(w, http.StatusOK, adminUsersPageData{CurrentUser: currentUser, Users: users, UserCount: len(users)})
+	}
+}
+
+func PutAdminUser(repo user.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := requireAdmin(w, r, repo); !ok {
+			return
+		}
+
+		var req adminUpdateUserRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeJSON(w, http.StatusBadRequest, err)
+			return
+		}
+		updated, err := repo.UpdateByID(r.Context(), r.PathValue("id"), user.User{Name: req.Name, Email: req.Email, Password: req.Password, IsAdmin: req.IsAdmin, Enabled: req.Enabled})
+		if err != nil {
+			if errors.Is(err, user.ErrUserAlreadyExists) || errors.Is(err, user.ErrUserEmailRequired) || errors.Is(err, user.ErrUserIDRequired) || errors.Is(err, user.ErrPasswordInvalid) || errors.Is(err, user.ErrUserNotFound) {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, user.AdminView{ID: updated.ID.String(), Name: updated.Name, Email: updated.Email, IsAdmin: updated.IsAdmin, Enabled: updated.Enabled})
 	}
 }
 
@@ -93,6 +126,19 @@ func PostAdminCharacterAssignment(users user.Repository, characters character.Re
 			return
 		}
 
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func DeleteAdminCharacter(users user.Repository, characters character.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := requireAdmin(w, r, users); !ok {
+			return
+		}
+		if err := characters.Delete(r.Context(), r.PathValue("id")); err != nil {
+			writeError(w, err)
+			return
+		}
 		w.WriteHeader(http.StatusOK)
 	}
 }

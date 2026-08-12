@@ -28,7 +28,9 @@ func GetCharacters(c character.Repository, users ...user.Repository) http.Handle
 			if !ok {
 				return
 			}
-			opts = append(opts, character.WithUserID(currentUser.ID.String()))
+			if !currentUser.IsAdmin {
+				opts = append(opts, character.WithUserID(currentUser.ID.String()))
+			}
 		}
 
 		idx, err := c.List(r.Context(), opts...)

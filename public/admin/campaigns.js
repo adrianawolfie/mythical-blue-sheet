@@ -1,6 +1,4 @@
 (() => {
-  const currentUser = document.getElementById("adminCurrentUser");
-  const count = document.getElementById("adminCampaignCount");
   const body = document.getElementById("adminCampaignsBody");
 
   function textEl(tag, text, className = "") {
@@ -103,8 +101,6 @@
     }
     if (!response.ok) throw new Error("Could not load campaigns.");
     const data = await response.json();
-    currentUser.textContent = data.CurrentUser.Email;
-    count.textContent = String(data.CampaignCount || 0);
     renderCampaigns(data.Campaigns || []);
   }
 

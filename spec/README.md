@@ -40,6 +40,8 @@ The frontend uses plain HTML, CSS, and JavaScript. Prefer server-side rendered t
 
 All page CSS lives in static CSS files under `public/css/` or another served CSS path. Pages should link only the CSS files they need. Pages and templates should not use `<style>` blocks or `style` attributes; add or reuse classes in CSS files instead.
 
+Use Lucide icons for application icons. Prefer self-hosted or inline Lucide SVG markup over external icon CDNs.
+
 Logged-in pages load `public/css/account.css` and `public/js/account.js` to show a fixed top-right account button using a Lucide-style user icon. The shared account overlay fetches `GET /api/me` and submits `PUT /api/me` so users can change their display name and optionally set a new password. Theme selection and text-size controls live in the account overlay instead of the individual page headers.
 
 ### `/`
@@ -84,19 +86,19 @@ Template: `public/register.html`
 
 The registration page. Registration posts user data to `POST /users`.
 
-### `/admin/users`
+### `/admin/users.html`
 
 File: `public/admin/users.html`
 
-A static admin page. `public/admin/users.js` fetches admin-only `GET /api/admin/users` to list users and the current user summary.
+A static admin page. `public/admin/users.js` fetches admin-only `GET /api/admin/users` to list users and the current user summary. Admins can edit user details, toggle enabled status, and optionally set a new password through `PUT /admin/users/{id}`.
 
-### `/admin/characters`
+### `/admin/characters.html`
 
 File: `public/admin/characters.html`
 
-A static admin page. `public/admin/characters.js` fetches admin-only `GET /api/admin/characters` to list characters, show ownership, and assign characters to users.
+A static admin page. `public/admin/characters.js` fetches admin-only `GET /api/admin/characters` to list characters, link to character sheets, assign or clear ownership, and delete characters.
 
-### `/admin/campaigns`
+### `/admin/campaigns.html`
 
 File: `public/admin/campaigns.html`
 
