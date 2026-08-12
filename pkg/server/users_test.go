@@ -1131,6 +1131,7 @@ func TestGetAdminCampaignsListsCampaigns(t *testing.T) {
 			Day:   &day,
 		},
 		DaysTraveled: 2,
+		DM:           "018fe68a-01a8-70b1-8ea3-2d0b819a2d29",
 		Players:      []string{"018fe68a-01a8-70b1-8ea3-2d0b819a2d29", "018fe68a-01a8-70b1-8ea3-2d0b819a2d30"},
 	}})
 	dataReq := httptest.NewRequest(http.MethodGet, "/api/admin/campaigns", nil)
@@ -1146,6 +1147,9 @@ func TestGetAdminCampaignsListsCampaigns(t *testing.T) {
 	}
 	if data.CampaignCount != 1 || len(data.Campaigns) != 1 || data.Campaigns[0].Name != "Adriana" || data.Campaigns[0].Calendar != "Year 4520, Month 4, Day 1" || len(data.Campaigns[0].Players) != 2 {
 		t.Fatalf("expected admin campaign data, got %#v", data)
+	}
+	if data.Campaigns[0].DM.ID != "018fe68a-01a8-70b1-8ea3-2d0b819a2d29" || data.Campaigns[0].DM.Name != "Admin User" {
+		t.Fatalf("expected admin campaign dm data, got %#v", data.Campaigns[0].DM)
 	}
 }
 
@@ -1240,5 +1244,67 @@ func TestDeleteAdminCampaignPlayerPersistsRemoval(t *testing.T) {
 	}
 	if len(updated.Players) != 1 || updated.Players[0] != "018fe68a-01a8-70b1-8ea3-2d0b819a2d29" {
 		t.Fatalf("expected removed player, got %#v", updated.Players)
+	}
+}
+
+func TestPutAdminCampaignDMPersistsUserID(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{
+		{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true},
+		{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d30"), Name: "Ada Storm", Email: "ada@example.com", Password: "hash"},
+	})
+	month := 4
+	day := 1
+	campaigns := newCampaignTestRepository(t, []campaign.Campaign{{
+		ID:            "campaign-1",
+		Name:          "Adriana",
+		SchemaVersion: 1,
+		CalendarDate:  campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
+	}})
+	req := httptest.NewRequest(http.MethodPut, "/admin/campaigns/campaign-1/dm", bytes.NewBufferString(`{"userId":"018fe68a-01a8-70b1-8ea3-2d0b819a2d30"}`))
+	req.SetPathValue("id", "campaign-1")
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	PutAdminCampaignDM(users, campaigns).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	updated, err := campaigns.GetByID(context.Background(), "campaign-1")
+	if err != nil {
+		t.Fatalf("get updated campaign: %v", err)
+	}
+	if updated.DM != "018fe68a-01a8-70b1-8ea3-2d0b819a2d30" {
+		t.Fatalf("expected assigned dm, got %q", updated.DM)
+	}
+}
+
+func TestPutAdminCampaignDMCanUnassign(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	month := 4
+	day := 1
+	campaigns := newCampaignTestRepository(t, []campaign.Campaign{{
+		ID:            "campaign-1",
+		Name:          "Adriana",
+		SchemaVersion: 1,
+		CalendarDate:  campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
+		DM:            "018fe68a-01a8-70b1-8ea3-2d0b819a2d29",
+	}})
+	req := httptest.NewRequest(http.MethodPut, "/admin/campaigns/campaign-1/dm", bytes.NewBufferString(`{"userId":""}`))
+	req.SetPathValue("id", "campaign-1")
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	PutAdminCampaignDM(users, campaigns).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	updated, err := campaigns.GetByID(context.Background(), "campaign-1")
+	if err != nil {
+		t.Fatalf("get updated campaign: %v", err)
+	}
+	if updated.DM != "" {
+		t.Fatalf("expected unassigned dm, got %q", updated.DM)
 	}
 }

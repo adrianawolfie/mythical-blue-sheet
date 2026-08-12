@@ -68,10 +68,49 @@
     cell.appendChild(addWrap);
   }
 
+  function renderDM(cell, campaign) {
+    const current = campaign.DM?.Name || "Unassigned";
+    cell.appendChild(textEl("span", current, campaign.DM?.ID ? "" : "admin-muted"));
+
+    const wrap = document.createElement("div");
+    wrap.className = "admin-player-add";
+    const show = document.createElement("button");
+    show.type = "button";
+    show.dataset.campaignShowDmPicker = campaign.ID;
+    show.textContent = "Assign DM";
+    wrap.appendChild(show);
+
+    const picker = document.createElement("div");
+    picker.className = "admin-player-picker";
+    picker.dataset.campaignDmPicker = campaign.ID;
+    picker.hidden = true;
+    const select = document.createElement("select");
+    select.setAttribute("aria-label", "DM to assign");
+    select.dataset.campaignDmSelect = campaign.ID;
+    const unassigned = document.createElement("option");
+    unassigned.value = "";
+    unassigned.textContent = "Unassigned";
+    select.appendChild(unassigned);
+    (campaign.AvailableUsers || []).concat(campaign.Players || []).forEach((user) => {
+      const option = document.createElement("option");
+      option.value = user.ID;
+      option.textContent = user.Name || user.Email;
+      select.appendChild(option);
+    });
+    select.value = campaign.DM?.ID || "";
+    const save = document.createElement("button");
+    save.type = "button";
+    save.dataset.campaignAssignDm = campaign.ID;
+    save.textContent = "Save";
+    picker.append(select, save);
+    wrap.appendChild(picker);
+    cell.appendChild(wrap);
+  }
+
   function renderCampaigns(campaigns) {
     body.textContent = "";
     if (!campaigns.length) {
-      body.innerHTML = '<tr><td class="admin-empty" colspan="5">No campaigns found.</td></tr>';
+      body.innerHTML = '<tr><td class="admin-empty" colspan="6">No campaigns found.</td></tr>';
       return;
     }
     campaigns.forEach((campaign) => {
@@ -85,6 +124,9 @@
       tr.appendChild(nameCell);
       tr.appendChild(textEl("td", campaign.Calendar));
       tr.appendChild(textEl("td", String(campaign.DaysTraveled)));
+      const dmCell = document.createElement("td");
+      renderDM(dmCell, campaign);
+      tr.appendChild(dmCell);
       const playersCell = document.createElement("td");
       renderPlayers(playersCell, campaign);
       tr.appendChild(playersCell);
@@ -100,7 +142,7 @@
       return;
     }
     if (response.status === 403) {
-      body.innerHTML = '<tr><td class="admin-empty" colspan="5">Forbidden.</td></tr>';
+      body.innerHTML = '<tr><td class="admin-empty" colspan="6">Forbidden.</td></tr>';
       return;
     }
     if (!response.ok) throw new Error("Could not load campaigns.");
@@ -110,12 +152,19 @@
 
   document.addEventListener("click", async (event) => {
     const showPicker = event.target.closest("[data-campaign-show-player-picker]");
+    const showDMPicker = event.target.closest("[data-campaign-show-dm-picker]");
     const add = event.target.closest("[data-campaign-add-player]");
+    const assignDM = event.target.closest("[data-campaign-assign-dm]");
     const remove = event.target.closest(".admin-player-remove");
     try {
       if (showPicker) {
         const campaignId = showPicker.dataset.campaignShowPlayerPicker;
         const picker = document.querySelector(`[data-campaign-player-picker="${CSS.escape(campaignId)}"]`);
+        if (picker) picker.hidden = !picker.hidden;
+      }
+      if (showDMPicker) {
+        const campaignId = showDMPicker.dataset.campaignShowDmPicker;
+        const picker = document.querySelector(`[data-campaign-dm-picker="${CSS.escape(campaignId)}"]`);
         if (picker) picker.hidden = !picker.hidden;
       }
       if (add) {
@@ -138,6 +187,18 @@
         if (!response.ok) throw new Error("Failed to remove player.");
         await load();
       }
+      if (assignDM) {
+        const campaignId = assignDM.dataset.campaignAssignDm;
+        const select = document.querySelector(`[data-campaign-dm-select="${CSS.escape(campaignId)}"]`);
+        const userId = select ? select.value : "";
+        const response = await fetch(`/admin/campaigns/${encodeURIComponent(campaignId)}/dm`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId })
+        });
+        if (!response.ok) throw new Error("Failed to update DM.");
+        await load();
+      }
     } catch (error) {
       alert(error.message || "Could not update campaign players.");
     }
@@ -145,6 +206,6 @@
 
   load().catch((error) => {
     console.error(error);
-    body.innerHTML = '<tr><td class="admin-empty" colspan="5">Could not load campaigns.</td></tr>';
+    body.innerHTML = '<tr><td class="admin-empty" colspan="6">Could not load campaigns.</td></tr>';
   });
 })();

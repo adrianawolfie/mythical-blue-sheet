@@ -4,7 +4,7 @@ Package: `pkg/campaign`
 
 The Campaign domain stores campaign state. Current state includes the campaign ID, campaign name, Materra calendar date, days traveled, players, DM user ID, schema version, and update timestamp.
 
-Campaign records are stored as `campaign/{id}.json`. The campaign list is stored in `campaign/index.json` and contains campaign IDs used to load the full campaign records. Campaign `players` contains player user IDs, and `dm` contains the DM user ID; admin APIs resolve player IDs to user names for display and can add or remove players.
+Campaign records are stored as `campaign/{id}.json`. The campaign list is stored in `campaign/index.json` and contains campaign IDs used to load the full campaign records. Campaign `players` contains player user IDs, and `dm` contains the DM user ID; admin APIs resolve player and DM IDs to user names for display and can assign or clear those user relationships.
 
 ## Repository Behavior
 
@@ -12,6 +12,7 @@ Campaign records are stored as `campaign/{id}.json`. The campaign list is stored
 - `GetByID` loads one campaign from `campaign/{id}.json`.
 - `SaveCampaign` validates, normalizes, timestamps, and persists one campaign to `campaign/{id}.json`.
 - `ListAdmin` resolves player names and available users for the admin campaign page.
+- `AssignDM` validates the user and assigns the DM user ID to the campaign, or clears the DM when the user ID is empty.
 - `AddPlayer` validates the user and adds the user ID to the campaign if it is not already present.
 - `RemovePlayer` removes a user ID from the campaign.
 - `Get` loads shared campaign state for `/api/campaign-state` and returns defaults when no persisted state exists.
@@ -23,6 +24,7 @@ Campaign records are stored as `campaign/{id}.json`. The campaign list is stored
 - `GET /api/admin/campaigns` returns campaign admin views for the static admin campaigns page.
 - `POST /admin/campaigns/{id}/players` adds a user ID to a campaign's players.
 - `DELETE /admin/campaigns/{id}/players/{userId}` removes a user ID from a campaign's players.
+- `PUT /admin/campaigns/{id}/dm` assigns or clears a campaign's DM user ID.
 
 ## HTTP Routes
 

@@ -74,6 +74,7 @@ func main() {
 	mux.Handle("GET /api/admin/campaigns", server.GetAdminCampaignsData(users, campaigns))
 	mux.Handle("POST /admin/campaigns/{id}/players", server.PostAdminCampaignPlayer(users, campaigns))
 	mux.Handle("DELETE /admin/campaigns/{id}/players/{userId}", server.DeleteAdminCampaignPlayer(users, campaigns))
+	mux.Handle("PUT /admin/campaigns/{id}/dm", server.PutAdminCampaignDM(users, campaigns))
 	mux.Handle("GET /characters", server.GetCharacterListPage(users, characters))
 	mux.Handle("GET /characters/{id}", server.GetCharacterDetail(characters))
 

@@ -129,6 +129,13 @@ func (repo Repository) ListAdmin(ctx context.Context, users UserReader) ([]Admin
 	for _, campaign := range campaigns {
 		players := make([]AdminPlayerView, 0, len(campaign.Players))
 		playerIDs := make(map[string]bool)
+		dm := AdminPlayerView{}
+		if campaign.DM != "" {
+			dm = AdminPlayerView{ID: campaign.DM, Name: userNamesByID[campaign.DM]}
+			if dm.Name == "" {
+				dm.Name = "Unknown user"
+			}
+		}
 		for _, playerID := range campaign.Players {
 			name := userNamesByID[playerID]
 			if name == "" {
@@ -150,6 +157,7 @@ func (repo Repository) ListAdmin(ctx context.Context, users UserReader) ([]Admin
 			Name:           campaign.Name,
 			Calendar:       formatAdminCalendarDate(campaign.CalendarDate),
 			DaysTraveled:   campaign.DaysTraveled,
+			DM:             dm,
 			Players:        players,
 			AvailableUsers: availableUsers,
 			UpdatedAt:      formatAdminTimestamp(campaign.UpdatedAt),
@@ -202,6 +210,30 @@ func (repo Repository) RemovePlayer(ctx context.Context, campaignID string, user
 		}
 	}
 	campaign.Players = players
+
+	_, err = repo.SaveCampaign(ctx, campaign)
+	return err
+}
+
+func (repo Repository) AssignDM(ctx context.Context, users UserReader, campaignID string, userID string) error {
+	if userID != "" {
+		found := false
+		for _, u := range users.List(ctx) {
+			if u.ID.String() == userID {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return fmt.Errorf("user not found")
+		}
+	}
+
+	campaign, err := repo.GetByID(ctx, campaignID)
+	if err != nil {
+		return err
+	}
+	campaign.DM = userID
 
 	_, err = repo.SaveCampaign(ctx, campaign)
 	return err

@@ -102,4 +102,4 @@ A static admin page. `public/admin/characters.js` fetches admin-only `GET /api/a
 
 File: `public/admin/campaigns.html`
 
-A static admin page. `public/admin/campaigns.js` fetches admin-only `GET /api/admin/campaigns` to list campaigns loaded from `campaign/index.json` and the full `campaign/{id}.json` records, including player names resolved from user IDs and controls to add or remove players.
+A static admin page. `public/admin/campaigns.js` fetches admin-only `GET /api/admin/campaigns` to list campaigns loaded from `campaign/index.json` and the full `campaign/{id}.json` records, including DM and player names resolved from user IDs and controls to assign or clear those users.

@@ -60,6 +60,7 @@ type AdminView struct {
 	Name           string
 	Calendar       string
 	DaysTraveled   int
+	DM             AdminPlayerView
 	Players        []AdminPlayerView
 	AvailableUsers []AdminUserView
 	UpdatedAt      string

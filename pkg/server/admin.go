@@ -45,6 +45,10 @@ type adminCampaignPlayerRequest struct {
 	UserID string `json:"userId"`
 }
 
+type adminCampaignDMRequest struct {
+	UserID string `json:"userId"`
+}
+
 func GetAdmin() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/admin/users.html", http.StatusSeeOther)
@@ -189,6 +193,26 @@ func DeleteAdminCampaignPlayer(users user.Repository, campaigns campaign.Reposit
 		}
 
 		if err := campaigns.RemovePlayer(r.Context(), r.PathValue("id"), r.PathValue("userId")); err != nil {
+			writeJSON(w, http.StatusBadRequest, err)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func PutAdminCampaignDM(users user.Repository, campaigns campaign.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := requireAdmin(w, r, users); !ok {
+			return
+		}
+
+		var req adminCampaignDMRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeJSON(w, http.StatusBadRequest, err)
+			return
+		}
+		if err := campaigns.AssignDM(r.Context(), &users, r.PathValue("id"), req.UserID); err != nil {
 			writeJSON(w, http.StatusBadRequest, err)
 			return
 		}
