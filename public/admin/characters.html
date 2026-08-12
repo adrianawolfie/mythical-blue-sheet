@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
-  <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
+  <script src="/js/theme-init.js"></script>
   <title>Mythical Blue · Admin Characters</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/accessibility.css" />
@@ -18,7 +18,7 @@
     <nav class="admin-nav"><a class="admin-back-link" href="/">Back to Sheet</a><button type="button" class="admin-theme-toggle" data-theme-toggle aria-label="Switch visual theme"><span class="admin-theme-track" aria-hidden="true"><span class="admin-theme-knob"><span class="admin-theme-sun">☀</span><span class="admin-theme-moon">☾</span></span></span></button></nav>
     <div class="admin-layout">
       <aside class="admin-sidebar"><div class="admin-sidebar-inner"><p class="admin-sidebar-title">Admin</p><nav class="admin-sidebar-nav"><a class="admin-sidebar-link" href="/admin/users">Users</a><a class="admin-sidebar-link active" href="/admin/characters">Characters</a><a class="admin-sidebar-link" href="/admin/campaigns">Campaigns</a></nav></div></aside>
-      <section class="admin-card"><div class="admin-content"><header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><p class="admin-accent">Captain's Ledger</p><h1 id="adminTitle">Characters</h1></div></header><div class="admin-summary"><article class="admin-panel"><p class="admin-panel-label">Signed In</p><p class="admin-panel-value">{{.CurrentUser.Email}}</p></article><article class="admin-panel"><p class="admin-panel-label">Saved Characters</p><p class="admin-count">{{.Count}}</p></article></div><section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Name</th><th>Class</th><th>Level</th><th>User</th></tr></thead><tbody>{{range .Characters}}<tr><td class="admin-break">{{.Name}}</td><td>{{.Class}}</td><td>{{.Level}}</td><td class="admin-break"><button type="button" class="admin-inline-action" data-assign-character-id="{{.ID}}" data-assign-character-name="{{.Name}}" data-assign-user-id="{{.UserID}}">{{.UserName}}</button></td></tr>{{else}}<tr><td class="admin-empty" colspan="4">No saved characters found.</td></tr>{{end}}</tbody></table></div></section></div></section>
+      <section class="admin-card"><div class="admin-content"><header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><p class="admin-accent">Captain's Ledger</p><h1 id="adminTitle">Characters</h1></div></header><div class="admin-summary"><article class="admin-panel"><p class="admin-panel-label">Signed In</p><p class="admin-panel-value" id="adminCurrentUser">Loading...</p></article><article class="admin-panel"><p class="admin-panel-label">Saved Characters</p><p class="admin-count" id="adminCharacterCount">0</p></article></div><section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Name</th><th>Class</th><th>Level</th><th>User</th></tr></thead><tbody id="adminCharactersBody"><tr><td class="admin-empty" colspan="4">Loading characters...</td></tr></tbody></table></div></section></div></section>
     </div>
   </main>
   <div class="admin-modal" id="assignCharacterModal" hidden>
@@ -28,9 +28,7 @@
       <form id="assignCharacterForm">
         <label class="admin-modal-field">
           <span>User</span>
-          <select id="assignCharacterUser" required>
-            {{range .Users}}<option value="{{.ID}}">{{.Name}}</option>{{end}}
-          </select>
+          <select id="assignCharacterUser" required></select>
         </label>
         <p class="admin-modal-error" id="assignCharacterError" role="alert" aria-live="polite"></p>
         <div class="admin-modal-actions">
@@ -42,64 +40,6 @@
   </div>
   <script src="/js/toast.js"></script>
   <script src="/js/theme-mode.js"></script>
-  <script>
-    (() => {
-      const modal = document.getElementById("assignCharacterModal");
-      const form = document.getElementById("assignCharacterForm");
-      const name = document.getElementById("assignCharacterName");
-      const user = document.getElementById("assignCharacterUser");
-      const error = document.getElementById("assignCharacterError");
-      let characterId = "";
-
-      function closeModal() {
-        modal.hidden = true;
-        characterId = "";
-        error.textContent = "";
-      }
-
-      document.querySelectorAll("[data-assign-character-id]").forEach(button => {
-        button.addEventListener("click", () => {
-          characterId = button.dataset.assignCharacterId;
-          name.textContent = button.dataset.assignCharacterName;
-          if (button.dataset.assignUserId) {
-            user.value = button.dataset.assignUserId;
-          } else {
-            user.selectedIndex = 0;
-          }
-          error.textContent = "";
-          modal.hidden = false;
-          user.focus();
-        });
-      });
-
-      document.querySelector("[data-assign-cancel]")?.addEventListener("click", closeModal);
-      modal.addEventListener("click", event => { if (event.target === modal) closeModal(); });
-
-      form.addEventListener("submit", async event => {
-        event.preventDefault();
-        error.textContent = "";
-
-        const response = await fetch(`/admin/characters/${encodeURIComponent(characterId)}/assignment`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: user.value })
-        });
-
-        if (response.status !== 200) {
-          error.textContent = "Could not assign character.";
-          return;
-        }
-
-        window.location.assign("/admin/characters?assigned=1");
-      });
-
-      if (new URLSearchParams(window.location.search).get("assigned") === "1") {
-        if (typeof window.showToast === "function") {
-          window.showToast("Character assigned.", { variant: "success" });
-        }
-        window.history.replaceState({}, document.title, "/admin/characters");
-      }
-    })();
-  </script>
+  <script src="/admin/characters.js"></script>
 </body>
 </html>

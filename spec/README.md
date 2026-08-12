@@ -84,18 +84,18 @@ The registration page. Registration posts user data to `POST /users`.
 
 ### `/admin/users`
 
-Template: `public/admin/users.html`
+File: `public/admin/users.html`
 
-An admin-only page that lists users and the current user summary.
+A static admin page. `public/admin/users.js` fetches admin-only `GET /api/admin/users` to list users and the current user summary.
 
 ### `/admin/characters`
 
-Template: `public/admin/characters.html`
+File: `public/admin/characters.html`
 
-An admin-only page that lists characters, shows ownership, and supports assigning characters to users.
+A static admin page. `public/admin/characters.js` fetches admin-only `GET /api/admin/characters` to list characters, show ownership, and assign characters to users.
 
 ### `/admin/campaigns`
 
-Template: `public/admin/campaigns.html`
+File: `public/admin/campaigns.html`
 
-An admin-only page that lists campaigns loaded from `campaign/index.json` and the full `campaign/{id}.json` records, including player names resolved from user IDs and controls to add or remove players.
+A static admin page. `public/admin/campaigns.js` fetches admin-only `GET /api/admin/campaigns` to list campaigns loaded from `campaign/index.json` and the full `campaign/{id}.json` records, including player names resolved from user IDs and controls to add or remove players.

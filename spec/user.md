@@ -15,13 +15,14 @@ The User domain stores users for login, registration, character ownership, and a
 ## HTTP Routes
 
 - `GET /api/me` returns the current user ID, name, and email from the `user` cookie, or `401` when no valid user cookie is present.
+- `GET /api/admin/users` returns the current admin user, registered users, and user count for the static admin users page.
 
 - `GET /login` renders the login page.
 - `POST /login` authenticates a user and sets the `user` cookie.
 - `GET /register` renders the registration page.
 - `POST /users` creates a user and redirects to login.
 - `GET /admin` redirects to `/admin/users`.
-- `GET /admin/users` renders the admin users page.
-- `GET /admin/characters` renders the admin character assignment page.
+- `GET /admin/users` is served from `public/admin/users.html` by the static file server; admin data is protected by `/api/admin/users`.
+- `GET /admin/characters` is served from `public/admin/characters.html` by the static file server; admin data is protected by `/api/admin/characters`.
 - `POST /admin/characters/{id}/assignment` assigns a character to a user.
-- `GET /admin/campaigns` renders the admin campaign state page.
+- `GET /admin/campaigns` is served from `public/admin/campaigns.html` by the static file server; admin data is protected by `/api/admin/campaigns`.

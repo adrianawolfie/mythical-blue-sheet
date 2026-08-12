@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"html/template"
 	"net/http"
 
 	"raperonzolo/character-sheet/pkg/campaign"
@@ -43,8 +42,7 @@ func GetAdmin() http.HandlerFunc {
 	}
 }
 
-func GetAdminUsers(repo user.Repository) http.HandlerFunc {
-	tmpl := template.Must(template.ParseFiles("public/admin/users.html"))
+func GetAdminUsersData(repo user.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cookie, ok := requireCookie(w, r)
 		if !ok {
@@ -55,41 +53,27 @@ func GetAdminUsers(repo user.Repository) http.HandlerFunc {
 			handleAdminError(w, r, err)
 			return
 		}
-
-		data := adminUsersPageData{
-			CurrentUser: currentUser,
-			Users:       users,
-			UserCount:   len(users),
-		}
-		if err := tmpl.Execute(w, data); err != nil {
-			renderErrorPage(w, err)
-		}
+		writeJSON(w, http.StatusOK, adminUsersPageData{CurrentUser: currentUser, Users: users, UserCount: len(users)})
 	}
 }
 
-func GetAdminCharacters(users user.Repository, characters character.Repository) http.HandlerFunc {
-	tmpl := template.Must(template.ParseFiles("public/admin/characters.html"))
+func GetAdminCharactersData(users user.Repository, characters character.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		currentUser, ok := requireAdmin(w, r, users)
 		if !ok {
 			return
 		}
-
 		views, userViews, err := characters.ListAdmin(r.Context(), &users)
 		if err != nil {
 			renderErrorPage(w, err)
 			return
 		}
-
-		data := adminCharactersPageData{
+		writeJSON(w, http.StatusOK, adminCharactersPageData{
 			CurrentUser: user.AdminView{ID: currentUser.ID.String(), Name: currentUser.Name, Email: currentUser.Email, IsAdmin: currentUser.IsAdmin},
 			Characters:  views,
 			Users:       userViews,
 			Count:       len(views),
-		}
-		if err := tmpl.Execute(w, data); err != nil {
-			renderErrorPage(w, err)
-		}
+		})
 	}
 }
 
@@ -113,28 +97,22 @@ func PostAdminCharacterAssignment(users user.Repository, characters character.Re
 	}
 }
 
-func GetAdminCampaigns(users user.Repository, campaigns campaign.Repository) http.HandlerFunc {
-	tmpl := template.Must(template.ParseFiles("public/admin/campaigns.html"))
+func GetAdminCampaignsData(users user.Repository, campaigns campaign.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		currentUser, ok := requireAdmin(w, r, users)
 		if !ok {
 			return
 		}
-
 		views, err := campaigns.ListAdmin(r.Context(), &users)
 		if err != nil {
 			renderErrorPage(w, err)
 			return
 		}
-
-		data := adminCampaignsPageData{
+		writeJSON(w, http.StatusOK, adminCampaignsPageData{
 			CurrentUser:   user.AdminView{ID: currentUser.ID.String(), Name: currentUser.Name, Email: currentUser.Email, IsAdmin: currentUser.IsAdmin},
 			Campaigns:     views,
 			CampaignCount: len(views),
-		}
-		if err := tmpl.Execute(w, data); err != nil {
-			renderErrorPage(w, err)
-		}
+		})
 	}
 }
 

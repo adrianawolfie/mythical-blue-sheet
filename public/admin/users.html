@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
-  <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
+  <script src="/js/theme-init.js"></script>
   <title>Mythical Blue · Admin Users</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/accessibility.css" />
@@ -23,12 +23,13 @@
       <section class="admin-card">
         <div class="admin-content">
           <header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><p class="admin-accent">Captain's Ledger</p><h1 id="adminTitle">Users</h1></div></header>
-          <div class="admin-summary"><article class="admin-panel"><p class="admin-panel-label">Signed In</p><p class="admin-panel-value">{{.CurrentUser.Email}}</p></article><article class="admin-panel"><p class="admin-panel-label">Registered Users</p><p class="admin-count">{{.UserCount}}</p></article></div>
-          <section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Name</th><th>Email</th><th>User ID</th><th>Admin</th></tr></thead><tbody>{{range .Users}}<tr><td class="admin-break">{{.Name}}</td><td class="admin-break">{{.Email}}</td><td class="admin-mono">{{.ID}}</td><td>{{if .IsAdmin}}<span class="admin-badge admin-badge-on">Yes</span>{{else}}<span class="admin-badge">No</span>{{end}}</td></tr>{{else}}<tr><td class="admin-empty" colspan="4">No registered users found.</td></tr>{{end}}</tbody></table></div></section>
+          <div class="admin-summary"><article class="admin-panel"><p class="admin-panel-label">Signed In</p><p class="admin-panel-value" id="adminCurrentUser">Loading...</p></article><article class="admin-panel"><p class="admin-panel-label">Registered Users</p><p class="admin-count" id="adminUserCount">0</p></article></div>
+          <section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Name</th><th>Email</th><th>User ID</th><th>Admin</th></tr></thead><tbody id="adminUsersBody"><tr><td class="admin-empty" colspan="4">Loading users...</td></tr></tbody></table></div></section>
         </div>
       </section>
     </div>
   </main>
   <script src="/js/theme-mode.js"></script>
+  <script src="/admin/users.js"></script>
 </body>
 </html>

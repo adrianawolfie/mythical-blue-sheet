@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
-  <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
+  <script src="/js/theme-init.js"></script>
   <title>Mythical Blue · Admin Campaigns</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/accessibility.css" />
@@ -17,45 +17,10 @@
     <nav class="admin-nav"><a class="admin-back-link" href="/">Back to Sheet</a><button type="button" class="admin-theme-toggle" data-theme-toggle aria-label="Switch visual theme"><span class="admin-theme-track" aria-hidden="true"><span class="admin-theme-knob"><span class="admin-theme-sun">☀</span><span class="admin-theme-moon">☾</span></span></span></button></nav>
     <div class="admin-layout">
       <aside class="admin-sidebar"><div class="admin-sidebar-inner"><p class="admin-sidebar-title">Admin</p><nav class="admin-sidebar-nav"><a class="admin-sidebar-link" href="/admin/users">Users</a><a class="admin-sidebar-link" href="/admin/characters">Characters</a><a class="admin-sidebar-link active" href="/admin/campaigns">Campaigns</a></nav></div></aside>
-      <section class="admin-card"><div class="admin-content"><header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><p class="admin-accent">Captain's Ledger</p><h1 id="adminTitle">Campaigns</h1></div></header><div class="admin-summary"><article class="admin-panel"><p class="admin-panel-label">Signed In</p><p class="admin-panel-value">{{.CurrentUser.Email}}</p></article><article class="admin-panel"><p class="admin-panel-label">Campaigns</p><p class="admin-count">{{.CampaignCount}}</p></article></div><section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Campaign</th><th>Calendar Date</th><th>Days Traveled</th><th>Players</th><th>Updated At</th></tr></thead><tbody>{{range $campaign := .Campaigns}}<tr><td>{{$campaign.Name}}<br><small class="admin-campaign-id admin-mono">{{$campaign.ID}}</small></td><td>{{$campaign.Calendar}}</td><td>{{$campaign.DaysTraveled}}</td><td><div class="admin-player-list">{{range $campaign.Players}}<span class="admin-player-chip"><span>{{.Name}}</span><button type="button" class="admin-player-remove" data-campaign-id="{{$campaign.ID}}" data-user-id="{{.ID}}" aria-label="Remove {{.Name}}">×</button></span>{{else}}<span class="admin-muted">No players</span>{{end}}</div><div class="admin-player-add"><button type="button" data-campaign-show-player-picker="{{$campaign.ID}}">+ Add Player</button><div class="admin-player-picker" data-campaign-player-picker="{{$campaign.ID}}" hidden><select aria-label="Player to add" data-campaign-player-select="{{$campaign.ID}}">{{range $campaign.AvailableUsers}}<option value="{{.ID}}">{{if .Name}}{{.Name}}{{else}}{{.Email}}{{end}}</option>{{else}}<option value="">No users available</option>{{end}}</select><button type="button" data-campaign-add-player="{{$campaign.ID}}">Add</button></div></div></td><td>{{$campaign.UpdatedAt}}</td></tr>{{else}}<tr><td colspan="5">No campaigns found.</td></tr>{{end}}</tbody></table></div></section></div></section>
+      <section class="admin-card"><div class="admin-content"><header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><p class="admin-accent">Captain's Ledger</p><h1 id="adminTitle">Campaigns</h1></div></header><div class="admin-summary"><article class="admin-panel"><p class="admin-panel-label">Signed In</p><p class="admin-panel-value" id="adminCurrentUser">Loading...</p></article><article class="admin-panel"><p class="admin-panel-label">Campaigns</p><p class="admin-count" id="adminCampaignCount">0</p></article></div><section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Campaign</th><th>Calendar Date</th><th>Days Traveled</th><th>Players</th><th>Updated At</th></tr></thead><tbody id="adminCampaignsBody"><tr><td class="admin-empty" colspan="5">Loading campaigns...</td></tr></tbody></table></div></section></div></section>
     </div>
   </main>
   <script src="/js/theme-mode.js"></script>
-  <script>
-    document.addEventListener("click", async (event) => {
-      const showPicker = event.target.closest("[data-campaign-show-player-picker]");
-      const add = event.target.closest("[data-campaign-add-player]");
-      const remove = event.target.closest(".admin-player-remove");
-      try {
-        if (showPicker) {
-          const campaignId = showPicker.dataset.campaignShowPlayerPicker;
-          const picker = document.querySelector(`[data-campaign-player-picker="${CSS.escape(campaignId)}"]`);
-          if (picker) picker.hidden = !picker.hidden;
-        }
-        if (add) {
-          const campaignId = add.dataset.campaignAddPlayer;
-          const select = document.querySelector(`[data-campaign-player-select="${CSS.escape(campaignId)}"]`);
-          const userId = select ? select.value : "";
-          if (!userId) return;
-          const response = await fetch(`/admin/campaigns/${encodeURIComponent(campaignId)}/players`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId })
-          });
-          if (!response.ok) throw new Error("Failed to add player.");
-          window.location.reload();
-        }
-        if (remove) {
-          const campaignId = remove.dataset.campaignId;
-          const userId = remove.dataset.userId;
-          const response = await fetch(`/admin/campaigns/${encodeURIComponent(campaignId)}/players/${encodeURIComponent(userId)}`, { method: "DELETE" });
-          if (!response.ok) throw new Error("Failed to remove player.");
-          window.location.reload();
-        }
-      } catch (error) {
-        alert(error.message || "Could not update campaign players.");
-      }
-    });
-  </script>
+  <script src="/admin/campaigns.js"></script>
 </body>
 </html>

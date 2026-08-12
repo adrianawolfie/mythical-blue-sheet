@@ -25,3 +25,5 @@ The Character domain stores player character sheets and a lightweight character 
 - `POST /api/characters` creates or replaces one character.
 - `POST /api/characters/{id}/status` updates frequently changing status fields such as HP, temp HP, armor class, and conditions.
 - `DELETE /api/characters/{id}` deletes one character.
+- `GET /api/admin/characters` returns the current admin user, character admin views, assignable users, and character count for the static admin characters page.
+- `POST /admin/characters/{id}/assignment` assigns a character to a user.

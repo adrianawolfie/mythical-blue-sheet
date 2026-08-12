@@ -234,33 +234,33 @@ func TestPostLoginRejectsInvalidPassword(t *testing.T) {
 	}
 }
 
-func TestGetAdminUsersRendersForAdminUser(t *testing.T) {
-	chdirRepoRoot(t)
-
-	repo := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
-	req := httptest.NewRequest(http.MethodGet, "/admin/users", nil)
+func TestGetAdminUsersDataReturnsUsersForAdminUser(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/users", nil)
 	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
 	w := httptest.NewRecorder()
 
-	GetAdminUsers(repo).ServeHTTP(w, req)
+	GetAdminUsersData(users).ServeHTTP(w, req)
 
 	if w.Code != http.StatusOK {
 		t.Fatalf("expected status 200, got %d", w.Code)
 	}
-	if !strings.Contains(w.Body.String(), "admin@example.com") {
-		t.Fatalf("expected admin email in response")
+	var response adminUsersPageData
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if response.CurrentUser.Email != "admin@example.com" || response.UserCount != 1 || len(response.Users) != 1 {
+		t.Fatalf("expected admin users data, got %#v", response)
 	}
 }
 
 func TestGetAdminUsersRejectsNonAdminUser(t *testing.T) {
-	chdirRepoRoot(t)
-
 	repo := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Ada", Email: "ada@example.com", Password: "hash", IsAdmin: false}})
-	req := httptest.NewRequest(http.MethodGet, "/admin/users", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/users", nil)
 	req.AddCookie(&http.Cookie{Name: "user", Value: "ada@example.com"})
 	w := httptest.NewRecorder()
 
-	GetAdminUsers(repo).ServeHTTP(w, req)
+	GetAdminUsersData(repo).ServeHTTP(w, req)
 
 	if w.Code != http.StatusForbidden {
 		t.Fatalf("expected status 403, got %d", w.Code)
@@ -282,20 +282,19 @@ func TestGetAdminCharactersShowsClassLevelAndUserName(t *testing.T) {
 			"level": "7",
 		},
 	}})
-	req := httptest.NewRequest(http.MethodGet, "/admin/characters", nil)
-	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
-	w := httptest.NewRecorder()
-
-	GetAdminCharacters(users, characters).ServeHTTP(w, req)
-
-	if w.Code != http.StatusOK {
-		t.Fatalf("expected status 200, got %d", w.Code)
+	dataReq := httptest.NewRequest(http.MethodGet, "/api/admin/characters", nil)
+	dataReq.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	dataW := httptest.NewRecorder()
+	GetAdminCharactersData(users, characters).ServeHTTP(dataW, dataReq)
+	if dataW.Code != http.StatusOK {
+		t.Fatalf("expected data status 200, got %d", dataW.Code)
 	}
-	body := w.Body.String()
-	for _, expected := range []string{"Ada Storm", "Wizard", "7", "Admin User", `data-assign-character-id="ada-character"`, `data-assign-user-id="018fe68a-01a8-70b1-8ea3-2d0b819a2d29"`} {
-		if !strings.Contains(body, expected) {
-			t.Fatalf("expected response to contain %q", expected)
-		}
+	var data adminCharactersPageData
+	if err := json.NewDecoder(dataW.Body).Decode(&data); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if len(data.Characters) != 1 || data.Characters[0].Name != "Ada Storm" || data.Characters[0].UserID != "018fe68a-01a8-70b1-8ea3-2d0b819a2d29" || data.Characters[0].UserName != "Admin User" {
+		t.Fatalf("expected admin character data, got %#v", data)
 	}
 }
 
@@ -793,20 +792,19 @@ func TestGetAdminCampaignsListsCampaigns(t *testing.T) {
 		DaysTraveled: 2,
 		Players:      []string{"018fe68a-01a8-70b1-8ea3-2d0b819a2d29", "018fe68a-01a8-70b1-8ea3-2d0b819a2d30"},
 	}})
-	req := httptest.NewRequest(http.MethodGet, "/admin/campaigns", nil)
-	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
-	w := httptest.NewRecorder()
-
-	GetAdminCampaigns(users, campaigns).ServeHTTP(w, req)
-
-	if w.Code != http.StatusOK {
-		t.Fatalf("expected status 200, got %d", w.Code)
+	dataReq := httptest.NewRequest(http.MethodGet, "/api/admin/campaigns", nil)
+	dataReq.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	dataW := httptest.NewRecorder()
+	GetAdminCampaignsData(users, campaigns).ServeHTTP(dataW, dataReq)
+	if dataW.Code != http.StatusOK {
+		t.Fatalf("expected data status 200, got %d", dataW.Code)
 	}
-	body := w.Body.String()
-	for _, expected := range []string{"Adriana", "campaign-1", "Year 4520, Month 4, Day 1", ">2</td>", "Admin User", "Ada Storm", "admin-player-remove", "+ Add Player", "Jul 12, 2026 16:06 UTC"} {
-		if !strings.Contains(body, expected) {
-			t.Fatalf("expected response to contain %q", expected)
-		}
+	var data adminCampaignsPageData
+	if err := json.NewDecoder(dataW.Body).Decode(&data); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if data.CampaignCount != 1 || len(data.Campaigns) != 1 || data.Campaigns[0].Name != "Adriana" || data.Campaigns[0].Calendar != "Year 4520, Month 4, Day 1" || len(data.Campaigns[0].Players) != 2 {
+		t.Fatalf("expected admin campaign data, got %#v", data)
 	}
 }
 

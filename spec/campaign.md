@@ -4,7 +4,7 @@ Package: `pkg/campaign`
 
 The Campaign domain stores campaign state. Current state includes the campaign ID, campaign name, Materra calendar date, days traveled, players, DM user ID, schema version, and update timestamp.
 
-Campaign records are stored as `campaign/{id}.json`. The campaign list is stored in `campaign/index.json` and contains campaign IDs used to load the full campaign records. Campaign `players` contains player user IDs, and `dm` contains the DM user ID; server-rendered admin pages resolve player IDs to user names for display and can add or remove players.
+Campaign records are stored as `campaign/{id}.json`. The campaign list is stored in `campaign/index.json` and contains campaign IDs used to load the full campaign records. Campaign `players` contains player user IDs, and `dm` contains the DM user ID; admin APIs resolve player IDs to user names for display and can add or remove players.
 
 ## Repository Behavior
 
@@ -19,7 +19,8 @@ Campaign records are stored as `campaign/{id}.json`. The campaign list is stored
 
 ## Admin Routes
 
-- `GET /admin/campaigns` renders campaigns and player assignment controls.
+- `GET /admin/campaigns` is served from `public/admin/campaigns.html` by the static file server; admin data is protected by `/api/admin/campaigns`.
+- `GET /api/admin/campaigns` returns campaign admin views for the static admin campaigns page.
 - `POST /admin/campaigns/{id}/players` adds a user ID to a campaign's players.
 - `DELETE /admin/campaigns/{id}/players/{userId}` removes a user ID from a campaign's players.
 
