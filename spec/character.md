@@ -21,6 +21,7 @@ The Character domain stores player character sheets and a lightweight character 
 
 - `GET /api/characters` returns the character index.
 - `GET /api/characters?mine=1` returns only character index records assigned to the user identified by the `user` cookie, or all records when the user is an admin, or `401` when no valid user cookie is present.
+- `GET /api/characters?owned=1` returns only character index records assigned to the user identified by the `user` cookie, including for admin users, or `401` when no valid user cookie is present.
 - `GET /api/characters/{id}` returns one character.
 - `POST /api/characters` creates or replaces one character.
 - `POST /api/characters/{id}/status` updates frequently changing status fields such as HP, temp HP, armor class, and conditions.

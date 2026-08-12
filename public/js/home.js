@@ -113,8 +113,8 @@
   async function init() {
     try {
       const [campaigns, characters] = await Promise.all([
-        fetchJSON("/api/campaigns?mine=1"),
-        fetchJSON("/api/characters?mine=1")
+        fetchJSON("/api/campaigns?owned=1"),
+        fetchJSON("/api/characters?owned=1")
       ]);
       if (!campaigns || !characters) return;
       const currentUser = await fetchJSON("/api/me");

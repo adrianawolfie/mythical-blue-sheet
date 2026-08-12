@@ -77,7 +77,11 @@
     campaigns.forEach((campaign) => {
       const tr = document.createElement("tr");
       const nameCell = document.createElement("td");
-      nameCell.append(document.createTextNode(campaign.Name), document.createElement("br"), textEl("small", campaign.ID, "admin-campaign-id admin-mono"));
+      const link = document.createElement("a");
+      link.className = "admin-inline-action";
+      link.href = "/dm-screen.html";
+      link.textContent = campaign.Name;
+      nameCell.append(link, document.createElement("br"), textEl("small", campaign.ID, "admin-campaign-id admin-mono"));
       tr.appendChild(nameCell);
       tr.appendChild(textEl("td", campaign.Calendar));
       tr.appendChild(textEl("td", String(campaign.DaysTraveled)));

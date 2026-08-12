@@ -54,7 +54,7 @@ The main character sheet application. It supports editing character details, sta
 
 File: `public/home.html`
 
-A static landing page for logged-in users. `public/js/home.js` fetches `GET /api/me`, `GET /api/campaigns?mine=1`, and `GET /api/characters?mine=1` to show campaigns and characters for the user identified by the `user` cookie. Campaign cards link to `/dm-screen.html` only when `campaign.dm` matches the logged-in user ID returned by `/api/me`. If those APIs return `401`, the page redirects to `/login`.
+A static landing page for logged-in users. `public/js/home.js` fetches `GET /api/me`, `GET /api/campaigns?owned=1`, and `GET /api/characters?owned=1` to show campaigns and characters for the user identified by the `user` cookie, even when the user is an admin. Campaign cards link to `/dm-screen.html` only when `campaign.dm` matches the logged-in user ID returned by `/api/me`. If those APIs return `401`, the page redirects to `/login`.
 
 ### `/characters`
 

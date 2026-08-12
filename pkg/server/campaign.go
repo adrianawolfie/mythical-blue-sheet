@@ -10,12 +10,12 @@ import (
 func GetCampaigns(users user.Repository, repo campaign.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var opts []campaign.ListOption
-		if r.URL.Query().Get("mine") == "1" {
+		if r.URL.Query().Get("mine") == "1" || r.URL.Query().Get("owned") == "1" {
 			currentUser, ok := currentUserFromCookie(w, r, users)
 			if !ok {
 				return
 			}
-			if !currentUser.IsAdmin {
+			if r.URL.Query().Get("owned") == "1" || !currentUser.IsAdmin {
 				opts = append(opts, campaign.WithPlayerID(currentUser.ID.String()))
 			}
 		}

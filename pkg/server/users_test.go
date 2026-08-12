@@ -646,6 +646,38 @@ func TestGetCharactersMineReturnsAllForAdmin(t *testing.T) {
 	}
 }
 
+func TestGetCharactersOwnedReturnsOnlyCurrentUsersCharactersForAdmin(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	characters := newCharacterTestRepository(t, []character.Character{{
+		ID:     "ada-character",
+		UserID: "018fe68a-01a8-70b1-8ea3-2d0b819a2d29",
+		Summary: character.Summary{
+			Name: "Ada Storm",
+		},
+	}, {
+		ID: "unassigned-character",
+		Summary: character.Summary{
+			Name: "Unassigned Sailor",
+		},
+	}})
+	req := httptest.NewRequest(http.MethodGet, "/api/characters?owned=1", nil)
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	GetCharacters(characters, users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var idx []character.Index
+	if err := json.NewDecoder(w.Body).Decode(&idx); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if len(idx) != 1 || idx[0].ID != "ada-character" {
+		t.Fatalf("expected only current admin user's character, got %#v", idx)
+	}
+}
+
 func TestGetCharacterReturnsCharacter(t *testing.T) {
 	characters := newCharacterTestRepository(t, []character.Character{{
 		ID:      "ada-character",
@@ -947,6 +979,38 @@ func TestGetCampaignsMineReturnsAllForAdmin(t *testing.T) {
 	}
 	if len(response) != 2 {
 		t.Fatalf("expected all campaigns for admin, got %#v", response)
+	}
+}
+
+func TestGetCampaignsOwnedReturnsOnlyCurrentUsersCampaignsForAdmin(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	month := 4
+	day := 1
+	campaigns := newCampaignTestRepository(t, []campaign.Campaign{{
+		ID:           "campaign-1",
+		Name:         "Adriana",
+		CalendarDate: campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
+		Players:      []string{"018fe68a-01a8-70b1-8ea3-2d0b819a2d29"},
+	}, {
+		ID:           "campaign-2",
+		Name:         "Other Waters",
+		CalendarDate: campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
+	}})
+	req := httptest.NewRequest(http.MethodGet, "/api/campaigns?owned=1", nil)
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	GetCampaigns(users, campaigns).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", w.Code)
+	}
+	var response []campaign.Campaign
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if len(response) != 1 || response[0].ID != "campaign-1" {
+		t.Fatalf("expected only current admin user's campaign, got %#v", response)
 	}
 }
 

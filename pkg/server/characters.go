@@ -19,7 +19,7 @@ type characterListPageData struct {
 func GetCharacters(c character.Repository, users ...user.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var opts []character.ListOption
-		if r.URL.Query().Get("mine") == "1" {
+		if r.URL.Query().Get("mine") == "1" || r.URL.Query().Get("owned") == "1" {
 			if len(users) == 0 {
 				http.Error(w, "unauthorized", http.StatusUnauthorized)
 				return
@@ -28,7 +28,7 @@ func GetCharacters(c character.Repository, users ...user.Repository) http.Handle
 			if !ok {
 				return
 			}
-			if !currentUser.IsAdmin {
+			if r.URL.Query().Get("owned") == "1" || !currentUser.IsAdmin {
 				opts = append(opts, character.WithUserID(currentUser.ID.String()))
 			}
 		}
