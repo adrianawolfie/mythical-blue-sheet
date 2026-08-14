@@ -56,7 +56,7 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("/", http.FileServer(http.Dir("public")))
+	mux.Handle("/", server.FileServer(http.Dir("public")))
 
 	// user routes
 	mux.Handle("GET /login", server.GetLogin())

@@ -32,7 +32,7 @@ Entrypoint: `bin/main.go`
 
 The server loads configuration, selects storage, creates repositories, registers page and API routes on `http.ServeMux`, limits POST body size, and listens on port `8080`.
 
-Static assets and static HTML are served from `public/` by the root file server. Explicit page routes in `pkg/server` may render templates or redirect before the static file server handles other paths.
+Static assets and static HTML are served from `public/` by the root file server. For paths without an extension, the file server tries the path with `.html` before the original path. Explicit page routes in `pkg/server` may render templates or redirect before the static file server handles other paths.
 
 ## HTML Frontend
 
