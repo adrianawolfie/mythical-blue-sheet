@@ -39,6 +39,7 @@
   let campaignCustomStatblockLibrary = [];
   let state = loadTrackerState();
   let saveTimers = new Map();
+  const pendingPlayerLivePatches = new Map();
   let pollTimer = null;
   let selectedStatblockId = "";
   let editingStatblockId = "";
@@ -652,17 +653,40 @@
     if (character) Object.assign(character, patch);
   }
 
-  function schedulePlayerStatusSave(id) {
+  function schedulePlayerLiveSave(id, patch) {
+    pendingPlayerLivePatches.set(id, {
+      ...(pendingPlayerLivePatches.get(id) || {}),
+      ...patch
+    });
     clearTimeout(saveTimers.get(id));
     saveTimers.set(id, setTimeout(async () => {
       saveTimers.delete(id);
       const character = playerCharacters.find(item => item.id === id);
       if (!character) return;
-      const payload = { id, hpCurrent: character.hpCurrent ?? "", hpMax: character.hpMax ?? "", tempHp: character.tempHp ?? "", armorClass: character.armorClass ?? "", currentConditions: character.currentConditions ?? "" };
+      const livePatch = pendingPlayerLivePatches.get(id) || {};
+      pendingPlayerLivePatches.delete(id);
       try {
-        const result = await characterStorage.saveCharacterStatus(payload);
-        publishLiveUpdate({ ...payload, updatedAt: result?.updatedAt || new Date().toISOString() });
-      } catch (error) { console.warn("Could not save DM-screen player status:", error.message); }
+        const result = await characterStorage.saveCharacterLive({ id, ...livePatch });
+        const savedLive = result?.live || result;
+        publishLiveUpdate({
+          id,
+          hpCurrent: savedLive?.hpCurrent ?? character.hpCurrent,
+          hpMax: savedLive?.hpMax ?? character.hpMax,
+          tempHp: savedLive?.tempHp ?? character.tempHp,
+          armorClass: character.armorClass,
+          currentConditions: serializeConditionNames(
+            savedLive?.conditions || livePatch.conditions || normalizeConditionNames(character.currentConditions)
+          ),
+          updatedAt: savedLive?.updatedAt || new Date().toISOString()
+        });
+      } catch (error) {
+        pendingPlayerLivePatches.set(id, {
+          ...livePatch,
+          ...(pendingPlayerLivePatches.get(id) || {})
+        });
+        schedulePlayerLiveSave(id, {});
+        console.warn("Could not save DM-screen player live state:", error.message);
+      }
     }, SAVE_DELAY));
   }
 
@@ -676,7 +700,10 @@
   function updateCombatantConditions(id, type, conditions) {
     const currentConditions = serializeConditionNames(conditions);
     if (type === "npc") updateNpc(id, "currentConditions", currentConditions);
-    else { updatePlayerSummaryLocally(id, { currentConditions }); schedulePlayerStatusSave(id); }
+    else {
+      updatePlayerSummaryLocally(id, { currentConditions });
+      schedulePlayerLiveSave(id, { conditions });
+    }
   }
 
   function refreshHpBar(row) {
@@ -699,7 +726,11 @@
     if (type === "npc") updateNpc(id, field, value);
     else if (field === "initiative") { state.playerInitiatives[id] = String(value); persistTrackerState(); }
     else if (field === "concentrating") { state.playerConcentration[id] = Boolean(value); persistTrackerState(); }
-    else { updatePlayerSummaryLocally(id, { [field]: String(value) }); schedulePlayerStatusSave(id); }
+    else {
+      updatePlayerSummaryLocally(id, { [field]: String(value) });
+      if (field === "hpCurrent") schedulePlayerLiveSave(id, { hpCurrent: String(value) });
+      if (field === "hpMax") schedulePlayerLiveSave(id, { hpOverride: value === "" ? null : String(value) });
+    }
     if (field === "hpCurrent" || field === "hpMax") refreshHpBar(row);
   }
 

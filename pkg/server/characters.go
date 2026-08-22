@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"errors"
 	"html/template"
 	"net/http"
 	"raperonzolo/character-sheet/pkg/character"
@@ -114,11 +115,22 @@ func PostCharacters(repo character.Repository) http.HandlerFunc {
 		}
 
 		if err := repo.CreateOrReplace(r.Context(), c); err != nil {
+			if errors.Is(err, character.ErrCharacterConflict) {
+				w.WriteHeader(http.StatusConflict)
+				_ = json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+				return
+			}
 			writeError(w, err)
 			return
 		}
-
-		w.WriteHeader(http.StatusOK)
+		saved, err := repo.GetByID(r.Context(), c.ID)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		if err := json.NewEncoder(w).Encode(saved); err != nil {
+			writeError(w, err)
+		}
 	}
 }
 
@@ -132,19 +144,81 @@ func DeleteCharacter(c character.Repository) http.HandlerFunc {
 	}
 }
 
-func PostStatus(repo character.Repository) http.HandlerFunc {
+func GetCharacterLive(repo character.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var u character.Update
-		if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+		live, err := repo.GetLive(r.Context(), r.PathValue("id"))
+		if err != nil {
 			writeError(w, err)
 			return
 		}
+		if err := json.NewEncoder(w).Encode(live); err != nil {
+			writeError(w, err)
+		}
+	}
+}
 
-		if err := repo.UpdateStatus(r.Context(), r.PathValue("id"), u); err != nil {
+func PatchCharacterLive(repo character.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var update character.LiveUpdate
+		if err := json.NewDecoder(r.Body).Decode(&update); err != nil {
 			writeError(w, err)
 			return
 		}
+		id := r.PathValue("id")
+		if err := repo.UpdateLive(r.Context(), id, update); err != nil {
+			writeError(w, err)
+			return
+		}
+		live, err := repo.GetLive(r.Context(), id)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		if err := json.NewEncoder(w).Encode(live); err != nil {
+			writeError(w, err)
+		}
+	}
+}
 
-		w.WriteHeader(http.StatusOK)
+func GetCharacterHistory(repo character.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		history, err := repo.ListHistory(r.Context(), r.PathValue("id"))
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		if err := json.NewEncoder(w).Encode(history); err != nil {
+			writeError(w, err)
+		}
+	}
+}
+
+func GetCharacterHistoryVersion(repo character.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		version, err := repo.GetHistory(r.Context(), r.PathValue("id"), r.PathValue("version"))
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		if err := json.NewEncoder(w).Encode(version); err != nil {
+			writeError(w, err)
+		}
+	}
+}
+
+func RestoreCharacterHistoryVersion(repo character.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := repo.RestoreHistory(r.Context(), r.PathValue("id"), r.PathValue("version")); err != nil {
+			writeError(w, err)
+			return
+		}
+		c, err := repo.GetByID(r.Context(), r.PathValue("id"))
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		if err := json.NewEncoder(w).Encode(c); err != nil {
+			writeError(w, err)
+		}
 	}
 }

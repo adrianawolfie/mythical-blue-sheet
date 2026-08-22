@@ -45,35 +45,33 @@
         body: JSON.stringify(character)
       });
 
-      if (response.status !== 200) throw new Error("Failed to save character.");
-      return {};
+      return parseJsonResponse(response, "Failed to save character.");
     },
 
-    async saveCharacterStatus({
-      id,
-      hpCurrent,
-      hpMax,
-      tempHp,
-      armorClass,
-      armorClassState,
-      currentConditions
-    }) {
-      const response = await fetch(`/api/characters/${encodeURIComponent(id)}/status`, {
-        method: "POST",
+    async saveCharacterLive({ id, ...fields }) {
+      const liveFieldNames = new Set([
+        "hpCurrent",
+        "hpOverride",
+        "tempHp",
+        "conditions",
+        "inspiration",
+        "exhaustionLevel",
+        "deathSaves",
+        "hitDiceSpent",
+        "activeArmorClassModifiers"
+      ]);
+      const body = Object.fromEntries(
+        Object.entries(fields).filter(([name, value]) =>
+          liveFieldNames.has(name) && value !== undefined
+        )
+      );
+      const response = await fetch(`/api/characters/${encodeURIComponent(id)}/live`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id,
-          hpCurrent,
-          hpMax,
-          tempHp,
-          armorClass,
-          armorClassState,
-          currentConditions
-        })
+        body: JSON.stringify(body)
       });
 
-      if (response.status !== 200) throw new Error("Failed to save live character summary.");
-      return {};
+      return parseJsonResponse(response, "Failed to save live character state.");
     },
 
     async deleteCharacterData(payload) {

@@ -11,6 +11,7 @@ function sw(name, btn) {
 let currentCharacterId = null;
 let currentCharacterCampaignId = "";
 let loadedCharacterUpdatedAt = null;
+let loadedCharacterLiveUpdatedAt = null;
 let characterHasUnsavedChanges = false;
 
 const STORAGE_KEY = "mythicalBlueCharacters";
@@ -165,6 +166,19 @@ function collectNamedFields() {
     "classSubclass",
     "experience"
   ].forEach(key => delete namedFields[key]);
+
+  [
+    "armorClass",
+    "hpCurrent",
+    "tempHp",
+    "currentConditions",
+    "hitDiceSpent"
+  ].forEach(key => delete namedFields[key]);
+
+  const hpMaxInput = document.getElementById("hpMaxInput");
+  if (hpMaxInput?.dataset.configuredValue !== undefined) {
+    namedFields.hpMax = hpMaxInput.dataset.configuredValue;
+  }
 
   return namedFields;
 }
@@ -367,22 +381,12 @@ function applyToggleStates(selector, savedStates = []) {
 
 function collectUiState() {
   return {
-    inspiration: document.querySelector(".insp")?.textContent.trim() === "✦",
-    skillProficiencies: getToggleStates(".sk .dot"),
-    deathSaves: getToggleStates(".dsbox .svdie"),
-    exhaustion: getToggleStates(".exhaustion-row .svdie")
+    skillProficiencies: getToggleStates(".sk .dot")
   };
 }
 
 function applyUiState(uiState = {}) {
-  const inspiration = document.querySelector(".insp");
-  if (inspiration) {
-    inspiration.textContent = uiState.inspiration === true ? "✦" : "○";
-  }
-
   applyToggleStates(".sk .dot", uiState.skillProficiencies || []);
-  applyToggleStates(".dsbox .svdie", uiState.deathSaves || []);
-  applyToggleStates(".exhaustion-row .svdie", uiState.exhaustion || []);
 }
 
 function showSaveToast(message) {
@@ -393,6 +397,23 @@ function showSaveToast(message) {
 
 function collectCharacterData() {
   const fields = collectNamedFields();
+  const isNewCharacter = loadedCharacterUpdatedAt === null;
+  const initialLive = isNewCharacter ? {
+    hpCurrent: document.getElementById("hpCurrentInput")?.value ?? "",
+    hpOverride: null,
+    tempHp: document.getElementById("tempHpInput")?.value ?? "",
+    conditions: typeof getSelectedConditions === "function" ? getSelectedConditions() : [],
+    inspiration: document.querySelector(".insp")?.textContent.trim() === "✦",
+    exhaustionLevel: document.querySelectorAll(".exhaustion-row .svdie.on").length,
+    deathSaves: {
+      successes: document.querySelectorAll(".dsbox .svdie:not(.fail).on").length,
+      failures: document.querySelectorAll(".dsbox .svdie.fail.on").length
+    },
+    hitDiceSpent: typeof collectHitDiceSpent === "function" ? collectHitDiceSpent() : {},
+    activeArmorClassModifiers: typeof collectActiveArmorClassModifiers === "function"
+      ? collectActiveArmorClassModifiers()
+      : []
+  } : undefined;
 
 return {
   schemaVersion: CURRENT_SCHEMA_VERSION,
@@ -400,15 +421,13 @@ return {
   campaignId: currentCharacterCampaignId || "",
   expectedUpdatedAt: loadedCharacterUpdatedAt,
   updatedAt: new Date().toISOString(),
+  live: initialLive,
 summary: {
   name: getFieldValue("characterName") || "Unnamed Character",
   armorClass: getFieldValue("armorClass"),
-  hpCurrent: getFieldValue("hpCurrent"),
-  hpMax: getFieldValue("hpMax"),
-  tempHp: getFieldValue("tempHp"),
+  hpMax: fields.hpMax ?? getFieldValue("hpMax"),
   hitDice: getFieldValue("hitDice"),
-  passivePerception: getFieldValue("passivePerception"),
-  currentConditions: getFieldValue("currentConditions")
+  passivePerception: getFieldValue("passivePerception")
 },
     fields,
     uiState: collectUiState(),
@@ -430,7 +449,13 @@ customLists: {
   customEquippedSlots: collectCustomEquippedSlots(),
   inventoryView: getInventoryView(),
   speeds: collectExtraSpeedRows(),
-  armorClass: collectArmorClassState()
+  armorClass: (() => {
+    const state = collectArmorClassState();
+    return {
+      ...state,
+      modifiers: state.modifiers.map(({ active, ...modifier }) => modifier)
+    };
+  })()
 }
   };
 }
@@ -439,6 +464,7 @@ function loadCharacter(character) {
   currentCharacterId = character.id;
   currentCharacterCampaignId = character.campaignId || "";
   loadedCharacterUpdatedAt = character.updatedAt || null;
+  loadedCharacterLiveUpdatedAt = character.live?.updatedAt || null;
 
   const normalizedFields = migrateLegacyClassFields(
     migrateLegacyEquipmentAndProficiencies(
@@ -470,7 +496,8 @@ resetInventoryRows({
 renderExtraSpeedRows(character.customLists?.speeds || []);
 renderArmorClassState(
   character.customLists?.armorClass || null,
-  character.summary?.armorClass ?? normalizedFields.armorClass ?? ""
+  normalizedFields.armorClass ?? character.summary?.armorClass ?? "",
+  { activeArmorClassModifiers: character.live?.activeArmorClassModifiers }
 );
 renderProficiencyRows(
   character.customLists?.proficiencies ||
@@ -478,27 +505,29 @@ renderProficiencyRows(
 );
 renderDefenseRows(character.customLists?.defenses || {});
 applyUiState(character.uiState || {});
+applyLiveState(character.live || {});
 focusedCondition = "";
 renderSelectedConditions();
 
-// HP is also stored explicitly in the character summary.
-// Reapply it by id so layout changes cannot shift these two fields.
+// Apply live HP while retaining configured max HP separately for full saves.
 const hpCurrentInput = document.getElementById("hpCurrentInput");
 const hpMaxInput = document.getElementById("hpMaxInput");
 
-if (hpCurrentInput && character.summary?.hpCurrent !== undefined) {
-  hpCurrentInput.value = character.summary.hpCurrent || "";
+if (hpCurrentInput && character.live?.hpCurrent !== undefined) {
+  hpCurrentInput.value = character.live.hpCurrent ?? "";
 }
 
-if (hpMaxInput && character.summary?.hpMax !== undefined) {
-  hpMaxInput.value = character.summary.hpMax || "";
+if (hpMaxInput) {
+  const configuredHpMax = normalizedFields.hpMax ?? character.summary?.hpMax ?? "";
+  hpMaxInput.dataset.configuredValue = configuredHpMax;
+  hpMaxInput.value = character.live?.hpMax ?? configuredHpMax;
 }
 
 // Load Temp HP and Hit Dice by ID so they survive DOM reordering
 const tempHpInput = document.getElementById("tempHpInput");
 const hitDiceInput = document.getElementById("hitDiceInput");
-if (tempHpInput && character.summary?.tempHp !== undefined) {
-  tempHpInput.value = character.summary.tempHp || "";
+if (tempHpInput && character.live?.tempHp !== undefined) {
+  tempHpInput.value = character.live.tempHp ?? "";
 }
 if (hitDiceInput && character.summary?.hitDice !== undefined) {
   hitDiceInput.value = character.summary.hitDice || "";
@@ -518,6 +547,7 @@ async function saveCurrentCharacter(showAlert = true) {
 
     currentCharacterId = data.id;
     loadedCharacterUpdatedAt = result.updatedAt || data.updatedAt;
+    loadedCharacterLiveUpdatedAt = result.live?.updatedAt || loadedCharacterLiveUpdatedAt;
     markCharacterClean();
 
     if (showAlert) {
@@ -534,6 +564,7 @@ function newCharacter() {
   currentCharacterId = crypto.randomUUID();
   currentCharacterCampaignId = "";
   loadedCharacterUpdatedAt = null;
+  loadedCharacterLiveUpdatedAt = null;
 
   getFields().forEach(field => {
     if (field.type === "checkbox") {
@@ -542,6 +573,9 @@ function newCharacter() {
       field.value = "";
     }
   });
+  const hpMaxInput = document.getElementById("hpMaxInput");
+  if (hpMaxInput) delete hpMaxInput.dataset.configuredValue;
+  if (typeof applyLiveState === "function") applyLiveState({});
 
 renderFeatureEntries("featList", []);
 resetWeaponRows();
@@ -574,6 +608,7 @@ async function deleteCurrentCharacter() {
     currentCharacterId = null;
     currentCharacterCampaignId = "";
     loadedCharacterUpdatedAt = null;
+    loadedCharacterLiveUpdatedAt = null;
     markCharacterClean();
 
     await renderCharacterList();

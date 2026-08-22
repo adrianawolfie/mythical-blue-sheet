@@ -136,10 +136,14 @@ flowchart TD
 | `GET /api/characters` | Character index. |
 | `GET /api/characters?mine=1` | User characters, but admins receive all. |
 | `GET /api/characters?owned=1` | Strictly current user’s characters, including for admins. Used by home. |
-| `GET /api/characters/{id}` | Full character JSON. |
-| `POST /api/characters` | Create or replace a character. |
-| `POST /api/characters/{id}/status` | Save fast-changing status fields. |
-| `DELETE /api/characters/{id}` | Delete a character. |
+| `GET /api/characters/{id}` | Current character configuration combined with nested live state. |
+| `POST /api/characters` | Save configuration and create an immutable version. |
+| `GET /api/characters/{id}/live` | Effective live character state. |
+| `PATCH /api/characters/{id}/live` | Patch live state without changing character history. |
+| `GET /api/characters/{id}/history` | List immutable character versions. |
+| `GET /api/characters/{id}/history/{version}` | Read an immutable character version. |
+| `POST /api/characters/{id}/history/{version}/restore` | Restore a version while preserving live state. |
+| `DELETE /api/characters/{id}` | Soft-delete a character. |
 | `GET /api/admin/characters` | Admin character list with ownership details. |
 | `POST /admin/characters/{id}/assignment` | Assign or clear character owner. |
 | `DELETE /admin/characters/{id}` | Admin delete character. |
@@ -182,7 +186,10 @@ Important persisted files include:
 | --- | --- |
 | Users | `data/users.jsonl` |
 | Character index | `data/character/character-index.json` |
-| Character records | `data/character/{id}.json` |
+| Current character configuration | `data/character/{id}/current.json` |
+| Character live state | `data/character/{id}/live.json` |
+| Character history metadata | `data/character/{id}/history.json` |
+| Character versions | `data/character/{id}/versions/{uuidv7}.json` |
 | Campaign index | `data/campaign/index.json` |
 | Campaign records | `data/campaign/{id}.json` |
 | Campaign state | `data/campaign/campaign-state.json` |

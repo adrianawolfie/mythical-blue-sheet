@@ -167,7 +167,8 @@ async function renderCharacterList() {
         liveState.hpMax,
         liveState.tempHp,
         liveState.armorClass,
-        liveState.currentConditions
+        liveState.currentConditions,
+        { conditions }
       );
 
       return;
@@ -194,7 +195,8 @@ async function renderCharacterList() {
         maxIn.value,
         cardHp.dataset.temphp,
         liveState.armorClass,
-        liveState.currentConditions
+        liveState.currentConditions,
+        { hpCurrent: String(c) }
       );
       return;
     }
@@ -241,7 +243,8 @@ async function renderCharacterList() {
       updatedState.hpMax,
       updatedState.tempHp,
       updatedState.armorClass,
-      updatedState.currentConditions
+      updatedState.currentConditions,
+      { conditions }
     );
   });
 
@@ -263,7 +266,10 @@ async function renderCharacterList() {
       maxIn.value,
       cardHp.dataset.temphp,
       liveState.armorClass,
-      liveState.currentConditions
+      liveState.currentConditions,
+      input.classList.contains("card-hp-max")
+        ? { hpOverride: input.value === "" ? null : input.value }
+        : { hpCurrent: input.value }
     );
   });
 }

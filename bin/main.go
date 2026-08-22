@@ -82,7 +82,11 @@ func main() {
 	mux.Handle("GET /api/characters", server.GetCharacters(characters, users))
 	mux.Handle("GET /api/characters/{id}", server.GetCharacter(characters))
 	mux.Handle("POST /api/characters", server.PostCharacters(characters))
-	mux.Handle("POST /api/characters/{id}/status", server.PostStatus(characters))
+	mux.Handle("GET /api/characters/{id}/live", server.GetCharacterLive(characters))
+	mux.Handle("PATCH /api/characters/{id}/live", server.PatchCharacterLive(characters))
+	mux.Handle("GET /api/characters/{id}/history", server.GetCharacterHistory(characters))
+	mux.Handle("GET /api/characters/{id}/history/{version}", server.GetCharacterHistoryVersion(characters))
+	mux.Handle("POST /api/characters/{id}/history/{version}/restore", server.RestoreCharacterHistoryVersion(characters))
 	mux.Handle("DELETE /api/characters/{id}", server.DeleteCharacter(characters))
 
 	// campaign routes

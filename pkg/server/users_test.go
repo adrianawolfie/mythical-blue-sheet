@@ -721,6 +721,38 @@ func TestPostCharactersPersistsCharacter(t *testing.T) {
 	}
 }
 
+func TestPostCharactersRejectsStaleSave(t *testing.T) {
+	characters := newCharacterTestRepository(t, nil)
+	ctx := context.Background()
+	if err := characters.CreateOrReplace(ctx, character.Character{ID: "ada-character", Summary: character.Summary{Name: "Ada"}}); err != nil {
+		t.Fatalf("create character: %v", err)
+	}
+	stale, err := characters.GetByID(ctx, "ada-character")
+	if err != nil {
+		t.Fatalf("load character: %v", err)
+	}
+	newer := stale
+	newer.Summary.Name = "Ada Storm"
+	newer.ExpectedAt = stale.UpdatedAt
+	if err := characters.CreateOrReplace(ctx, newer); err != nil {
+		t.Fatalf("save newer character: %v", err)
+	}
+
+	stale.Summary.Name = "Stale Ada"
+	stale.ExpectedAt = stale.UpdatedAt
+	body, err := json.Marshal(stale)
+	if err != nil {
+		t.Fatalf("marshal stale character: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodPost, "/api/characters", bytes.NewReader(body))
+	w := httptest.NewRecorder()
+	PostCharacters(characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusConflict {
+		t.Fatalf("expected status 409, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 func TestDeleteCharacterRemovesCharacter(t *testing.T) {
 	characters := newCharacterTestRepository(t, []character.Character{{
 		ID:      "ada-character",
@@ -744,31 +776,77 @@ func TestDeleteCharacterRemovesCharacter(t *testing.T) {
 	}
 }
 
-func TestPostStatusUpdatesCharacterStatus(t *testing.T) {
+func TestPatchCharacterLiveUpdatesOnlyLiveState(t *testing.T) {
 	characters := newCharacterTestRepository(t, []character.Character{{
 		ID:      "ada-character",
-		Summary: character.Summary{Name: "Ada Storm"},
+		Summary: character.Summary{Name: "Ada Storm", HpMax: "30"},
 		Fields:  character.Fields{},
 	}})
-	body := `{"hpCurrent":"12","hpMax":"30","tempHp":"5","armorClass":"18","currentConditions":"Poisoned","armorClassState":{"base":"13","modifiers":[{"name":"Shield","value":"5","active":true}]}}`
-	req := httptest.NewRequest(http.MethodPost, "/api/characters/ada-character/status", strings.NewReader(body))
+	body := `{"hpCurrent":"12","hpOverride":"35","tempHp":"5","conditions":["Poisoned"]}`
+	req := httptest.NewRequest(http.MethodPatch, "/api/characters/ada-character/live", strings.NewReader(body))
 	req.SetPathValue("id", "ada-character")
 	w := httptest.NewRecorder()
 
-	PostStatus(characters).ServeHTTP(w, req)
+	PatchCharacterLive(characters).ServeHTTP(w, req)
 
 	if w.Code != http.StatusOK {
 		t.Fatalf("expected status 200, got %d", w.Code)
 	}
-	c, err := characters.GetByID(context.Background(), "ada-character")
-	if err != nil {
-		t.Fatalf("get character: %v", err)
+	var live character.Live
+	if err := json.NewDecoder(w.Body).Decode(&live); err != nil {
+		t.Fatalf("decode live response: %v", err)
 	}
-	if c.Summary.HpCurrent != "12" || c.Summary.HpMax != "30" || c.Summary.TempHp != "5" || c.Summary.ArmorClass != "18" || c.Summary.CurrentConditions != "Poisoned" {
-		t.Fatalf("expected updated summary, got %#v", c.Summary)
+	if live.HpCurrent != "12" || live.HpMax != "35" || live.TempHp != "5" || len(live.Conditions) != 1 || live.UpdatedAt == "" {
+		t.Fatalf("expected updated live state, got %#v", live)
 	}
-	if c.Fields["hpCurrent"] != "12" || c.Fields["armorClass"] != "18" || c.CustomLists.ArmorClass.Base != "13" || c.UpdatedAt == "" {
-		t.Fatalf("expected updated fields and armor class state, got %#v", c)
+}
+
+func TestCharacterHistoryCanBeListedAndRestored(t *testing.T) {
+	characters := newCharacterTestRepository(t, nil)
+	ctx := context.Background()
+	c := character.Character{
+		ID:      "ada-character",
+		Summary: character.Summary{Name: "Ada", HpMax: "20"},
+		Fields:  character.Fields{"characterName": "Ada", "hpMax": "20"},
+	}
+	if err := characters.CreateOrReplace(ctx, c); err != nil {
+		t.Fatalf("create first version: %v", err)
+	}
+	c.Summary.Name = "Ada Storm"
+	c.Fields["characterName"] = "Ada Storm"
+	if err := characters.CreateOrReplace(ctx, c); err != nil {
+		t.Fatalf("create second version: %v", err)
+	}
+
+	listRequest := httptest.NewRequest(http.MethodGet, "/api/characters/ada-character/history", nil)
+	listRequest.SetPathValue("id", "ada-character")
+	listResponse := httptest.NewRecorder()
+	GetCharacterHistory(characters).ServeHTTP(listResponse, listRequest)
+	if listResponse.Code != http.StatusOK {
+		t.Fatalf("expected history status 200, got %d", listResponse.Code)
+	}
+	var history []character.History
+	if err := json.NewDecoder(listResponse.Body).Decode(&history); err != nil {
+		t.Fatalf("decode history: %v", err)
+	}
+	if len(history) != 2 {
+		t.Fatalf("expected two versions, got %#v", history)
+	}
+
+	restoreRequest := httptest.NewRequest(http.MethodPost, "/api/characters/ada-character/history/"+history[0].VersionID+"/restore", nil)
+	restoreRequest.SetPathValue("id", "ada-character")
+	restoreRequest.SetPathValue("version", history[0].VersionID)
+	restoreResponse := httptest.NewRecorder()
+	RestoreCharacterHistoryVersion(characters).ServeHTTP(restoreResponse, restoreRequest)
+	if restoreResponse.Code != http.StatusOK {
+		t.Fatalf("expected restore status 200, got %d", restoreResponse.Code)
+	}
+	var restored character.Character
+	if err := json.NewDecoder(restoreResponse.Body).Decode(&restored); err != nil {
+		t.Fatalf("decode restored character: %v", err)
+	}
+	if restored.Summary.Name != "Ada" || restored.Live.HpMax != "20" {
+		t.Fatalf("unexpected restored character: %#v", restored)
 	}
 }
 

@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!confirmDiscardUnsavedCharacterChanges("return to the character list")) return;
     currentCharacterId = null;
     loadedCharacterUpdatedAt = null;
+    loadedCharacterLiveUpdatedAt = null;
     markCharacterClean();
     showStartPage();
     await renderCharacterList();
@@ -76,6 +77,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         await characterStorage.resetTestData();
         currentCharacterId = null;
         loadedCharacterUpdatedAt = null;
+        loadedCharacterLiveUpdatedAt = null;
         markCharacterClean();
         showStartPage();
         await renderCharacterList();

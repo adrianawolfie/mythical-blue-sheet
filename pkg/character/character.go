@@ -2,20 +2,26 @@ package character
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"raperonzolo/character-sheet/pkg/user"
 )
+
+var ErrCharacterConflict = errors.New("character has changed since it was loaded")
 
 type Index struct {
 	ID                string `json:"id"`
 	CampaignID        string `json:"campaignId"`
 	Name              string `json:"name"`
 	ArmorClass        string `json:"armorClass"`
-	HpCurrent         string `json:"hpCurrent"`
+	HpCurrent         string `json:"hpCurrent,omitempty"`
 	HpMax             string `json:"hpMax"`
+	TempHp            string `json:"tempHp,omitempty"`
 	PassivePerception string `json:"passivePerception"`
-	CurrentConditions string `json:"currentConditions"`
+	CurrentConditions string `json:"currentConditions,omitempty"`
 	File              string `json:"file"`
 	UpdatedAt         string `json:"updatedAt"`
+	DeletedAt         string `json:"deletedAt,omitempty"`
 }
 
 type UserReader interface {
@@ -70,7 +76,64 @@ type Character struct {
 	Fields        Fields      `json:"fields"`
 	CustomLists   CustomLists `json:"customLists"`
 	UIState       UIState     `json:"uiState"`
+	Live          Live        `json:"live,omitempty"`
 	UpdatedAt     string      `json:"updatedAt"`
+	ExpectedAt    string      `json:"expectedUpdatedAt,omitempty"`
+}
+
+type DeathSaves struct {
+	Successes int `json:"successes"`
+	Failures  int `json:"failures"`
+}
+
+type Live struct {
+	HpCurrent                 string         `json:"hpCurrent"`
+	HpOverride                *string        `json:"hpOverride"`
+	HpMax                     string         `json:"hpMax,omitempty"`
+	TempHp                    string         `json:"tempHp"`
+	Conditions                []string       `json:"conditions"`
+	Inspiration               bool           `json:"inspiration"`
+	ExhaustionLevel           int            `json:"exhaustionLevel"`
+	DeathSaves                DeathSaves     `json:"deathSaves"`
+	HitDiceSpent              map[string]int `json:"hitDiceSpent"`
+	ActiveArmorClassModifiers []string       `json:"activeArmorClassModifiers"`
+	UpdatedAt                 string         `json:"updatedAt"`
+}
+
+// LiveUpdate uses pointers for PATCH semantics. HpOverrideSet distinguishes an
+// omitted hpOverride from an explicit JSON null.
+type LiveUpdate struct {
+	HpCurrent                 *string         `json:"hpCurrent,omitempty"`
+	HpOverride                *string         `json:"hpOverride,omitempty"`
+	HpOverrideSet             bool            `json:"-"`
+	TempHp                    *string         `json:"tempHp,omitempty"`
+	Conditions                *[]string       `json:"conditions,omitempty"`
+	Inspiration               *bool           `json:"inspiration,omitempty"`
+	ExhaustionLevel           *int            `json:"exhaustionLevel,omitempty"`
+	DeathSaves                *DeathSaves     `json:"deathSaves,omitempty"`
+	HitDiceSpent              *map[string]int `json:"hitDiceSpent,omitempty"`
+	ActiveArmorClassModifiers *[]string       `json:"activeArmorClassModifiers,omitempty"`
+}
+
+func (u *LiveUpdate) UnmarshalJSON(data []byte) error {
+	type updateAlias LiveUpdate
+	var decoded updateAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &fields); err != nil {
+		return err
+	}
+	*u = LiveUpdate(decoded)
+	_, u.HpOverrideSet = fields["hpOverride"]
+	return nil
+}
+
+type History struct {
+	VersionID string `json:"versionId"`
+	File      string `json:"file"`
+	UpdatedAt string `json:"updatedAt"`
 }
 
 type Fields map[string]string
@@ -219,16 +282,4 @@ type Summary struct {
 	HitDice           string `json:"hitDice"`
 	PassivePerception string `json:"passivePerception"`
 	CurrentConditions string `json:"currentConditions"`
-}
-
-type Update struct {
-	Name              string           `json:"name"`
-	ArmorClass        string           `json:"armorClass"`
-	HpCurrent         string           `json:"hpCurrent"`
-	HpMax             string           `json:"hpMax"`
-	TempHp            string           `json:"tempHp"`
-	HitDice           string           `json:"hitDice"`
-	PassivePerception string           `json:"passivePerception"`
-	CurrentConditions string           `json:"currentConditions"`
-	ArmorClassState   *ArmorClassState `json:"armorClassState"`
 }

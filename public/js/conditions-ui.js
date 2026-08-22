@@ -54,7 +54,7 @@ function addSelectedCondition(condition) {
 
   focusedCondition = condition;
   renderSelectedConditions();
-  scheduleHPAutoSave();
+  scheduleHPAutoSave({ conditions: getSelectedConditions() });
 }
 
 function removeSelectedCondition(condition, event) {
@@ -71,7 +71,7 @@ function removeSelectedCondition(condition, event) {
   }
 
   renderSelectedConditions();
-  scheduleHPAutoSave();
+  scheduleHPAutoSave({ conditions: getSelectedConditions() });
 }
 
 function showConditionExplanation(condition) {

@@ -66,7 +66,7 @@ A server-rendered list of characters owned by the logged-in user. Unauthenticate
 
 Template: `public/characters/detail.html`
 
-A server-rendered character detail page. The server loads the requested character and embeds its JSON into the page for frontend behavior.
+A server-rendered character detail page. The server combines current character configuration with live state and embeds the JSON into the page for frontend behavior.
 
 ### `/dm-screen.html`
 

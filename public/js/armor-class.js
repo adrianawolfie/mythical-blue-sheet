@@ -133,6 +133,22 @@ function collectArmorClassState() {
   };
 }
 
+function collectActiveArmorClassModifiers() {
+  return collectArmorClassState().modifiers
+    .filter(modifier => modifier.active)
+    .map(modifier => modifier.name);
+}
+
+function applyActiveArmorClassModifiers(activeModifiers = []) {
+  const activeNames = new Set(activeModifiers.map(String));
+  document.querySelectorAll(".armor-class-modifier-row").forEach(row => {
+    const name = row.querySelector(".armor-class-modifier-name")?.value.trim() || "";
+    const checkbox = row.querySelector(".armor-class-active-input");
+    if (checkbox) checkbox.checked = activeNames.has(name);
+  });
+  updateArmorClassTotal({ scheduleSave: false });
+}
+
 function calculateArmorClassTotal(state = collectArmorClassState()) {
   const rawBase = String(state?.base ?? "").trim();
 
@@ -159,14 +175,16 @@ function updateArmorClassTotal({ scheduleSave = false } = {}) {
   totalInput.value = calculateArmorClassTotal();
 
   if (scheduleSave) {
-    scheduleHPAutoSave();
+    scheduleHPAutoSave({
+      activeArmorClassModifiers: collectActiveArmorClassModifiers()
+    });
   }
 }
 
 function renderArmorClassState(
   state = null,
   fallbackBase = "",
-  { scheduleSave = false } = {}
+  { scheduleSave = false, activeArmorClassModifiers } = {}
 ) {
   const baseInput = document.getElementById("armorClassBaseInput");
   const rows = document.getElementById("armorClassModifierRows");
@@ -184,11 +202,20 @@ function renderArmorClassState(
   baseInput.value = normalizedState.base ?? fallbackBase ?? "";
   rows.innerHTML = "";
 
+  const activeNames = Array.isArray(activeArmorClassModifiers)
+    ? new Set(activeArmorClassModifiers.map(modifier =>
+        typeof modifier === "object" ? String(modifier.name || modifier.id || "") : String(modifier)
+      ))
+    : null;
+
   (Array.isArray(normalizedState.modifiers)
     ? normalizedState.modifiers
     : []
   ).forEach(modifier => {
-    createArmorClassModifierRow(modifier);
+    createArmorClassModifierRow({
+      ...modifier,
+      active: activeNames ? activeNames.has(String(modifier.name || modifier.id || "")) : modifier.active
+    });
   });
 
   updateArmorClassTotal({ scheduleSave });
