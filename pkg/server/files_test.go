@@ -44,3 +44,34 @@ func TestFileServer(t *testing.T) {
 		})
 	}
 }
+
+func TestFileServerServesStaticCharacterDetailPageWithQuery(t *testing.T) {
+	chdirRepoRoot(t)
+	request := httptest.NewRequest(http.MethodGet, "/character.html?id=ada-character", nil)
+	response := httptest.NewRecorder()
+
+	FileServer(http.Dir("public")).ServeHTTP(response, request)
+
+	require.Equal(t, http.StatusOK, response.Code)
+	require.Contains(t, response.Body.String(), `<body class="character-detail-page">`)
+	require.Contains(t, response.Body.String(), `<script src="js/character-detail.js"></script>`)
+	require.Contains(t, response.Body.String(), `id="undoCharacterForm"`)
+	require.NotContains(t, response.Body.String(), "window.__MYTHICAL_BLUE_CHARACTER__")
+	require.NotContains(t, response.Body.String(), "{{")
+}
+
+func TestFileServerServesStaticCharacterListPage(t *testing.T) {
+	chdirRepoRoot(t)
+	request := httptest.NewRequest(http.MethodGet, "/characters.html", nil)
+	response := httptest.NewRecorder()
+
+	FileServer(http.Dir("public")).ServeHTTP(response, request)
+
+	require.Equal(t, http.StatusOK, response.Code)
+	require.Contains(t, response.Body.String(), `id="characterList"`)
+	require.Contains(t, response.Body.String(), `<script src="/js/characters.js"></script>`)
+	require.NotContains(t, response.Body.String(), "{{")
+	charactersJS, err := os.ReadFile(filepath.Join("public", "js", "characters.js"))
+	require.NoError(t, err)
+	require.Contains(t, string(charactersJS), "/api/characters?owned=1")
+}

@@ -540,15 +540,29 @@ markCharacterClean();
 }
 
 async function saveCurrentCharacter(showAlert = true) {
-  const data = collectCharacterData();
-
   try {
+    if (typeof flushCharacterLiveSave === "function") {
+      await flushCharacterLiveSave(currentCharacterId);
+    }
+    const data = collectCharacterData();
     const result = await characterStorage.saveCharacterData(data);
+    if (typeof flushCharacterLiveSave === "function") {
+      await flushCharacterLiveSave(currentCharacterId);
+    }
 
     currentCharacterId = data.id;
     loadedCharacterUpdatedAt = result.updatedAt || data.updatedAt;
     loadedCharacterLiveUpdatedAt = result.live?.updatedAt || loadedCharacterLiveUpdatedAt;
+    const url = new URL(window.location.href);
+    const detailPage = document.body.classList.contains("character-detail-page");
+    const savedVersionPreview = detailPage && url.searchParams.has("version");
     markCharacterClean();
+    if (detailPage) {
+      url.searchParams.delete("version");
+      url.searchParams.set("saved", savedVersionPreview ? "restored" : "character");
+      window.location.assign(`${url.pathname}${url.search}${url.hash}`);
+      return;
+    }
 
     if (showAlert) {
       showSaveToast("Character saved!");
@@ -610,6 +624,11 @@ async function deleteCurrentCharacter() {
     loadedCharacterUpdatedAt = null;
     loadedCharacterLiveUpdatedAt = null;
     markCharacterClean();
+
+    if (document.body.classList.contains("character-detail-page")) {
+      window.location.assign("/characters.html");
+      return;
+    }
 
     await renderCharacterList();
     showStartPage();

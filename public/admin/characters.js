@@ -61,7 +61,7 @@
       nameCell.className = "admin-break";
       const link = document.createElement("a");
       link.className = "admin-inline-action";
-      link.href = `/characters/${encodeURIComponent(character.ID)}`;
+      link.href = `/character.html?id=${encodeURIComponent(character.ID)}`;
       link.textContent = character.Name;
       nameCell.appendChild(link);
       tr.append(nameCell, cell(character.Class), cell(character.Level));

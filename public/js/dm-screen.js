@@ -677,6 +677,7 @@
           currentConditions: serializeConditionNames(
             savedLive?.conditions || livePatch.conditions || normalizeConditionNames(character.currentConditions)
           ),
+          live: savedLive,
           updatedAt: savedLive?.updatedAt || new Date().toISOString()
         });
       } catch (error) {

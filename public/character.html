@@ -141,8 +141,27 @@
 <div class="sheet-toolbar">
   <button id="backToStartBtn">← Character List</button>
   <button id="saveCharacterBtn">Save Character</button>
-  <button id="deleteCharacterBtn">Delete Character</button>
+  <form id="undoCharacterForm" method="get" action="/character.html" hidden>
+    <input type="hidden" name="id">
+    <button type="submit" name="version">Undo</button>
+  </form>
+  <form id="currentCharacterForm" method="get" action="/character.html" hidden>
+    <input type="hidden" name="id">
+    <button type="submit">Back to Current</button>
+  </form>
+  <span id="characterVersionPreview" class="sheet-version-preview" hidden>Previewing a previous version. Save to restore it.</span>
+  <button id="deleteCharacterBtn" class="sheet-delete-button" type="button" title="Delete character" aria-label="Delete character">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h18"></path>
+      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+      <path d="M19 6l-1 14c0 1-1 2-2 2H8c-1 0-2-1-2-2L5 6"></path>
+      <path d="M10 11v6"></path>
+      <path d="M14 11v6"></path>
+    </svg>
+  </button>
 </div>
+
+<p id="characterDetailError" class="character-detail-error" role="alert" hidden></p>
 
 <div class="sheet">
 
@@ -838,9 +857,9 @@
   </section>
 </div>
 
-<script>window.__MYTHICAL_BLUE_CHARACTER__ = {{.CharacterJSON}};</script>
 <script src="js/conditions.js"></script>
 <script src="js/storage-adapter.js"></script>
+<script src="js/character-detail.js"></script>
 
 <script src="js/toast.js"></script>
 <script src="js/core.js"></script>
@@ -858,15 +877,6 @@
 <script src="js/character-overview.js"></script>
 <script src="js/live-sync.js"></script>
 <script src="js/app.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const character = window.__MYTHICAL_BLUE_CHARACTER__;
-  if (!character) return;
-  if (window.characterStorage) window.characterStorage.listCharacterData = async () => [];
-  loadCharacter(character);
-  document.getElementById("startPage").style.setProperty("display", "none", "important");
-});
-</script>
 
 <script src="js/campaign-state.js"></script>
 <script src="js/calendar.js"></script>

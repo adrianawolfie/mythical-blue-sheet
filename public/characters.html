@@ -28,24 +28,13 @@
         </div>
       </div>
 
-      <div class="character-list-grid">
-        {{range .Characters}}
-        <a class="character-list-card" href="/characters/{{.ID}}">
-          <span class="character-list-name">{{.Name}}</span>
-          <span class="character-list-meta">
-            <span>Class: {{.Class}}</span>
-            <span>Species: {{.Species}}</span>
-            <span>Subclass: {{.Subclass}}</span>
-            <span>Level: {{.Level}}</span>
-          </span>
-        </a>
-        {{else}}
-        <p class="character-list-empty">No characters are assigned to your account yet.</p>
-        {{end}}
+      <div id="characterList" class="character-list-grid">
+        <p class="character-list-empty">Loading characters...</p>
       </div>
     </div>
   </main>
 
+  <script src="/js/characters.js"></script>
   <script src="/js/theme-mode.js"></script>
   <script src="/js/accessibility.js"></script>
   <script src="/js/account.js"></script>

@@ -76,7 +76,7 @@
     characters.forEach((character) => {
       const card = document.createElement("a");
       card.className = "home-card";
-      card.href = `/characters/${encodeURIComponent(character.id)}`;
+      card.href = `/character.html?id=${encodeURIComponent(character.id)}`;
 
       const title = document.createElement("span");
       title.className = "home-card-title";

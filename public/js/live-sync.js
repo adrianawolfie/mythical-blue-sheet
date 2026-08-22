@@ -3,6 +3,7 @@
 
 const sheetLivePatches = new Map();
 const sheetLiveSaveTimers = new Map();
+const sheetLiveSaveRequests = new Map();
 let indexPollTimer = null;
 let sheetHPPollTimer = null;
 const cardHPAutoSaveTimers = new Map();
@@ -197,41 +198,69 @@ function scheduleHPAutoSave(patch, requestedCharacterID = "") {
   const timer = setTimeout(async () => {
     sheetLiveSaveTimers.delete(characterID);
     try {
-      const livePatch = sheetLivePatches.get(characterID) || {};
-      sheetLivePatches.delete(characterID);
-
-      const result = await characterStorage.saveCharacterLive({
-        id: characterID,
-        ...livePatch
-      });
-      const savedLive = result?.live || result;
-
-      if (savedLive?.updatedAt && currentCharacterId === characterID) {
-        loadedCharacterLiveUpdatedAt = savedLive.updatedAt;
-      }
-
-      publishLiveUpdate({
-        id: characterID,
-        hpCurrent: savedLive?.hpCurrent ?? document.getElementById("hpCurrentInput")?.value ?? "",
-        hpMax: savedLive?.hpMax ?? document.getElementById("hpMaxInput")?.value ?? "",
-        tempHp: savedLive?.tempHp ?? document.getElementById("tempHpInput")?.value ?? "",
-        armorClass: currentCharacterId === characterID
-          ? document.querySelector('[data-field="armorClass"]')?.value ?? ""
-          : "",
-        currentConditions: serializeConditionNames(savedLive?.conditions || getSelectedConditions()),
-        live: savedLive,
-        updatedAt: savedLive?.updatedAt
-      });
+      await persistSheetLivePatch(characterID);
     } catch (err) {
-      sheetLivePatches.set(characterID, {
-        ...livePatch,
-        ...(sheetLivePatches.get(characterID) || {})
-      });
       scheduleHPAutoSave({}, characterID);
       console.warn("HP auto-save failed:", err.message);
     }
   }, 800);
   sheetLiveSaveTimers.set(characterID, timer);
+}
+
+async function persistSheetLivePatch(characterID) {
+  const inFlight = sheetLiveSaveRequests.get(characterID);
+  if (inFlight) {
+    await inFlight;
+    if (Object.keys(sheetLivePatches.get(characterID) || {}).length) {
+      await persistSheetLivePatch(characterID);
+    }
+    return;
+  }
+
+  const livePatch = sheetLivePatches.get(characterID) || {};
+  if (!Object.keys(livePatch).length) return;
+  sheetLivePatches.delete(characterID);
+
+  const request = characterStorage.saveCharacterLive({ id: characterID, ...livePatch });
+  sheetLiveSaveRequests.set(characterID, request);
+  try {
+    const result = await request;
+    const savedLive = result?.live || result;
+    if (savedLive?.updatedAt && currentCharacterId === characterID) {
+      loadedCharacterLiveUpdatedAt = savedLive.updatedAt;
+    }
+    publishLiveUpdate({
+      id: characterID,
+      hpCurrent: savedLive?.hpCurrent ?? document.getElementById("hpCurrentInput")?.value ?? "",
+      hpMax: savedLive?.hpMax ?? document.getElementById("hpMaxInput")?.value ?? "",
+      tempHp: savedLive?.tempHp ?? document.getElementById("tempHpInput")?.value ?? "",
+      armorClass: currentCharacterId === characterID
+        ? document.querySelector('[data-field="armorClass"]')?.value ?? ""
+        : "",
+      currentConditions: serializeConditionNames(savedLive?.conditions || getSelectedConditions()),
+      live: savedLive,
+      updatedAt: savedLive?.updatedAt
+    });
+  } catch (error) {
+    sheetLivePatches.set(characterID, {
+      ...livePatch,
+      ...(sheetLivePatches.get(characterID) || {})
+    });
+    throw error;
+  } finally {
+    if (sheetLiveSaveRequests.get(characterID) === request) {
+      sheetLiveSaveRequests.delete(characterID);
+    }
+  }
+}
+
+async function flushCharacterLiveSave(characterID) {
+  if (!characterID) return;
+  clearTimeout(sheetLiveSaveTimers.get(characterID));
+  sheetLiveSaveTimers.delete(characterID);
+  while (sheetLiveSaveRequests.has(characterID) || Object.keys(sheetLivePatches.get(characterID) || {}).length) {
+    await persistSheetLivePatch(characterID);
+  }
 }
 
 // ─── INDEX PAGE POLLING ───────────────────────────────────────────────────────
@@ -359,7 +388,7 @@ function applySheetLiveUpdates(character) {
     curIn.value = live.hpCurrent ?? "";
   }
   if (maxIn && document.activeElement !== maxIn) {
-    maxIn.value = live.hpMax ?? "";
+    maxIn.value = live.hpOverride ?? maxIn.dataset.configuredValue ?? live.hpMax ?? "";
   }
   if (tmpIn && document.activeElement !== tmpIn) {
     tmpIn.value = live.tempHp ?? "";

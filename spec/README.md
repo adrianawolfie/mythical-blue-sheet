@@ -56,17 +56,17 @@ File: `public/home.html`
 
 A static landing page for logged-in users. `public/js/home.js` fetches `GET /api/me`, `GET /api/campaigns?owned=1`, and `GET /api/characters?owned=1` to show campaigns and characters for the user identified by the `user` cookie, even when the user is an admin. Campaign cards link to `/dm-screen.html` only when `campaign.dm` matches the logged-in user ID returned by `/api/me`. If those APIs return `401`, the page redirects to `/login`.
 
-### `/characters`
+### `/characters.html`
 
-Template: `public/characters/list.html`
+File: `public/characters.html`
 
-A server-rendered list of characters owned by the logged-in user. Unauthenticated users are redirected to `/login`.
+A static character roster. `public/js/characters.js` fetches `GET /api/characters?owned=1`, renders only characters owned by the logged-in user with sheet metadata, and redirects unauthenticated users to `/login`. This strict ownership filter also applies to admin users.
 
-### `/characters/{id}`
+### `/character.html?id={id}`
 
-Template: `public/characters/detail.html`
+File: `public/character.html`
 
-A server-rendered character detail page. The server combines current character configuration with live state and embeds the JSON into the page for frontend behavior.
+A static character detail page. `public/js/character-detail.js` loads current configuration and history through the character API using the `id` query parameter. When history contains an older version, the top toolbar provides Undo. `GET /character.html?id={id}&version={uuidv7}` previews that historical configuration with current live state; Undo can step to older versions, Back to Current removes the preview, and Save writes the preview as a new current version. Successful detail-page saves reload the page so the toolbar immediately reflects the latest Undo target and a query-string signal displays the save toast.
 
 ### `/dm-screen.html`
 

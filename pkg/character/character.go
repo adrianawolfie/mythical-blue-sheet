@@ -7,7 +7,10 @@ import (
 	"raperonzolo/character-sheet/pkg/user"
 )
 
-var ErrCharacterConflict = errors.New("character has changed since it was loaded")
+var (
+	ErrCharacterConflict = errors.New("character has changed since it was loaded")
+	ErrCharacterNotFound = errors.New("character not found")
+)
 
 type Index struct {
 	ID                string `json:"id"`
@@ -19,6 +22,10 @@ type Index struct {
 	TempHp            string `json:"tempHp,omitempty"`
 	PassivePerception string `json:"passivePerception"`
 	CurrentConditions string `json:"currentConditions,omitempty"`
+	Class             string `json:"class,omitempty"`
+	Species           string `json:"species,omitempty"`
+	Subclass          string `json:"subclass,omitempty"`
+	Level             string `json:"level,omitempty"`
 	File              string `json:"file"`
 	UpdatedAt         string `json:"updatedAt"`
 	DeletedAt         string `json:"deletedAt,omitempty"`
@@ -26,16 +33,6 @@ type Index struct {
 
 type UserReader interface {
 	List(ctx context.Context) []user.User
-	GetByUsername(email string) (user.User, error)
-}
-
-type ListView struct {
-	ID       string
-	Name     string
-	Class    string
-	Species  string
-	Subclass string
-	Level    string
 }
 
 type ListOptions struct {

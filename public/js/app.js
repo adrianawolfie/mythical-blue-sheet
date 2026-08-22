@@ -29,6 +29,13 @@ function bindUnsavedCharacterWarning() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const pageURL = new URL(window.location.href);
+  const saved = pageURL.searchParams.get("saved");
+  if (saved === "character" || saved === "restored") {
+    showSaveToast(saved === "restored" ? "Character version restored" : "Character saved");
+    pageURL.searchParams.delete("saved");
+    window.history.replaceState(null, "", `${pageURL.pathname}${pageURL.search}${pageURL.hash}`);
+  }
   populateConditionDropdown();
   showStartPage();
   renderSelectedConditions();
@@ -52,8 +59,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   document.getElementById("backToStartBtn").addEventListener("click", async () => {
-    if (window.location.pathname.startsWith("/characters/")) {
-      window.location.href = "/characters";
+    if (document.body.classList.contains("character-detail-page")) {
+      window.location.href = "/characters.html";
       return;
     }
     if (!confirmDiscardUnsavedCharacterChanges("return to the character list")) return;

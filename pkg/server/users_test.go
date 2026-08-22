@@ -563,6 +563,12 @@ func TestGetCharactersReturnsCharacterIndex(t *testing.T) {
 		ID:         "ada-character",
 		CampaignID: "campaign-1",
 		Summary:    character.Summary{Name: "Ada Storm", ArmorClass: "17", HpCurrent: "21", HpMax: "30"},
+		Fields: character.Fields{
+			"class":       "Wizard",
+			"speciesRace": "Human",
+			"subclass":    "Bladesinger",
+			"level":       "7",
+		},
 	}})
 	req := httptest.NewRequest(http.MethodGet, "/api/characters", nil)
 	w := httptest.NewRecorder()
@@ -576,7 +582,7 @@ func TestGetCharactersReturnsCharacterIndex(t *testing.T) {
 	if err := json.NewDecoder(w.Body).Decode(&idx); err != nil {
 		t.Fatalf("decode response: %v", err)
 	}
-	if len(idx) != 1 || idx[0].ID != "ada-character" || idx[0].Name != "Ada Storm" {
+	if len(idx) != 1 || idx[0].ID != "ada-character" || idx[0].Name != "Ada Storm" || idx[0].Class != "Wizard" || idx[0].Species != "Human" || idx[0].Subclass != "Bladesinger" || idx[0].Level != "7" {
 		t.Fatalf("expected character index, got %#v", idx)
 	}
 }
@@ -832,6 +838,21 @@ func TestCharacterHistoryCanBeListedAndRestored(t *testing.T) {
 	if len(history) != 2 {
 		t.Fatalf("expected two versions, got %#v", history)
 	}
+	versionRequest := httptest.NewRequest(http.MethodGet, "/api/characters/ada-character/history/"+history[0].VersionID, nil)
+	versionRequest.SetPathValue("id", "ada-character")
+	versionRequest.SetPathValue("version", history[0].VersionID)
+	versionResponse := httptest.NewRecorder()
+	GetCharacterHistoryVersion(characters).ServeHTTP(versionResponse, versionRequest)
+	if versionResponse.Code != http.StatusOK {
+		t.Fatalf("expected version status 200, got %d", versionResponse.Code)
+	}
+	var version character.Character
+	if err := json.NewDecoder(versionResponse.Body).Decode(&version); err != nil {
+		t.Fatalf("decode character version: %v", err)
+	}
+	if version.Summary.Name != "Ada" {
+		t.Fatalf("expected first version, got %#v", version)
+	}
 
 	restoreRequest := httptest.NewRequest(http.MethodPost, "/api/characters/ada-character/history/"+history[0].VersionID+"/restore", nil)
 	restoreRequest.SetPathValue("id", "ada-character")
@@ -847,114 +868,6 @@ func TestCharacterHistoryCanBeListedAndRestored(t *testing.T) {
 	}
 	if restored.Summary.Name != "Ada" || restored.Live.HpMax != "20" {
 		t.Fatalf("unexpected restored character: %#v", restored)
-	}
-}
-
-func TestGetCharacterDetailBootstrapsCharacter(t *testing.T) {
-	chdirRepoRoot(t)
-
-	characters := newCharacterTestRepository(t, []character.Character{{
-		ID:         "ada-character",
-		CampaignID: "campaign-1",
-		Summary: character.Summary{
-			Name: "Ada Storm",
-		},
-		CustomLists: character.CustomLists{
-			Spells: []character.SpellRow{{
-				Name:     "Shield",
-				Level:    "1",
-				School:   "Abjuration",
-				Prepared: true,
-			}},
-		},
-		Fields: character.Fields{
-			"class": "Wizard",
-			"level": "7",
-		},
-	}})
-	req := httptest.NewRequest(http.MethodGet, "/characters/ada-character", nil)
-	req.SetPathValue("id", "ada-character")
-	w := httptest.NewRecorder()
-
-	GetCharacterDetail(characters).ServeHTTP(w, req)
-
-	if w.Code != http.StatusOK {
-		t.Fatalf("expected status 200, got %d", w.Code)
-	}
-	body := w.Body.String()
-	for _, expected := range []string{`<base href="/">`, "window.__MYTHICAL_BLUE_CHARACTER__", "Ada Storm", `"campaignId":"campaign-1"`, `"prepared":true`, `"name":"Shield"`} {
-		if !strings.Contains(body, expected) {
-			t.Fatalf("expected response to contain %q", expected)
-		}
-	}
-}
-
-func TestGetCharacterListPageShowsOnlyCurrentUsersCharacters(t *testing.T) {
-	chdirRepoRoot(t)
-
-	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Ada Storm", Email: "ada@example.com", Password: "hash"}})
-	characters := newCharacterTestRepository(t,
-		[]character.Character{{
-			ID:     "ada-character",
-			UserID: "018fe68a-01a8-70b1-8ea3-2d0b819a2d29",
-			Summary: character.Summary{
-				Name: "Ada Storm",
-			},
-			Fields: character.Fields{
-				"class":       "Wizard",
-				"speciesRace": "Human",
-				"subclass":    "Bladesinger",
-				"level":       "7",
-			},
-		}, {
-			ID: "unassigned-character",
-			Summary: character.Summary{
-				Name: "Unassigned Sailor",
-			},
-		}},
-	)
-	req := httptest.NewRequest(http.MethodGet, "/characters", nil)
-	req.AddCookie(&http.Cookie{Name: "user", Value: "ada@example.com"})
-	w := httptest.NewRecorder()
-
-	GetCharacterListPage(users, characters).ServeHTTP(w, req)
-
-	if w.Code != http.StatusOK {
-		t.Fatalf("expected status 200, got %d", w.Code)
-	}
-	body := w.Body.String()
-	for _, expected := range []string{"/characters/ada-character", "Ada Storm", "Class: Wizard", "Species: Human", "Subclass: Bladesinger", "Level: 7"} {
-		if !strings.Contains(body, expected) {
-			t.Fatalf("expected response to contain %q", expected)
-		}
-	}
-	if strings.Contains(body, "Unassigned Sailor") {
-		t.Fatal("expected unassigned character to be hidden")
-	}
-}
-
-func TestGetCharacterListPageShowsAllCharactersForAdmin(t *testing.T) {
-	chdirRepoRoot(t)
-	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
-	characters := newCharacterTestRepository(t, []character.Character{{
-		ID:      "ada-character",
-		UserID:  "018fe68a-01a8-70b1-8ea3-2d0b819a2d29",
-		Summary: character.Summary{Name: "Ada Storm"},
-	}, {
-		ID:      "unassigned-character",
-		Summary: character.Summary{Name: "Unassigned Sailor"},
-	}})
-	req := httptest.NewRequest(http.MethodGet, "/characters", nil)
-	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
-	w := httptest.NewRecorder()
-
-	GetCharacterListPage(users, characters).ServeHTTP(w, req)
-
-	if w.Code != http.StatusOK {
-		t.Fatalf("expected status 200, got %d", w.Code)
-	}
-	if !strings.Contains(w.Body.String(), "Ada Storm") || !strings.Contains(w.Body.String(), "Unassigned Sailor") {
-		t.Fatalf("expected all characters for admin, got %s", w.Body.String())
 	}
 }
 

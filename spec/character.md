@@ -14,9 +14,9 @@ The Character domain stores versioned player character sheets, independently upd
 - `CreateOrReplace` rejects stale `expectedUpdatedAt` values. Retrying an already completed equivalent save is idempotent.
 - `UpdateLive` patches only supplied live fields and writes only `live.json`. Setting `hpOverride` to `null` restores the configured maximum HP.
 - `ListHistory` and `GetHistory` expose immutable character configuration snapshots.
+- `ListHistory` returns versions from oldest to newest. The character detail page uses this order to select the preceding version for Undo.
 - `RestoreHistory` restores a snapshot as a new latest version without changing live state.
 - `Delete` soft-deletes a character in the index so its configuration, live state, and history remain recoverable.
-- `ListForUser` resolves the current user and returns only characters owned by that user for the character list page. Admin users receive all characters.
 - `ListAdmin` resolves character ownership names for the admin character page.
 - `AssignToUser` validates the user assignment and persists it. An empty user ID clears ownership.
 
@@ -32,7 +32,7 @@ The Character domain stores versioned player character sheets, independently upd
 
 ## HTTP Routes
 
-- `GET /api/characters` returns the character index.
+- `GET /api/characters` returns the character index with live summary values and sheet metadata such as class, species, subclass, and level.
 - `GET /api/characters?mine=1` returns only character index records assigned to the user identified by the `user` cookie, or all records when the user is an admin, or `401` when no valid user cookie is present.
 - `GET /api/characters?owned=1` returns only character index records assigned to the user identified by the `user` cookie, including for admin users, or `401` when no valid user cookie is present.
 - `GET /api/characters/{id}` returns current character configuration combined with nested effective live state.
@@ -46,3 +46,11 @@ The Character domain stores versioned player character sheets, independently upd
 - `GET /api/admin/characters` returns the current admin user, character admin views, assignable users, and character count for the static admin characters page.
 - `POST /admin/characters/{id}/assignment` assigns a character to a user or clears ownership when `userId` is empty.
 - `DELETE /admin/characters/{id}` deletes one character as an admin.
+
+## Version Preview
+
+- `GET /character.html?id={id}&version={uuidv7}` previews immutable historical configuration without restoring it immediately.
+- The preview uses current live state. Effective maximum HP uses `live.hpOverride` when set and the historical configured maximum otherwise.
+- The preview carries the current configuration timestamp so Save passes optimistic concurrency checks and creates a new latest version.
+- The static detail page loads current configuration, history, and selected versions through the character API.
+- Undo steps to the next older version. Back to Current removes the `version` query parameter while retaining `id`.

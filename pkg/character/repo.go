@@ -163,6 +163,10 @@ func (repo Repository) List(ctx context.Context, opts ...ListOption) ([]Index, e
 		item.TempHp = c.Live.TempHp
 		item.ArmorClass = effectiveArmorClass(c)
 		item.CurrentConditions = strings.Join(c.Live.Conditions, ", ")
+		item.Class = c.Fields["class"]
+		item.Species = c.Fields["speciesRace"]
+		item.Subclass = c.Fields["subclass"]
+		item.Level = c.Fields["level"]
 		result = append(result, item)
 	}
 	return result, nil
@@ -191,7 +195,7 @@ func (repo Repository) getByID(ctx context.Context, id string, checkDeleted bool
 			}
 		}
 		if !found {
-			return Character{}, fmt.Errorf("character not found")
+			return Character{}, ErrCharacterNotFound
 		}
 	}
 	c, currentExists, err := repo.readCurrent(ctx, id)
@@ -206,7 +210,7 @@ func (repo Repository) getByID(ctx context.Context, id string, checkDeleted bool
 		}
 	}
 	if !exists {
-		return Character{}, fmt.Errorf("character not found")
+		return Character{}, ErrCharacterNotFound
 	}
 	var legacyLive Live
 	if !currentExists {
@@ -358,33 +362,6 @@ func (repo Repository) Delete(ctx context.Context, id string) error {
 		return fmt.Errorf("character not found")
 	}
 	return repo.writeJSON(ctx, characterIndexPath, idx)
-}
-
-func (repo Repository) ListViews(ctx context.Context, opts ...ListOption) ([]ListView, error) {
-	idx, err := repo.List(ctx, opts...)
-	if err != nil {
-		return nil, err
-	}
-	views := make([]ListView, 0, len(idx))
-	for _, item := range idx {
-		c, err := repo.GetByID(ctx, item.ID)
-		if err != nil {
-			return nil, err
-		}
-		views = append(views, ListView{ID: item.ID, Name: item.Name, Class: c.Fields["class"], Species: c.Fields["speciesRace"], Subclass: c.Fields["subclass"], Level: c.Fields["level"]})
-	}
-	return views, nil
-}
-
-func (repo Repository) ListForUser(ctx context.Context, users UserReader, email string) ([]ListView, error) {
-	u, err := users.GetByUsername(email)
-	if err != nil {
-		return nil, err
-	}
-	if u.IsAdmin {
-		return repo.ListViews(ctx)
-	}
-	return repo.ListViews(ctx, WithUserID(u.ID.String()))
 }
 
 func (repo Repository) ListAdmin(ctx context.Context, users UserReader) ([]AdminView, []AdminUserView, error) {

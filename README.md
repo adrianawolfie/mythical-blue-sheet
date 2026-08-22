@@ -84,8 +84,8 @@ flowchart TB
 | --- | --- | --- |
 | `/` | `public/index.html` | Main character sheet application. |
 | `/home.html` | `public/home.html` | Logged-in landing page. Shows only the current user’s characters and player campaigns, even for admins. |
-| `/characters` | `public/characters/list.html` | Static character roster shell backed by `/api/characters?mine=1`. Admins can see all characters. |
-| `/characters/{id}` | `public/characters/detail.html` | Static character sheet shell backed by `/api/characters/{id}`. |
+| `/characters.html` | `public/characters.html` | Static character roster backed by `/api/characters?owned=1`, including strict ownership filtering for admins. |
+| `/character.html?id={id}` | `public/character.html` | Static query-driven character sheet backed by the character and history APIs. |
 | `/dm-screen.html` | `public/dm-screen.html` | DM tools, campaign state, initiative, custom statblocks. |
 | `/login.html` | `public/login.html` | Login page. Disabled users cannot log in. |
 | `/register.html` | `public/register.html` | Registration page. New users are disabled until an admin enables them. |
