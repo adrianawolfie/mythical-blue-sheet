@@ -347,6 +347,36 @@ func (repo Repository) RestoreVersion(ctx context.Context, id, versionID string)
 	return repo.RestoreHistory(ctx, id, versionID)
 }
 
+func (repo Repository) Copy(ctx context.Context, id, versionID string) (Character, error) {
+	current, err := repo.GetByID(ctx, id)
+	if err != nil {
+		return Character{}, err
+	}
+	source := current
+	if versionID != "" {
+		source, err = repo.GetHistory(ctx, id, versionID)
+		if err != nil {
+			return Character{}, err
+		}
+	}
+
+	source.ID = uuid.NewString()
+	source.UserID = current.UserID
+	source.CampaignID = current.CampaignID
+	source.Summary.Name += " Copy"
+	if source.Fields == nil {
+		source.Fields = Fields{}
+	}
+	source.Fields["characterName"] = source.Summary.Name
+	source.Live = Live{}
+	source.UpdatedAt = ""
+	source.ExpectedAt = ""
+	if err := repo.CreateOrReplace(ctx, source); err != nil {
+		return Character{}, err
+	}
+	return repo.GetByID(ctx, source.ID)
+}
+
 func (repo Repository) Delete(ctx context.Context, id string) error {
 	if err := validateID(id); err != nil {
 		return err

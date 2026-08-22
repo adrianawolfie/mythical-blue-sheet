@@ -300,6 +300,79 @@ func TestRestoreCreatesVersionAndDoesNotChangeLive(t *testing.T) {
 	}
 }
 
+func TestCopyCreatesIndependentCharacterWithResetLiveState(t *testing.T) {
+	ctx, repo := newRequestedTestRepository(t)
+	source := requestedTestCharacter("ada", "Ada")
+	source.UserID = "user-1"
+	source.CampaignID = "campaign-1"
+	source.Fields["class"] = "Wizard"
+	if err := repo.CreateOrReplace(ctx, source); err != nil {
+		t.Fatalf("create source: %v", err)
+	}
+	hp, override, temp := "3", "30", "4"
+	conditions := []string{"Poisoned"}
+	inspiration := true
+	exhaustion := 2
+	deathSaves := DeathSaves{Successes: 2, Failures: 1}
+	hitDiceSpent := map[string]int{"d6": 2}
+	activeModifiers := []string{"Shield"}
+	if err := repo.UpdateLive(ctx, source.ID, LiveUpdate{HpCurrent: &hp, HpOverride: &override, TempHp: &temp, Conditions: &conditions, Inspiration: &inspiration, ExhaustionLevel: &exhaustion, DeathSaves: &deathSaves, HitDiceSpent: &hitDiceSpent, ActiveArmorClassModifiers: &activeModifiers}); err != nil {
+		t.Fatalf("update source live state: %v", err)
+	}
+
+	copied, err := repo.Copy(ctx, source.ID, "")
+	if err != nil {
+		t.Fatalf("copy character: %v", err)
+	}
+	if copied.ID == source.ID || copied.UserID != source.UserID || copied.CampaignID != source.CampaignID {
+		t.Fatalf("copy did not preserve assignment with a new ID: %#v", copied)
+	}
+	if copied.Summary.Name != "Ada Copy" || copied.Fields["characterName"] != "Ada Copy" || copied.Fields["class"] != "Wizard" {
+		t.Fatalf("copy did not preserve configuration: %#v", copied)
+	}
+	if copied.Live.HpCurrent != "20" || copied.Live.HpMax != "20" || copied.Live.HpOverride != nil || copied.Live.TempHp != "" || len(copied.Live.Conditions) != 0 || copied.Live.Inspiration || copied.Live.ExhaustionLevel != 0 || copied.Live.DeathSaves != (DeathSaves{}) || len(copied.Live.HitDiceSpent) != 0 || len(copied.Live.ActiveArmorClassModifiers) != 0 {
+		t.Fatalf("copy did not reset live state: %#v", copied.Live)
+	}
+	sourceAfter, _ := repo.GetByID(ctx, source.ID)
+	if sourceAfter.Summary.Name != "Ada" || sourceAfter.Live.HpCurrent != "3" || sourceAfter.Live.HpMax != "30" {
+		t.Fatalf("copy changed source character: %#v", sourceAfter)
+	}
+	history, err := repo.ListHistory(ctx, copied.ID)
+	if err != nil || len(history) != 1 {
+		t.Fatalf("copy should have one independent version: %#v, %v", history, err)
+	}
+}
+
+func TestCopyHistoricalVersionUsesCurrentAssignment(t *testing.T) {
+	ctx, repo := newRequestedTestRepository(t)
+	source := requestedTestCharacter("ada", "Ada")
+	source.UserID = "old-user"
+	source.CampaignID = "old-campaign"
+	if err := repo.CreateOrReplace(ctx, source); err != nil {
+		t.Fatalf("create source: %v", err)
+	}
+	history, _ := repo.ListHistory(ctx, source.ID)
+	current, _ := repo.GetByID(ctx, source.ID)
+	current.UserID = "current-user"
+	current.CampaignID = "current-campaign"
+	current.Summary.Name = "Ada Storm"
+	current.Fields["characterName"] = "Ada Storm"
+	if err := repo.CreateOrReplace(ctx, current); err != nil {
+		t.Fatalf("update source: %v", err)
+	}
+
+	copied, err := repo.Copy(ctx, source.ID, history[0].VersionID)
+	if err != nil {
+		t.Fatalf("copy historical version: %v", err)
+	}
+	if copied.Summary.Name != "Ada Copy" || copied.Fields["characterName"] != "Ada Copy" {
+		t.Fatalf("copy did not use historical configuration: %#v", copied)
+	}
+	if copied.UserID != "current-user" || copied.CampaignID != "current-campaign" {
+		t.Fatalf("copy did not use current assignment: %#v", copied)
+	}
+}
+
 func TestDeleteIsSoftAndDeletedCharactersDoNotCountTowardLimit(t *testing.T) {
 	ctx, repo, dir := newRequestedTestRepositoryWithDir(t)
 	if err := repo.CreateOrReplace(ctx, requestedTestCharacter("deleted", "Deleted")); err != nil {

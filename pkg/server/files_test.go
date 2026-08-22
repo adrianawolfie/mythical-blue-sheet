@@ -56,8 +56,22 @@ func TestFileServerServesStaticCharacterDetailPageWithQuery(t *testing.T) {
 	require.Contains(t, response.Body.String(), `<body class="character-detail-page">`)
 	require.Contains(t, response.Body.String(), `<script src="js/character-detail.js"></script>`)
 	require.Contains(t, response.Body.String(), `id="undoCharacterForm"`)
+	require.Contains(t, response.Body.String(), `id="copyCharacterBtn"`)
 	require.NotContains(t, response.Body.String(), "window.__MYTHICAL_BLUE_CHARACTER__")
 	require.NotContains(t, response.Body.String(), "{{")
+}
+
+func TestCharacterSheetPagesIncludeCopyControl(t *testing.T) {
+	chdirRepoRoot(t)
+	for _, file := range []string{"index.html", "character.html"} {
+		contents, err := os.ReadFile(filepath.Join("public", file))
+		require.NoError(t, err)
+		require.Contains(t, string(contents), `id="copyCharacterBtn"`)
+		require.Contains(t, string(contents), `aria-label="Copy character"`)
+	}
+	storageAdapter, err := os.ReadFile(filepath.Join("public", "js", "storage-adapter.js"))
+	require.NoError(t, err)
+	require.Contains(t, string(storageAdapter), "/api/characters/${encodeURIComponent(id)}/copy")
 }
 
 func TestFileServerServesStaticCharacterListPage(t *testing.T) {

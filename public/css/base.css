@@ -87,17 +87,22 @@
   font-family: 'Cinzel', serif;
 }
 
-.sheet-toolbar button.sheet-delete-button {
+.sheet-toolbar button.sheet-delete-button,
+.sheet-toolbar button.sheet-copy-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 38px;
   height: 36px;
-  margin-left: auto;
   padding: 7px;
 }
 
-.sheet-delete-button svg {
+.sheet-toolbar button.sheet-copy-button {
+  margin-left: auto;
+}
+
+.sheet-delete-button svg,
+.sheet-copy-button svg {
   width: 20px;
   height: 20px;
 }

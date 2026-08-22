@@ -60,6 +60,15 @@
       return parseJsonResponse(response, "Failed to save character.");
     },
 
+    async copyCharacterData(id, version = "") {
+      const query = version ? `?version=${encodeURIComponent(version)}` : "";
+      const response = await fetch(`/api/characters/${encodeURIComponent(id)}/copy${query}`, {
+        method: "POST"
+      });
+
+      return parseJsonResponse(response, "Failed to copy character.");
+    },
+
     async saveCharacterLive({ id, ...fields }) {
       const liveFieldNames = new Set([
         "hpCurrent",

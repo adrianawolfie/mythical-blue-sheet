@@ -66,7 +66,7 @@ A static character roster. `public/js/characters.js` fetches `GET /api/character
 
 File: `public/character.html`
 
-A static character detail page. `public/js/character-detail.js` loads current configuration and history through the character API using the `id` query parameter. When history contains an older version, the top toolbar provides Undo. `GET /character.html?id={id}&version={uuidv7}` previews that historical configuration with current live state; Undo can step to older versions, Back to Current removes the preview, and Save writes the preview as a new current version. Successful detail-page saves reload the page so the toolbar immediately reflects the latest Undo target and a query-string signal displays the save toast.
+A static character detail page. `public/js/character-detail.js` loads current configuration and history through the character API using the `id` query parameter. When history contains an older version, the top toolbar provides Undo. `GET /character.html?id={id}&version={uuidv7}` previews that historical configuration with current live state; Undo can step to older versions, Back to Current removes the preview, and Save writes the preview as a new current version. The toolbar can copy the visible current or historical configuration into a new character while retaining the current owner and campaign and resetting live state. Successful detail-page saves reload the page so the toolbar immediately reflects the latest Undo target and a query-string signal displays the save toast.
 
 ### `/dm-screen.html`
 

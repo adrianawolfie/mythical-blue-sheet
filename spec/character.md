@@ -16,6 +16,7 @@ The Character domain stores versioned player character sheets, independently upd
 - `ListHistory` and `GetHistory` expose immutable character configuration snapshots.
 - `ListHistory` returns versions from oldest to newest. The character detail page uses this order to select the preceding version for Undo.
 - `RestoreHistory` restores a snapshot as a new latest version without changing live state.
+- `Copy` creates a new character from current or historical configuration, appends ` Copy` to its name, preserves the source's current owner and campaign, resets live state, and starts independent history.
 - `Delete` soft-deletes a character in the index so its configuration, live state, and history remain recoverable.
 - `ListAdmin` resolves character ownership names for the admin character page.
 - `AssignToUser` validates the user assignment and persists it. An empty user ID clears ownership.
@@ -37,6 +38,7 @@ The Character domain stores versioned player character sheets, independently upd
 - `GET /api/characters?owned=1` returns only character index records assigned to the user identified by the `user` cookie, including for admin users, or `401` when no valid user cookie is present.
 - `GET /api/characters/{id}` returns current character configuration combined with nested effective live state.
 - `POST /api/characters` creates or replaces one character.
+- `POST /api/characters/{id}/copy?version={version}` copies current configuration when `version` is absent or the selected immutable version when supplied, and returns the new character.
 - `GET /api/characters/{id}/live` returns effective live state.
 - `PATCH /api/characters/{id}/live` patches supplied live fields and returns effective live state.
 - `GET /api/characters/{id}/history` lists character versions.
@@ -54,5 +56,6 @@ The Character domain stores versioned player character sheets, independently upd
 - The preview uses current live state. Effective maximum HP uses `live.hpOverride` when set and the historical configured maximum otherwise.
 - The preview carries the current configuration timestamp so Save passes optimistic concurrency checks and creates a new latest version.
 - The static detail page loads current configuration, history, and selected versions through the character API.
+- The toolbar copy action copies the visible configuration, retains current owner and campaign assignment, resets live state to configured maximum HP, leaves the source open, and shows a completion toast.
 - Undo steps to the next older version. Back to Current removes the `version` query parameter while retaining `id`.
 - The admin versions page presents the same history newest-first and links each entry to the static detail-page preview URL.

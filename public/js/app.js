@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   document.getElementById("saveCharacterBtn").addEventListener("click", () => saveCurrentCharacter(true));
   document.getElementById("deleteCharacterBtn").addEventListener("click", deleteCurrentCharacter);
+  document.getElementById("copyCharacterBtn").addEventListener("click", copyCurrentCharacter);
 
   bindUnsavedCharacterWarning();
   document.getElementById("addExtraSpeedBtn")?.addEventListener("click", () => {

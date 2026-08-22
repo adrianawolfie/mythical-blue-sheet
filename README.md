@@ -133,6 +133,7 @@ flowchart TD
 | `GET /api/characters?owned=1` | Strictly current user’s characters, including for admins. Used by home. |
 | `GET /api/characters/{id}` | Current character configuration combined with nested live state. |
 | `POST /api/characters` | Save configuration and create an immutable version. |
+| `POST /api/characters/{id}/copy?version={version}` | Copy current or historical configuration with the same assignment and reset live state. |
 | `GET /api/characters/{id}/live` | Effective live character state. |
 | `PATCH /api/characters/{id}/live` | Patch live state without changing character history. |
 | `GET /api/characters/{id}/history` | List immutable character versions. |

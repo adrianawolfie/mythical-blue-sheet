@@ -87,6 +87,19 @@ func PostCharacters(repo character.Repository) http.HandlerFunc {
 	}
 }
 
+func PostCharacterCopy(repo character.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		copied, err := repo.Copy(r.Context(), r.PathValue("id"), r.URL.Query().Get("version"))
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		if err := json.NewEncoder(w).Encode(copied); err != nil {
+			writeError(w, err)
+		}
+	}
+}
+
 func DeleteCharacter(c character.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := c.Delete(r.Context(), r.PathValue("id")); err != nil {

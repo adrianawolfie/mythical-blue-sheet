@@ -831,6 +831,43 @@ func TestPostCharactersRejectsStaleSave(t *testing.T) {
 	}
 }
 
+func TestPostCharacterCopyCopiesSelectedVersion(t *testing.T) {
+	characters := newCharacterTestRepository(t, nil)
+	ctx := context.Background()
+	source := character.Character{
+		ID:         "ada-character",
+		UserID:     "user-1",
+		CampaignID: "campaign-1",
+		Summary:    character.Summary{Name: "Ada", HpMax: "30"},
+		Fields:     character.Fields{"characterName": "Ada", "class": "Wizard"},
+	}
+	if err := characters.CreateOrReplace(ctx, source); err != nil {
+		t.Fatalf("create source: %v", err)
+	}
+	history, _ := characters.ListHistory(ctx, source.ID)
+	source.Summary.Name = "Ada Storm"
+	source.Fields["characterName"] = "Ada Storm"
+	if err := characters.CreateOrReplace(ctx, source); err != nil {
+		t.Fatalf("update source: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodPost, "/api/characters/ada-character/copy?version="+history[0].VersionID, nil)
+	req.SetPathValue("id", source.ID)
+	w := httptest.NewRecorder()
+	PostCharacterCopy(characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var copied character.Character
+	if err := json.NewDecoder(w.Body).Decode(&copied); err != nil {
+		t.Fatalf("decode copy: %v", err)
+	}
+	if copied.ID == source.ID || copied.Summary.Name != "Ada Copy" || copied.UserID != source.UserID || copied.CampaignID != source.CampaignID || copied.Live.HpCurrent != "30" {
+		t.Fatalf("unexpected copied character: %#v", copied)
+	}
+}
+
 func TestDeleteCharacterRemovesCharacter(t *testing.T) {
 	characters := newCharacterTestRepository(t, []character.Character{{
 		ID:      "ada-character",

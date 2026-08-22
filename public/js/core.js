@@ -639,6 +639,28 @@ async function deleteCurrentCharacter() {
   }
 }
 
+async function copyCurrentCharacter() {
+  if (!currentCharacterId) return;
+  if (!loadedCharacterUpdatedAt) {
+    alert("Save this character before copying it.");
+    return;
+  }
+  if (hasUnsavedCharacterChanges()) {
+    alert("Save your character changes before copying it.");
+    return;
+  }
+
+  try {
+    const version = new URLSearchParams(window.location.search).get("version")?.trim() || "";
+    const copied = await characterStorage.copyCharacterData(currentCharacterId, version);
+    await renderCharacterList();
+    showToast(`Character copied as ${copied.summary?.name || "Unnamed Character Copy"}`);
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Error copying character.", { variant: "error" });
+  }
+}
+
 function showStartPage() {
   document.getElementById("startPage").style.display = "block";
   document.querySelector(".sheet").style.display = "none";

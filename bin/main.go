@@ -78,6 +78,7 @@ func main() {
 	mux.Handle("GET /api/characters", server.GetCharacters(characters, users))
 	mux.Handle("GET /api/characters/{id}", server.GetCharacter(characters))
 	mux.Handle("POST /api/characters", server.PostCharacters(characters))
+	mux.Handle("POST /api/characters/{id}/copy", server.PostCharacterCopy(characters))
 	mux.Handle("GET /api/characters/{id}/live", server.GetCharacterLive(characters))
 	mux.Handle("PATCH /api/characters/{id}/live", server.PatchCharacterLive(characters))
 	mux.Handle("GET /api/characters/{id}/history", server.GetCharacterHistory(characters))
