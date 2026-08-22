@@ -16,7 +16,6 @@ import (
 
 func main() {
 	config.Load()
-	log.Printf("USER_SECRET configured: %s", config.UserSecret)
 
 	ctx := context.Background()
 
