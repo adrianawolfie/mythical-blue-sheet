@@ -8,7 +8,7 @@ The Character domain stores versioned player character sheets, independently upd
 
 ## Repository Behavior
 
-- `List` returns active character summaries composed from the character index, current configuration, and live state. It accepts functional options such as filtering by user ID.
+- `List` reads active character IDs from the index and returns summaries composed from each character's current configuration and live state. It accepts functional options such as filtering by user ID.
 - `GetByID` loads `current.json` and `live.json`, computes effective values such as maximum HP, and returns the configuration with nested `live` data.
 - `CreateOrReplace` saves configuration to `current.json`, creates an immutable UUIDv7 snapshot, appends history metadata, and updates the index. It does not replace existing live state.
 - `CreateOrReplace` rejects stale `expectedUpdatedAt` values. Retrying an already completed equivalent save is idempotent.
@@ -22,7 +22,7 @@ The Character domain stores versioned player character sheets, independently upd
 
 ## Persistence
 
-- `character/character-index.json` stores active/deleted metadata and character summary data. Character storage paths are derived from IDs. Live values in list responses are projections and are not stored as authoritative index data.
+- `character/character-index.json` stores only character IDs and optional deletion timestamps. Character storage paths are derived from IDs. Configuration and live values in list responses are loaded from character documents and are not duplicated in the index.
 - `character/{id}/current.json` stores current character configuration.
 - `character/{id}/live.json` stores current HP, optional maximum-HP override, temporary HP, conditions, inspiration, exhaustion, death saves, spent hit dice, active armor-class modifiers, and `updatedAt`.
 - `character/{id}/history.json` lists immutable snapshots.

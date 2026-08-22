@@ -58,7 +58,7 @@ func newCharacterTestRepository(t *testing.T, characters []character.Character) 
 	}
 	idx := make([]character.Index, 0, len(characters))
 	for _, c := range characters {
-		idx = append(idx, character.Index{ID: c.ID, Name: c.Summary.Name})
+		idx = append(idx, character.Index{ID: c.ID})
 	}
 	idxData, err := json.Marshal(idx)
 	if err != nil {
@@ -650,11 +650,11 @@ func TestGetCharactersReturnsCharacterIndex(t *testing.T) {
 	if w.Code != http.StatusOK {
 		t.Fatalf("expected status 200, got %d", w.Code)
 	}
-	var idx []character.Index
+	var idx []character.ListItem
 	if err := json.NewDecoder(w.Body).Decode(&idx); err != nil {
 		t.Fatalf("decode response: %v", err)
 	}
-	if len(idx) != 1 || idx[0].ID != "ada-character" || idx[0].Name != "Ada Storm" || idx[0].Class != "Wizard" || idx[0].Species != "Human" || idx[0].Subclass != "Bladesinger" || idx[0].Level != "7" {
+	if len(idx) != 1 || idx[0].ID != "ada-character" || idx[0].Name != "Ada Storm" || idx[0].Class != "Wizard" || idx[0].Species != "Human" || idx[0].Subclass != "Bladesinger" || idx[0].Level != "7" || idx[0].ArmorClass != "17" || idx[0].HpCurrent != "21" || idx[0].HpMax != "30" {
 		t.Fatalf("expected character index, got %#v", idx)
 	}
 }
@@ -683,7 +683,7 @@ func TestGetCharactersMineReturnsOnlyCurrentUsersCharacters(t *testing.T) {
 	if w.Code != http.StatusOK {
 		t.Fatalf("expected status 200, got %d", w.Code)
 	}
-	var idx []character.Index
+	var idx []character.ListItem
 	if err := json.NewDecoder(w.Body).Decode(&idx); err != nil {
 		t.Fatalf("decode response: %v", err)
 	}
@@ -715,7 +715,7 @@ func TestGetCharactersMineReturnsAllForAdmin(t *testing.T) {
 	if w.Code != http.StatusOK {
 		t.Fatalf("expected status 200, got %d", w.Code)
 	}
-	var idx []character.Index
+	var idx []character.ListItem
 	if err := json.NewDecoder(w.Body).Decode(&idx); err != nil {
 		t.Fatalf("decode response: %v", err)
 	}
@@ -747,7 +747,7 @@ func TestGetCharactersOwnedReturnsOnlyCurrentUsersCharactersForAdmin(t *testing.
 	if w.Code != http.StatusOK {
 		t.Fatalf("expected status 200, got %d", w.Code)
 	}
-	var idx []character.Index
+	var idx []character.ListItem
 	if err := json.NewDecoder(w.Body).Decode(&idx); err != nil {
 		t.Fatalf("decode response: %v", err)
 	}

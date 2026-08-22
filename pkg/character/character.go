@@ -13,6 +13,11 @@ var (
 )
 
 type Index struct {
+	ID        string `json:"id"`
+	DeletedAt string `json:"deletedAt,omitempty"`
+}
+
+type ListItem struct {
 	ID                string `json:"id"`
 	CampaignID        string `json:"campaignId"`
 	Name              string `json:"name"`
@@ -27,7 +32,6 @@ type Index struct {
 	Subclass          string `json:"subclass,omitempty"`
 	Level             string `json:"level,omitempty"`
 	UpdatedAt         string `json:"updatedAt"`
-	DeletedAt         string `json:"deletedAt,omitempty"`
 }
 
 type UserReader interface {

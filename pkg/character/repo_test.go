@@ -125,7 +125,11 @@ func TestCreateUsesCurrentLiveHistoryAndVersionPaths(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read index: %v", err)
 	}
-	if strings.Contains(string(indexData), `"file"`) || strings.Contains(string(indexData), `"hpCurrent"`) {
+	var persistedIndex []map[string]json.RawMessage
+	if err := json.Unmarshal(indexData, &persistedIndex); err != nil {
+		t.Fatalf("decode index: %v", err)
+	}
+	if len(persistedIndex) != 1 || len(persistedIndex[0]) != 1 || string(persistedIndex[0]["id"]) != `"ada"` {
 		t.Fatalf("unexpected persisted index: %s", indexData)
 	}
 }
@@ -137,7 +141,7 @@ func TestLegacyCharacterIsReadableAndMigratesOnSave(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, "character", "ada.json"), data, 0o644); err != nil {
 		t.Fatalf("write legacy character: %v", err)
 	}
-	index := []Index{{ID: "ada", Name: "Ada"}}
+	index := []Index{{ID: "ada"}}
 	indexData, _ := json.Marshal(index)
 	if err := os.WriteFile(filepath.Join(dir, "character", "character-index.json"), indexData, 0o644); err != nil {
 		t.Fatalf("write legacy index: %v", err)
@@ -248,14 +252,23 @@ func TestUpdateLivePatchPreservesOmittedFieldsAndSupportsNullOverride(t *testing
 
 	historyDataBefore, _ := os.ReadFile(filepath.Join(dir, "character", "ada", "history.json"))
 	currentDataBefore, _ := os.ReadFile(filepath.Join(dir, "character", "ada", "current.json"))
+	indexDataBefore, _ := os.ReadFile(filepath.Join(dir, "character", "character-index.json"))
 	hp := "8"
 	if err := repo.UpdateLive(ctx, "ada", LiveUpdate{HpCurrent: &hp}); err != nil {
 		t.Fatalf("third live patch: %v", err)
 	}
 	historyDataAfter, _ := os.ReadFile(filepath.Join(dir, "character", "ada", "history.json"))
 	currentDataAfter, _ := os.ReadFile(filepath.Join(dir, "character", "ada", "current.json"))
-	if string(historyDataBefore) != string(historyDataAfter) || string(currentDataBefore) != string(currentDataAfter) {
-		t.Fatal("live patch changed current or history storage")
+	indexDataAfter, _ := os.ReadFile(filepath.Join(dir, "character", "character-index.json"))
+	if string(historyDataBefore) != string(historyDataAfter) || string(currentDataBefore) != string(currentDataAfter) || string(indexDataBefore) != string(indexDataAfter) {
+		t.Fatal("live patch changed index, current, or history storage")
+	}
+	items, err := repo.List(ctx)
+	if err != nil {
+		t.Fatalf("list characters: %v", err)
+	}
+	if len(items) != 1 || items[0].HpCurrent != "8" || items[0].HpMax != "20" || items[0].TempHp != "4" || items[0].CurrentConditions != "Prone" {
+		t.Fatalf("list did not compose live state: %#v", items)
 	}
 }
 
@@ -300,6 +313,17 @@ func TestDeleteIsSoftAndDeletedCharactersDoNotCountTowardLimit(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(dir, "character", "deleted", "current.json")); err != nil {
 		t.Fatalf("soft delete removed current file: %v", err)
+	}
+	indexData, err := os.ReadFile(filepath.Join(dir, "character", "character-index.json"))
+	if err != nil {
+		t.Fatalf("read index: %v", err)
+	}
+	var persistedIndex []map[string]json.RawMessage
+	if err := json.Unmarshal(indexData, &persistedIndex); err != nil {
+		t.Fatalf("decode index: %v", err)
+	}
+	if len(persistedIndex) != 1 || len(persistedIndex[0]) != 2 || persistedIndex[0]["deletedAt"] == nil {
+		t.Fatalf("unexpected deleted index entry: %s", indexData)
 	}
 	for i := 0; i < 50; i++ {
 		id := fmt.Sprintf("active-%d", i)

@@ -75,7 +75,7 @@ func (repo Repository) CreateOrReplace(ctx context.Context, c Character) error {
 	prepared, live := prepareForStorage(c)
 	if c.ExpectedAt != "" && old.UpdatedAt != "" && c.ExpectedAt != old.UpdatedAt {
 		oldPrepared, _ := prepareForStorage(old)
-		if active && sameConfiguration(oldPrepared, prepared) && indexMatchesCurrent(idx, oldPrepared) {
+		if active && sameConfiguration(oldPrepared, prepared) {
 			return nil
 		}
 		return ErrCharacterConflict
@@ -117,7 +117,7 @@ func (repo Repository) CreateOrReplace(ctx context.Context, c Character) error {
 		return fmt.Errorf("failed to save character: %w", err)
 	}
 
-	next := indexFromCharacter(prepared)
+	next := Index{ID: c.ID}
 	for n, item := range idx {
 		if item.ID == c.ID {
 			idx[n] = next
@@ -134,7 +134,7 @@ func (repo Repository) CreateOrReplace(ctx context.Context, c Character) error {
 	return nil
 }
 
-func (repo Repository) List(ctx context.Context, opts ...ListOption) ([]Index, error) {
+func (repo Repository) List(ctx context.Context, opts ...ListOption) ([]ListItem, error) {
 	repo.RLock()
 	defer repo.RUnlock()
 
@@ -146,7 +146,7 @@ func (repo Repository) List(ctx context.Context, opts ...ListOption) ([]Index, e
 	if err != nil {
 		return nil, fmt.Errorf("failed to read character index: %w", err)
 	}
-	result := make([]Index, 0, len(idx))
+	result := make([]ListItem, 0, len(idx))
 	for _, item := range idx {
 		if item.DeletedAt != "" {
 			continue
@@ -158,16 +158,22 @@ func (repo Repository) List(ctx context.Context, opts ...ListOption) ([]Index, e
 		if options.UserID != "" && c.UserID != options.UserID {
 			continue
 		}
-		item.HpCurrent = c.Live.HpCurrent
-		item.HpMax = c.Live.HpMax
-		item.TempHp = c.Live.TempHp
-		item.ArmorClass = effectiveArmorClass(c)
-		item.CurrentConditions = strings.Join(c.Live.Conditions, ", ")
-		item.Class = c.Fields["class"]
-		item.Species = c.Fields["speciesRace"]
-		item.Subclass = c.Fields["subclass"]
-		item.Level = c.Fields["level"]
-		result = append(result, item)
+		result = append(result, ListItem{
+			ID:                c.ID,
+			CampaignID:        c.CampaignID,
+			Name:              c.Summary.Name,
+			ArmorClass:        effectiveArmorClass(c),
+			HpCurrent:         c.Live.HpCurrent,
+			HpMax:             c.Live.HpMax,
+			TempHp:            c.Live.TempHp,
+			PassivePerception: c.Summary.PassivePerception,
+			CurrentConditions: strings.Join(c.Live.Conditions, ", "),
+			Class:             c.Fields["class"],
+			Species:           c.Fields["speciesRace"],
+			Subclass:          c.Fields["subclass"],
+			Level:             c.Fields["level"],
+			UpdatedAt:         c.UpdatedAt,
+		})
 	}
 	return result, nil
 }
@@ -522,22 +528,6 @@ func sameConfiguration(a, b currentDocument) bool {
 	return string(left) == string(right)
 }
 
-func indexMatchesCurrent(index []Index, current currentDocument) bool {
-	expected := indexFromCharacter(current)
-	for _, item := range index {
-		if item.ID != current.ID {
-			continue
-		}
-		return item.DeletedAt == "" &&
-			item.CampaignID == expected.CampaignID &&
-			item.Name == expected.Name &&
-			item.ArmorClass == expected.ArmorClass &&
-			item.HpMax == expected.HpMax &&
-			item.PassivePerception == expected.PassivePerception &&
-			item.UpdatedAt == expected.UpdatedAt
-	}
-	return false
-}
 func splitConditions(value string) []string {
 	if strings.TrimSpace(value) == "" {
 		return []string{}
@@ -574,9 +564,6 @@ func effectiveArmorClass(c Character) string {
 	return strconv.Itoa(base)
 }
 
-func indexFromCharacter(c currentDocument) Index {
-	return Index{ID: c.ID, CampaignID: c.CampaignID, Name: c.Summary.Name, ArmorClass: c.Summary.ArmorClass, HpMax: c.Summary.HpMax, PassivePerception: c.Summary.PassivePerception, UpdatedAt: c.UpdatedAt}
-}
 func currentPath(id string) string { return path.Join(characterRootPath, id, "current.json") }
 func livePath(id string) string    { return path.Join(characterRootPath, id, "live.json") }
 func historyPath(id string) string { return path.Join(characterRootPath, id, "history.json") }
