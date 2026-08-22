@@ -23,6 +23,20 @@ type adminCharactersPageData struct {
 	Count       int
 }
 
+type adminCharacterVersionView struct {
+	VersionID string
+	UpdatedAt string
+}
+
+type adminCharacterVersionsPageData struct {
+	Character struct {
+		ID   string
+		Name string
+	}
+	Versions     []adminCharacterVersionView
+	VersionCount int
+}
+
 type adminAssignCharacterRequest struct {
 	UserID string `json:"userId"`
 }
@@ -105,6 +119,36 @@ func GetAdminCharactersData(users user.Repository, characters character.Reposito
 			Users:       userViews,
 			Count:       len(views),
 		})
+	}
+}
+
+func GetAdminCharacterHistory(users user.Repository, characters character.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := requireAdmin(w, r, users); !ok {
+			return
+		}
+		c, err := characters.GetByID(r.Context(), r.PathValue("id"))
+		if err != nil {
+			if errors.Is(err, character.ErrCharacterNotFound) {
+				http.Error(w, "character not found", http.StatusNotFound)
+				return
+			}
+			writeError(w, err)
+			return
+		}
+		history, err := characters.ListHistory(r.Context(), c.ID)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		versions := make([]adminCharacterVersionView, 0, len(history))
+		for _, version := range history {
+			versions = append(versions, adminCharacterVersionView{VersionID: version.VersionID, UpdatedAt: version.UpdatedAt})
+		}
+		response := adminCharacterVersionsPageData{Versions: versions, VersionCount: len(versions)}
+		response.Character.ID = c.ID
+		response.Character.Name = c.Summary.Name
+		writeJSON(w, http.StatusOK, response)
 	}
 }
 

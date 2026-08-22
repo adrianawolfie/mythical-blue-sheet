@@ -44,6 +44,7 @@ The Character domain stores versioned player character sheets, independently upd
 - `POST /api/characters/{id}/history/{version}/restore` restores a version and returns the newly composed character.
 - `DELETE /api/characters/{id}` soft-deletes one character.
 - `GET /api/admin/characters` returns the current admin user, character admin views, assignable users, and character count for the static admin characters page.
+- `GET /api/admin/characters/{id}/history` returns active character identity and version metadata to admins. It preserves oldest-to-newest repository order and omits storage file paths.
 - `POST /api/admin/characters/{id}/assignment` assigns a character to a user or clears ownership when `userId` is empty.
 - `DELETE /api/admin/characters/{id}` deletes one character as an admin.
 
@@ -54,3 +55,4 @@ The Character domain stores versioned player character sheets, independently upd
 - The preview carries the current configuration timestamp so Save passes optimistic concurrency checks and creates a new latest version.
 - The static detail page loads current configuration, history, and selected versions through the character API.
 - Undo steps to the next older version. Back to Current removes the `version` query parameter while retaining `id`.
+- The admin versions page presents the same history newest-first and links each entry to the static detail-page preview URL.

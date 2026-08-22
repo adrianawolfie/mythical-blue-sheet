@@ -85,6 +85,7 @@ flowchart TB
 | `/register.html` | `public/register.html` | Registration page. New users are disabled until an admin enables them. |
 | `/admin/users.html` | `public/admin/users.html` | Static admin page for editing users, passwords, admin flag, and enabled status. |
 | `/admin/characters.html` | `public/admin/characters.html` | Static admin page for viewing, assigning, unassigning, opening, and deleting characters. |
+| `/admin/versions.html?id={id}` | `public/admin/versions.html` | Static admin page for browsing and previewing a character's saved versions. |
 | `/admin/campaigns.html` | `public/admin/campaigns.html` | Static admin page for viewing campaigns, assigning players, and assigning or clearing the DM. |
 
 ## Auth And Admin Behavior
@@ -139,6 +140,7 @@ flowchart TD
 | `POST /api/characters/{id}/history/{version}/restore` | Restore a version while preserving live state. |
 | `DELETE /api/characters/{id}` | Soft-delete a character. |
 | `GET /api/admin/characters` | Admin character list with ownership details. |
+| `GET /api/admin/characters/{id}/history` | Admin-only character identity and version metadata. |
 | `POST /api/admin/characters/{id}/assignment` | Assign or clear character owner. |
 | `DELETE /api/admin/characters/{id}` | Admin delete character. |
 

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <script src="/js/theme-init.js"></script>
+  <title>Mythical Blue · Character Versions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/accessibility.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/toast.css" />
+  <link rel="stylesheet" href="/css/theme-mode.css" />
+  <link rel="stylesheet" href="/css/account.css" />
+  <link rel="stylesheet" href="/admin/admin.css" />
+</head>
+<body class="admin-body">
+  <main class="admin-shell" aria-labelledby="adminTitle">
+    <nav class="admin-nav"><a class="admin-back-link" href="/admin/characters.html">Back to Characters</a></nav>
+    <div class="admin-layout">
+      <aside class="admin-sidebar"><div class="admin-sidebar-inner"><p class="admin-sidebar-title">Admin</p><nav class="admin-sidebar-nav"><a class="admin-sidebar-link" href="/admin/users.html">Users</a><a class="admin-sidebar-link active" href="/admin/characters.html">Characters</a><a class="admin-sidebar-link" href="/admin/campaigns.html">Campaigns</a></nav></div></aside>
+      <section class="admin-card">
+        <div class="admin-content">
+          <header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><p class="admin-accent">Character Archive</p><h1 id="adminTitle">Character Versions</h1></div></header>
+          <section class="admin-summary">
+            <div class="admin-panel"><p class="admin-panel-label">Character</p><p class="admin-panel-value" id="versionCharacterName">Loading...</p><a class="admin-inline-action" id="openCurrentCharacter" href="/characters.html" hidden>Open current character</a></div>
+            <div class="admin-panel"><p class="admin-panel-label">Saved Versions</p><p class="admin-count" id="versionCount">0</p></div>
+          </section>
+          <section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Saved At</th><th>Version ID</th><th>State</th><th>Preview</th></tr></thead><tbody id="adminVersionsBody"><tr><td class="admin-empty" colspan="4">Loading versions...</td></tr></tbody></table></div></section>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="/js/toast.js"></script>
+  <script src="/js/theme-mode.js"></script>
+  <script src="/js/accessibility.js"></script>
+  <script src="/js/account.js"></script>
+  <script src="/admin/versions.js"></script>
+</body>
+</html>

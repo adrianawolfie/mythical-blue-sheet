@@ -101,3 +101,22 @@ func TestFileServerServesStaticAuthPages(t *testing.T) {
 		})
 	}
 }
+
+func TestFileServerServesStaticAdminVersionsPage(t *testing.T) {
+	chdirRepoRoot(t)
+	request := httptest.NewRequest(http.MethodGet, "/admin/versions.html?id=ada-character", nil)
+	response := httptest.NewRecorder()
+
+	FileServer(http.Dir("public")).ServeHTTP(response, request)
+
+	require.Equal(t, http.StatusOK, response.Code)
+	require.Contains(t, response.Body.String(), `id="adminVersionsBody"`)
+	require.Contains(t, response.Body.String(), `<script src="/admin/versions.js"></script>`)
+	require.NotContains(t, response.Body.String(), "{{")
+	charactersPage, err := os.ReadFile(filepath.Join("public", "admin", "characters.html"))
+	require.NoError(t, err)
+	require.Contains(t, string(charactersPage), "<th>Versions</th>")
+	charactersJS, err := os.ReadFile(filepath.Join("public", "admin", "characters.js"))
+	require.NoError(t, err)
+	require.Contains(t, string(charactersJS), "/admin/versions.html?id=")
+}

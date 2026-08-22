@@ -98,6 +98,12 @@ File: `public/admin/characters.html`
 
 A static admin page. `public/admin/characters.js` fetches admin-only `GET /api/admin/characters` to list characters, link to character sheets, assign or clear ownership, and delete characters.
 
+### `/admin/versions.html?id={id}`
+
+File: `public/admin/versions.html`
+
+A static admin page. `public/admin/versions.js` fetches admin-only `GET /api/admin/characters/{id}/history`, displays saved versions newest-first, and links each version to `/character.html?id={id}&version={versionId}` for preview.
+
 ### `/admin/campaigns.html`
 
 File: `public/admin/campaigns.html`

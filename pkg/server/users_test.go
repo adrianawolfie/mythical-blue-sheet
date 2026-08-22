@@ -407,6 +407,108 @@ func TestGetAdminCharactersShowsClassLevelAndUserName(t *testing.T) {
 	}
 }
 
+func TestGetAdminCharacterHistoryReturnsVersionMetadata(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	characters := newCharacterTestRepository(t, nil)
+	ctx := context.Background()
+	c := character.Character{ID: "ada-character", Summary: character.Summary{Name: "Ada"}, Fields: character.Fields{"characterName": "Ada"}}
+	if err := characters.CreateOrReplace(ctx, c); err != nil {
+		t.Fatalf("create first version: %v", err)
+	}
+	c.Summary.Name = "Ada Storm"
+	c.Fields["characterName"] = "Ada Storm"
+	if err := characters.CreateOrReplace(ctx, c); err != nil {
+		t.Fatalf("create second version: %v", err)
+	}
+	expected, err := characters.ListHistory(ctx, c.ID)
+	if err != nil {
+		t.Fatalf("list history: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/characters/ada-character/history", nil)
+	req.SetPathValue("id", c.ID)
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+	GetAdminCharacterHistory(users, characters).ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d: %s", w.Code, w.Body.String())
+	}
+	var data adminCharacterVersionsPageData
+	if err := json.NewDecoder(w.Body).Decode(&data); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if data.Character.ID != c.ID || data.Character.Name != "Ada Storm" || data.VersionCount != 2 || len(data.Versions) != 2 {
+		t.Fatalf("unexpected history response: %#v", data)
+	}
+	if data.Versions[0].VersionID != expected[0].VersionID || data.Versions[1].VersionID != expected[1].VersionID {
+		t.Fatalf("expected oldest-to-newest versions, got %#v", data.Versions)
+	}
+	if strings.Contains(w.Body.String(), `"File"`) || strings.Contains(w.Body.String(), `"file"`) {
+		t.Fatalf("response exposed storage paths: %s", w.Body.String())
+	}
+}
+
+func TestGetAdminCharacterHistoryRequiresAdmin(t *testing.T) {
+	characters := newCharacterTestRepository(t, []character.Character{{ID: "ada-character", Summary: character.Summary{Name: "Ada"}}})
+	tests := []struct {
+		name       string
+		users      user.Repository
+		cookie     string
+		statusCode int
+	}{
+		{name: "missing cookie", users: newUserTestRepository(t, nil), statusCode: http.StatusSeeOther},
+		{name: "non admin", users: newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Email: "ada@example.com"}}), cookie: "ada@example.com", statusCode: http.StatusForbidden},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, "/api/admin/characters/ada-character/history", nil)
+			req.SetPathValue("id", "ada-character")
+			if tt.cookie != "" {
+				req.AddCookie(&http.Cookie{Name: "user", Value: tt.cookie})
+			}
+			w := httptest.NewRecorder()
+			GetAdminCharacterHistory(tt.users, characters).ServeHTTP(w, req)
+			if w.Code != tt.statusCode {
+				t.Fatalf("expected status %d, got %d", tt.statusCode, w.Code)
+			}
+		})
+	}
+}
+
+func TestGetAdminCharacterHistoryRejectsDeletedCharacter(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Email: "admin@example.com", IsAdmin: true}})
+	characters := newCharacterTestRepository(t, nil)
+	ctx := context.Background()
+	if err := characters.CreateOrReplace(ctx, character.Character{ID: "ada-character", Summary: character.Summary{Name: "Ada"}}); err != nil {
+		t.Fatalf("create character: %v", err)
+	}
+	if err := characters.Delete(ctx, "ada-character"); err != nil {
+		t.Fatalf("delete character: %v", err)
+	}
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/characters/ada-character/history", nil)
+	req.SetPathValue("id", "ada-character")
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+	GetAdminCharacterHistory(users, characters).ServeHTTP(w, req)
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected status 404, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
+func TestGetAdminCharacterHistoryRejectsMissingCharacter(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Email: "admin@example.com", IsAdmin: true}})
+	characters := newCharacterTestRepository(t, nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/admin/characters/missing/history", nil)
+	req.SetPathValue("id", "missing")
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+	GetAdminCharacterHistory(users, characters).ServeHTTP(w, req)
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected status 404, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 func TestPostAdminCharacterAssignmentPersistsUserID(t *testing.T) {
 	chdirRepoRoot(t)
 

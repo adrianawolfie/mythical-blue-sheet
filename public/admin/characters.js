@@ -51,7 +51,7 @@
   function renderCharacters(characters) {
     body.textContent = "";
     if (!characters.length) {
-      body.innerHTML = '<tr><td class="admin-empty" colspan="4">No saved characters found.</td></tr>';
+      body.innerHTML = '<tr><td class="admin-empty" colspan="5">No saved characters found.</td></tr>';
       return;
     }
 
@@ -64,7 +64,13 @@
       link.href = `/character.html?id=${encodeURIComponent(character.ID)}`;
       link.textContent = character.Name;
       nameCell.appendChild(link);
-      tr.append(nameCell, cell(character.Class), cell(character.Level));
+      const versionsCell = document.createElement("td");
+      const versionsLink = document.createElement("a");
+      versionsLink.className = "admin-inline-action";
+      versionsLink.href = `/admin/versions.html?id=${encodeURIComponent(character.ID)}`;
+      versionsLink.textContent = "View versions";
+      versionsCell.appendChild(versionsLink);
+      tr.append(nameCell, cell(character.Class), cell(character.Level), versionsCell);
       const userCell = document.createElement("td");
       userCell.className = "admin-break";
       const actions = document.createElement("div");
@@ -106,7 +112,7 @@
       return;
     }
     if (response.status === 403) {
-      body.innerHTML = '<tr><td class="admin-empty" colspan="4">Forbidden.</td></tr>';
+      body.innerHTML = '<tr><td class="admin-empty" colspan="5">Forbidden.</td></tr>';
       return;
     }
     if (!response.ok) throw new Error("Could not load characters.");
@@ -141,6 +147,6 @@
 
   load().catch((err) => {
     console.error(err);
-    body.innerHTML = '<tr><td class="admin-empty" colspan="4">Could not load characters.</td></tr>';
+    body.innerHTML = '<tr><td class="admin-empty" colspan="5">Could not load characters.</td></tr>';
   });
 })();

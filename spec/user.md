@@ -27,5 +27,6 @@ The User domain stores users for login, registration, character ownership, admin
 - `POST /api/register` creates a user and redirects to `/login.html`.
 - `GET /admin/users.html` is served from `public/admin/users.html` by the static file server; admin data is protected by `/api/admin/users`.
 - `GET /admin/characters.html` is served from `public/admin/characters.html` by the static file server; admin data is protected by `/api/admin/characters`.
+- `GET /admin/versions.html?id={id}` is served from `public/admin/versions.html`; character version metadata is protected by `/api/admin/characters/{id}/history`.
 - `POST /api/admin/characters/{id}/assignment` assigns a character to a user.
 - `GET /admin/campaigns.html` is served from `public/admin/campaigns.html` by the static file server; admin data is protected by `/api/admin/campaigns`.
