@@ -23,7 +23,7 @@
 
       <p class="login-copy">Create a shipboard account to keep your character sheets and campaign tools close at hand. An admin will review and enable your account before you can log in.</p>
 
-      <form class="login-form" id="registerForm" action="/users" method="post">
+      <form class="login-form" id="registerForm" action="/api/register" method="post">
         <label class="login-field">
           <span>Name</span>
           <input id="name" name="name" type="text" autocomplete="name" required />
@@ -52,7 +52,7 @@
 
         <div class="login-actions">
           <button class="login-submit" type="submit">Create Account</button>
-          <a class="login-register" href="/login">Back to Login</a>
+          <a class="login-register" href="/login.html">Back to Login</a>
         </div>
 
         <p class="login-error" id="registerError" role="alert" aria-live="polite"></p>
@@ -141,7 +141,7 @@
           }
 
           if (response.ok) {
-            window.location.assign("/login");
+            window.location.assign("/login.html");
             return;
           }
 

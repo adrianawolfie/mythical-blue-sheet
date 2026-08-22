@@ -77,7 +77,7 @@
   async function loadUser() {
     const response = await fetch("/api/me", { headers: { Accept: "application/json" } });
     if (response.redirected || response.status === 401) {
-      window.location.assign("/login");
+      window.location.assign("/login.html");
       return null;
     }
     if (!response.ok) throw new Error("Could not load account.");
@@ -120,7 +120,7 @@
         body: JSON.stringify({ name: nameInput.value, currentPassword: currentPassword.value, newPassword: newPassword.value })
       });
       if (response.redirected || response.status === 401) {
-        window.location.assign("/login");
+        window.location.assign("/login.html");
         return;
       }
       if (!response.ok) {

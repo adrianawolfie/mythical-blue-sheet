@@ -4,9 +4,10 @@
 
 - Make the smallest possible changes that satisfy the request.
 - Prefer small inline changes over introducing helper functions.
-- In templates, render required data directly instead of adding fallback branches for missing fields; missing required data should be visible during development.
-- Prefer server-side rendered templates for page UI.
-- Big update requests should show a toast; when using templates, use a query string to signal the toast after redirect/reload.
+- Keep every page as static HTML under `public/`; do not introduce server-rendered templates.
+- Load dynamic page data through JSON APIs.
+- Use query parameters for page identifiers and other page variables instead of path segments.
+- Big update requests should show a toast; use a query string to signal the toast after redirect/reload.
 
 ## Architecture Guidance
 
@@ -16,7 +17,7 @@
 - Prefer adding new behavior through the same package boundaries already in use.
 - Keep storage access in repository packages and HTTP request handling in server packages.
 - New API behavior should be described by the owning domain package/repository and implemented over HTTP in `pkg/server`.
-- New frontend pages should be documented in `spec/README.md` and should follow the existing server-rendered template/static asset patterns.
+- New frontend pages should be documented in `spec/README.md` and should follow the existing static HTML and asset patterns.
 - Reuse existing route, repository, and JSON response patterns before introducing new abstractions.
 
 ## Project Spec

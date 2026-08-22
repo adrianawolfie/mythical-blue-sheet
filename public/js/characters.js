@@ -42,7 +42,7 @@
     try {
       const response = await fetch("/api/characters?owned=1", { cache: "no-store" });
       if (response.status === 401) {
-        window.location.assign("/login");
+        window.location.assign("/login.html");
         return;
       }
       if (!response.ok) throw new Error("Could not load characters.");

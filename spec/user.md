@@ -19,14 +19,13 @@ The User domain stores users for login, registration, character ownership, admin
 - `GET /api/me` returns the current user ID, name, and email from the `user` cookie, or `401` when no valid user cookie is present.
 - `PUT /api/me` updates the logged-in user's name and optionally password. Password changes require `currentPassword` and `newPassword`; name-only changes require only a valid login cookie.
 - `GET /api/admin/users` returns the current admin user, registered users, and user count for the static admin users page.
-- `PUT /admin/users/{id}` updates a user as an admin, including optional password changes and enabling or disabling login.
+- `PUT /api/admin/users/{id}` updates a user as an admin, including optional password changes and enabling or disabling login.
 
-- `GET /login` renders the login page.
-- `POST /login` authenticates a user and sets the `user` cookie.
-- `GET /register` renders the registration page.
-- `POST /users` creates a user and redirects to login.
-- `GET /admin` redirects to `/admin/users.html`.
+- `GET /login.html` is served from `public/login.html` by the static file server.
+- `POST /api/login` authenticates a user and sets the `user` cookie.
+- `GET /register.html` is served from `public/register.html` by the static file server.
+- `POST /api/register` creates a user and redirects to `/login.html`.
 - `GET /admin/users.html` is served from `public/admin/users.html` by the static file server; admin data is protected by `/api/admin/users`.
 - `GET /admin/characters.html` is served from `public/admin/characters.html` by the static file server; admin data is protected by `/api/admin/characters`.
-- `POST /admin/characters/{id}/assignment` assigns a character to a user.
+- `POST /api/admin/characters/{id}/assignment` assigns a character to a user.
 - `GET /admin/campaigns.html` is served from `public/admin/campaigns.html` by the static file server; admin data is protected by `/api/admin/campaigns`.

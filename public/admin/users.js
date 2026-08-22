@@ -39,7 +39,7 @@
   async function load() {
     const response = await fetch("/api/admin/users", { headers: { Accept: "application/json" } });
     if (response.redirected || response.status === 401) {
-      window.location.assign("/login");
+      window.location.assign("/login.html");
       return;
     }
     if (response.status === 403) {
@@ -79,7 +79,7 @@
       status.className = user.Enabled ? "admin-badge admin-badge-on admin-status-toggle" : "admin-badge admin-status-toggle";
       status.textContent = user.Enabled ? "Enabled" : "Disabled";
       status.addEventListener("click", async () => {
-        const response = await fetch(`/admin/users/${encodeURIComponent(user.ID)}`, {
+        const response = await fetch(`/api/admin/users/${encodeURIComponent(user.ID)}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name: user.Name, email: user.Email, isAdmin: user.IsAdmin, enabled: !user.Enabled })
@@ -101,7 +101,7 @@
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     error.textContent = "";
-    const response = await fetch(`/admin/users/${encodeURIComponent(editingUserId)}`, {
+    const response = await fetch(`/api/admin/users/${encodeURIComponent(editingUserId)}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: nameInput.value, email: emailInput.value, password: passwordInput.value, isAdmin: adminInput.checked, enabled: enabledInput.checked })

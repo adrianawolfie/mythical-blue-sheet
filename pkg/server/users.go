@@ -1,31 +1,11 @@
 package server
 
 import (
-	_ "embed"
 	"encoding/json"
 	"errors"
-	"html/template"
 	"net/http"
 	"raperonzolo/character-sheet/pkg/user"
 )
-
-func GetLogin() http.HandlerFunc {
-	tmpl := template.Must(template.ParseFiles("public/login.html"))
-	return func(w http.ResponseWriter, r *http.Request) {
-		if err := tmpl.Execute(w, nil); err != nil {
-			renderErrorPage(w, err)
-		}
-	}
-}
-
-func GetRegistration() http.HandlerFunc {
-	tmpl := template.Must(template.ParseFiles("public/register.html"))
-	return func(w http.ResponseWriter, r *http.Request) {
-		if err := tmpl.Execute(w, nil); err != nil {
-			renderErrorPage(w, err)
-		}
-	}
-}
 
 func GetCurrentUser(repo user.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +58,7 @@ func PutCurrentUser(repo user.Repository) http.HandlerFunc {
 	}
 }
 
-func PostUser(repo user.Repository) http.HandlerFunc {
+func PostRegister(repo user.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var u user.User
 		if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
@@ -93,7 +73,7 @@ func PostUser(repo user.Repository) http.HandlerFunc {
 			renderErrorPage(w, err)
 			return
 		}
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/login.html", http.StatusSeeOther)
 	}
 }
 

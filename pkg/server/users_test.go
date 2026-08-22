@@ -167,42 +167,12 @@ func chdirRepoRoot(t *testing.T) {
 	})
 }
 
-func TestGetLoginRendersLoginPage(t *testing.T) {
-	chdirRepoRoot(t)
-	req := httptest.NewRequest(http.MethodGet, "/login", nil)
-	w := httptest.NewRecorder()
-
-	GetLogin().ServeHTTP(w, req)
-
-	if w.Code != http.StatusOK {
-		t.Fatalf("expected status 200, got %d", w.Code)
-	}
-	if !strings.Contains(w.Body.String(), "Crew Login") {
-		t.Fatalf("expected login page in response")
-	}
-}
-
-func TestGetRegistrationRendersRegistrationPage(t *testing.T) {
-	chdirRepoRoot(t)
-	req := httptest.NewRequest(http.MethodGet, "/register", nil)
-	w := httptest.NewRecorder()
-
-	GetRegistration().ServeHTTP(w, req)
-
-	if w.Code != http.StatusOK {
-		t.Fatalf("expected status 200, got %d", w.Code)
-	}
-	if !strings.Contains(w.Body.String(), "Create Account") {
-		t.Fatalf("expected registration page in response")
-	}
-}
-
 func TestPostLoginSetsCookieAndRedirects(t *testing.T) {
 	users := newUserTestRepository(t, nil)
 	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!", Enabled: true}); err != nil {
 		t.Fatalf("create user: %v", err)
 	}
-	req := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(`{"username":"ada@example.com","password":"Encrypted1!"}`))
+	req := httptest.NewRequest(http.MethodPost, "/api/login", strings.NewReader(`{"username":"ada@example.com","password":"Encrypted1!"}`))
 	w := httptest.NewRecorder()
 
 	PostLogin(users).ServeHTTP(w, req)
@@ -224,7 +194,7 @@ func TestPostLoginRejectsInvalidPassword(t *testing.T) {
 	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!", Enabled: true}); err != nil {
 		t.Fatalf("create user: %v", err)
 	}
-	req := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(`{"username":"ada@example.com","password":"wrong"}`))
+	req := httptest.NewRequest(http.MethodPost, "/api/login", strings.NewReader(`{"username":"ada@example.com","password":"wrong"}`))
 	w := httptest.NewRecorder()
 
 	PostLogin(users).ServeHTTP(w, req)
@@ -246,7 +216,7 @@ func TestPostLoginRejectsDisabledUser(t *testing.T) {
 	if _, err := users.UpdateByID(context.Background(), created.ID.String(), user.User{Name: "Ada Storm", Email: "ada@example.com", Enabled: false}); err != nil {
 		t.Fatalf("disable user: %v", err)
 	}
-	req := httptest.NewRequest(http.MethodPost, "/login", strings.NewReader(`{"username":"ada@example.com","password":"Encrypted1!"}`))
+	req := httptest.NewRequest(http.MethodPost, "/api/login", strings.NewReader(`{"username":"ada@example.com","password":"Encrypted1!"}`))
 	w := httptest.NewRecorder()
 
 	PostLogin(users).ServeHTTP(w, req)
@@ -373,7 +343,7 @@ func TestPutAdminUserUpdatesDetailsAndPassword(t *testing.T) {
 	if err != nil {
 		t.Fatalf("get ada: %v", err)
 	}
-	req := httptest.NewRequest(http.MethodPut, "/admin/users/"+ada.ID.String(), strings.NewReader(`{"name":"Captain Ada","email":"captain@example.com","password":"Changed1!","isAdmin":true,"enabled":true}`))
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/users/"+ada.ID.String(), strings.NewReader(`{"name":"Captain Ada","email":"captain@example.com","password":"Changed1!","isAdmin":true,"enabled":true}`))
 	req.SetPathValue("id", ada.ID.String())
 	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
 	w := httptest.NewRecorder()
@@ -394,7 +364,7 @@ func TestPutAdminUserUpdatesDetailsAndPassword(t *testing.T) {
 
 func TestPutAdminUserRejectsNonAdmin(t *testing.T) {
 	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Ada", Email: "ada@example.com", Password: "hash"}})
-	req := httptest.NewRequest(http.MethodPut, "/admin/users/018fe68a-01a8-70b1-8ea3-2d0b819a2d29", strings.NewReader(`{"name":"Ada","email":"ada@example.com"}`))
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/users/018fe68a-01a8-70b1-8ea3-2d0b819a2d29", strings.NewReader(`{"name":"Ada","email":"ada@example.com"}`))
 	req.SetPathValue("id", "018fe68a-01a8-70b1-8ea3-2d0b819a2d29")
 	req.AddCookie(&http.Cookie{Name: "user", Value: "ada@example.com"})
 	w := httptest.NewRecorder()
@@ -461,7 +431,7 @@ func TestPostAdminCharacterAssignmentPersistsUserID(t *testing.T) {
 	}})
 	req := httptest.NewRequest(
 		http.MethodPost,
-		"/admin/characters/ada-character/assignment",
+		"/api/admin/characters/ada-character/assignment",
 		bytes.NewBufferString(`{"userId":"018fe68a-01a8-70b1-8ea3-2d0b819a2d29"}`),
 	)
 	req.SetPathValue("id", "ada-character")
@@ -491,7 +461,7 @@ func TestPostAdminCharacterAssignmentCanUnassign(t *testing.T) {
 			Name: "Ada Storm",
 		},
 	}})
-	req := httptest.NewRequest(http.MethodPost, "/admin/characters/ada-character/assignment", bytes.NewBufferString(`{"userId":""}`))
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/characters/ada-character/assignment", bytes.NewBufferString(`{"userId":""}`))
 	req.SetPathValue("id", "ada-character")
 	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
 	w := httptest.NewRecorder()
@@ -513,7 +483,7 @@ func TestPostAdminCharacterAssignmentCanUnassign(t *testing.T) {
 func TestDeleteAdminCharacterRemovesCharacter(t *testing.T) {
 	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
 	characters := newCharacterTestRepository(t, []character.Character{{ID: "ada-character", Summary: character.Summary{Name: "Ada Storm"}}})
-	req := httptest.NewRequest(http.MethodDelete, "/admin/characters/ada-character", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/characters/ada-character", nil)
 	req.SetPathValue("id", "ada-character")
 	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
 	w := httptest.NewRecorder()
@@ -532,16 +502,16 @@ func TestDeleteAdminCharacterRemovesCharacter(t *testing.T) {
 	}
 }
 
-func TestPostUserPersistsName(t *testing.T) {
+func TestPostRegisterPersistsName(t *testing.T) {
 	chdirRepoRoot(t)
 
 	t.Setenv("USER_SECRET", "secret")
 	users := newUserTestRepository(t, nil)
-	req := httptest.NewRequest(http.MethodPost, "/users", strings.NewReader(`{"name":"Ada Storm","email":"ada@example.com","password":"Encrypted1!"}`))
+	req := httptest.NewRequest(http.MethodPost, "/api/register", strings.NewReader(`{"name":"Ada Storm","email":"ada@example.com","password":"Encrypted1!"}`))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
-	PostUser(users).ServeHTTP(w, req)
+	PostRegister(users).ServeHTTP(w, req)
 
 	if w.Code != http.StatusSeeOther {
 		t.Fatalf("expected status 303, got %d", w.Code)
@@ -553,8 +523,8 @@ func TestPostUserPersistsName(t *testing.T) {
 	if created.Name != "Ada Storm" {
 		t.Fatalf("expected created user name %q, got %q", "Ada Storm", created.Name)
 	}
-	if location := w.Header().Get("Location"); location != "/login" {
-		t.Fatalf("expected redirect to /login, got %q", location)
+	if location := w.Header().Get("Location"); location != "/login.html" {
+		t.Fatalf("expected redirect to /login.html, got %q", location)
 	}
 }
 
@@ -871,20 +841,6 @@ func TestCharacterHistoryCanBeListedAndRestored(t *testing.T) {
 	}
 }
 
-func TestGetAdminRedirectsToUsers(t *testing.T) {
-	req := httptest.NewRequest(http.MethodGet, "/admin", nil)
-	w := httptest.NewRecorder()
-
-	GetAdmin().ServeHTTP(w, req)
-
-	if w.Code != http.StatusSeeOther {
-		t.Fatalf("expected status 303, got %d", w.Code)
-	}
-	if location := w.Header().Get("Location"); location != "/admin/users.html" {
-		t.Fatalf("expected redirect to /admin/users.html, got %q", location)
-	}
-}
-
 func TestGetCampaignReturnsCampaignState(t *testing.T) {
 	campaigns := newCampaignTestRepository(t, nil)
 	req := httptest.NewRequest(http.MethodGet, "/api/campaign-state", nil)
@@ -1158,7 +1114,7 @@ func TestPostAdminCampaignPlayerPersistsUserID(t *testing.T) {
 		CalendarDate:  campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
 		Players:       []string{"018fe68a-01a8-70b1-8ea3-2d0b819a2d29"},
 	}})
-	req := httptest.NewRequest(http.MethodPost, "/admin/campaigns/campaign-1/players", bytes.NewBufferString(`{"userId":"018fe68a-01a8-70b1-8ea3-2d0b819a2d30"}`))
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/campaigns/campaign-1/players", bytes.NewBufferString(`{"userId":"018fe68a-01a8-70b1-8ea3-2d0b819a2d30"}`))
 	req.SetPathValue("id", "campaign-1")
 	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
 	w := httptest.NewRecorder()
@@ -1188,7 +1144,7 @@ func TestPostAdminCampaignPlayerDoesNotDuplicateUserID(t *testing.T) {
 		CalendarDate:  campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
 		Players:       []string{"018fe68a-01a8-70b1-8ea3-2d0b819a2d29"},
 	}})
-	req := httptest.NewRequest(http.MethodPost, "/admin/campaigns/campaign-1/players", bytes.NewBufferString(`{"userId":"018fe68a-01a8-70b1-8ea3-2d0b819a2d29"}`))
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/campaigns/campaign-1/players", bytes.NewBufferString(`{"userId":"018fe68a-01a8-70b1-8ea3-2d0b819a2d29"}`))
 	req.SetPathValue("id", "campaign-1")
 	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
 	w := httptest.NewRecorder()
@@ -1218,7 +1174,7 @@ func TestDeleteAdminCampaignPlayerPersistsRemoval(t *testing.T) {
 		CalendarDate:  campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
 		Players:       []string{"018fe68a-01a8-70b1-8ea3-2d0b819a2d29", "018fe68a-01a8-70b1-8ea3-2d0b819a2d30"},
 	}})
-	req := httptest.NewRequest(http.MethodDelete, "/admin/campaigns/campaign-1/players/018fe68a-01a8-70b1-8ea3-2d0b819a2d30", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/api/admin/campaigns/campaign-1/players/018fe68a-01a8-70b1-8ea3-2d0b819a2d30", nil)
 	req.SetPathValue("id", "campaign-1")
 	req.SetPathValue("userId", "018fe68a-01a8-70b1-8ea3-2d0b819a2d30")
 	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
@@ -1251,7 +1207,7 @@ func TestPutAdminCampaignDMPersistsUserID(t *testing.T) {
 		SchemaVersion: 1,
 		CalendarDate:  campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
 	}})
-	req := httptest.NewRequest(http.MethodPut, "/admin/campaigns/campaign-1/dm", bytes.NewBufferString(`{"userId":"018fe68a-01a8-70b1-8ea3-2d0b819a2d30"}`))
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/campaigns/campaign-1/dm", bytes.NewBufferString(`{"userId":"018fe68a-01a8-70b1-8ea3-2d0b819a2d30"}`))
 	req.SetPathValue("id", "campaign-1")
 	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
 	w := httptest.NewRecorder()
@@ -1281,7 +1237,7 @@ func TestPutAdminCampaignDMCanUnassign(t *testing.T) {
 		CalendarDate:  campaign.CalendarDate{Year: 4520, Month: &month, Day: &day},
 		DM:            "018fe68a-01a8-70b1-8ea3-2d0b819a2d29",
 	}})
-	req := httptest.NewRequest(http.MethodPut, "/admin/campaigns/campaign-1/dm", bytes.NewBufferString(`{"userId":""}`))
+	req := httptest.NewRequest(http.MethodPut, "/api/admin/campaigns/campaign-1/dm", bytes.NewBufferString(`{"userId":""}`))
 	req.SetPathValue("id", "campaign-1")
 	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
 	w := httptest.NewRecorder()

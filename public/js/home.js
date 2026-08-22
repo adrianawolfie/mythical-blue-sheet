@@ -5,7 +5,7 @@
   async function fetchJSON(url) {
     const response = await fetch(url, { headers: { Accept: "application/json" } });
     if (response.status === 401) {
-      window.location.assign("/login");
+      window.location.assign("/login.html");
       return null;
     }
     if (!response.ok) {

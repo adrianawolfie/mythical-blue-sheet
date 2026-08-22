@@ -22,9 +22,9 @@ Campaign records are stored as `campaign/{id}.json`. The campaign list is stored
 
 - `GET /admin/campaigns.html` is served from `public/admin/campaigns.html` by the static file server; admin data is protected by `/api/admin/campaigns`.
 - `GET /api/admin/campaigns` returns campaign admin views for the static admin campaigns page.
-- `POST /admin/campaigns/{id}/players` adds a user ID to a campaign's players.
-- `DELETE /admin/campaigns/{id}/players/{userId}` removes a user ID from a campaign's players.
-- `PUT /admin/campaigns/{id}/dm` assigns or clears a campaign's DM user ID.
+- `POST /api/admin/campaigns/{id}/players` adds a user ID to a campaign's players.
+- `DELETE /api/admin/campaigns/{id}/players/{userId}` removes a user ID from a campaign's players.
+- `PUT /api/admin/campaigns/{id}/dm` assigns or clears a campaign's DM user ID.
 
 ## HTTP Routes
 

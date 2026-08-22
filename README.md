@@ -2,7 +2,7 @@
 
 Mythical Blue is a Go HTTP server with a plain HTML, CSS, and JavaScript frontend for character sheets, campaign administration, and DM tools.
 
-The project intentionally avoids a frontend build step. Pages are either static files served from `public/` or server-rendered HTML templates that receive data from Go handlers.
+The project intentionally avoids a frontend build step. Every page is a static HTML file served from `public/`; dynamic data is loaded from JSON APIs.
 
 ## Architecture At A Glance
 
@@ -29,13 +29,13 @@ The important rule is that HTTP handlers do request/response work, while reposit
 | Area | Location | Responsibility |
 | --- | --- | --- |
 | Server entrypoint | `bin/main.go` | Loads config, creates repositories, registers routes, serves `public/`, starts port `8080`. |
-| HTTP handlers | `pkg/server` | Cookies, auth checks, route params, request JSON, response JSON, template rendering, redirects. |
+| HTTP handlers | `pkg/server` | Cookies, auth checks, route params, request JSON, response JSON, and redirects. |
 | Character domain | `pkg/character` | Character JSON, character index, ownership, admin assignment, status updates, deletion. |
 | Campaign domain | `pkg/campaign` | Campaign files, campaign list, players, DM assignment, admin campaign views, calendar state. |
 | Statblock domain | `pkg/statblock` | Custom campaign statblocks. |
 | User domain | `pkg/user` | Registration, login, password validation/hashing, admin flag, enabled status, profile updates. |
 | Storage boundary | `pkg/storage` | Abstracts local filesystem and S3 object storage. |
-| Frontend | `public/` | Static HTML, server templates, CSS, JavaScript, assets. |
+| Frontend | `public/` | Static HTML, CSS, JavaScript, and assets. |
 | Specs | `spec/` | Design notes for domains, routes, storage, and pages. |
 
 ## Request Flow
@@ -59,23 +59,17 @@ sequenceDiagram
 
 ## Page Model
 
-The app uses two page styles:
-
-- Static HTML pages fetch JSON APIs with JavaScript.
-- Server-rendered templates are rendered by `pkg/server` when the page needs server-side data at load time.
+All pages are static HTML and fetch dynamic data from JSON APIs with JavaScript. Page identifiers and versions use query parameters rather than path segments.
 
 ```mermaid
 flowchart TB
   Public[public/]
   Static[Static HTML pages]
-  Templates[Server-rendered templates]
   APIs[JSON APIs]
 
   Public --> Static
-  Public --> Templates
   Static --> APIs
-  Templates --> Server[pkg/server]
-  APIs --> Server
+  APIs --> Server[pkg/server]
 ```
 
 ## Pages
@@ -106,7 +100,7 @@ Admin pages are static HTML shells. The page files can be loaded directly, but t
 
 ```mermaid
 flowchart TD
-  Login[POST /login] --> Auth[pkg/user Authenticate]
+  Login[POST /api/login] --> Auth[pkg/user Authenticate]
   Auth --> Enabled{enabled?}
   Enabled -- no --> Reject[403 disabled]
   Enabled -- yes --> Cookie[Set user cookie]
@@ -124,10 +118,10 @@ flowchart TD
 | --- | --- |
 | `GET /api/me` | Current logged-in user. |
 | `PUT /api/me` | Update own name and optionally password. |
-| `POST /login` | Authenticate and set cookie. |
-| `POST /users` | Register a disabled-by-default user. |
+| `POST /api/login` | Authenticate and set cookie. |
+| `POST /api/register` | Register a disabled-by-default user. |
 | `GET /api/admin/users` | Admin user list data. |
-| `PUT /admin/users/{id}` | Admin update of user details, password, admin flag, enabled status. |
+| `PUT /api/admin/users/{id}` | Admin update of user details, password, admin flag, enabled status. |
 
 ### Character
 
@@ -145,8 +139,8 @@ flowchart TD
 | `POST /api/characters/{id}/history/{version}/restore` | Restore a version while preserving live state. |
 | `DELETE /api/characters/{id}` | Soft-delete a character. |
 | `GET /api/admin/characters` | Admin character list with ownership details. |
-| `POST /admin/characters/{id}/assignment` | Assign or clear character owner. |
-| `DELETE /admin/characters/{id}` | Admin delete character. |
+| `POST /api/admin/characters/{id}/assignment` | Assign or clear character owner. |
+| `DELETE /api/admin/characters/{id}` | Admin delete character. |
 
 ### Campaign
 
@@ -158,9 +152,9 @@ flowchart TD
 | `GET /api/campaign-state` | Shared campaign state. |
 | `POST /api/campaign-state` | Save shared campaign state. |
 | `GET /api/admin/campaigns` | Admin campaign list with player and DM display data. |
-| `POST /admin/campaigns/{id}/players` | Add player. |
-| `DELETE /admin/campaigns/{id}/players/{userId}` | Remove player. |
-| `PUT /admin/campaigns/{id}/dm` | Assign or clear campaign DM. |
+| `POST /api/admin/campaigns/{id}/players` | Add player. |
+| `DELETE /api/admin/campaigns/{id}/players/{userId}` | Remove player. |
+| `PUT /api/admin/campaigns/{id}/dm` | Assign or clear campaign DM. |
 
 ### Statblocks
 

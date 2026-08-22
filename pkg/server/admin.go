@@ -49,12 +49,6 @@ type adminCampaignDMRequest struct {
 	UserID string `json:"userId"`
 }
 
-func GetAdmin() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/admin/users.html", http.StatusSeeOther)
-	}
-}
-
 func GetAdminUsersData(repo user.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cookie, ok := requireCookie(w, r)
@@ -239,7 +233,7 @@ func requireAdmin(w http.ResponseWriter, r *http.Request, repo user.Repository) 
 func requireCookie(w http.ResponseWriter, r *http.Request) (string, bool) {
 	cookie, err := r.Cookie("user")
 	if err != nil || cookie.Value == "" {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/login.html", http.StatusSeeOther)
 		return "", false
 	}
 	return cookie.Value, true
@@ -271,7 +265,7 @@ func handleAdminError(w http.ResponseWriter, r *http.Request, err error) {
 		return
 	}
 	if err == user.ErrUserNotFound {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/login.html", http.StatusSeeOther)
 		return
 	}
 	renderErrorPage(w, err)

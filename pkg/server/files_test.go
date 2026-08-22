@@ -75,3 +75,29 @@ func TestFileServerServesStaticCharacterListPage(t *testing.T) {
 	require.NoError(t, err)
 	require.Contains(t, string(charactersJS), "/api/characters?owned=1")
 }
+
+func TestFileServerServesStaticAuthPages(t *testing.T) {
+	chdirRepoRoot(t)
+	tests := []struct {
+		path     string
+		content  string
+		action   string
+		pageLink string
+	}{
+		{path: "/login.html", content: "Crew Login", action: `action="/api/login"`, pageLink: `href="/register.html"`},
+		{path: "/register.html", content: "Create Account", action: `action="/api/register"`, pageLink: `href="/login.html"`},
+	}
+	for _, tt := range tests {
+		t.Run(tt.path, func(t *testing.T) {
+			request := httptest.NewRequest(http.MethodGet, tt.path, nil)
+			response := httptest.NewRecorder()
+			FileServer(http.Dir("public")).ServeHTTP(response, request)
+
+			require.Equal(t, http.StatusOK, response.Code)
+			require.Contains(t, response.Body.String(), tt.content)
+			require.Contains(t, response.Body.String(), tt.action)
+			require.Contains(t, response.Body.String(), tt.pageLink)
+			require.NotContains(t, response.Body.String(), "{{")
+		})
+	}
+}

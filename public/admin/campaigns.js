@@ -138,7 +138,7 @@
   async function load() {
     const response = await fetch("/api/admin/campaigns", { headers: { Accept: "application/json" } });
     if (response.redirected || response.status === 401) {
-      window.location.assign("/login");
+      window.location.assign("/login.html");
       return;
     }
     if (response.status === 403) {
@@ -172,7 +172,7 @@
         const select = document.querySelector(`[data-campaign-player-select="${CSS.escape(campaignId)}"]`);
         const userId = select ? select.value : "";
         if (!userId) return;
-        const response = await fetch(`/admin/campaigns/${encodeURIComponent(campaignId)}/players`, {
+        const response = await fetch(`/api/admin/campaigns/${encodeURIComponent(campaignId)}/players`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId })
@@ -183,7 +183,7 @@
       if (remove) {
         const campaignId = remove.dataset.campaignId;
         const userId = remove.dataset.userId;
-        const response = await fetch(`/admin/campaigns/${encodeURIComponent(campaignId)}/players/${encodeURIComponent(userId)}`, { method: "DELETE" });
+        const response = await fetch(`/api/admin/campaigns/${encodeURIComponent(campaignId)}/players/${encodeURIComponent(userId)}`, { method: "DELETE" });
         if (!response.ok) throw new Error("Failed to remove player.");
         await load();
       }
@@ -191,7 +191,7 @@
         const campaignId = assignDM.dataset.campaignAssignDm;
         const select = document.querySelector(`[data-campaign-dm-select="${CSS.escape(campaignId)}"]`);
         const userId = select ? select.value : "";
-        const response = await fetch(`/admin/campaigns/${encodeURIComponent(campaignId)}/dm`, {
+        const response = await fetch(`/api/admin/campaigns/${encodeURIComponent(campaignId)}/dm`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId })

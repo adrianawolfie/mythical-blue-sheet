@@ -44,8 +44,8 @@ The Character domain stores versioned player character sheets, independently upd
 - `POST /api/characters/{id}/history/{version}/restore` restores a version and returns the newly composed character.
 - `DELETE /api/characters/{id}` soft-deletes one character.
 - `GET /api/admin/characters` returns the current admin user, character admin views, assignable users, and character count for the static admin characters page.
-- `POST /admin/characters/{id}/assignment` assigns a character to a user or clears ownership when `userId` is empty.
-- `DELETE /admin/characters/{id}` deletes one character as an admin.
+- `POST /api/admin/characters/{id}/assignment` assigns a character to a user or clears ownership when `userId` is empty.
+- `DELETE /api/admin/characters/{id}` deletes one character as an admin.
 
 ## Version Preview
 

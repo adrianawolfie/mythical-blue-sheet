@@ -16,6 +16,7 @@ import (
 
 func main() {
 	config.Load()
+	log.Printf("USER_SECRET configured: %s", config.UserSecret)
 
 	ctx := context.Background()
 
@@ -59,22 +60,19 @@ func main() {
 	mux.Handle("/", server.FileServer(http.Dir("public")))
 
 	// user routes
-	mux.Handle("GET /login", server.GetLogin())
-	mux.Handle("POST /login", server.PostLogin(users))
-	mux.Handle("GET /register", server.GetRegistration())
-	mux.Handle("POST /users", server.PostUser(users))
+	mux.Handle("POST /api/login", server.PostLogin(users))
+	mux.Handle("POST /api/register", server.PostRegister(users))
 	mux.Handle("GET /api/me", server.GetCurrentUser(users))
 	mux.Handle("PUT /api/me", server.PutCurrentUser(users))
-	mux.Handle("GET /admin", server.GetAdmin())
 	mux.Handle("GET /api/admin/users", server.GetAdminUsersData(users))
-	mux.Handle("PUT /admin/users/{id}", server.PutAdminUser(users))
+	mux.Handle("PUT /api/admin/users/{id}", server.PutAdminUser(users))
 	mux.Handle("GET /api/admin/characters", server.GetAdminCharactersData(users, characters))
-	mux.Handle("POST /admin/characters/{id}/assignment", server.PostAdminCharacterAssignment(users, characters))
-	mux.Handle("DELETE /admin/characters/{id}", server.DeleteAdminCharacter(users, characters))
+	mux.Handle("POST /api/admin/characters/{id}/assignment", server.PostAdminCharacterAssignment(users, characters))
+	mux.Handle("DELETE /api/admin/characters/{id}", server.DeleteAdminCharacter(users, characters))
 	mux.Handle("GET /api/admin/campaigns", server.GetAdminCampaignsData(users, campaigns))
-	mux.Handle("POST /admin/campaigns/{id}/players", server.PostAdminCampaignPlayer(users, campaigns))
-	mux.Handle("DELETE /admin/campaigns/{id}/players/{userId}", server.DeleteAdminCampaignPlayer(users, campaigns))
-	mux.Handle("PUT /admin/campaigns/{id}/dm", server.PutAdminCampaignDM(users, campaigns))
+	mux.Handle("POST /api/admin/campaigns/{id}/players", server.PostAdminCampaignPlayer(users, campaigns))
+	mux.Handle("DELETE /api/admin/campaigns/{id}/players/{userId}", server.DeleteAdminCampaignPlayer(users, campaigns))
+	mux.Handle("PUT /api/admin/campaigns/{id}/dm", server.PutAdminCampaignDM(users, campaigns))
 
 	// character routes
 	mux.Handle("GET /api/characters", server.GetCharacters(characters, users))
