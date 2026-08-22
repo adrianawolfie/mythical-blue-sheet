@@ -26,7 +26,6 @@ type Index struct {
 	Species           string `json:"species,omitempty"`
 	Subclass          string `json:"subclass,omitempty"`
 	Level             string `json:"level,omitempty"`
-	File              string `json:"file"`
 	UpdatedAt         string `json:"updatedAt"`
 	DeletedAt         string `json:"deletedAt,omitempty"`
 }

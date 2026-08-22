@@ -534,7 +534,6 @@ func indexMatchesCurrent(index []Index, current currentDocument) bool {
 			item.ArmorClass == expected.ArmorClass &&
 			item.HpMax == expected.HpMax &&
 			item.PassivePerception == expected.PassivePerception &&
-			item.File == expected.File &&
 			item.UpdatedAt == expected.UpdatedAt
 	}
 	return false
@@ -576,7 +575,7 @@ func effectiveArmorClass(c Character) string {
 }
 
 func indexFromCharacter(c currentDocument) Index {
-	return Index{ID: c.ID, CampaignID: c.CampaignID, Name: c.Summary.Name, ArmorClass: c.Summary.ArmorClass, HpMax: c.Summary.HpMax, PassivePerception: c.Summary.PassivePerception, File: currentPath(c.ID), UpdatedAt: c.UpdatedAt}
+	return Index{ID: c.ID, CampaignID: c.CampaignID, Name: c.Summary.Name, ArmorClass: c.Summary.ArmorClass, HpMax: c.Summary.HpMax, PassivePerception: c.Summary.PassivePerception, UpdatedAt: c.UpdatedAt}
 }
 func currentPath(id string) string { return path.Join(characterRootPath, id, "current.json") }
 func livePath(id string) string    { return path.Join(characterRootPath, id, "live.json") }

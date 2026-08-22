@@ -125,7 +125,7 @@ func TestCreateUsesCurrentLiveHistoryAndVersionPaths(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read index: %v", err)
 	}
-	if !strings.Contains(string(indexData), `"file":"character/ada/current.json"`) || strings.Contains(string(indexData), `"hpCurrent"`) {
+	if strings.Contains(string(indexData), `"file"`) || strings.Contains(string(indexData), `"hpCurrent"`) {
 		t.Fatalf("unexpected persisted index: %s", indexData)
 	}
 }
@@ -137,7 +137,7 @@ func TestLegacyCharacterIsReadableAndMigratesOnSave(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, "character", "ada.json"), data, 0o644); err != nil {
 		t.Fatalf("write legacy character: %v", err)
 	}
-	index := []Index{{ID: "ada", Name: "Ada", File: "character/ada.json"}}
+	index := []Index{{ID: "ada", Name: "Ada"}}
 	indexData, _ := json.Marshal(index)
 	if err := os.WriteFile(filepath.Join(dir, "character", "character-index.json"), indexData, 0o644); err != nil {
 		t.Fatalf("write legacy index: %v", err)
