@@ -42,6 +42,8 @@
   const pendingPlayerLivePatches = new Map();
   const inFlightPlayerLivePatches = new Map();
   let playersRefreshInFlight = false;
+  let trackerReorderPending = false;
+  let trackerReorderFrame = null;
   let pollTimer = null;
   let selectedStatblockId = "";
   let editingStatblockId = "";
@@ -78,15 +80,6 @@
 
   function persistTrackerState() {
     localStorage.setItem(DM_STATE_KEY, JSON.stringify(state));
-  }
-
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
   }
 
   function numericInitiative(value) {
@@ -398,50 +391,53 @@
   }
 
   function rowInput({ className, field, value, label, type = "text", inputmode = "text" }) {
-    return `<input class="${className}" data-field="${field}" type="${type}" inputmode="${inputmode}" value="${escapeHtml(value)}" aria-label="${escapeHtml(label)}">`;
+    const input = document.createElement("input");
+    input.className = className;
+    input.dataset.field = field;
+    input.type = type;
+    input.inputMode = inputmode;
+    input.value = String(value ?? "");
+    input.setAttribute("aria-label", label);
+    return input;
   }
 
-  function hpBarMarkup(combatant) {
+  function hpBarElement(combatant) {
     const hpCurrent = numericHp(combatant.hpCurrent);
     const hpMax = numericHp(combatant.hpMax);
     const pct = hpMax > 0 ? Math.max(0, Math.min(100, Math.round((hpCurrent / hpMax) * 100))) : 0;
-    const danger = pct > 0 && pct <= 50 ? " danger" : "";
-    return `<div class="combatant-hp-bwrap" aria-hidden="true"><div class="combatant-hp-bar${danger}" style="width:${pct}%"></div></div>`;
+    const wrap = document.createElement("div");
+    wrap.className = "combatant-hp-bwrap";
+    wrap.setAttribute("aria-hidden", "true");
+    const bar = document.createElement("div");
+    bar.className = "combatant-hp-bar";
+    bar.style.width = `${pct}%`;
+    bar.classList.toggle("danger", pct > 0 && pct <= 50);
+    wrap.append(bar);
+    return wrap;
   }
 
-  function conditionOptionsMarkup() {
-    return `<option value="">Add condition…</option>${Object.keys(window.CONDITION_DETAILS || {})
-      .map(condition => `<option value="${escapeHtml(condition)}">${escapeHtml(condition)}</option>`)
-      .join("")}<option value="${CUSTOM_CONDITION_VALUE}">Custom condition…</option>`;
-  }
-
-  function conditionInfoMarkup(combatant) {
-    const focused = focusedConditions.get(combatant.id);
-    if (!focused) return "";
-    const standardDetails = window.CONDITION_DETAILS?.[focused];
-    const details = standardDetails?.length
-      ? `<ul>${standardDetails.map(detail => `<li>${escapeHtml(detail)}</li>`).join("")}</ul>`
-      : `<p>Custom condition. Add campaign-specific details to your notes.</p>`;
-    return `<aside class="combatant-condition-info" aria-live="polite"><div class="combatant-condition-info-header"><strong>${escapeHtml(focused)}</strong><button type="button" data-action="close-condition-info" aria-label="Close ${escapeHtml(focused)} details">×</button></div>${details}</aside>`;
-  }
-
-  function conditionEditorMarkup(combatant) {
-    const conditions = normalizeConditionNames(combatant.currentConditions);
-    return `<div class="combatant-condition-chips">${conditions.length
-      ? conditions.map(condition => `<span class="combatant-condition-chip${focusedConditions.get(combatant.id) === condition ? " active" : ""}"><button type="button" class="combatant-condition-open" data-action="show-condition" data-condition="${escapeHtml(condition)}">${escapeHtml(condition)}</button><button type="button" class="combatant-condition-remove" data-action="remove-condition" data-condition="${escapeHtml(condition)}" aria-label="Remove ${escapeHtml(condition)}">×</button></span>`).join("")
-      : `<span class="combatant-condition-empty">No conditions</span>`}</div><select class="combatant-condition-picker" data-action="add-condition" aria-label="Add condition for ${escapeHtml(combatant.name)}">${conditionOptionsMarkup()}</select>${conditionInfoMarkup(combatant)}`;
-  }
-
-  function statblockSummaryMarkup(statblock) {
+  function statblockSummaryElement(statblock) {
     if (!statblock) return "";
-    const legendary = [];
     const lr = getLegendaryResistanceMax(statblock);
     const la = getLegendaryActionMax(statblock);
     const pb = getProficiencyBonus(statblock);
-    if (pb) legendary.push(`PB +${pb}`);
-    if (lr) legendary.push(`LR ${lr}`);
-    if (la) legendary.push(`LA ${la}`);
-    return `<div class="statblock-summary-chips"><span>AC ${escapeHtml(statblock.armorClass)}</span><span>HP ${escapeHtml(statblock.hp)}${statblock.hpFormula ? ` (${escapeHtml(statblock.hpFormula)})` : ""}</span><span>CR ${escapeHtml(statblock.challengeRating || "—")}</span><span>${escapeHtml(statblock.size)} ${escapeHtml(statblock.type)}</span>${legendary.map(item => `<span>${escapeHtml(item)}</span>`).join("")}</div>`;
+    const summary = document.createElement("div");
+    summary.className = "statblock-summary-chips";
+    const chips = [
+      `AC ${statblock.armorClass}`,
+      `HP ${statblock.hp}${statblock.hpFormula ? ` (${statblock.hpFormula})` : ""}`,
+      `CR ${statblock.challengeRating || "—"}`,
+      `${statblock.size} ${statblock.type}`
+    ];
+    if (pb) chips.push(`PB +${pb}`);
+    if (lr) chips.push(`LR ${lr}`);
+    if (la) chips.push(`LA ${la}`);
+    chips.forEach(text => {
+      const chip = document.createElement("span");
+      chip.textContent = text;
+      summary.append(chip);
+    });
+    return summary;
   }
 
   const STATBLOCK_SECTION_HEADINGS = ["Traits", "Actions", "Bonus Actions", "Reactions", "Legendary Actions"];
@@ -560,74 +556,294 @@
     return { abilities, metadata, sections: sections.map(section => ({ title: section.title, entries: splitStatblockEntries(section.lines) })) };
   }
 
-  function statblockAbilityMarkup(abilities) {
-    if (!abilities.length) return "";
-    return `<div class="inline-statblock-abilities">${abilities.map(ability => `<div class="inline-statblock-ability"><div class="inline-statblock-ability-heading"><strong>${escapeHtml(ability.name)}</strong><span>${escapeHtml(ability.score)}</span></div><div class="inline-statblock-ability-values"><small><b>Mod</b><span>${escapeHtml(ability.modifier)}</span></small><em><b>Save</b><span>${escapeHtml(ability.save)}</span></em></div></div>`).join("")}</div>`;
-  }
-
-  function statblockMetadataMarkup(metadata) {
-    if (!metadata.length) return "";
-    return `<dl class="inline-statblock-metadata">${metadata.map(item => `<div><dt>${escapeHtml(item.label)}</dt><dd>${escapeHtml(item.value || "—")}</dd></div>`).join("")}</dl>`;
-  }
-
-  function statblockSectionsMarkup(sections) {
-    if (!sections.length) return "";
-    return `<div class="inline-statblock-sections">${sections.map(section => `<section class="inline-statblock-section"><h4>${escapeHtml(section.title)}</h4>${section.entries.map(entry => `<article class="inline-statblock-entry">${entry.title ? `<h5>${escapeHtml(entry.title)}</h5>` : ""}<p>${escapeHtml(entry.text)}</p></article>`).join("")}</section>`).join("")}</div>`;
-  }
-
-  function statblockPanelMarkup(statblock, { closeButton = false, addButton = false, editButton = false } = {}) {
-    if (!statblock) return "";
+  function createStatblockPanel(statblock, { closeButton = false, addButton = false, editButton = false } = {}) {
+    if (!statblock) return null;
     const structured = parseStructuredStatblock(statblock);
-    return `<section class="inline-statblock" aria-label="${escapeHtml(statblock.name)} statblock">
-      <header class="inline-statblock-header"><div><div class="dm-section-label">${escapeHtml(statblock.source || statblock.section || "Statblock")}</div><h3>${escapeHtml(statblock.name)}</h3><p>${escapeHtml(statblock.size)} ${escapeHtml(statblock.type)}, ${escapeHtml(statblock.alignment)}</p></div>${closeButton ? `<button type="button" class="inline-statblock-close" data-action="toggle-statblock" aria-label="Close ${escapeHtml(statblock.name)} statblock">×</button>` : ""}</header>
-      <div class="inline-statblock-vitals"><div><span>Armor Class</span><strong>${escapeHtml(statblock.armorClass || "—")}</strong></div><div><span>Hit Points</span><strong>${escapeHtml(statblock.hp || "—")}</strong><small>${statblock.hpFormula ? `(${escapeHtml(statblock.hpFormula)})` : ""}</small></div><div><span>Initiative</span><strong>${escapeHtml(statblock.initiative || "—")}</strong></div><div><span>Speed</span><strong>${escapeHtml(statblock.speed || "—")}</strong></div><div><span>Challenge</span><strong>${statblock.challengeRating ? `CR ${escapeHtml(statblock.challengeRating)}` : "—"}</strong></div><div><span>Proficiency</span><strong>${getProficiencyBonus(statblock) ? `PB +${escapeHtml(getProficiencyBonus(statblock))}` : "—"}</strong></div></div>
-      ${statblock.description ? `<p class="inline-statblock-description">${escapeHtml(statblock.description)}</p>` : ""}
-      ${statblockAbilityMarkup(structured.abilities)}
-      ${statblockMetadataMarkup(structured.metadata)}
-      ${statblockSectionsMarkup(structured.sections)}
-      ${addButton || editButton ? `<div class="statblock-preview-actions">${editButton ? `<button type="button" class="dm-secondary-button" data-action="edit-statblock" data-statblock-id="${escapeHtml(statblock.id)}">Edit Statblock</button>` : ""}${addButton ? `<button type="button" class="dm-primary-button" data-action="add-previewed-statblock" data-statblock-id="${escapeHtml(statblock.id)}">+ Add to Tracker</button>` : ""}</div>` : ""}
-    </section>`;
+    const panel = document.createElement("section");
+    panel.className = "inline-statblock";
+    panel.setAttribute("aria-label", `${statblock.name} statblock`);
+    const header = document.createElement("header");
+    header.className = "inline-statblock-header";
+    const heading = document.createElement("div");
+    const source = document.createElement("div");
+    source.className = "dm-section-label";
+    source.textContent = statblock.source || statblock.section || "Statblock";
+    const title = document.createElement("h3");
+    title.textContent = statblock.name;
+    const subtitle = document.createElement("p");
+    subtitle.textContent = `${statblock.size} ${statblock.type}, ${statblock.alignment}`;
+    heading.append(source, title, subtitle);
+    header.append(heading);
+    if (closeButton) {
+      const close = document.createElement("button");
+      close.type = "button";
+      close.className = "inline-statblock-close";
+      close.dataset.action = "toggle-statblock";
+      close.setAttribute("aria-label", `Close ${statblock.name} statblock`);
+      close.textContent = "×";
+      header.append(close);
+    }
+    panel.append(header);
+
+    const vitals = document.createElement("div");
+    vitals.className = "inline-statblock-vitals";
+    [["Armor Class", statblock.armorClass || "—"], ["Hit Points", statblock.hp || "—", statblock.hpFormula ? `(${statblock.hpFormula})` : ""], ["Initiative", statblock.initiative || "—"], ["Speed", statblock.speed || "—"], ["Challenge", statblock.challengeRating ? `CR ${statblock.challengeRating}` : "—"], ["Proficiency", getProficiencyBonus(statblock) ? `PB +${getProficiencyBonus(statblock)}` : "—"]].forEach(([label, value, detail]) => {
+      const vital = document.createElement("div");
+      const labelElement = document.createElement("span");
+      labelElement.textContent = label;
+      const valueElement = document.createElement("strong");
+      valueElement.textContent = value;
+      vital.append(labelElement, valueElement);
+      if (detail) {
+        const detailElement = document.createElement("small");
+        detailElement.textContent = detail;
+        vital.append(detailElement);
+      }
+      vitals.append(vital);
+    });
+    panel.append(vitals);
+
+    if (statblock.description) {
+      const description = document.createElement("p");
+      description.className = "inline-statblock-description";
+      description.textContent = statblock.description;
+      panel.append(description);
+    }
+    if (structured.abilities.length) {
+      const abilities = document.createElement("div");
+      abilities.className = "inline-statblock-abilities";
+      structured.abilities.forEach(ability => {
+        const item = document.createElement("div");
+        item.className = "inline-statblock-ability";
+        const heading = document.createElement("div");
+        heading.className = "inline-statblock-ability-heading";
+        const name = document.createElement("strong");
+        name.textContent = ability.name;
+        const score = document.createElement("span");
+        score.textContent = ability.score;
+        heading.append(name, score);
+        const values = document.createElement("div");
+        values.className = "inline-statblock-ability-values";
+        [["Mod", ability.modifier, "small"], ["Save", ability.save, "em"]].forEach(([label, value, tag]) => {
+          const valueWrap = document.createElement(tag);
+          const valueLabel = document.createElement("b");
+          valueLabel.textContent = label;
+          const number = document.createElement("span");
+          number.textContent = value;
+          valueWrap.append(valueLabel, number);
+          values.append(valueWrap);
+        });
+        item.append(heading, values);
+        abilities.append(item);
+      });
+      panel.append(abilities);
+    }
+    if (structured.metadata.length) {
+      const metadata = document.createElement("dl");
+      metadata.className = "inline-statblock-metadata";
+      structured.metadata.forEach(item => {
+        const row = document.createElement("div");
+        const label = document.createElement("dt");
+        label.textContent = item.label;
+        const value = document.createElement("dd");
+        value.textContent = item.value || "—";
+        row.append(label, value);
+        metadata.append(row);
+      });
+      panel.append(metadata);
+    }
+    if (structured.sections.length) {
+      const sections = document.createElement("div");
+      sections.className = "inline-statblock-sections";
+      structured.sections.forEach(section => {
+        const sectionElement = document.createElement("section");
+        sectionElement.className = "inline-statblock-section";
+        const heading = document.createElement("h4");
+        heading.textContent = section.title;
+        sectionElement.append(heading);
+        section.entries.forEach(entry => {
+          const article = document.createElement("article");
+          article.className = "inline-statblock-entry";
+          if (entry.title) {
+            const title = document.createElement("h5");
+            title.textContent = entry.title;
+            article.append(title);
+          }
+          const text = document.createElement("p");
+          text.textContent = entry.text;
+          article.append(text);
+          sectionElement.append(article);
+        });
+        sections.append(sectionElement);
+      });
+      panel.append(sections);
+    }
+    if (addButton || editButton) {
+      const actions = document.createElement("div");
+      actions.className = "statblock-preview-actions";
+      if (editButton) {
+        const edit = document.createElement("button");
+        edit.type = "button";
+        edit.className = "dm-secondary-button";
+        edit.dataset.action = "edit-statblock";
+        edit.dataset.statblockId = statblock.id;
+        edit.textContent = "Edit Statblock";
+        actions.append(edit);
+      }
+      if (addButton) {
+        const add = document.createElement("button");
+        add.type = "button";
+        add.className = "dm-primary-button";
+        add.dataset.action = "add-previewed-statblock";
+        add.dataset.statblockId = statblock.id;
+        add.textContent = "+ Add to Tracker";
+        actions.append(add);
+      }
+      panel.append(actions);
+    }
+    return panel;
   }
 
-  function expandedStatblockMarkup(combatant) {
+  function createExpandedStatblock(combatant) {
     if (!combatant.statblockId || !expandedStatblocks.has(combatant.id)) return "";
     const statblock = getStatblockById(combatant.statblockId);
     if (!statblock) return "";
-    return statblockPanelMarkup(statblock, { closeButton: true });
+    return createStatblockPanel(statblock, { closeButton: true });
   }
 
-  function legendaryTrackerMarkup(combatant) {
-    if (combatant.type !== "npc") return "";
+  function createLegendaryTracker(combatant) {
+    if (combatant.type !== "npc") return null;
     const lrMax = toNumber(combatant.legendaryResistanceMax, 0);
     const laMax = toNumber(combatant.legendaryActionMax, 0);
-    if (!lrMax && !laMax) return "";
-    const counter = (kind, label, current, max) => `<div class="legendary-counter legendary-${kind}"><span>${label}</span><button type="button" data-action="adjust-legendary" data-kind="${kind}" data-delta="-1" aria-label="Use one ${label}">−</button><strong>${escapeHtml(current)} / ${escapeHtml(max)} left</strong><button type="button" data-action="adjust-legendary" data-kind="${kind}" data-delta="1" aria-label="Restore one ${label}">+</button></div>`;
-    return `<div class="legendary-tracker" aria-label="Legendary resources">${lrMax ? counter("resistance", "Legendary Resistances", combatant.legendaryResistanceCurrent, lrMax) : ""}${laMax ? counter("action", "Legendary Actions", combatant.legendaryActionCurrent, laMax) : ""}</div>`;
+    if (!lrMax && !laMax) return null;
+    const tracker = document.createElement("div");
+    tracker.className = "legendary-tracker";
+    tracker.setAttribute("aria-label", "Legendary resources");
+    [["resistance", "Legendary Resistances", combatant.legendaryResistanceCurrent, lrMax], ["action", "Legendary Actions", combatant.legendaryActionCurrent, laMax]].forEach(([kind, label, current, max]) => {
+      if (!max) return;
+      const counter = document.createElement("div");
+      counter.className = `legendary-counter legendary-${kind}`;
+      const labelElement = document.createElement("span");
+      labelElement.textContent = label;
+      const decrement = document.createElement("button");
+      decrement.type = "button";
+      decrement.dataset.action = "adjust-legendary";
+      decrement.dataset.kind = kind;
+      decrement.dataset.delta = "-1";
+      decrement.setAttribute("aria-label", `Use one ${label}`);
+      decrement.textContent = "−";
+      const value = document.createElement("strong");
+      value.textContent = `${current} / ${max} left`;
+      const increment = document.createElement("button");
+      increment.type = "button";
+      increment.dataset.action = "adjust-legendary";
+      increment.dataset.kind = kind;
+      increment.dataset.delta = "1";
+      increment.setAttribute("aria-label", `Restore one ${label}`);
+      increment.textContent = "+";
+      counter.append(labelElement, decrement, value, increment);
+      tracker.append(counter);
+    });
+    return tracker;
   }
 
-  function renderCombatantRow(combatant, displayIndex) {
+  function createCombatantRow(combatant, displayIndex) {
     const isNpc = combatant.type === "npc";
     const statblock = getStatblockById(combatant.statblockId);
-    const activeClass = `${combatant.id === state.activeId ? " active-turn" : ""}${statblock ? " has-statblock" : ""}`;
-    const encodedName = escapeHtml(combatant.name);
     const hasInitiative = numericInitiative(combatant.initiative) !== Number.NEGATIVE_INFINITY;
+    const row = document.createElement("article");
+    row.className = "combatant-row";
+    row.dataset.id = combatant.id;
+    row.dataset.type = combatant.type;
+    row.classList.toggle("active-turn", combatant.id === state.activeId);
+    row.classList.toggle("has-statblock", Boolean(statblock));
 
-    return `<article class="combatant-row${activeClass}" data-id="${escapeHtml(combatant.id)}" data-type="${combatant.type}">
-      <div class="combatant-order-medallion" aria-hidden="true">${hasInitiative ? displayIndex + 1 : "·"}</div>
-      <div class="combatant-name-wrap">
-        ${isNpc ? rowInput({ className: "combatant-name-input", field: "name", value: combatant.name, label: "NPC name" }) : `<span class="combatant-name">${encodedName}</span>`}
-        <span class="combatant-type">${isNpc ? (statblock ? `${escapeHtml(statblock.section)} · ${escapeHtml(statblock.source || "Statblock")}` : "Custom NPC") : "Player character · live sync"}</span>
-        ${statblock ? `<button type="button" class="statblock-toggle" data-action="toggle-statblock">${expandedStatblocks.has(combatant.id) ? "Hide" : "View"} statblock</button>` : ""}
-      </div>
-      <div class="combatant-initiative">${rowInput({ className: "initiative-input", field: "initiative", value: combatant.initiative, label: `Initiative for ${combatant.name}`, type: "number", inputmode: "numeric" })}</div>
-      <div class="combatant-hp">${hpBarMarkup(combatant)}<div class="combatant-hp-fields">${rowInput({ className: "hp-current-input", field: "hpCurrent", value: combatant.hpCurrent, label: `Current HP for ${combatant.name}`, type: "number", inputmode: "numeric" })}<span class="hp-divider">/</span>${rowInput({ className: "hp-max-input", field: "hpMax", value: combatant.hpMax, label: `Maximum HP for ${combatant.name}`, type: "number", inputmode: "numeric" })}</div></div>
-      <div class="combatant-ac">${rowInput({ className: "ac-input", field: "armorClass", value: combatant.armorClass, label: `Armor Class for ${combatant.name}`, type: "number", inputmode: "numeric" })}</div>
-      <div class="combatant-conditions">${conditionEditorMarkup(combatant)}</div>
-      <label class="combatant-concentration concentration-toggle" title="Concentrating"><input data-field="concentrating" type="checkbox" ${combatant.concentrating ? "checked" : ""} aria-label="${encodedName} is concentrating"><span class="concentration-rune" aria-hidden="true">✦</span></label>
-      ${isNpc ? `<button class="combatant-remove" type="button" data-action="remove-npc" title="Remove ${encodedName}" aria-label="Remove ${encodedName}">×</button>` : `<span class="player-lock-icon" title="Character live sync" aria-label="Character live sync">◆</span>`}
-      ${legendaryTrackerMarkup(combatant)}
-      ${expandedStatblockMarkup(combatant)}
-    </article>`;
+    const medallion = document.createElement("div");
+    medallion.className = "combatant-order-medallion";
+    medallion.setAttribute("aria-hidden", "true");
+    medallion.textContent = hasInitiative ? String(displayIndex + 1) : "·";
+    row.append(medallion);
+
+    const nameWrap = document.createElement("div");
+    nameWrap.className = "combatant-name-wrap";
+    nameWrap.append(isNpc
+      ? rowInput({ className: "combatant-name-input", field: "name", value: combatant.name, label: "NPC name" })
+      : Object.assign(document.createElement("span"), { className: "combatant-name", textContent: combatant.name }));
+    const type = document.createElement("span");
+    type.className = "combatant-type";
+    type.textContent = isNpc ? (statblock ? `${statblock.section} · ${statblock.source || "Statblock"}` : "Custom NPC") : "Player character · live sync";
+    nameWrap.append(type);
+    if (statblock) {
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "statblock-toggle";
+      toggle.dataset.action = "toggle-statblock";
+      toggle.textContent = expandedStatblocks.has(combatant.id) ? "Hide" : "View";
+      toggle.textContent += " statblock";
+      nameWrap.append(toggle);
+    }
+    row.append(nameWrap);
+
+    const initiativeWrap = document.createElement("div");
+    initiativeWrap.className = "combatant-initiative";
+    initiativeWrap.append(rowInput({ className: "initiative-input", field: "initiative", value: combatant.initiative, label: `Initiative for ${combatant.name}`, type: "number", inputmode: "numeric" }));
+    row.append(initiativeWrap);
+
+    const hpWrap = document.createElement("div");
+    hpWrap.className = "combatant-hp";
+    const hpFields = document.createElement("div");
+    hpFields.className = "combatant-hp-fields";
+    const divider = document.createElement("span");
+    divider.className = "hp-divider";
+    divider.textContent = "/";
+    hpFields.append(rowInput({ className: "hp-current-input", field: "hpCurrent", value: combatant.hpCurrent, label: `Current HP for ${combatant.name}`, type: "number", inputmode: "numeric" }), divider, rowInput({ className: "hp-max-input", field: "hpMax", value: combatant.hpMax, label: `Maximum HP for ${combatant.name}`, type: "number", inputmode: "numeric" }));
+    hpWrap.append(hpBarElement(combatant), hpFields);
+    row.append(hpWrap);
+
+    const acWrap = document.createElement("div");
+    acWrap.className = "combatant-ac";
+    acWrap.append(rowInput({ className: "ac-input", field: "armorClass", value: combatant.armorClass, label: `Armor Class for ${combatant.name}`, type: "number", inputmode: "numeric" }));
+    row.append(acWrap);
+    const conditions = createConditionEditor(combatant);
+    row.append(conditions);
+
+    const concentration = document.createElement("label");
+    concentration.className = "combatant-concentration concentration-toggle";
+    concentration.title = "Concentrating";
+    const concentrationInput = document.createElement("input");
+    concentrationInput.dataset.field = "concentrating";
+    concentrationInput.type = "checkbox";
+    concentrationInput.checked = combatant.concentrating;
+    concentrationInput.setAttribute("aria-label", `${combatant.name} is concentrating`);
+    const rune = document.createElement("span");
+    rune.className = "concentration-rune";
+    rune.setAttribute("aria-hidden", "true");
+    rune.textContent = "✦";
+    concentration.append(concentrationInput, rune);
+    row.append(concentration);
+
+    if (isNpc) {
+      const remove = document.createElement("button");
+      remove.className = "combatant-remove";
+      remove.type = "button";
+      remove.title = `Remove ${combatant.name}`;
+      remove.setAttribute("aria-label", `Remove ${combatant.name}`);
+      remove.dataset.action = "remove-npc";
+      remove.textContent = "×";
+      row.append(remove);
+    } else {
+      const lock = document.createElement("span");
+      lock.className = "player-lock-icon";
+      lock.title = "Character live sync";
+      lock.setAttribute("aria-label", "Character live sync");
+      lock.textContent = "◆";
+      row.append(lock);
+    }
+    const legendary = createLegendaryTracker(combatant);
+    if (legendary) row.append(legendary);
+    const expanded = createExpandedStatblock(combatant);
+    if (expanded) row.append(expanded);
+    return row;
   }
 
   function updateTrackerSummary(combatants) {
@@ -641,12 +857,8 @@
     activeText.textContent = active ? `Current turn · ${active.name}` : "Add initiative values to begin.";
   }
 
-  function renderTracker() {
-    const combatants = getCombatants();
-    const list = document.getElementById("initiativeList");
-    if (!list) return;
-    list.innerHTML = combatants.map(renderCombatantRow).join("");
-    updateTrackerSummary(combatants);
+  function renderTracker(options) {
+    reconcileTracker(options);
   }
 
   function hasOwn(object, key) {
@@ -794,9 +1006,9 @@
     return container;
   }
 
-  function patchConditionEditor(row, combatant) {
+  function patchConditionEditor(row, combatant, { force = false } = {}) {
     const container = row.querySelector(".combatant-conditions");
-    if (!container || playerFieldIsProtected(combatant.id, "conditions")) return;
+    if (!container || (!force && playerFieldIsProtected(combatant.id, "conditions"))) return;
     const conditions = normalizeConditionNames(combatant.currentConditions);
     const current = [...container.querySelectorAll(".combatant-condition-open")].map(button => button.textContent);
     const focused = focusedConditions.get(combatant.id);
@@ -804,16 +1016,20 @@
     const nextFocused = focusedConditions.get(combatant.id);
     const infoTitle = container.querySelector(".combatant-condition-info strong")?.textContent || "";
     if (serializeConditionNames(current) === serializeConditionNames(conditions) && infoTitle === (nextFocused || "")) return;
-    container.replaceWith(createConditionEditor(combatant));
+    const replacement = createConditionEditor(combatant);
+    container.replaceChildren(...replacement.childNodes);
   }
 
-  function patchPlayerRow(row, combatant, displayIndex) {
+  function patchCombatantPosition(row, combatant, displayIndex) {
     row.classList.toggle("active-turn", combatant.id === state.activeId);
     const medallion = row.querySelector(".combatant-order-medallion");
     if (medallion) medallion.textContent = numericInitiative(combatant.initiative) === Number.NEGATIVE_INFINITY ? "·" : String(displayIndex + 1);
-    const name = row.querySelector(".combatant-name");
-    if (name && name.textContent !== combatant.name) name.textContent = combatant.name;
+  }
 
+  function patchCombatantFields(row, combatant, { forceConditions = false } = {}) {
+    const name = row.querySelector(".combatant-name, .combatant-name-input");
+    if (name && document.activeElement !== name && name.value !== undefined && name.value !== combatant.name) name.value = combatant.name;
+    if (name && name.value === undefined && name.textContent !== combatant.name) name.textContent = combatant.name;
     const initiative = row.querySelector('[data-field="initiative"]');
     setInputValueIfSafe(initiative, combatant.initiative, combatant.id, "initiative");
     const hpCurrent = row.querySelector('[data-field="hpCurrent"]');
@@ -827,23 +1043,64 @@
     if (hpMax) hpMax.setAttribute("aria-label", `Maximum HP for ${combatant.name}`);
     if (armorClass) armorClass.setAttribute("aria-label", `Armor Class for ${combatant.name}`);
     updateHpBarElement(row);
-    patchConditionEditor(row, combatant);
+    patchConditionEditor(row, combatant, { force: forceConditions });
 
     const concentration = row.querySelector('[data-field="concentrating"]');
     if (concentration && document.activeElement !== concentration) concentration.checked = combatant.concentrating;
   }
 
-  function createCombatantRow(combatant, displayIndex) {
-    const template = document.createElement("template");
-    template.innerHTML = renderCombatantRow(combatant, displayIndex);
-    return template.content.firstElementChild;
+  function patchPlayerRow(row, combatant, displayIndex, options) {
+    patchCombatantPosition(row, combatant, displayIndex);
+    patchCombatantFields(row, combatant, options);
+  }
+
+  function patchNpcRow(row, combatant, displayIndex, options) {
+    patchCombatantPosition(row, combatant, displayIndex);
+    patchCombatantFields(row, combatant, options);
+    const statblock = getStatblockById(combatant.statblockId);
+    row.classList.toggle("has-statblock", Boolean(statblock));
+    const nameWrap = row.querySelector(".combatant-name-wrap");
+    const type = row.querySelector(".combatant-type");
+    if (type) type.textContent = statblock ? `${statblock.section} · ${statblock.source || "Statblock"}` : "Custom NPC";
+    const toggle = nameWrap?.querySelector(".statblock-toggle");
+    if (statblock && toggle) {
+      toggle.textContent = expandedStatblocks.has(combatant.id) ? "Hide" : "View";
+      toggle.textContent += " statblock";
+    }
+    const panel = row.querySelector(".inline-statblock");
+    const shouldExpand = Boolean(statblock && expandedStatblocks.has(combatant.id));
+    if (shouldExpand && !panel) row.append(createStatblockPanel(statblock, { closeButton: true }));
+    if (!shouldExpand && panel) panel.remove();
+    [["resistance", combatant.legendaryResistanceCurrent, combatant.legendaryResistanceMax], ["action", combatant.legendaryActionCurrent, combatant.legendaryActionMax]].forEach(([kind, current, max]) => {
+      const value = row.querySelector(`.legendary-${kind} strong`);
+      if (value) value.textContent = `${current} / ${max} left`;
+    });
   }
 
   function shouldDeferTrackerReorder() {
     return Boolean(document.activeElement?.closest(".combatant-row"));
   }
 
-  function reconcileTracker() {
+  function scheduleTrackerReorderFrame() {
+    if (trackerReorderFrame !== null) return;
+    trackerReorderFrame = window.requestAnimationFrame(() => {
+      trackerReorderFrame = null;
+      if (!trackerReorderPending || shouldDeferTrackerReorder()) return;
+      trackerReorderPending = false;
+      reconcileTracker();
+    });
+  }
+
+  function requestTrackerReorder() {
+    trackerReorderPending = true;
+    scheduleTrackerReorderFrame();
+  }
+
+  function retryTrackerReorderAfterFocusOut() {
+    if (trackerReorderPending) scheduleTrackerReorderFrame();
+  }
+
+  function reconcileTracker({ forceConditionId = "" } = {}) {
     const list = document.getElementById("initiativeList");
     if (!list) return;
     const combatants = getCombatants();
@@ -867,7 +1124,9 @@
 
     existingRows.forEach((row, id) => { if (!retainedIds.has(id)) row.remove(); });
 
-    if (!shouldDeferTrackerReorder()) {
+    const deferReorder = shouldDeferTrackerReorder();
+    if (!deferReorder) {
+      trackerReorderPending = false;
       combatants.forEach((combatant, displayIndex) => {
         const row = rowsById.get(combatant.id);
         const rowAtPosition = list.children[displayIndex];
@@ -878,8 +1137,9 @@
     combatants.forEach(combatant => {
       const row = rowsById.get(combatant.id);
       const displayIndex = [...list.children].indexOf(row);
-      if (combatant.type === "player") patchPlayerRow(row, combatant, displayIndex);
-      else row.classList.toggle("active-turn", combatant.id === state.activeId);
+      const options = { forceConditions: combatant.id === forceConditionId };
+      if (combatant.type === "player") patchPlayerRow(row, combatant, displayIndex, options);
+      else patchNpcRow(row, combatant, displayIndex, options);
     });
     updateTrackerSummary(combatants);
   }
@@ -991,7 +1251,7 @@
   function commitTrackerField(event) {
     const input = event.target.closest("[data-field]");
     if (!input) return;
-    if (input.dataset.field === "initiative" || input.dataset.field === "name") renderTracker();
+    if (input.dataset.field === "initiative" || input.dataset.field === "name") requestTrackerReorder();
   }
 
   function addCondition(row, rawCondition) {
@@ -1005,7 +1265,7 @@
     const conditions = normalizeConditionNames(combatant.currentConditions);
     if (!conditions.some(item => item.toLowerCase() === condition.toLowerCase())) { conditions.push(condition); updateCombatantConditions(id, type, conditions); }
     focusedConditions.set(id, normalizeConditionNames(condition)[0] || condition);
-    renderTracker();
+    renderTracker({ forceConditionId: id });
   }
 
   function removeCondition(row, condition) {
@@ -1015,14 +1275,14 @@
     if (!combatant) return;
     updateCombatantConditions(id, type, normalizeConditionNames(combatant.currentConditions).filter(item => item.toLowerCase() !== condition.toLowerCase()));
     if (focusedConditions.get(id)?.toLowerCase() === condition.toLowerCase()) focusedConditions.delete(id);
-    renderTracker();
+    renderTracker({ forceConditionId: id });
   }
 
   function showCondition(row, condition) {
     if (!row || !condition) return;
     const id = row.dataset.id;
     if (focusedConditions.get(id) === condition) focusedConditions.delete(id); else focusedConditions.set(id, condition);
-    renderTracker();
+    renderTracker({ forceConditionId: id });
   }
 
   function addCustomNpc() {
@@ -1141,8 +1401,18 @@
   function fillFilter(selectId, values) {
     const select = document.getElementById(selectId);
     if (!select) return;
-    const first = select.options[0]?.outerHTML || "";
-    select.innerHTML = first + uniqueSorted(values).map(value => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
+    const selected = select.value;
+    const placeholder = select.options[0];
+    select.replaceChildren();
+    if (placeholder) select.append(placeholder);
+    const options = uniqueSorted(values);
+    options.forEach(value => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      select.append(option);
+    });
+    if (options.includes(selected)) select.value = selected;
   }
 
   async function fetchStatblockJson(url, required = false) {
@@ -1211,7 +1481,12 @@
     } catch (error) {
       console.warn(error.message);
       const results = document.getElementById("statblockResults");
-      if (results) results.innerHTML = `<p class="initiative-empty-state">Could not load the SRD statblock library.</p>`;
+      if (results) {
+        const message = document.createElement("p");
+        message.className = "initiative-empty-state";
+        message.textContent = "Could not load the SRD statblock library.";
+        results.replaceChildren(message);
+      }
     }
   }
 
@@ -1312,9 +1587,31 @@
       && (!cr || statblock.challengeRating === cr);
   }
 
-  function renderStatblockResult(statblock) {
-    const selectedClass = selectedStatblockId === statblock.id ? " selected" : "";
-    return `<article class="statblock-result-card${selectedClass}"><div><h3>${escapeHtml(statblock.name)}</h3><p>${escapeHtml(statblock.size)} ${escapeHtml(statblock.type)}, ${escapeHtml(statblock.alignment)}</p>${statblockSummaryMarkup(statblock)}<small>${escapeHtml(statblock.section)} · Speed ${escapeHtml(statblock.speed || "—")}</small></div><div class="statblock-result-actions"><button type="button" class="dm-subtle-button" data-action="preview-statblock" data-statblock-id="${escapeHtml(statblock.id)}">Preview</button><button type="button" class="dm-subtle-button" data-action="edit-statblock" data-statblock-id="${escapeHtml(statblock.id)}">Edit</button><button type="button" class="dm-primary-button" data-action="add-statblock-npc" data-statblock-id="${escapeHtml(statblock.id)}">Add</button></div></article>`;
+  function createStatblockResult(statblock) {
+    const card = document.createElement("article");
+    card.className = "statblock-result-card";
+    card.dataset.statblockId = statblock.id;
+    const details = document.createElement("div");
+    const title = document.createElement("h3");
+    title.textContent = statblock.name;
+    const subtitle = document.createElement("p");
+    subtitle.textContent = `${statblock.size} ${statblock.type}, ${statblock.alignment}`;
+    const source = document.createElement("small");
+    source.textContent = `${statblock.section} · Speed ${statblock.speed || "—"}`;
+    details.append(title, subtitle, statblockSummaryElement(statblock), source);
+    const actions = document.createElement("div");
+    actions.className = "statblock-result-actions";
+    [["preview-statblock", "dm-subtle-button", "Preview"], ["edit-statblock", "dm-subtle-button", "Edit"], ["add-statblock-npc", "dm-primary-button", "Add"]].forEach(([action, className, text]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = className;
+      button.dataset.action = action;
+      button.dataset.statblockId = statblock.id;
+      button.textContent = text;
+      actions.append(button);
+    });
+    card.append(details, actions);
+    return card;
   }
 
   function renderStatblockPreview(statblockId = selectedStatblockId) {
@@ -1322,7 +1619,14 @@
     if (!preview) return;
     const statblock = statblockId ? getStatblockById(statblockId) : null;
     selectedStatblockId = statblock?.id || "";
-    preview.innerHTML = statblock ? statblockPanelMarkup(statblock, { addButton: true, editButton: true }) : `<p class="initiative-empty-state">Select a statblock to preview its full rules before adding it.</p>`;
+    if (statblock) {
+      preview.replaceChildren(createStatblockPanel(statblock, { addButton: true, editButton: true }));
+      return;
+    }
+    const message = document.createElement("p");
+    message.className = "initiative-empty-state";
+    message.textContent = "Select a statblock to preview its full rules before adding it.";
+    preview.replaceChildren(message);
   }
 
   function renderStatblockResults() {
@@ -1331,7 +1635,29 @@
     if (!results || !count) return;
     const matching = getAllStatblocks().filter(statblockMatchesFilters);
     count.textContent = `${matching.length} statblock${matching.length === 1 ? "" : "s"}`;
-    results.innerHTML = matching.length ? matching.map(renderStatblockResult).join("") : `<p class="initiative-empty-state">No statblocks match these filters.</p>`;
+    const matchingIds = new Set(matching.map(item => item.id));
+    [...results.children].forEach(child => {
+      if (!matchingIds.has(child.dataset.statblockId)) child.remove();
+    });
+    matching.forEach((statblock, index) => {
+      let card = [...results.children].find(child => child.dataset.statblockId === statblock.id);
+      if (!card) {
+        card = createStatblockResult(statblock);
+        results.append(card);
+      } else {
+        const replacement = createStatblockResult(statblock);
+        card.replaceChildren(...replacement.childNodes);
+      }
+      card.classList.toggle("selected", selectedStatblockId === statblock.id);
+      const current = results.children[index];
+      if (current !== card) results.insertBefore(card, current || null);
+    });
+    if (!matching.length) {
+      const message = document.createElement("p");
+      message.className = "initiative-empty-state";
+      message.textContent = "No statblocks match these filters.";
+      results.append(message);
+    }
     if (!matching.some(item => item.id === selectedStatblockId)) selectedStatblockId = "";
     renderStatblockPreview(selectedStatblockId);
   }
@@ -1579,6 +1905,7 @@
       handleTrackerInput(event);
       commitTrackerField(event);
     });
+    list?.addEventListener("focusout", retryTrackerReorderAfterFocusOut);
     list?.addEventListener("click", event => {
       const row = event.target.closest(".combatant-row");
       const actionElement = event.target.closest("[data-action]");
@@ -1594,7 +1921,7 @@
       if (action === "remove-npc") removeNpc(row.dataset.id || "");
       if (action === "show-condition") showCondition(row, actionElement.dataset.condition || "");
       if (action === "remove-condition") removeCondition(row, actionElement.dataset.condition || "");
-      if (action === "close-condition-info") { focusedConditions.delete(row.dataset.id || ""); renderTracker(); }
+      if (action === "close-condition-info") { const id = row.dataset.id || ""; focusedConditions.delete(id); renderTracker({ forceConditionId: id }); }
       if (action === "toggle-statblock") { const id = row.dataset.id || ""; if (expandedStatblocks.has(id)) expandedStatblocks.delete(id); else expandedStatblocks.add(id); renderTracker(); }
       if (action === "adjust-legendary") adjustLegendary(row, actionElement.dataset.kind || "", Number(actionElement.dataset.delta) || 0);
     });
