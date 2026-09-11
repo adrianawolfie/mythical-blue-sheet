@@ -40,6 +40,8 @@
   let state = loadTrackerState();
   let saveTimers = new Map();
   const pendingPlayerLivePatches = new Map();
+  const inFlightPlayerLivePatches = new Map();
+  let playersRefreshInFlight = false;
   let pollTimer = null;
   let selectedStatblockId = "";
   let editingStatblockId = "";
@@ -628,18 +630,258 @@
     </article>`;
   }
 
-  function renderTracker() {
-    const combatants = getCombatants();
-    const list = document.getElementById("initiativeList");
+  function updateTrackerSummary(combatants) {
     const empty = document.getElementById("initiativeEmptyState");
     const round = document.getElementById("roundNumber");
     const activeText = document.getElementById("activeTurnText");
-    if (!list || !empty || !round || !activeText) return;
-    list.innerHTML = combatants.map(renderCombatantRow).join("");
+    if (!empty || !round || !activeText) return;
     empty.hidden = combatants.length > 0;
     round.textContent = String(state.round);
     const active = combatants.find(combatant => combatant.id === state.activeId);
     activeText.textContent = active ? `Current turn · ${active.name}` : "Add initiative values to begin.";
+  }
+
+  function renderTracker() {
+    const combatants = getCombatants();
+    const list = document.getElementById("initiativeList");
+    if (!list) return;
+    list.innerHTML = combatants.map(renderCombatantRow).join("");
+    updateTrackerSummary(combatants);
+  }
+
+  function hasOwn(object, key) {
+    return Object.prototype.hasOwnProperty.call(object, key);
+  }
+
+  function playerLivePatch(id) {
+    return {
+      ...(inFlightPlayerLivePatches.get(id) || {}),
+      ...(pendingPlayerLivePatches.get(id) || {})
+    };
+  }
+
+  function playerFieldIsProtected(id, field) {
+    const patch = playerLivePatch(id);
+    if (field === "hpCurrent" && hasOwn(patch, "hpCurrent")) return true;
+    if (field === "hpMax" && hasOwn(patch, "hpOverride")) return true;
+    if (field === "conditions" && hasOwn(patch, "conditions")) return true;
+
+    const active = document.activeElement;
+    const row = active?.closest(".combatant-row");
+    if (!row || row.dataset.id !== id) return false;
+    return field === "conditions"
+      ? Boolean(active.closest(".combatant-conditions"))
+      : active.dataset.field === field;
+  }
+
+  function mergeRefreshedPlayers(players) {
+    const previousById = new Map(playerCharacters.map(character => [character.id, character]));
+    return players.map(character => {
+      const previous = previousById.get(character.id);
+      if (!previous) return character;
+      const merged = { ...character };
+      if (playerFieldIsProtected(character.id, "hpCurrent")) merged.hpCurrent = previous.hpCurrent;
+      if (playerFieldIsProtected(character.id, "hpMax")) merged.hpMax = previous.hpMax;
+      if (playerFieldIsProtected(character.id, "conditions")) merged.currentConditions = previous.currentConditions;
+      if (playerFieldIsProtected(character.id, "armorClass")) merged.armorClass = previous.armorClass;
+      return merged;
+    });
+  }
+
+  function setInputValueIfSafe(input, value, id, field) {
+    if (!input || playerFieldIsProtected(id, field)) return;
+    const nextValue = String(value ?? "");
+    if (input.value !== nextValue) input.value = nextValue;
+  }
+
+  function updateHpBarElement(row) {
+    const current = numericHp(row.querySelector('[data-field="hpCurrent"]')?.value);
+    const max = numericHp(row.querySelector('[data-field="hpMax"]')?.value);
+    const pct = max > 0 ? Math.max(0, Math.min(100, Math.round((current / max) * 100))) : 0;
+    const bar = row.querySelector(".combatant-hp-bar");
+    if (!bar) return;
+    bar.style.width = `${pct}%`;
+    bar.classList.toggle("danger", pct > 0 && pct <= 50);
+  }
+
+  function createConditionEditor(combatant) {
+    const container = document.createElement("div");
+    container.className = "combatant-conditions";
+    const conditions = normalizeConditionNames(combatant.currentConditions);
+    const chips = document.createElement("div");
+    chips.className = "combatant-condition-chips";
+
+    if (conditions.length) {
+      conditions.forEach(condition => {
+        const chip = document.createElement("span");
+        chip.className = `combatant-condition-chip${focusedConditions.get(combatant.id) === condition ? " active" : ""}`;
+        const open = document.createElement("button");
+        open.type = "button";
+        open.className = "combatant-condition-open";
+        open.dataset.action = "show-condition";
+        open.dataset.condition = condition;
+        open.textContent = condition;
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "combatant-condition-remove";
+        remove.dataset.action = "remove-condition";
+        remove.dataset.condition = condition;
+        remove.setAttribute("aria-label", `Remove ${condition}`);
+        remove.textContent = "×";
+        chip.append(open, remove);
+        chips.append(chip);
+      });
+    } else {
+      const empty = document.createElement("span");
+      empty.className = "combatant-condition-empty";
+      empty.textContent = "No conditions";
+      chips.append(empty);
+    }
+    container.append(chips);
+
+    const picker = document.createElement("select");
+    picker.className = "combatant-condition-picker";
+    picker.dataset.action = "add-condition";
+    picker.setAttribute("aria-label", `Add condition for ${combatant.name}`);
+    const addOption = document.createElement("option");
+    addOption.value = "";
+    addOption.textContent = "Add condition…";
+    picker.append(addOption);
+    Object.keys(window.CONDITION_DETAILS || {}).forEach(condition => {
+      const option = document.createElement("option");
+      option.value = condition;
+      option.textContent = condition;
+      picker.append(option);
+    });
+    const customOption = document.createElement("option");
+    customOption.value = CUSTOM_CONDITION_VALUE;
+    customOption.textContent = "Custom condition…";
+    picker.append(customOption);
+    container.append(picker);
+
+    const focused = focusedConditions.get(combatant.id);
+    if (focused) {
+      const info = document.createElement("aside");
+      info.className = "combatant-condition-info";
+      info.setAttribute("aria-live", "polite");
+      const header = document.createElement("div");
+      header.className = "combatant-condition-info-header";
+      const title = document.createElement("strong");
+      title.textContent = focused;
+      const close = document.createElement("button");
+      close.type = "button";
+      close.dataset.action = "close-condition-info";
+      close.setAttribute("aria-label", `Close ${focused} details`);
+      close.textContent = "×";
+      header.append(title, close);
+      info.append(header);
+      const details = window.CONDITION_DETAILS?.[focused];
+      if (details?.length) {
+        const list = document.createElement("ul");
+        details.forEach(detail => {
+          const item = document.createElement("li");
+          item.textContent = detail;
+          list.append(item);
+        });
+        info.append(list);
+      } else {
+        const text = document.createElement("p");
+        text.textContent = "Custom condition. Add campaign-specific details to your notes.";
+        info.append(text);
+      }
+      container.append(info);
+    }
+    return container;
+  }
+
+  function patchConditionEditor(row, combatant) {
+    const container = row.querySelector(".combatant-conditions");
+    if (!container || playerFieldIsProtected(combatant.id, "conditions")) return;
+    const conditions = normalizeConditionNames(combatant.currentConditions);
+    const current = [...container.querySelectorAll(".combatant-condition-open")].map(button => button.textContent);
+    const focused = focusedConditions.get(combatant.id);
+    if (focused && !conditions.some(condition => condition.toLowerCase() === focused.toLowerCase())) focusedConditions.delete(combatant.id);
+    const nextFocused = focusedConditions.get(combatant.id);
+    const infoTitle = container.querySelector(".combatant-condition-info strong")?.textContent || "";
+    if (serializeConditionNames(current) === serializeConditionNames(conditions) && infoTitle === (nextFocused || "")) return;
+    container.replaceWith(createConditionEditor(combatant));
+  }
+
+  function patchPlayerRow(row, combatant, displayIndex) {
+    row.classList.toggle("active-turn", combatant.id === state.activeId);
+    const medallion = row.querySelector(".combatant-order-medallion");
+    if (medallion) medallion.textContent = numericInitiative(combatant.initiative) === Number.NEGATIVE_INFINITY ? "·" : String(displayIndex + 1);
+    const name = row.querySelector(".combatant-name");
+    if (name && name.textContent !== combatant.name) name.textContent = combatant.name;
+
+    const initiative = row.querySelector('[data-field="initiative"]');
+    setInputValueIfSafe(initiative, combatant.initiative, combatant.id, "initiative");
+    const hpCurrent = row.querySelector('[data-field="hpCurrent"]');
+    const hpMax = row.querySelector('[data-field="hpMax"]');
+    setInputValueIfSafe(hpCurrent, combatant.hpCurrent, combatant.id, "hpCurrent");
+    setInputValueIfSafe(hpMax, combatant.hpMax, combatant.id, "hpMax");
+    const armorClass = row.querySelector('[data-field="armorClass"]');
+    setInputValueIfSafe(armorClass, combatant.armorClass, combatant.id, "armorClass");
+    if (initiative) initiative.setAttribute("aria-label", `Initiative for ${combatant.name}`);
+    if (hpCurrent) hpCurrent.setAttribute("aria-label", `Current HP for ${combatant.name}`);
+    if (hpMax) hpMax.setAttribute("aria-label", `Maximum HP for ${combatant.name}`);
+    if (armorClass) armorClass.setAttribute("aria-label", `Armor Class for ${combatant.name}`);
+    updateHpBarElement(row);
+    patchConditionEditor(row, combatant);
+
+    const concentration = row.querySelector('[data-field="concentrating"]');
+    if (concentration && document.activeElement !== concentration) concentration.checked = combatant.concentrating;
+  }
+
+  function createCombatantRow(combatant, displayIndex) {
+    const template = document.createElement("template");
+    template.innerHTML = renderCombatantRow(combatant, displayIndex);
+    return template.content.firstElementChild;
+  }
+
+  function shouldDeferTrackerReorder() {
+    return Boolean(document.activeElement?.closest(".combatant-row"));
+  }
+
+  function reconcileTracker() {
+    const list = document.getElementById("initiativeList");
+    if (!list) return;
+    const combatants = getCombatants();
+    const rowsById = new Map([...list.querySelectorAll(".combatant-row")].map(row => [row.dataset.id, row]));
+    const existingRows = new Map(rowsById);
+    const retainedIds = new Set();
+
+    combatants.forEach(combatant => {
+      let row = rowsById.get(combatant.id);
+      if (row && row.dataset.type !== combatant.type) {
+        row.remove();
+        row = null;
+      }
+      if (!row) {
+        row = createCombatantRow(combatant, 0);
+        rowsById.set(combatant.id, row);
+        list.append(row);
+      }
+      retainedIds.add(combatant.id);
+    });
+
+    existingRows.forEach((row, id) => { if (!retainedIds.has(id)) row.remove(); });
+
+    if (!shouldDeferTrackerReorder()) {
+      combatants.forEach((combatant, displayIndex) => {
+        const row = rowsById.get(combatant.id);
+        const rowAtPosition = list.children[displayIndex];
+        if (rowAtPosition !== row) list.insertBefore(row, rowAtPosition || null);
+      });
+    }
+
+    combatants.forEach(combatant => {
+      const row = rowsById.get(combatant.id);
+      const displayIndex = [...list.children].indexOf(row);
+      if (combatant.type === "player") patchPlayerRow(row, combatant, displayIndex);
+      else row.classList.toggle("active-turn", combatant.id === state.activeId);
+    });
+    updateTrackerSummary(combatants);
   }
 
   function publishLiveUpdate(update) {
@@ -665,6 +907,10 @@
       if (!character) return;
       const livePatch = pendingPlayerLivePatches.get(id) || {};
       pendingPlayerLivePatches.delete(id);
+      inFlightPlayerLivePatches.set(id, {
+        ...(inFlightPlayerLivePatches.get(id) || {}),
+        ...livePatch
+      });
       try {
         const result = await characterStorage.saveCharacterLive({ id, ...livePatch });
         const savedLive = result?.live || result;
@@ -687,6 +933,13 @@
         });
         schedulePlayerLiveSave(id, {});
         console.warn("Could not save DM-screen player live state:", error.message);
+      } finally {
+        const inFlight = inFlightPlayerLivePatches.get(id) || {};
+        Object.entries(livePatch).forEach(([field, value]) => {
+          if (inFlight[field] === value) delete inFlight[field];
+        });
+        if (Object.keys(inFlight).length) inFlightPlayerLivePatches.set(id, inFlight);
+        else inFlightPlayerLivePatches.delete(id);
       }
     }, SAVE_DELAY));
   }
@@ -856,13 +1109,30 @@
 
   function receiveLiveUpdate(payload) {
     if (!payload || payload.type !== "live-summary-updated" || !payload.id) return;
-    updatePlayerSummaryLocally(payload.id, { hpCurrent: payload.hpCurrent ?? "", hpMax: payload.hpMax ?? "", tempHp: payload.tempHp ?? "", armorClass: payload.armorClass ?? "", currentConditions: payload.currentConditions ?? "" });
-    if (!saveTimers.has(payload.id)) renderTracker();
+    const patch = {
+      hpCurrent: payload.hpCurrent ?? "",
+      hpMax: payload.hpMax ?? "",
+      tempHp: payload.tempHp ?? "",
+      armorClass: payload.armorClass ?? "",
+      currentConditions: payload.currentConditions ?? ""
+    };
+    if (playerFieldIsProtected(payload.id, "hpCurrent")) delete patch.hpCurrent;
+    if (playerFieldIsProtected(payload.id, "hpMax")) delete patch.hpMax;
+    if (playerFieldIsProtected(payload.id, "armorClass")) delete patch.armorClass;
+    if (playerFieldIsProtected(payload.id, "conditions")) delete patch.currentConditions;
+    updatePlayerSummaryLocally(payload.id, patch);
+    reconcileTracker();
   }
 
   async function refreshPlayers() {
-    try { playerCharacters = await characterStorage.listCharacterData(); renderTracker(); }
+    if (playersRefreshInFlight) return;
+    playersRefreshInFlight = true;
+    try {
+      playerCharacters = mergeRefreshedPlayers(await characterStorage.listCharacterData());
+      reconcileTracker();
+    }
     catch (error) { console.warn("Could not refresh DM-screen characters:", error.message); }
+    finally { playersRefreshInFlight = false; }
   }
 
   function startPolling() { clearInterval(pollTimer); pollTimer = setInterval(refreshPlayers, POLL_DELAY); }
