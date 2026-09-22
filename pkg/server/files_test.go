@@ -74,6 +74,14 @@ func TestCharacterSheetPagesIncludeCopyControl(t *testing.T) {
 	require.Contains(t, string(storageAdapter), "/api/characters/${encodeURIComponent(id)}/copy")
 }
 
+func TestFrontendAPIClientUsesGoServerBaseURL(t *testing.T) {
+	chdirRepoRoot(t)
+	contents, err := os.ReadFile(filepath.Join("public", "js", "api-client.js"))
+	require.NoError(t, err)
+	require.Contains(t, string(contents), `const API_BASE_URL = "https://raperonzolo.com"`)
+	require.Contains(t, string(contents), "new URL(path, API_BASE_URL)")
+}
+
 func TestFileServerServesStaticCharacterListPage(t *testing.T) {
 	chdirRepoRoot(t)
 	request := httptest.NewRequest(http.MethodGet, "/characters.html", nil)
@@ -98,8 +106,8 @@ func TestFileServerServesStaticAuthPages(t *testing.T) {
 		action   string
 		pageLink string
 	}{
-		{path: "/login.html", content: "Crew Login", action: `action="/api/login"`, pageLink: `href="/register.html"`},
-		{path: "/register.html", content: "Create Account", action: `action="/api/register"`, pageLink: `href="/login.html"`},
+		{path: "/login.html", content: "Crew Login", action: `action="https://raperonzolo.com/api/login"`, pageLink: `href="/register.html"`},
+		{path: "/register.html", content: "Create Account", action: `action="https://raperonzolo.com/api/register"`, pageLink: `href="/login.html"`},
 	}
 	for _, tt := range tests {
 		t.Run(tt.path, func(t *testing.T) {

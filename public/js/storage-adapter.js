@@ -27,31 +27,31 @@
         return characters;
       }
 
-      const response = await fetch(`/api/characters?cacheBust=${Date.now()}`, { cache: "no-store" });
+      const response = await window.apiFetch(`/api/characters?cacheBust=${Date.now()}`, { cache: "no-store" });
 
       return parseJsonResponse(response, "Could not load character index.");
     },
 
     async loadCharacterData(id) {
-      const response = await fetch(`/api/characters/${encodeURIComponent(id)}?cacheBust=${Date.now()}`, { cache: "no-store" });
+      const response = await window.apiFetch(`/api/characters/${encodeURIComponent(id)}?cacheBust=${Date.now()}`, { cache: "no-store" });
 
       return parseJsonResponse(response, "Could not load character.");
     },
 
     async loadCharacterHistory(id) {
-      const response = await fetch(`/api/characters/${encodeURIComponent(id)}/history?cacheBust=${Date.now()}`, { cache: "no-store" });
+      const response = await window.apiFetch(`/api/characters/${encodeURIComponent(id)}/history?cacheBust=${Date.now()}`, { cache: "no-store" });
 
       return parseJsonResponse(response, "Could not load character history.");
     },
 
     async loadCharacterVersion(id, version) {
-      const response = await fetch(`/api/characters/${encodeURIComponent(id)}/history/${encodeURIComponent(version)}?cacheBust=${Date.now()}`, { cache: "no-store" });
+      const response = await window.apiFetch(`/api/characters/${encodeURIComponent(id)}/history/${encodeURIComponent(version)}?cacheBust=${Date.now()}`, { cache: "no-store" });
 
       return parseJsonResponse(response, "Could not load character version.");
     },
 
     async saveCharacterData(character) {
-      const response = await fetch("/api/characters", {
+      const response = await window.apiFetch("/api/characters", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(character)
@@ -62,7 +62,7 @@
 
     async copyCharacterData(id, version = "") {
       const query = version ? `?version=${encodeURIComponent(version)}` : "";
-      const response = await fetch(`/api/characters/${encodeURIComponent(id)}/copy${query}`, {
+      const response = await window.apiFetch(`/api/characters/${encodeURIComponent(id)}/copy${query}`, {
         method: "POST"
       });
 
@@ -86,7 +86,7 @@
           liveFieldNames.has(name) && value !== undefined
         )
       );
-      const response = await fetch(`/api/characters/${encodeURIComponent(id)}/live`, {
+      const response = await window.apiFetch(`/api/characters/${encodeURIComponent(id)}/live`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
@@ -96,7 +96,7 @@
     },
 
     async deleteCharacterData(payload) {
-      const response = await fetch(`/api/characters/${encodeURIComponent(payload.id)}`, {
+      const response = await window.apiFetch(`/api/characters/${encodeURIComponent(payload.id)}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

@@ -53,7 +53,7 @@
     async init() {},
 
     async loadCampaignState() {
-      const response = await fetch(`/api/campaign-state?cacheBust=${Date.now()}`, { cache: "no-store" });
+      const response = await window.apiFetch(`/api/campaign-state?cacheBust=${Date.now()}`, { cache: "no-store" });
 
       return normalizeState(
         await parseJsonResponse(
@@ -64,7 +64,7 @@
     },
 
     async saveCampaignState(state) {
-      const response = await fetch("/api/campaign-state", {
+      const response = await window.apiFetch("/api/campaign-state", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

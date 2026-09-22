@@ -56,7 +56,7 @@
       showMessage("A character ID is required.");
       return;
     }
-    const response = await fetch(`/api/admin/characters/${encodeURIComponent(characterId)}/history`, { headers: { Accept: "application/json" } });
+    const response = await window.apiFetch(`/api/admin/characters/${encodeURIComponent(characterId)}/history`, { headers: { Accept: "application/json" } });
     if (response.redirected || response.status === 401) {
       window.location.assign("/login.html");
       return;

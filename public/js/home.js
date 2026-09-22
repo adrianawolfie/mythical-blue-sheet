@@ -3,7 +3,7 @@
   const charactersEl = document.getElementById("homeCharacters");
 
   async function fetchJSON(url) {
-    const response = await fetch(url, { headers: { Accept: "application/json" } });
+    const response = await window.apiFetch(url, { headers: { Accept: "application/json" } });
     if (response.status === 401) {
       window.location.assign("/login.html");
       return null;

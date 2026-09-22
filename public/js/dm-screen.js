@@ -1441,7 +1441,7 @@
     const legacyLocal = Array.isArray(state.customStatblocks) ? state.customStatblocks : [];
 
     try {
-      const response = await fetch(`/api/custom-statblocks?cacheBust=${Date.now()}`, { cache: "no-store" });
+      const response = await window.apiFetch(`/api/custom-statblocks?cacheBust=${Date.now()}`, { cache: "no-store" });
       const body = await parseCustomStatblockResponse(response, "Could not load campaign custom statblocks.");
       return combineStatblockLists(legacyLocal, Array.isArray(body) ? body : body.statblocks || []);
     } catch (error) {
@@ -1457,7 +1457,7 @@
       source: statblock.source || "Custom Monster"
     }));
 
-    const response = await fetch("/api/custom-statblocks", {
+    const response = await window.apiFetch("/api/custom-statblocks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ statblocks: normalized })
