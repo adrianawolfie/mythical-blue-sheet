@@ -40,7 +40,7 @@
 
   async function loadCharacters() {
     try {
-      const response = await fetch("/api/characters?owned=1", { cache: "no-store" });
+      const response = await window.apiFetch("/api/characters?owned=1", { cache: "no-store" });
       if (response.status === 401) {
         window.location.assign("/login.html");
         return;

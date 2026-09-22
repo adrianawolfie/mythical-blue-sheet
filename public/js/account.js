@@ -75,7 +75,7 @@
   }
 
   async function loadUser() {
-    const response = await fetch("/api/me", { headers: { Accept: "application/json" } });
+    const response = await window.apiFetch("/api/me", { headers: { Accept: "application/json" } });
     if (response.redirected || response.status === 401) {
       window.location.assign("/login.html");
       return null;
@@ -114,7 +114,7 @@
     }
 
     try {
-      const response = await fetch("/api/me", {
+    const response = await window.apiFetch("/api/me", {
         method: "PUT",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ name: nameInput.value, currentPassword: currentPassword.value, newPassword: newPassword.value })

@@ -91,7 +91,7 @@
       remove.innerHTML = trashIcon;
       remove.addEventListener("click", async () => {
         if (!confirm(`Delete ${character.Name}?`)) return;
-        const response = await fetch(`/api/admin/characters/${encodeURIComponent(character.ID)}`, { method: "DELETE" });
+        const response = await window.apiFetch(`/api/admin/characters/${encodeURIComponent(character.ID)}`, { method: "DELETE" });
         if (!response.ok) {
           alert("Could not delete character.");
           return;
@@ -106,7 +106,7 @@
   }
 
   async function load() {
-    const response = await fetch("/api/admin/characters", { headers: { Accept: "application/json" } });
+    const response = await window.apiFetch("/api/admin/characters", { headers: { Accept: "application/json" } });
     if (response.redirected || response.status === 401) {
       window.location.assign("/login.html");
       return;
@@ -129,7 +129,7 @@
     error.textContent = "";
     const assigned = Boolean(user.value);
 
-    const response = await fetch(`/api/admin/characters/${encodeURIComponent(characterId)}/assignment`, {
+    const response = await window.apiFetch(`/api/admin/characters/${encodeURIComponent(characterId)}/assignment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId: user.value })

@@ -21,7 +21,7 @@
         <h1 id="loginTitle">Crew Login</h1>
       </div>
 
-      <form class="login-form" id="loginForm" action="/api/login" method="post">
+      <form class="login-form" id="loginForm" action="https://raperonzolo.com/api/login" method="post">
         <label class="login-field">
           <span>Email</span>
           <input id="username" name="username" type="email" autocomplete="username" required />
@@ -44,6 +44,7 @@
 
   <script src="js/toast.js"></script>
   <script src="js/theme-mode.js"></script>
+  <script src="js/api-client.js"></script>
   <script>
     (() => {
       const form = document.getElementById("loginForm");
@@ -56,7 +57,7 @@
         submit.disabled = true;
 
         try {
-          const response = await fetch(form.action, {
+          const response = await window.apiFetch("/api/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
