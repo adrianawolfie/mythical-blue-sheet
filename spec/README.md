@@ -30,7 +30,9 @@ The API is the HTTP server implementation of those domain repositories. Keep HTT
 
 Entrypoint: `bin/main.go`
 
-The server loads configuration, selects storage, creates repositories, registers page and API routes on `http.ServeMux`, limits POST body size, and listens on port `8080`.
+The server loads configuration, selects storage, creates repositories, registers page and API routes on `http.ServeMux`, applies CORS for the approved frontend origins, limits POST body size, and listens on port `8080`.
+
+Credentialed CORS requests are accepted only from `https://raperonzolo.com` and `https://raperonzolo-app-test-xwpvf.ondigitalocean.app`. The authentication cookie is secure and configured for cross-site requests.
 
 Static assets and static HTML are served from `public/` by the root file server. For paths without an extension, the file server tries the path with `.html` before the original path. Explicit page routes in `pkg/server` are limited to redirects; page data is loaded through JSON APIs.
 

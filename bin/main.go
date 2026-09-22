@@ -95,7 +95,7 @@ func main() {
 	mux.Handle("GET /api/custom-statblocks", server.GetCustomStatblocks(statblocks))
 	mux.Handle("POST /api/custom-statblocks", server.PostCustomStatblocks(statblocks))
 
-	handler := server.LimitPostBody(mux)
+	handler := server.CORS(server.LimitPostBody(mux))
 
 	log.Println("listening on :8080")
 	if err := http.ListenAndServe(":8080", handler); err != nil {

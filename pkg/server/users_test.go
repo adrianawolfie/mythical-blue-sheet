@@ -184,7 +184,7 @@ func TestPostLoginSetsCookieAndRedirects(t *testing.T) {
 		t.Fatalf("expected redirect to /, got %q", location)
 	}
 	cookies := w.Result().Cookies()
-	if len(cookies) != 1 || cookies[0].Name != "user" || cookies[0].Value != "ada@example.com" {
+	if len(cookies) != 1 || cookies[0].Name != "user" || cookies[0].Value != "ada@example.com" || !cookies[0].Secure || cookies[0].SameSite != http.SameSiteNoneMode {
 		t.Fatalf("expected user cookie, got %#v", cookies)
 	}
 }

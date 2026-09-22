@@ -101,6 +101,8 @@ func PostLogin(u user.Repository) http.HandlerFunc {
 				Name:     "user",
 				Value:    currentUser.Email,
 				HttpOnly: true,
+				Secure:   true,
+				SameSite: http.SameSiteNoneMode,
 			})
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 			return
