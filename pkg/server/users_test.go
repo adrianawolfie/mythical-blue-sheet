@@ -167,7 +167,7 @@ func chdirRepoRoot(t *testing.T) {
 	})
 }
 
-func TestPostLoginSetsCookieAndRedirects(t *testing.T) {
+func TestPostLoginSetsCookie(t *testing.T) {
 	users := newUserTestRepository(t, nil)
 	if err := users.Create(context.Background(), user.User{Name: "Ada Storm", Email: "ada@example.com", Password: "Encrypted1!", Enabled: true}); err != nil {
 		t.Fatalf("create user: %v", err)
@@ -177,15 +177,24 @@ func TestPostLoginSetsCookieAndRedirects(t *testing.T) {
 
 	PostLogin(users).ServeHTTP(w, req)
 
-	if w.Code != http.StatusSeeOther {
-		t.Fatalf("expected status 303, got %d", w.Code)
-	}
-	if location := w.Header().Get("Location"); location != "/" {
-		t.Fatalf("expected redirect to /, got %q", location)
+	if w.Code != http.StatusNoContent {
+		t.Fatalf("expected status 204, got %d", w.Code)
 	}
 	cookies := w.Result().Cookies()
 	if len(cookies) != 1 || cookies[0].Name != "user" || cookies[0].Value != "ada@example.com" || !cookies[0].Secure || cookies[0].SameSite != http.SameSiteNoneMode {
 		t.Fatalf("expected user cookie, got %#v", cookies)
+	}
+}
+
+func TestPostLoginReturnsNotFoundForUnknownUser(t *testing.T) {
+	users := newUserTestRepository(t, nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/login", strings.NewReader(`{"username":"missing@example.com","password":"Encrypted1!"}`))
+	w := httptest.NewRecorder()
+
+	PostLogin(users).ServeHTTP(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("expected status 404, got %d", w.Code)
 	}
 }
 
@@ -615,8 +624,8 @@ func TestPostRegisterPersistsName(t *testing.T) {
 
 	PostRegister(users).ServeHTTP(w, req)
 
-	if w.Code != http.StatusSeeOther {
-		t.Fatalf("expected status 303, got %d", w.Code)
+	if w.Code != http.StatusNoContent {
+		t.Fatalf("expected status 204, got %d", w.Code)
 	}
 	created, err := users.GetByUsername("ada@example.com")
 	if err != nil {
@@ -624,9 +633,6 @@ func TestPostRegisterPersistsName(t *testing.T) {
 	}
 	if created.Name != "Ada Storm" {
 		t.Fatalf("expected created user name %q, got %q", "Ada Storm", created.Name)
-	}
-	if location := w.Header().Get("Location"); location != "/login.html" {
-		t.Fatalf("expected redirect to /login.html, got %q", location)
 	}
 }
 

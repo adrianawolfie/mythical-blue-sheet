@@ -73,7 +73,7 @@ func PostRegister(repo user.Repository) http.HandlerFunc {
 			renderErrorPage(w, err)
 			return
 		}
-		http.Redirect(w, r, "/login.html", http.StatusSeeOther)
+		w.WriteHeader(http.StatusNoContent)
 	}
 }
 
@@ -93,6 +93,10 @@ func PostLogin(u user.Repository) http.HandlerFunc {
 				http.Error(w, "disabled", http.StatusForbidden)
 				return
 			}
+			if errors.Is(err, user.ErrUserNotFound) {
+				http.Error(w, "user not found", http.StatusNotFound)
+				return
+			}
 			renderErrorPage(w, err)
 			return
 		}
@@ -104,7 +108,7 @@ func PostLogin(u user.Repository) http.HandlerFunc {
 				Secure:   true,
 				SameSite: http.SameSiteNoneMode,
 			})
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			w.WriteHeader(http.StatusNoContent)
 			return
 		}
 		w.WriteHeader(http.StatusNotFound)
