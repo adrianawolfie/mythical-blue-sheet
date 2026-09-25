@@ -25,7 +25,7 @@ The Character domain stores versioned player character sheets, independently upd
 
 - `character/character-index.json` stores only character IDs and optional deletion timestamps. Character storage paths are derived from IDs. Configuration and live values in list responses are loaded from character documents and are not duplicated in the index.
 - `character/{id}/current.json` stores current character configuration.
-- `character/{id}/live.json` stores current HP, optional maximum-HP override, temporary HP, conditions, inspiration, exhaustion, death saves, spent hit dice, spent spell slots by level, active armor-class modifiers, and `updatedAt`.
+- `character/{id}/live.json` stores current HP, optional maximum-HP override, temporary HP, conditions, inspiration, exhaustion, death saves, spent hit dice, spent spell slots by level, spent feature resources by resource ID, active armor-class modifiers, and `updatedAt`.
 - `character/{id}/history.json` lists immutable snapshots.
 - `character/{id}/versions/{uuidv7}.json` stores immutable character configuration snapshots.
 - Legacy `character/{id}.json` files remain readable and migrate to the directory layout on the next meaningful character save.

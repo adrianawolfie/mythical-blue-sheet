@@ -80,6 +80,7 @@
         "deathSaves",
         "hitDiceSpent",
         "spellSlotsSpent",
+        "featureResourcesSpent",
         "activeArmorClassModifiers"
       ]);
       const body = Object.fromEntries(

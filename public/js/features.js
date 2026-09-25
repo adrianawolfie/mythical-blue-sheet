@@ -163,12 +163,28 @@ function addFeatureEntry(listId, data = {}) {
 
   const category = inferFeatureCategory(data);
   const hasResource = data.hasResource === true || Boolean(String(data.resource || "").trim());
+  let resourceMax = String(data.resourceMax || "");
+  let resourceType = data.resourceType || "Short Rest";
+  let legacySpent = 0;
+
+  // Split legacy resource text such as "2/3 Short Rest" into max, type, and spent.
+  if (!resourceMax && String(data.resource || "").trim()) {
+    const legacy = String(data.resource).match(/^\s*\(?\s*(\d+)\s*(?:\/\s*(\d+))?\s*\)?\s*(?:per\s+)?(.*)$/i);
+    resourceMax = legacy ? (legacy[2] ?? legacy[1]) : "";
+    resourceType = (legacy ? legacy[3] : data.resource).trim();
+    if (legacy) legacySpent = Math.max(0, Number(resourceMax) - Number(legacy[1]));
+  }
+  if (/^(sr|short rest)$/i.test(resourceType)) resourceType = "Short Rest";
+  if (/^(lr|long rest)$/i.test(resourceType)) resourceType = "Long Rest";
+  const customResourceType = resourceType !== "Short Rest" && resourceType !== "Long Rest";
 
   const entry = document.createElement("div");
   entry.className = "feature-entry";
   entry.dataset.sourceId = String(data.sourceId || "");
   entry.dataset.source = String(data.source || "");
   entry.dataset.category = category;
+  entry.dataset.resourceId = data.resourceId || crypto.randomUUID();
+  if (legacySpent) entry.dataset.legacySpent = String(legacySpent);
 
   entry.innerHTML = `
     <div class="feature-entry-top">
@@ -193,7 +209,19 @@ function addFeatureEntry(listId, data = {}) {
         <button type="button" class="feature-resource-toggle">+ Add Resource</button>
         <div class="feature-resource-box">
           <label>Resource</label>
-          <input class="feature-resource" type="text" placeholder="2/3 Short Rest" value="${escapeHtml(data.resource || "")}" />
+          <div class="slot-row">
+            <button type="button" class="slot-btn" data-slot-step="-1" aria-label="Use resource">−</button>
+            <output class="slot-available" aria-label="Resource available">0</output>
+            <button type="button" class="slot-btn" data-slot-step="1" aria-label="Regain resource">+</button>
+            /
+            <input class="feature-resource-max" type="text" inputmode="numeric" placeholder="max" aria-label="Resource max" value="${escapeHtml(resourceMax)}" />
+          </div>
+          <select class="feature-resource-type" aria-label="Resource recharge">
+            <option value="Short Rest" ${resourceType === "Short Rest" ? "selected" : ""}>Short Rest</option>
+            <option value="Long Rest" ${resourceType === "Long Rest" ? "selected" : ""}>Long Rest</option>
+            <option value="custom" ${customResourceType ? "selected" : ""}>Custom</option>
+          </select>
+          <input class="feature-resource-custom" type="text" placeholder="Resource type" aria-label="Custom resource type" value="${customResourceType ? escapeHtml(resourceType) : ""}" ${customResourceType ? "" : "hidden"} />
           <button type="button" class="feature-resource-remove" aria-label="Remove resource tracker">X</button>
         </div>
       </div>
@@ -212,7 +240,9 @@ function addFeatureEntry(listId, data = {}) {
 
   const resourceArea = entry.querySelector(".feature-resource-area");
   const resourceToggle = entry.querySelector(".feature-resource-toggle");
-  const resourceInput = entry.querySelector(".feature-resource");
+  const resourceInput = entry.querySelector(".feature-resource-max");
+  const resourceTypeSelect = entry.querySelector(".feature-resource-type");
+  const resourceCustomInput = entry.querySelector(".feature-resource-custom");
   const resourceRemove = entry.querySelector(".feature-resource-remove");
   const categorySelect = entry.querySelector(".feature-category-select");
   const detailsToggle = entry.querySelector(".feature-details-toggle");
@@ -236,10 +266,21 @@ function addFeatureEntry(listId, data = {}) {
     resourceInput.focus();
   });
 
+  resourceTypeSelect.addEventListener("change", () => {
+    resourceCustomInput.hidden = resourceTypeSelect.value !== "custom";
+    if (!resourceCustomInput.hidden) resourceCustomInput.focus();
+  });
+
+  resourceInput.addEventListener("input", () => renderFeatureResources());
+
   resourceRemove.addEventListener("click", () => {
     if (!confirm("Remove the resource tracker from this feature or trait?")) return;
     resourceInput.value = "";
     resourceArea.classList.remove("has-resource");
+    const { [entry.dataset.resourceId]: removed, ...remaining } = featureResourcesSpent;
+    featureResourcesSpent = remaining;
+    renderFeatureResources();
+    scheduleHPAutoSave({ featureResourcesSpent });
   });
 
   categorySelect.addEventListener("change", () => {
@@ -280,6 +321,7 @@ function addFeatureEntry(listId, data = {}) {
   list.appendChild(entry);
   refreshFeatureCategorySelects(listId);
   refreshFeatureView(listId);
+  renderFeatureResources();
 }
 
 function toggleFeatureEditMode(listId, button) {
@@ -297,7 +339,12 @@ function collectFeatureEntries(listId) {
       name: entry.querySelector(".feature-name")?.value || "",
       short: entry.querySelector(".feature-short")?.value || "",
       hasResource,
-      resource: hasResource ? entry.querySelector(".feature-resource")?.value || "" : "",
+      resource: "",
+      resourceId: entry.dataset.resourceId || "",
+      resourceMax: hasResource ? entry.querySelector(".feature-resource-max")?.value || "" : "",
+      resourceType: entry.querySelector(".feature-resource-type")?.value === "custom"
+        ? entry.querySelector(".feature-resource-custom")?.value || ""
+        : entry.querySelector(".feature-resource-type")?.value || "",
       details: entry.querySelector(".feature-details")?.value || "",
       open: entry.querySelector(".feature-details-panel")?.classList.contains("is-open") || false,
       sourceId: entry.dataset.sourceId || "",
@@ -313,13 +360,14 @@ function renderFeatureEntries(listId, entries = []) {
   list.innerHTML = "";
 
   if (!entries.length) {
-    addFeatureEntry(listId, { name: "Class Feature", category: "Class Feature", short: "Short summary of what this feature does.", resource: "1/1 Short Rest", details: "" });
+    addFeatureEntry(listId, { name: "Class Feature", category: "Class Feature", short: "Short summary of what this feature does.", hasResource: true, resourceMax: "1", resourceType: "Short Rest", details: "" });
     addFeatureEntry(listId, { name: "Species Trait", category: "Species Trait", short: "Short summary of what this trait does.", details: "" });
     addFeatureEntry(listId, { name: "Feat", category: "Other", short: "Short summary of what this feat does.", details: "" });
     return;
   }
 
-  entries.forEach(entry => addFeatureEntry(listId, entry));
+  // Legacy entries without a resource ID get an index-based ID that becomes stable on the next save.
+  entries.forEach((entry, index) => addFeatureEntry(listId, { ...entry, resourceId: entry.resourceId || `feat-${index}` }));
   refreshFeatureCategorySelects(listId);
   refreshFeatureView(listId);
 }

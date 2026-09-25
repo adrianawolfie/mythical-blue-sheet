@@ -316,8 +316,9 @@ func TestCopyCreatesIndependentCharacterWithResetLiveState(t *testing.T) {
 	deathSaves := DeathSaves{Successes: 2, Failures: 1}
 	hitDiceSpent := map[string]int{"d6": 2}
 	spellSlotsSpent := map[string]int{"1": 3}
+	featureResourcesSpent := map[string]int{"feat-0": 1}
 	activeModifiers := []string{"Shield"}
-	if err := repo.UpdateLive(ctx, source.ID, LiveUpdate{HpCurrent: &hp, HpOverride: &override, TempHp: &temp, Conditions: &conditions, Inspiration: &inspiration, ExhaustionLevel: &exhaustion, DeathSaves: &deathSaves, HitDiceSpent: &hitDiceSpent, SpellSlotsSpent: &spellSlotsSpent, ActiveArmorClassModifiers: &activeModifiers}); err != nil {
+	if err := repo.UpdateLive(ctx, source.ID, LiveUpdate{HpCurrent: &hp, HpOverride: &override, TempHp: &temp, Conditions: &conditions, Inspiration: &inspiration, ExhaustionLevel: &exhaustion, DeathSaves: &deathSaves, HitDiceSpent: &hitDiceSpent, SpellSlotsSpent: &spellSlotsSpent, FeatureResourcesSpent: &featureResourcesSpent, ActiveArmorClassModifiers: &activeModifiers}); err != nil {
 		t.Fatalf("update source live state: %v", err)
 	}
 
@@ -331,11 +332,11 @@ func TestCopyCreatesIndependentCharacterWithResetLiveState(t *testing.T) {
 	if copied.Summary.Name != "Ada Copy" || copied.Fields["characterName"] != "Ada Copy" || copied.Fields["class"] != "Wizard" {
 		t.Fatalf("copy did not preserve configuration: %#v", copied)
 	}
-	if copied.Live.HpCurrent != "20" || copied.Live.HpMax != "20" || copied.Live.HpOverride != nil || copied.Live.TempHp != "" || len(copied.Live.Conditions) != 0 || copied.Live.Inspiration || copied.Live.ExhaustionLevel != 0 || copied.Live.DeathSaves != (DeathSaves{}) || len(copied.Live.HitDiceSpent) != 0 || len(copied.Live.SpellSlotsSpent) != 0 || len(copied.Live.ActiveArmorClassModifiers) != 0 {
+	if copied.Live.HpCurrent != "20" || copied.Live.HpMax != "20" || copied.Live.HpOverride != nil || copied.Live.TempHp != "" || len(copied.Live.Conditions) != 0 || copied.Live.Inspiration || copied.Live.ExhaustionLevel != 0 || copied.Live.DeathSaves != (DeathSaves{}) || len(copied.Live.HitDiceSpent) != 0 || len(copied.Live.SpellSlotsSpent) != 0 || len(copied.Live.FeatureResourcesSpent) != 0 || len(copied.Live.ActiveArmorClassModifiers) != 0 {
 		t.Fatalf("copy did not reset live state: %#v", copied.Live)
 	}
 	sourceAfter, _ := repo.GetByID(ctx, source.ID)
-	if sourceAfter.Summary.Name != "Ada" || sourceAfter.Live.HpCurrent != "3" || sourceAfter.Live.HpMax != "30" || sourceAfter.Live.SpellSlotsSpent["1"] != 3 {
+	if sourceAfter.Summary.Name != "Ada" || sourceAfter.Live.HpCurrent != "3" || sourceAfter.Live.HpMax != "30" || sourceAfter.Live.SpellSlotsSpent["1"] != 3 || sourceAfter.Live.FeatureResourcesSpent["feat-0"] != 1 {
 		t.Fatalf("copy changed source character: %#v", sourceAfter)
 	}
 	history, err := repo.ListHistory(ctx, copied.ID)

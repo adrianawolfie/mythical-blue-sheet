@@ -97,6 +97,7 @@ type Live struct {
 	DeathSaves                DeathSaves     `json:"deathSaves"`
 	HitDiceSpent              map[string]int `json:"hitDiceSpent"`
 	SpellSlotsSpent           map[string]int `json:"spellSlotsSpent"`
+	FeatureResourcesSpent     map[string]int `json:"featureResourcesSpent"`
 	ActiveArmorClassModifiers []string       `json:"activeArmorClassModifiers"`
 	UpdatedAt                 string         `json:"updatedAt"`
 }
@@ -114,6 +115,7 @@ type LiveUpdate struct {
 	DeathSaves                *DeathSaves     `json:"deathSaves,omitempty"`
 	HitDiceSpent              *map[string]int `json:"hitDiceSpent,omitempty"`
 	SpellSlotsSpent           *map[string]int `json:"spellSlotsSpent,omitempty"`
+	FeatureResourcesSpent     *map[string]int `json:"featureResourcesSpent,omitempty"`
 	ActiveArmorClassModifiers *[]string       `json:"activeArmorClassModifiers,omitempty"`
 }
 
@@ -162,15 +164,18 @@ type CustomLists struct {
 }
 
 type FeatureEntry struct {
-	Name        string `json:"name"`
-	Short       string `json:"short"`
-	HasResource bool   `json:"hasResource"`
-	Resource    string `json:"resource"`
-	Details     string `json:"details"`
-	Open        bool   `json:"open"`
-	SourceID    string `json:"sourceId"`
-	Source      string `json:"source"`
-	Category    string `json:"category"`
+	Name         string `json:"name"`
+	Short        string `json:"short"`
+	HasResource  bool   `json:"hasResource"`
+	Resource     string `json:"resource"`
+	ResourceID   string `json:"resourceId"`
+	ResourceMax  string `json:"resourceMax"`
+	ResourceType string `json:"resourceType"`
+	Details      string `json:"details"`
+	Open         bool   `json:"open"`
+	SourceID     string `json:"sourceId"`
+	Source       string `json:"source"`
+	Category     string `json:"category"`
 }
 
 type WeaponRow struct {

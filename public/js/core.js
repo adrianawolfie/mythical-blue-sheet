@@ -411,6 +411,7 @@ function collectCharacterData() {
     },
     hitDiceSpent: typeof collectHitDiceSpent === "function" ? collectHitDiceSpent() : {},
     spellSlotsSpent: typeof spellSlotsSpent === "object" ? spellSlotsSpent : {},
+    featureResourcesSpent: typeof featureResourcesSpent === "object" ? featureResourcesSpent : {},
     activeArmorClassModifiers: typeof collectActiveArmorClassModifiers === "function"
       ? collectActiveArmorClassModifiers()
       : []
@@ -520,6 +521,15 @@ applyLiveState(character.live || {});
 if (character.live?.spellSlotsSpent == null && Object.keys(legacySpellSlotsSpent).length) {
   applyLiveState({ ...character.live, spellSlotsSpent: legacySpellSlotsSpent });
   scheduleHPAutoSave({ spellSlotsSpent: legacySpellSlotsSpent });
+}
+const legacyFeatureResourcesSpent = Object.fromEntries(
+  Array.from(document.querySelectorAll(".feature-entry[data-legacy-spent]"))
+    .map(entry => [entry.dataset.resourceId, Number(entry.dataset.legacySpent)])
+);
+if (character.live?.featureResourcesSpent == null && Object.keys(legacyFeatureResourcesSpent).length) {
+  featureResourcesSpent = legacyFeatureResourcesSpent;
+  renderFeatureResources();
+  scheduleHPAutoSave({ featureResourcesSpent });
 }
 focusedCondition = "";
 renderSelectedConditions();

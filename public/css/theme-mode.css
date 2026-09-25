@@ -1892,7 +1892,8 @@ html[data-theme="moonlight"] .defense-type-cell .proficiency-type-label {
   color: var(--moon-ghost-bright) !important;
 }
 
-html[data-theme="moonlight"] .feature-category-select {
+html[data-theme="moonlight"] .feature-category-select,
+html[data-theme="moonlight"] .feature-resource-type {
   border: none !important;
   border-bottom: 1px dotted rgba(150, 218, 255, .58) !important;
   background: transparent !important;
@@ -1900,7 +1901,9 @@ html[data-theme="moonlight"] .feature-category-select {
 }
 
 html[data-theme="moonlight"] .feature-category-select:hover,
-html[data-theme="moonlight"] .feature-category-select:focus {
+html[data-theme="moonlight"] .feature-category-select:focus,
+html[data-theme="moonlight"] .feature-resource-type:hover,
+html[data-theme="moonlight"] .feature-resource-type:focus {
   border-bottom-color: var(--moon-ghost-line) !important;
   background: rgba(77, 154, 215, .12) !important;
 }

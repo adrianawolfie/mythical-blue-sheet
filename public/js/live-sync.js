@@ -448,6 +448,10 @@ function applyLiveState(live = {}) {
     ? live.spellSlotsSpent
     : {};
   renderSpellSlots();
+  featureResourcesSpent = live.featureResourcesSpent && typeof live.featureResourcesSpent === "object"
+    ? live.featureResourcesSpent
+    : {};
+  renderFeatureResources();
 
   const conditionsInput = document.getElementById("currentConditionsInput");
   if (conditionsInput && Array.isArray(live.conditions)) {
@@ -464,6 +468,18 @@ function renderSpellSlots() {
     box.querySelector(".slot-available").textContent = available;
     box.querySelector('[data-slot-step="-1"]').disabled = available <= 0;
     box.querySelector('[data-slot-step="1"]').disabled = available >= max;
+  });
+}
+
+let featureResourcesSpent = {};
+
+function renderFeatureResources() {
+  document.querySelectorAll(".feature-entry").forEach(entry => {
+    const max = Math.max(0, Number.parseInt(entry.querySelector(".feature-resource-max").value, 10) || 0);
+    const available = Math.max(0, max - (featureResourcesSpent[entry.dataset.resourceId] || 0));
+    entry.querySelector(".slot-available").textContent = available;
+    entry.querySelector('[data-slot-step="-1"]').disabled = available <= 0;
+    entry.querySelector('[data-slot-step="1"]').disabled = available >= max;
   });
 }
 
@@ -496,7 +512,7 @@ document.addEventListener("click", event => {
 });
 
 document.addEventListener("click", event => {
-  const button = event.target.closest(".slot-btn");
+  const button = event.target.closest(".slotbox .slot-btn");
   if (!button) return;
   const box = button.closest(".slotbox");
   const max = Number.parseInt(box.querySelector("input").value, 10) || 0;
@@ -504,6 +520,17 @@ document.addEventListener("click", event => {
   spellSlotsSpent = { ...spellSlotsSpent, [box.dataset.slotLevel]: Math.max(0, max - available) };
   renderSpellSlots();
   scheduleHPAutoSave({ spellSlotsSpent });
+});
+
+document.addEventListener("click", event => {
+  const button = event.target.closest(".feature-entry .slot-btn");
+  if (!button) return;
+  const entry = button.closest(".feature-entry");
+  const max = Number.parseInt(entry.querySelector(".feature-resource-max").value, 10) || 0;
+  const available = Number(entry.querySelector(".slot-available").textContent) + Number(button.dataset.slotStep);
+  featureResourcesSpent = { ...featureResourcesSpent, [entry.dataset.resourceId]: Math.max(0, max - available) };
+  renderFeatureResources();
+  scheduleHPAutoSave({ featureResourcesSpent });
 });
 
 document.addEventListener("input", event => {
