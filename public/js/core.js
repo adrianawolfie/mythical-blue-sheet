@@ -4,9 +4,48 @@
 function sw(name, btn) {
     document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
     document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
-    document.getElementById('pg-' + name).classList.add('on');
+    const page = document.getElementById('pg-' + name);
+    page.classList.add('on');
     btn.classList.add('on');
+
+    // When the sticky tabs are scrolled past the section start, jump to the top of the new section.
+    const tabs = btn.closest('.tabs');
+    const offset = page.getBoundingClientRect().top - (tabs ? tabs.getBoundingClientRect().bottom : 0) - 12;
+    if (offset < 0) window.scrollBy(0, offset);
   }
+
+// Swipe left or right on phones and tablets to move between sections.
+let sectionSwipeStart = null;
+
+document.addEventListener("touchstart", event => {
+  const target = event.target;
+  const onSheet = target.closest?.(".sheet") && !target.closest(".tabs");
+  // Leave swipes alone in the field being edited, text areas, and horizontally scrollable areas such as tables.
+  const scrollable = target === document.activeElement || target.closest?.("textarea, [contenteditable], input[type=range]") ||
+    Array.from(onSheet ? document.elementsFromPoint(event.touches[0].clientX, event.touches[0].clientY) : [])
+      .some(element => element.scrollWidth > element.clientWidth + 1 && /auto|scroll/.test(getComputedStyle(element).overflowX));
+  sectionSwipeStart = event.touches.length === 1 && onSheet && !scrollable
+    ? { x: event.touches[0].clientX, y: event.touches[0].clientY }
+    : null;
+}, { passive: true });
+
+document.addEventListener("touchend", event => {
+  if (!sectionSwipeStart) return;
+  const dx = event.changedTouches[0].clientX - sectionSwipeStart.x;
+  const dy = event.changedTouches[0].clientY - sectionSwipeStart.y;
+  sectionSwipeStart = null;
+  if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+
+  const tabs = Array.from(document.querySelectorAll(".sheet .tabs .tab"));
+  const next = tabs[tabs.findIndex(tab => tab.classList.contains("on")) + (dx < 0 ? 1 : -1)];
+  if (!next) return;
+  next.click();
+  next.scrollIntoView({ block: "nearest", inline: "nearest" });
+  const page = document.querySelector(".pg.on");
+  page.classList.remove("pg-enter-next", "pg-enter-previous");
+  void page.offsetWidth;
+  page.classList.add(dx < 0 ? "pg-enter-next" : "pg-enter-previous");
+}, { passive: true });
 
 let currentCharacterId = null;
 let currentCharacterCampaignId = "";

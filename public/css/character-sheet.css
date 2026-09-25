@@ -1504,7 +1504,8 @@
 
   .sheet {
     padding: 145px 14px 36px;
-    overflow-x: hidden;
+    /* clip (not hidden) so the sticky tab bar keeps working. */
+    overflow-x: clip;
 
     /* Match the desktop texture scale on mobile.
        The image stays wide and the sides are cropped rather than squeezed. */
@@ -1528,6 +1529,8 @@
     overflow-x: auto;
     justify-content: flex-start;
     padding-bottom: 8px;
+    /* Room to scroll the last tab clear of the fixed account button. */
+    padding-right: 56px;
     margin-bottom: 18px;
   }
 
@@ -2428,4 +2431,39 @@
   .defense-table .proficiency-values-cell {
     width: 53%;
   }
+}
+
+/* Keep the section tabs visible while scrolling the sheet. */
+.sheet .tabs {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding-top: 8px;
+  background: rgba(237, 225, 192, .95);
+  backdrop-filter: blur(4px);
+}
+
+/* Section swipes should not trigger the browser's back/forward swipe on touch screens. */
+@media (pointer: coarse) {
+  html,
+  body {
+    overscroll-behavior-x: none;
+  }
+}
+
+/* Slide the new section in after a swipe. */
+.pg.pg-enter-next { animation: pg-enter-next .22s ease-out; }
+.pg.pg-enter-previous { animation: pg-enter-previous .22s ease-out; }
+
+@keyframes pg-enter-next {
+  from { opacity: .4; transform: translateX(28px); }
+}
+
+@keyframes pg-enter-previous {
+  from { opacity: .4; transform: translateX(-28px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pg.pg-enter-next,
+  .pg.pg-enter-previous { animation: none; }
 }

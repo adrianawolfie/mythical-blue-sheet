@@ -1996,3 +1996,8 @@ html[data-theme="moonlight"] .defense-type-cell .proficiency-add-row:focus-visib
   border-color: var(--moon-ghost-line, rgba(181, 232, 255, .82)) !important;
   background: rgba(77, 154, 215, .24) !important;
 }
+
+html[data-theme="moonlight"] .sheet .tabs {
+  background: rgba(4, 24, 56, .94);
+}
+
