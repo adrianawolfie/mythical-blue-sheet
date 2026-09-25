@@ -9,6 +9,15 @@
 - Use query parameters for page identifiers and other page variables instead of path segments.
 - Big update requests should show a toast; use a query string to signal the toast after redirect/reload.
 
+## Collaboration Guidance
+
+- Do not merge directly into `main`; merge changes through the approved review process.
+
+## Deployment Guidance
+
+- The `dev` branch is deployed to [the development environment](https://raperonzolo-app-test-xwpvf.ondigitalocean.app/) and should be used for testing and developer work.
+- The `main` branch is deployed to [production](https://raperonzolo.com).
+
 ## Architecture Guidance
 
 - Read the Project Spec section in this file and the relevant files in `spec/` before making architecture, API, storage, or frontend page changes.

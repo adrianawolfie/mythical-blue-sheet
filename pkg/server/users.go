@@ -3,9 +3,17 @@ package server
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"log"
 	"net/http"
+	"net/url"
 	"raperonzolo/character-sheet/pkg/user"
+	"strings"
 )
+
+type EmailSender interface {
+	Send(to, subject, body string) error
+}
 
 func GetCurrentUser(repo user.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -73,7 +81,7 @@ func PostRegister(repo user.Repository) http.HandlerFunc {
 			renderErrorPage(w, err)
 			return
 		}
-		http.Redirect(w, r, "/login.html", http.StatusSeeOther)
+		w.WriteHeader(http.StatusNoContent)
 	}
 }
 
@@ -93,6 +101,10 @@ func PostLogin(u user.Repository) http.HandlerFunc {
 				http.Error(w, "disabled", http.StatusForbidden)
 				return
 			}
+			if errors.Is(err, user.ErrUserNotFound) {
+				http.Error(w, "user not found", http.StatusNotFound)
+				return
+			}
 			renderErrorPage(w, err)
 			return
 		}
@@ -101,10 +113,79 @@ func PostLogin(u user.Repository) http.HandlerFunc {
 				Name:     "user",
 				Value:    currentUser.Email,
 				HttpOnly: true,
+				Secure:   true,
+				SameSite: http.SameSiteNoneMode,
 			})
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			w.WriteHeader(http.StatusNoContent)
 			return
 		}
 		w.WriteHeader(http.StatusNotFound)
+	}
+}
+
+func PostPasswordResetRequest(repo *user.Repository, sender EmailSender, appBaseURL string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store")
+		var request struct {
+			Email string `json:"email"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+			http.Error(w, "invalid request", http.StatusBadRequest)
+			return
+		}
+		if account, err := repo.GetByUsername(request.Email); err == nil {
+			token, err := repo.CreatePasswordResetToken(r.Context(), account.Email)
+			if err != nil {
+				if !errors.Is(err, user.ErrPasswordResetRateLimited) {
+					log.Printf("create password reset token: %v", err)
+				}
+			} else {
+				link := strings.TrimRight(appBaseURL, "/") + "/reset-password.html?token=" + url.QueryEscape(token)
+				body := fmt.Sprintf("A request was made to reset the password for your Mythical Blue account.\n\nSet a new password using this link within 30 minutes:\n%s\n\nIf you did not request this, you can ignore this email.", link)
+				if sender == nil {
+					log.Printf("send password reset email: email sender is not configured")
+				} else if err := sender.Send(account.Email, "Reset your Mythical Blue password", body); err != nil {
+					log.Printf("send password reset email: %v", err)
+				}
+			}
+		}
+		w.WriteHeader(http.StatusNoContent)
+	}
+}
+
+func PostPasswordResetValidate(repo *user.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store")
+		var request struct {
+			Token string `json:"token"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&request); err != nil || !repo.PasswordResetTokenValid(request.Token) {
+			http.Error(w, "password reset link is invalid or expired", http.StatusBadRequest)
+			return
+		}
+		w.WriteHeader(http.StatusNoContent)
+	}
+}
+
+func PostPasswordResetConfirm(repo *user.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store")
+		var request struct {
+			Token       string `json:"token"`
+			NewPassword string `json:"newPassword"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+			http.Error(w, "invalid request", http.StatusBadRequest)
+			return
+		}
+		if err := repo.ResetPassword(r.Context(), request.Token, request.NewPassword); err != nil {
+			if errors.Is(err, user.ErrPasswordInvalid) || errors.Is(err, user.ErrResetTokenInvalid) {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			writeError(w, err)
+			return
+		}
+		w.WriteHeader(http.StatusNoContent)
 	}
 }

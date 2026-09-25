@@ -6,6 +6,7 @@ import (
 	"raperonzolo/character-sheet/pkg/config"
 	"raperonzolo/character-sheet/pkg/storage"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -327,4 +328,53 @@ func TestUpdateByIDRejectsDuplicateEmail(t *testing.T) {
 
 	_, err = repo.UpdateByID(ctx, created.ID.String(), User{Name: "Ada Storm", Email: "zed@example.com"})
 	assert.ErrorIs(t, err, ErrUserAlreadyExists)
+}
+
+func TestPasswordResetTokenIsPersistedAndSingleUse(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	ctx := context.Background()
+	s, err := storage.New(t.TempDir())
+	require.NoError(t, err)
+	repo, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	require.NoError(t, repo.Create(ctx, User{Email: "ada@example.com", Password: "Encrypted1!", Enabled: true}))
+
+	token, err := repo.CreatePasswordResetToken(ctx, "ada@example.com")
+	require.NoError(t, err)
+	_, err = repo.CreatePasswordResetToken(ctx, "ada@example.com")
+	assert.ErrorIs(t, err, ErrPasswordResetRateLimited)
+	assert.True(t, repo.PasswordResetTokenValid(token))
+
+	reloaded, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	assert.True(t, reloaded.PasswordResetTokenValid(token))
+	require.NoError(t, reloaded.ResetPassword(ctx, token, "Changed1!"))
+	assert.False(t, reloaded.PasswordResetTokenValid(token))
+	_, ok, err := reloaded.Authenticate(ctx, "ada@example.com", "Changed1!")
+	require.NoError(t, err)
+	assert.True(t, ok)
+	assert.ErrorIs(t, reloaded.ResetPassword(ctx, token, "Changed2!"), ErrResetTokenInvalid)
+}
+
+func TestPasswordResetTokenExpires(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	ctx := context.Background()
+	s, err := storage.New(t.TempDir())
+	require.NoError(t, err)
+	repo, err := NewRepository(ctx, s)
+	require.NoError(t, err)
+	require.NoError(t, repo.Create(ctx, User{Email: "ada@example.com", Password: "Encrypted1!"}))
+	token, err := repo.CreatePasswordResetToken(ctx, "ada@example.com")
+	require.NoError(t, err)
+
+	repo.Lock()
+	u := repo.users["ada@example.com"]
+	u.ResetTokenExpiresAt = time.Now().Add(-time.Minute)
+	repo.users[u.Email] = u
+	repo.Unlock()
+
+	assert.False(t, repo.PasswordResetTokenValid(token))
+	assert.ErrorIs(t, repo.ResetPassword(ctx, token, "Changed1!"), ErrResetTokenInvalid)
 }

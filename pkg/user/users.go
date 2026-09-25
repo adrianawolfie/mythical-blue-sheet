@@ -6,18 +6,21 @@ import (
 	"encoding/hex"
 	"fmt"
 	"raperonzolo/character-sheet/pkg/config"
+	"time"
 	"unicode"
 
 	"github.com/google/uuid"
 )
 
 type User struct {
-	ID       uuid.UUID `json:"id"`
-	Name     string    `json:"name"`
-	Email    string    `json:"email"`
-	Password string    `json:"password"`
-	IsAdmin  bool      `json:"isAdmin"`
-	Enabled  bool      `json:"enabled"`
+	ID                  uuid.UUID `json:"id"`
+	Name                string    `json:"name"`
+	Email               string    `json:"email"`
+	Password            string    `json:"password"`
+	IsAdmin             bool      `json:"isAdmin"`
+	Enabled             bool      `json:"enabled"`
+	ResetTokenHash      string    `json:"resetTokenHash,omitempty"`
+	ResetTokenExpiresAt time.Time `json:"resetTokenExpiresAt,omitempty"`
 }
 
 type AdminView struct {

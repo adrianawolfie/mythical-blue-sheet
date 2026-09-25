@@ -2,20 +2,29 @@ package user
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/sha256"
+	"crypto/subtle"
+	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
 	"raperonzolo/character-sheet/pkg/config"
 	"raperonzolo/character-sheet/pkg/storage"
 	"sort"
+	"strings"
 	"sync"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 const (
-	usersFilename = "users.jsonl"
-	maxUserLimit  = 50
+	usersFilename      = "users.jsonl"
+	maxUserLimit       = 50
+	resetTokenTTL      = 30 * time.Minute
+	resetTokenCooldown = time.Minute
 )
 
 type Repository struct {
@@ -180,6 +189,8 @@ func (l *Repository) UpdateProfile(ctx context.Context, email string, name strin
 			return User{}, err
 		}
 		u.Password = encryptPassword(newPassword + config.UserSecret)
+		u.ResetTokenHash = ""
+		u.ResetTokenExpiresAt = time.Time{}
 	}
 	u.Name = name
 
@@ -242,6 +253,8 @@ func (l *Repository) UpdateByID(ctx context.Context, id string, next User) (User
 	existing.Enabled = next.Enabled
 	if next.Password != "" {
 		existing.Password = encryptPassword(next.Password + config.UserSecret)
+		existing.ResetTokenHash = ""
+		existing.ResetTokenExpiresAt = time.Time{}
 	}
 
 	writer, err := l.storage.Writer(ctx, usersFilename)
@@ -262,6 +275,112 @@ func (l *Repository) UpdateByID(ctx context.Context, id string, next User) (User
 	}
 
 	return existing, nil
+}
+
+func (l *Repository) CreatePasswordResetToken(ctx context.Context, email string) (string, error) {
+	l.Lock()
+	defer l.Unlock()
+
+	u, ok := l.users[email]
+	if !ok {
+		return "", ErrUserNotFound
+	}
+	now := time.Now().UTC()
+	if u.ResetTokenHash != "" && now.Before(u.ResetTokenExpiresAt) && now.Sub(u.ResetTokenExpiresAt.Add(-resetTokenTTL)) < resetTokenCooldown {
+		return "", ErrPasswordResetRateLimited
+	}
+
+	secret := make([]byte, 32)
+	if _, err := rand.Read(secret); err != nil {
+		return "", err
+	}
+	token := u.ID.String() + "." + base64.RawURLEncoding.EncodeToString(secret)
+	hash := sha256.Sum256(secret)
+	u.ResetTokenHash = hex.EncodeToString(hash[:])
+	u.ResetTokenExpiresAt = now.Add(resetTokenTTL)
+	l.users[email] = u
+	if err := l.saveUsers(ctx); err != nil {
+		return "", err
+	}
+	return token, nil
+}
+
+func (l *Repository) PasswordResetTokenValid(token string) bool {
+	id, secret, ok := parsePasswordResetToken(token)
+	if !ok {
+		return false
+	}
+	hash := sha256.Sum256(secret)
+	want := hex.EncodeToString(hash[:])
+
+	l.RLock()
+	defer l.RUnlock()
+	for _, u := range l.users {
+		if u.ID == id && u.ResetTokenHash != "" && time.Now().Before(u.ResetTokenExpiresAt) {
+			return subtle.ConstantTimeCompare([]byte(want), []byte(u.ResetTokenHash)) == 1
+		}
+	}
+	return false
+}
+
+func (l *Repository) ResetPassword(ctx context.Context, token string, password string) error {
+	if err := validatePassword(password); err != nil {
+		return err
+	}
+	id, secret, ok := parsePasswordResetToken(token)
+	if !ok {
+		return ErrResetTokenInvalid
+	}
+	hash := sha256.Sum256(secret)
+	want := hex.EncodeToString(hash[:])
+
+	l.Lock()
+	defer l.Unlock()
+	for email, u := range l.users {
+		if u.ID != id || u.ResetTokenHash == "" || !time.Now().Before(u.ResetTokenExpiresAt) || subtle.ConstantTimeCompare([]byte(want), []byte(u.ResetTokenHash)) != 1 {
+			continue
+		}
+		u.Password = encryptPassword(password + config.UserSecret)
+		u.ResetTokenHash = ""
+		u.ResetTokenExpiresAt = time.Time{}
+		l.users[email] = u
+		return l.saveUsers(ctx)
+	}
+	return ErrResetTokenInvalid
+}
+
+func parsePasswordResetToken(token string) (uuid.UUID, []byte, bool) {
+	idText, secretText, ok := strings.Cut(token, ".")
+	if !ok {
+		return uuid.Nil, nil, false
+	}
+	id, err := uuid.Parse(idText)
+	if err != nil {
+		return uuid.Nil, nil, false
+	}
+	secret, err := base64.RawURLEncoding.DecodeString(secretText)
+	if err != nil || len(secret) != 32 {
+		return uuid.Nil, nil, false
+	}
+	return id, secret, true
+}
+
+func (l *Repository) saveUsers(ctx context.Context) error {
+	writer, err := l.storage.Writer(ctx, usersFilename)
+	if err != nil {
+		return fmt.Errorf("failed to open user file, %w", err)
+	}
+	encoder := json.NewEncoder(writer)
+	for _, u := range l.users {
+		if err := encoder.Encode(u); err != nil {
+			_ = writer.Close()
+			return err
+		}
+	}
+	if err := writer.Close(); err != nil {
+		return fmt.Errorf("failed to close user file, %w", err)
+	}
+	return nil
 }
 
 func adminView(u User) AdminView {

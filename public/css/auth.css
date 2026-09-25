@@ -86,6 +86,10 @@ body.login-body {
   gap: 16px;
 }
 
+.login-form[hidden] {
+  display: none;
+}
+
 .login-field {
   display: grid;
   gap: 6px;
