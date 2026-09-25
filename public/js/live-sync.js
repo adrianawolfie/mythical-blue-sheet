@@ -483,6 +483,26 @@ function renderFeatureResources() {
   });
 }
 
+function takeRest(type) {
+  const longRest = type === "Long Rest";
+  if (!confirm(longRest
+    ? "Take a long rest? This restores all spell slots and all Short Rest and Long Rest resources."
+    : "Take a short rest? This restores all Short Rest resources.")) return;
+
+  featureResourcesSpent = Object.fromEntries(Object.entries(featureResourcesSpent).filter(([id]) => {
+    const resourceType = document.querySelector(`.feature-entry[data-resource-id="${CSS.escape(id)}"] .feature-resource-type`)?.value;
+    return resourceType && resourceType !== "Short Rest" && !(longRest && resourceType === "Long Rest");
+  }));
+  if (longRest) spellSlotsSpent = {};
+  renderSpellSlots();
+  renderFeatureResources();
+  scheduleHPAutoSave(longRest ? { spellSlotsSpent, featureResourcesSpent } : { featureResourcesSpent });
+  window.showToast?.(`${type} taken.`, { variant: "success" });
+}
+
+document.getElementById("shortRestBtn")?.addEventListener("click", () => takeRest("Short Rest"));
+document.getElementById("longRestBtn")?.addEventListener("click", () => takeRest("Long Rest"));
+
 function collectHitDiceSpent() {
   const value = document.querySelector('[data-field="hitDiceSpent"]')?.value.trim() || "";
   if (!value) return {};

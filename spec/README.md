@@ -50,7 +50,7 @@ Logged-in pages load `public/css/account.css` and `public/js/account.js` to show
 
 File: `public/index.html`
 
-The main character sheet application. It supports editing character details, stats, spells, features, inventory, journal notes, and live status data.
+The main character sheet application. It supports editing character details, stats, spells, features, inventory, journal notes, and live status data. The sheet toolbar provides Short Rest and Long Rest buttons: a short rest restores Short Rest feature resources, and a long rest also restores Long Rest feature resources and all spell slots. Both update live state only; custom resource types are left unchanged.
 
 ### `/home.html`
 
