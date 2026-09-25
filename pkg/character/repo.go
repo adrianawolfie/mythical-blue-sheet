@@ -479,6 +479,7 @@ type persistedSummary struct {
 
 type persistedUIState struct {
 	SkillProficiencies []bool `json:"skillProficiencies"`
+	SkillExpertise     []bool `json:"skillExpertise"`
 }
 
 func prepareForStorage(c Character) (currentDocument, Live) {
@@ -540,11 +541,11 @@ func prepareForStorage(c Character) (currentDocument, Live) {
 	}
 	live.ActiveArmorClassModifiers = activeModifiers
 	c.CustomLists.ArmorClass = armor
-	return currentDocument{SchemaVersion: c.SchemaVersion, ID: c.ID, UserID: c.UserID, CampaignID: c.CampaignID, Summary: persistedSummary{Name: c.Summary.Name, ArmorClass: c.Summary.ArmorClass, HpMax: first(c.Summary.HpMax, c.Fields["hpMax"]), HitDice: c.Summary.HitDice, PassivePerception: c.Summary.PassivePerception}, Fields: fields, CustomLists: c.CustomLists, UIState: persistedUIState{SkillProficiencies: c.UIState.SkillProficiencies}, UpdatedAt: c.UpdatedAt}, live
+	return currentDocument{SchemaVersion: c.SchemaVersion, ID: c.ID, UserID: c.UserID, CampaignID: c.CampaignID, Summary: persistedSummary{Name: c.Summary.Name, ArmorClass: c.Summary.ArmorClass, HpMax: first(c.Summary.HpMax, c.Fields["hpMax"]), HitDice: c.Summary.HitDice, PassivePerception: c.Summary.PassivePerception}, Fields: fields, CustomLists: c.CustomLists, UIState: persistedUIState{SkillProficiencies: c.UIState.SkillProficiencies, SkillExpertise: c.UIState.SkillExpertise}, UpdatedAt: c.UpdatedAt}, live
 }
 
 func (d currentDocument) character() Character {
-	return Character{SchemaVersion: d.SchemaVersion, ID: d.ID, UserID: d.UserID, CampaignID: d.CampaignID, Summary: Summary{Name: d.Summary.Name, ArmorClass: d.Summary.ArmorClass, HpMax: d.Summary.HpMax, HitDice: d.Summary.HitDice, PassivePerception: d.Summary.PassivePerception}, Fields: d.Fields, CustomLists: d.CustomLists, UIState: UIState{SkillProficiencies: d.UIState.SkillProficiencies}, UpdatedAt: d.UpdatedAt}
+	return Character{SchemaVersion: d.SchemaVersion, ID: d.ID, UserID: d.UserID, CampaignID: d.CampaignID, Summary: Summary{Name: d.Summary.Name, ArmorClass: d.Summary.ArmorClass, HpMax: d.Summary.HpMax, HitDice: d.Summary.HitDice, PassivePerception: d.Summary.PassivePerception}, Fields: d.Fields, CustomLists: d.CustomLists, UIState: UIState{SkillProficiencies: d.UIState.SkillProficiencies, SkillExpertise: d.UIState.SkillExpertise}, UpdatedAt: d.UpdatedAt}
 }
 
 func first(values ...string) string {

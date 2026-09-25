@@ -472,41 +472,6 @@ function renderSpellSlots() {
   });
 }
 
-// Spell slots by caster level from the 2024 Player's Handbook class tables.
-const FULL_CASTER_SPELL_SLOTS = [
-  [2], [3], [4, 2], [4, 3], [4, 3, 2], [4, 3, 3], [4, 3, 3, 1], [4, 3, 3, 2], [4, 3, 3, 3, 1], [4, 3, 3, 3, 2],
-  [4, 3, 3, 3, 2, 1], [4, 3, 3, 3, 2, 1], [4, 3, 3, 3, 2, 1, 1], [4, 3, 3, 3, 2, 1, 1], [4, 3, 3, 3, 2, 1, 1, 1],
-  [4, 3, 3, 3, 2, 1, 1, 1], [4, 3, 3, 3, 2, 1, 1, 1, 1], [4, 3, 3, 3, 3, 1, 1, 1, 1], [4, 3, 3, 3, 3, 2, 1, 1, 1],
-  [4, 3, 3, 3, 3, 2, 2, 1, 1]
-];
-const PHB_CLASSES = ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard"];
-
-function applyClassSpellSlots() {
-  const className = getFieldValue("class");
-  if (!PHB_CLASSES.includes(className)) return;
-  const level = Number.parseInt(getFieldValue("level"), 10) || 0;
-  const subclass = getFieldValue("subclass");
-  let casterLevel = 0;
-  if (["Bard", "Cleric", "Druid", "Sorcerer", "Wizard"].includes(className)) casterLevel = level;
-  if (["Paladin", "Ranger"].includes(className)) casterLevel = Math.ceil(level / 2);
-  if ((className === "Fighter" && /eldritch knight/i.test(subclass)) || (className === "Rogue" && /arcane trickster/i.test(subclass))) {
-    casterLevel = level >= 3 ? Math.ceil(level / 3) : 0;
-  }
-  const slots = FULL_CASTER_SPELL_SLOTS[casterLevel - 1] || [];
-  for (let slotLevel = 1; slotLevel <= 9; slotLevel++) {
-    setFieldValue(document.querySelector(`[data-field="spellSlotsMaxLevel${slotLevel}"]`), slots[slotLevel - 1] ? String(slots[slotLevel - 1]) : "");
-  }
-
-  const warlock = className === "Warlock" && level > 0;
-  setFieldValue(document.querySelector('[data-field="pactSlotsMax"]'), warlock ? String(level >= 17 ? 4 : level >= 11 ? 3 : level >= 2 ? 2 : 1) : "");
-  setFieldValue(document.querySelector('[data-field="pactSlotLevel"]'), warlock ? String(Math.min(5, Math.ceil(level / 2))) : "1");
-  renderSpellSlots();
-}
-
-document.addEventListener("change", event => {
-  if (event.target.matches('[data-field="class"], [data-field="level"], [data-field="subclass"]')) applyClassSpellSlots();
-});
-
 let featureResourcesSpent = {};
 
 function renderFeatureResources() {
@@ -522,7 +487,7 @@ function renderFeatureResources() {
 function takeRest(type) {
   const longRest = type === "Long Rest";
   if (!confirm(longRest
-    ? "Take a long rest? This restores all HP, hit dice, spell slots, and Short Rest and Long Rest resources, clears temporary HP and death saves, and reduces exhaustion by 1."
+    ? "Take a long rest? This restores all HP, hit dice, spell slots, and Short Rest and Long Rest resources, clears temporary HP and death saves, and reduces exhaustion by 1 (removing the Exhaustion condition at 0)."
     : "Take a short rest? This restores pact magic slots and Short Rest resources.")) return;
 
   featureResourcesSpent = Object.fromEntries(Object.entries(featureResourcesSpent).filter(([id]) => {
@@ -546,6 +511,9 @@ function takeRest(type) {
     document.querySelectorAll(".exhaustion-row .svdie").forEach((die, index) => die.classList.toggle("on", index < exhaustionLevel));
     document.querySelectorAll(".dsbox .svdie").forEach(die => die.classList.remove("on"));
     updateHPBar();
+    if (exhaustionLevel === 0 && getSelectedConditions().some(condition => condition.toLowerCase() === "exhaustion")) {
+      removeSelectedCondition("Exhaustion");
+    }
     Object.assign(patch, {
       hpCurrent: hpCurrentInput?.value ?? "",
       tempHp: "",

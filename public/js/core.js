@@ -137,14 +137,14 @@ function getFields() {
 }
 
 function readFieldValue(field) {
-  return field.type === "checkbox" ? field.checked : field.value;
+  return field.type === "checkbox" ? (field.checked ? "true" : "") : field.value;
 }
 
 function setFieldValue(field, value) {
   if (!field) return;
 
   if (field.type === "checkbox") {
-    field.checked = value === true;
+    field.checked = value === true || value === "true";
     return;
   }
 
@@ -386,12 +386,16 @@ function applyToggleStates(selector, savedStates = []) {
 
 function collectUiState() {
   return {
-    skillProficiencies: getToggleStates(".sk .dot")
+    skillProficiencies: getToggleStates(".sk .dot"),
+    skillExpertise: Array.from(document.querySelectorAll(".sk .dot")).map(dot => dot.classList.contains("expert"))
   };
 }
 
 function applyUiState(uiState = {}) {
   applyToggleStates(".sk .dot", uiState.skillProficiencies || []);
+  document.querySelectorAll(".sk .dot").forEach((dot, index) => {
+    dot.classList.toggle("expert", (uiState.skillExpertise || [])[index] === true);
+  });
 }
 
 function showSaveToast(message) {
@@ -564,6 +568,7 @@ if (hitDiceInput && character.summary?.hitDice !== undefined) {
 }
 
 updateHPBar(); // sync bar with loaded values
+if (typeof resetCharacterRules === "function") resetCharacterRules();
 
 showSheet();
 markCharacterClean();
@@ -633,6 +638,7 @@ renderDefenseRows();
 applyUiState({});
 focusedCondition = "";
 renderSelectedConditions();
+if (typeof resetCharacterRules === "function") resetCharacterRules();
 
 showSheet();
 markCharacterClean();

@@ -362,6 +362,8 @@
     width:4px; height:4px;
     background: var(--navy-deep); border-radius: 50%;
   }
+  .dot.expert { box-shadow: 0 0 0 2px rgba(255,250,234,.95), 0 0 0 3.5px var(--gold-deep); }
+  .sheet .is-manual { color: #a0691a !important; }
   .sb {
     background: transparent;
     border: none;
@@ -414,6 +416,15 @@
     text-align: center;
     color: var(--navy-deep);
     outline: none;
+  }
+  .bonbox input[type="checkbox"] {
+    appearance: none;
+    display: block;
+    margin: 0 auto;
+    cursor: pointer;
+  }
+  .bonbox input[type="checkbox"]:checked {
+    background: radial-gradient(circle, var(--navy-deep) 0 5px, var(--gold) 5.5px);
   }
 
   /* RIGHT PANEL */

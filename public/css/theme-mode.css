@@ -937,6 +937,18 @@ html[data-theme="moonlight"] .svdie.on {
   border-color: var(--moon-gold-bright);
 }
 
+html[data-theme="moonlight"] .dot.expert {
+  box-shadow: 0 0 0 2px #06224a, 0 0 0 3.5px var(--moon-gold-bright);
+}
+
+html[data-theme="moonlight"] .sheet .is-manual {
+  color: #f3c969 !important;
+}
+
+html[data-theme="moonlight"] .bonbox input[type="checkbox"]:checked {
+  background: radial-gradient(circle, #06224a 0 5px, var(--moon-gold) 5.5px) !important;
+}
+
 html[data-theme="moonlight"] .condition-chip.active {
   background: rgba(255, 224, 138, .22) !important;
   border-color: var(--moon-gold-bright) !important;

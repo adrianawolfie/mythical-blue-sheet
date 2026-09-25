@@ -276,6 +276,7 @@ type ArmorClassModifier struct {
 type UIState struct {
 	Inspiration        bool   `json:"inspiration"`
 	SkillProficiencies []bool `json:"skillProficiencies"`
+	SkillExpertise     []bool `json:"skillExpertise"`
 	DeathSaves         []bool `json:"deathSaves"`
 	Exhaustion         []bool `json:"exhaustion"`
 }

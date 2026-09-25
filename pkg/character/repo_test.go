@@ -465,6 +465,8 @@ func TestCreateOrReplaceChangesCharacterDetails(t *testing.T) {
 	character.Summary.ArmorClass = "18"
 	character.Summary.HpCurrent = "22"
 	character.Fields["characterName"] = "Ada Storm"
+	character.UIState.SkillProficiencies = []bool{false, true}
+	character.UIState.SkillExpertise = []bool{false, true}
 
 	if err := repo.CreateOrReplace(ctx, character); err != nil {
 		t.Fatalf("replace character: %v", err)
@@ -479,6 +481,9 @@ func TestCreateOrReplaceChangesCharacterDetails(t *testing.T) {
 	}
 	if updated.Fields["characterName"] != "Ada Storm" {
 		t.Fatalf("expected updated character name field, got %#v", updated.Fields["characterName"])
+	}
+	if len(updated.UIState.SkillExpertise) != 2 || !updated.UIState.SkillExpertise[1] || !updated.UIState.SkillProficiencies[1] {
+		t.Fatalf("expected skill proficiency and expertise to persist, got %#v", updated.UIState)
 	}
 }
 

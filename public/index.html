@@ -334,6 +334,7 @@
           <div class="bonrow">
             <div class="bonbox"><label>Prof Bonus</label><input type="text" placeholder="+2" data-field="proficiencyBonus"></div>
             <div class="bonbox"><label>Passive Perc.</label><input type="text" placeholder="10" data-field="passivePerception"></div>
+            <div class="bonbox"><label for="jackOfAllTradesInput">Jack of All Trades</label><input id="jackOfAllTradesInput" type="checkbox" title="Add half your proficiency bonus to skills you're not proficient in" data-field="jackOfAllTrades"></div>
           </div>
 
           <div class="ab">
@@ -343,7 +344,7 @@
               <div class="scorebox ability-value-stack"><div class="abl">Score</div><input type="text" placeholder="10" data-field="strengthScore"></div>
             </div>
             <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="strengthSavingThrow"><div class="sn">Saving Throw</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="athletics"><div class="sn">Athletics</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="athletics"><div class="sn">Athletics</div></div>
           </div>
 
           <div class="ab">
@@ -353,9 +354,9 @@
               <div class="scorebox ability-value-stack"><div class="abl">Score</div><input type="text" placeholder="10" data-field="dexterityScore"></div>
             </div>
             <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="dexteritySavingThrow"><div class="sn">Saving Throw</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="acrobatics"><div class="sn">Acrobatics</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="sleightOfHand"><div class="sn">Sleight of Hand</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="stealth"><div class="sn">Stealth</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="acrobatics"><div class="sn">Acrobatics</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="sleightOfHand"><div class="sn">Sleight of Hand</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="stealth"><div class="sn">Stealth</div></div>
           </div>
 
           <div class="ab">
@@ -374,11 +375,11 @@
               <div class="scorebox ability-value-stack"><div class="abl">Score</div><input type="text" placeholder="10" data-field="intelligenceScore"></div>
             </div>
             <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="intelligenceSavingThrow"><div class="sn">Saving Throw</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="arcana"><div class="sn">Arcana</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="history"><div class="sn">History</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="investigation"><div class="sn">Investigation</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="nature"><div class="sn">Nature</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="religion"><div class="sn">Religion</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="arcana"><div class="sn">Arcana</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="history"><div class="sn">History</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="investigation"><div class="sn">Investigation</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="nature"><div class="sn">Nature</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="religion"><div class="sn">Religion</div></div>
           </div>
 
           <div class="ab">
@@ -388,11 +389,11 @@
               <div class="scorebox ability-value-stack"><div class="abl">Score</div><input type="text" placeholder="10" data-field="wisdomScore"></div>
             </div>
             <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="wisdomSavingThrow"><div class="sn">Saving Throw</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="animalHandling"><div class="sn">Animal Handling</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="insight"><div class="sn">Insight</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="medicine"><div class="sn">Medicine</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="perception"><div class="sn">Perception</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="survival"><div class="sn">Survival</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="animalHandling"><div class="sn">Animal Handling</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="insight"><div class="sn">Insight</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="medicine"><div class="sn">Medicine</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="perception"><div class="sn">Perception</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="survival"><div class="sn">Survival</div></div>
           </div>
 
           <div class="ab">
@@ -402,10 +403,10 @@
               <div class="scorebox ability-value-stack"><div class="abl">Score</div><input type="text" placeholder="10" data-field="charismaScore"></div>
             </div>
             <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="charismaSavingThrow"><div class="sn">Saving Throw</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="deception"><div class="sn">Deception</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="intimidation"><div class="sn">Intimidation</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="performance"><div class="sn">Performance</div></div>
-            <div class="sk"><div class="dot" onclick="this.classList.toggle('on')"></div><input class="sb" type="text" placeholder="+0" data-field="persuasion"><div class="sn">Persuasion</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="deception"><div class="sn">Deception</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="intimidation"><div class="sn">Intimidation</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="performance"><div class="sn">Performance</div></div>
+            <div class="sk"><div class="dot" title="Proficient, then expertise" onclick="cycleSkillProficiency(this)"></div><input class="sb" type="text" placeholder="+0" data-field="persuasion"><div class="sn">Persuasion</div></div>
           </div>
 
           <div class="sb-card proficiencies-card">
@@ -873,6 +874,7 @@
 <script src="js/armor-class.js"></script>
 <script src="js/character-overview.js"></script>
 <script src="js/live-sync.js"></script>
+<script src="js/character-rules.js"></script>
 <script src="js/app.js"></script>
 
 <script src="js/campaign-state.js"></script>
