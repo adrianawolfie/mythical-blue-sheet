@@ -1782,7 +1782,7 @@
 /* ─── FEATURES & TRAITS — SEARCH, CATEGORY AND SORT CONTROLS ───────────── */
 .feature-browser-toolbar {
   display: grid;
-  grid-template-columns: minmax(180px, 1.6fr) minmax(135px, .8fr) minmax(135px, .8fr) auto;
+  grid-template-columns: minmax(150px, 1.6fr) minmax(110px, .8fr) minmax(110px, .8fr) auto;
   gap: 8px;
   align-items: end;
   padding: 10px 10px 6px;
