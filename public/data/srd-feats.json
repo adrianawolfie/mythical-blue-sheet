@@ -19,7 +19,11 @@
       "category": "Origin Feat",
       "prerequisite": "",
       "short": "You gain the following benefits.",
-      "details": "You gain the following benefits.\n\nTwo Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat’s spells (choose when you select this feat).\n\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat’s cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\n\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\n\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time."
+      "details": "You gain the following benefits.\n\nTwo Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat’s spells (choose when you select this feat).\n\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat’s cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\n\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\n\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time.",
+      "resource": {
+        "max": "1",
+        "type": "Long Rest"
+      }
     },
     {
       "id": "srd-feat-savage-attacker",
@@ -118,7 +122,11 @@
       "category": "Epic Boon Feat",
       "prerequisite": "Level 19+",
       "short": "You gain the following benefits.",
-      "details": "You gain the following benefits.\n\nAbility Score Increase. Increase one ability score of your choice by 1, to a maximum of 30.\n\nImprove Fate. When you or another creature within 60 feet of you succeeds on or fails a D20 Test, you can roll 2d4 and apply the total rolled as a bonus or penalty to the d20 roll. Once you use this benefit, you can’t use it again until you roll Initiative or finish a Short or Long Rest."
+      "details": "You gain the following benefits.\n\nAbility Score Increase. Increase one ability score of your choice by 1, to a maximum of 30.\n\nImprove Fate. When you or another creature within 60 feet of you succeeds on or fails a D20 Test, you can roll 2d4 and apply the total rolled as a bonus or penalty to the d20 roll. Once you use this benefit, you can’t use it again until you roll Initiative or finish a Short or Long Rest.",
+      "resource": {
+        "max": "1",
+        "type": "Short Rest"
+      }
     },
     {
       "id": "srd-feat-boon-of-irresistible-offense",
@@ -163,7 +171,11 @@
       "category": "Origin Feat",
       "prerequisite": "",
       "short": "Through your years of training under the Gladius clan, you’ve learnt to reveal what others conceal.",
-      "details": "‘You Cannot Hide from Me.’\nThrough your years of training under the Gladius clan, you’ve learnt to reveal what others conceal by learning the secrets of Faerie Fire. You’re able to cast it once per Long Rest without the use of a spell slot. You can also cast Faerie Fire with any spell slots that you have.\n\nChoose Intelligence, Wisdom, or Charisma as your spellcasting ability for this feat.\n\nMagic Reflection\nWhen you take damage from a spell or magical effect, you can use your Reaction to magically reflect a spark of that energy back to its source, dealing 1d4 damage of the same type that has been inflicted on you back to your assailant.\n\nYou can use this benefit a number of times equal to your Proficiency Bonus per Long Rest. You cannot use this feature if you’re Incapacitated."
+      "details": "‘You Cannot Hide from Me.’\nThrough your years of training under the Gladius clan, you’ve learnt to reveal what others conceal by learning the secrets of Faerie Fire. You’re able to cast it once per Long Rest without the use of a spell slot. You can also cast Faerie Fire with any spell slots that you have.\n\nChoose Intelligence, Wisdom, or Charisma as your spellcasting ability for this feat.\n\nMagic Reflection\nWhen you take damage from a spell or magical effect, you can use your Reaction to magically reflect a spark of that energy back to its source, dealing 1d4 damage of the same type that has been inflicted on you back to your assailant.\n\nYou can use this benefit a number of times equal to your Proficiency Bonus per Long Rest. You cannot use this feature if you’re Incapacitated.",
+      "resource": {
+        "max": "1",
+        "type": "Long Rest"
+      }
     },
     {
       "id": "mythical-blue-feat-advocate-for-the-wild",
@@ -172,7 +184,11 @@
       "category": "Origin Feat",
       "prerequisite": "",
       "short": "You’ve learned to recognize imbalance in nature and society.",
-      "details": "Environmental Awareness\nYou’ve learned to recognize imbalance in nature and society. You can spend 10 minutes observing a natural environment, settlement, or social setting to determine whether its natural balance has been disrupted and, if so, in what manner. The DM provides relevant information that aligns with your observations, including social tension, toxic environments, exploitation, environmental strain, pollution, and resource exhaustion.\n\nDeter Violence\nAs a Reaction, you can deter the attack roll of a creature within 30 feet of you. The attacker must succeed on a Wisdom saving throw (DC = 8 + your Proficiency Bonus + your chosen modifier) or suffer the following effects:\n\n• The attack that triggered your Reaction must be made with Disadvantage.\n• The attacker cannot take a Reaction until the start of its next turn.\n\nThis feature can be used a number of times equal to your Proficiency Bonus per Long Rest. Choose Intelligence or Charisma to determine the DC for this feat."
+      "details": "Environmental Awareness\nYou’ve learned to recognize imbalance in nature and society. You can spend 10 minutes observing a natural environment, settlement, or social setting to determine whether its natural balance has been disrupted and, if so, in what manner. The DM provides relevant information that aligns with your observations, including social tension, toxic environments, exploitation, environmental strain, pollution, and resource exhaustion.\n\nDeter Violence\nAs a Reaction, you can deter the attack roll of a creature within 30 feet of you. The attacker must succeed on a Wisdom saving throw (DC = 8 + your Proficiency Bonus + your chosen modifier) or suffer the following effects:\n\n• The attack that triggered your Reaction must be made with Disadvantage.\n• The attacker cannot take a Reaction until the start of its next turn.\n\nThis feature can be used a number of times equal to your Proficiency Bonus per Long Rest. Choose Intelligence or Charisma to determine the DC for this feat.",
+      "resource": {
+        "max": "PB",
+        "type": "Long Rest"
+      }
     },
     {
       "id": "mythical-blue-feat-goose",
@@ -181,7 +197,11 @@
       "category": "Origin Feat",
       "prerequisite": "",
       "short": "Whenever you make a Critical Hit, you can take or give Heroic Inspiration.",
-      "details": "Golden Egg\nWhenever you make a Critical Hit, you can take or give Heroic Inspiration. Giving can only be done to allies within 30 feet of you.\n\nCorrupted Egg\nWhen you are equal to or below half your Hit Point maximum, you explode in frustration, unleashing a burst of energy with a 15-foot radius around you (once per Long Rest). Those within your vicinity, allies and enemies alike, must make a DC 15 Dexterity saving throw. On a failed save, a creature is pushed away by 10 feet and takes 2d8 Force damage. On a successful save, the creature takes half as much damage."
+      "details": "Golden Egg\nWhenever you make a Critical Hit, you can take or give Heroic Inspiration. Giving can only be done to allies within 30 feet of you.\n\nCorrupted Egg\nWhen you are equal to or below half your Hit Point maximum, you explode in frustration, unleashing a burst of energy with a 15-foot radius around you (once per Long Rest). Those within your vicinity, allies and enemies alike, must make a DC 15 Dexterity saving throw. On a failed save, a creature is pushed away by 10 feet and takes 2d8 Force damage. On a successful save, the creature takes half as much damage.",
+      "resource": {
+        "max": "1",
+        "type": "Long Rest"
+      }
     },
     {
       "id": "mythical-blue-feat-pragmatic-survivor",
@@ -190,7 +210,11 @@
       "category": "Origin Feat",
       "prerequisite": "",
       "short": "Your lifestyle has sharpened your senses, giving you a quick start to your reactions.",
-      "details": "Reactive\nYour lifestyle has sharpened your senses, giving you a quick start to your reactions by adding your Proficiency Bonus to your Initiative rolls.\n\nEverything Is Edible\nYour life has taught you how to create delicacies from ingredients most people would overlook. Once per Long Rest, you can spend 1 hour foraging for miscellaneous ingredients to craft several questionable delicacies (rations) equal to your Proficiency Bonus. When a creature eats one of your dishes during a Short Rest, they gain a subtle boon: they can add a d4 to one saving throw after rolling the d20 but before knowing the outcome of the roll.\n\nThe effect lasts until the creature has had a Long Rest. Unused rations spoil after 24 hours."
+      "details": "Reactive\nYour lifestyle has sharpened your senses, giving you a quick start to your reactions by adding your Proficiency Bonus to your Initiative rolls.\n\nEverything Is Edible\nYour life has taught you how to create delicacies from ingredients most people would overlook. Once per Long Rest, you can spend 1 hour foraging for miscellaneous ingredients to craft several questionable delicacies (rations) equal to your Proficiency Bonus. When a creature eats one of your dishes during a Short Rest, they gain a subtle boon: they can add a d4 to one saving throw after rolling the d20 but before knowing the outcome of the roll.\n\nThe effect lasts until the creature has had a Long Rest. Unused rations spoil after 24 hours.",
+      "resource": {
+        "max": "1",
+        "type": "Long Rest"
+      }
     },
     {
       "id": "mythical-blue-feat-speedy",
@@ -199,7 +223,11 @@
       "category": "Origin Feat",
       "prerequisite": "",
       "short": "You make a deceptive manoeuvre to distract your foe, allowing you to move away from combat.",
-      "details": "‘What’s There?’\nYou make a deceptive manoeuvre to distract your foe, allowing you to move away from combat without triggering an Opportunity Attack. You can take the Disengage action as a Bonus Action a number of times equal to your Proficiency Bonus per Long Rest.\n\n‘Sorry for the Delay’\nYou permanently gain +5 feet to your walking, swimming, and climbing Speeds."
+      "details": "‘What’s There?’\nYou make a deceptive manoeuvre to distract your foe, allowing you to move away from combat without triggering an Opportunity Attack. You can take the Disengage action as a Bonus Action a number of times equal to your Proficiency Bonus per Long Rest.\n\n‘Sorry for the Delay’\nYou permanently gain +5 feet to your walking, swimming, and climbing Speeds.",
+      "resource": {
+        "max": "PB",
+        "type": "Long Rest"
+      }
     }
   ]
 }

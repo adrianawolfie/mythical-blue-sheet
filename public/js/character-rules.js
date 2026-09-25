@@ -105,8 +105,9 @@ function recalculateCharacterRules() {
 
   applyDerivedValue("proficiencyBonus", level ? signedNumber(2 + Math.floor((level - 1) / 4)) : "");
   const proficiencyBonus = numberFieldValue("proficiencyBonus") ?? 0;
-  applyDerivedValue("jackOfAllTrades", className === "Bard" && level >= 2 ? "true" : "");
-  const jackOfAllTrades = getFieldValue("jackOfAllTrades") === "true";
+  const featureNames = getFeatureEntries().map(entry => entry.querySelector(".feature-name")?.value.trim() || "");
+  // Bards gain Jack of All Trades at level 2; other characters get it from a feature with that name.
+  const jackOfAllTrades = (className === "Bard" && level >= 2) || featureNames.some(name => /^jack of all trades\b/i.test(name));
 
   Object.entries(ABILITY_SKILLS).forEach(([ability, skills]) => {
     const score = Number.parseInt(getFieldValue(`${ability}Score`), 10);
@@ -128,8 +129,9 @@ function recalculateCharacterRules() {
   applyDerivedValue("passivePerception", perception === null ? "" : String(10 + perception));
 
   const dexterity = numberFieldValue("dexterityModifier");
-  const hasAlert = getFeatureEntries().some(entry => /^alert\b/i.test(entry.querySelector(".feature-name")?.value.trim() || ""));
-  applyDerivedValue("initiative", dexterity === null ? "" : signedNumber(dexterity + (hasAlert ? proficiencyBonus : 0)));
+  // Alert and Reactive (Pragmatic Survivor) add proficiency bonus to Initiative.
+  const addsProficiencyToInitiative = featureNames.some(name => /^(alert|reactive)\b/i.test(name));
+  applyDerivedValue("initiative", dexterity === null ? "" : signedNumber(dexterity + (addsProficiencyToInitiative ? proficiencyBonus : 0)));
 
   const thirdCaster = (className === "Fighter" && /eldritch knight/i.test(subclass)) ||
     (className === "Rogue" && /arcane trickster/i.test(subclass));
@@ -147,6 +149,7 @@ function recalculateCharacterRules() {
   applyDerivedValue("hpMax", level && hitDie && constitution !== null
     ? String(Math.max(1, hitDie + constitution + (level - 1) * (hitDie / 2 + 1 + constitution)))
     : "");
+  renderFeatureResources();
 }
 
 // Called after a character loads so previous characters' calculated values are forgotten.

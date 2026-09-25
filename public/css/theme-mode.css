@@ -945,10 +945,6 @@ html[data-theme="moonlight"] .sheet .is-manual {
   color: #f3c969 !important;
 }
 
-html[data-theme="moonlight"] .bonbox input[type="checkbox"]:checked {
-  background: radial-gradient(circle, #06224a 0 5px, var(--moon-gold) 5.5px) !important;
-}
-
 html[data-theme="moonlight"] .condition-chip.active {
   background: rgba(255, 224, 138, .22) !important;
   border-color: var(--moon-gold-bright) !important;
@@ -1998,6 +1994,11 @@ html[data-theme="moonlight"] .defense-type-cell .proficiency-add-row:focus-visib
 }
 
 html[data-theme="moonlight"] .sheet .tabs {
-  background: rgba(4, 24, 56, .94);
+  background: linear-gradient(145deg, #0f2f5e, #04142f);
+  border-color: var(--moon-gold-line) !important;
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, .20),
+    0 0 12px rgba(84, 172, 255, .07),
+    inset 0 1px 0 rgba(221, 242, 255, .08);
 }
 

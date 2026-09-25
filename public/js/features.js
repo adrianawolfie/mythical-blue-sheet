@@ -157,25 +157,95 @@ function promptForFeatureCategory(entry, listId = "featList") {
   assignFeatureCategory(entry, category, listId);
 }
 
+// Reads resource text such as "2/3 Short Rest", "(4/4) Long Rest", "4 per Long Rest", or "1/PB Long Rest".
+function parseFeatureResourceText(text = "") {
+  const match = String(text).match(/^\s*\(?\s*(\d+)\s*(?:\/\s*(\d+|pb))?\s*\)?\s*(?:per\s+)?(.*)$/i);
+  const max = match ? (match[2] ?? match[1]).toUpperCase() : "";
+  return {
+    max,
+    type: normalizeFeatureResourceType(match ? match[3] : text),
+    spent: match && /^\d+$/.test(max) ? Math.max(0, Number(max) - Number(match[1])) : 0
+  };
+}
+
+function normalizeFeatureResourceType(type = "") {
+  const trimmed = String(type || "").trim();
+  if (/^(sr|short rest)$/i.test(trimmed)) return "Short Rest";
+  if (/^(lr|long rest)$/i.test(trimmed)) return "Long Rest";
+  return trimmed;
+}
+
+function setFeatureResource(entry, { max = "", type = "" }) {
+  const known = type === "Short Rest" || type === "Long Rest";
+  entry.querySelector(".feature-resource-area").classList.add("has-resource");
+  entry.querySelector(".feature-resource-max").value = max;
+  entry.querySelector(".feature-resource-type").value = known ? type : "custom";
+  entry.querySelector(".feature-resource-custom").value = known ? "" : type;
+  entry.querySelector(".feature-resource-custom").hidden = known;
+  delete entry.dataset.resourceMissing;
+  renderFeatureResources();
+}
+
+// Fills feature resources that an older server dropped when saving: first from the
+// character's earlier versions, then from the feat library for library feats.
+async function restoreMissingFeatureResources(characterId) {
+  const missing = () => getFeatureEntries().filter(entry => entry.dataset.resourceMissing === "true");
+  const nameOf = entry => entry.querySelector(".feature-name")?.value.trim().toLowerCase() || "";
+  let restored = 0;
+
+  if (missing().length && characterId) {
+    try {
+      const history = await characterStorage.loadCharacterHistory(characterId);
+      for (const version of (Array.isArray(history) ? history : []).slice(-25).reverse()) {
+        if (!missing().length || currentCharacterId !== characterId) break;
+        const saved = await characterStorage.loadCharacterVersion(characterId, version.versionId);
+        missing().forEach(entry => {
+          const feat = (saved.customLists?.feats || []).find(item =>
+            String(item.name || "").trim().toLowerCase() === nameOf(entry) && (item.resourceMax || String(item.resource || "").trim())
+          );
+          if (!feat) return;
+          setFeatureResource(entry, feat.resourceMax
+            ? { max: feat.resourceMax, type: normalizeFeatureResourceType(feat.resourceType) }
+            : parseFeatureResourceText(feat.resource));
+          restored++;
+        });
+      }
+    } catch (error) {
+      console.warn("Could not check earlier versions for feature resources:", error);
+    }
+  }
+
+  try {
+    const library = (await (await fetch("data/srd-feats.json", { cache: "no-store" })).json()).feats || [];
+    getFeatureEntries().forEach(entry => {
+      if (entry.querySelector(".feature-resource-max").value) return;
+      if (entry.querySelector(".feature-resource-area").classList.contains("has-resource") && entry.dataset.resourceMissing !== "true") return;
+      const feat = library.find(item => item.resource && (item.id === entry.dataset.sourceId || item.name.toLowerCase() === nameOf(entry)));
+      if (!feat || currentCharacterId !== characterId) return;
+      setFeatureResource(entry, feat.resource);
+      restored++;
+    });
+  } catch (error) {
+    console.warn("Could not read the feat library for feature resources:", error);
+  }
+
+  if (restored) {
+    markCharacterDirty();
+    window.showToast?.(`Filled in ${restored} feature resource${restored === 1 ? "" : "s"}. Save to keep ${restored === 1 ? "it" : "them"}.`, { variant: "success", duration: 6000 });
+  }
+}
+
 function addFeatureEntry(listId, data = {}) {
   const list = document.getElementById(listId);
   if (!list) return;
 
   const category = inferFeatureCategory(data);
   const hasResource = data.hasResource === true || Boolean(String(data.resource || "").trim());
-  let resourceMax = String(data.resourceMax || "");
-  let resourceType = data.resourceType || "Short Rest";
-  let legacySpent = 0;
-
-  // Split legacy resource text such as "2/3 Short Rest" into max, type, and spent.
-  if (!resourceMax && String(data.resource || "").trim()) {
-    const legacy = String(data.resource).match(/^\s*\(?\s*(\d+)\s*(?:\/\s*(\d+))?\s*\)?\s*(?:per\s+)?(.*)$/i);
-    resourceMax = legacy ? (legacy[2] ?? legacy[1]) : "";
-    resourceType = (legacy ? legacy[3] : data.resource).trim();
-    if (legacy) legacySpent = Math.max(0, Number(resourceMax) - Number(legacy[1]));
-  }
-  if (/^(sr|short rest)$/i.test(resourceType)) resourceType = "Short Rest";
-  if (/^(lr|long rest)$/i.test(resourceType)) resourceType = "Long Rest";
+  // Resource text such as "2/3 Short Rest" is read when the separate max and type are missing.
+  const parsedResource = !data.resourceMax && String(data.resource || "").trim() ? parseFeatureResourceText(data.resource) : null;
+  const resourceMax = parsedResource ? parsedResource.max : String(data.resourceMax || "");
+  const resourceType = (parsedResource ? parsedResource.type : normalizeFeatureResourceType(data.resourceType)) || "Short Rest";
+  const legacySpent = parsedResource ? parsedResource.spent : 0;
   const customResourceType = resourceType !== "Short Rest" && resourceType !== "Long Rest";
 
   const entry = document.createElement("div");
@@ -185,6 +255,7 @@ function addFeatureEntry(listId, data = {}) {
   entry.dataset.category = category;
   entry.dataset.resourceId = data.resourceId || crypto.randomUUID();
   if (legacySpent) entry.dataset.legacySpent = String(legacySpent);
+  if (hasResource && !resourceMax && !String(data.resource || "").trim()) entry.dataset.resourceMissing = "true";
 
   entry.innerHTML = `
     <div class="feature-entry-top">
@@ -216,7 +287,7 @@ function addFeatureEntry(listId, data = {}) {
               <button type="button" class="slot-btn" data-slot-step="1" aria-label="Regain resource">+</button>
             </span>
             <span class="resource-of">of</span>
-            <input class="feature-resource-max" type="text" inputmode="numeric" placeholder="max" aria-label="Resource max" value="${escapeHtml(resourceMax)}" />
+            <input class="feature-resource-max" type="text" inputmode="numeric" placeholder="max" title="A number, or PB for your proficiency bonus" aria-label="Resource max" value="${escapeHtml(resourceMax)}" />
           </div>
           <select class="feature-resource-type" aria-label="Resource recharge">
             <option value="Short Rest" ${resourceType === "Short Rest" ? "selected" : ""}>Short Rest</option>
@@ -337,16 +408,19 @@ function collectFeatureEntries(listId) {
   return getFeatureEntries(listId).map(entry => {
     const resourceArea = entry.querySelector(".feature-resource-area");
     const hasResource = resourceArea?.classList.contains("has-resource") || false;
+    const resourceMax = entry.querySelector(".feature-resource-max")?.value.trim() || "";
+    const resourceType = entry.querySelector(".feature-resource-type")?.value === "custom"
+      ? entry.querySelector(".feature-resource-custom")?.value || ""
+      : entry.querySelector(".feature-resource-type")?.value || "";
     return {
       name: entry.querySelector(".feature-name")?.value || "",
       short: entry.querySelector(".feature-short")?.value || "",
       hasResource,
-      resource: "",
+      // Also kept as text so servers and pages that predate resourceMax/resourceType keep the resource.
+      resource: hasResource ? [resourceMax ? `${entry.querySelector(".slot-available")?.textContent || resourceMax}/${resourceMax}` : "", resourceType].filter(Boolean).join(" ") : "",
       resourceId: entry.dataset.resourceId || "",
-      resourceMax: hasResource ? entry.querySelector(".feature-resource-max")?.value || "" : "",
-      resourceType: entry.querySelector(".feature-resource-type")?.value === "custom"
-        ? entry.querySelector(".feature-resource-custom")?.value || ""
-        : entry.querySelector(".feature-resource-type")?.value || "",
+      resourceMax: hasResource ? resourceMax : "",
+      resourceType,
       details: entry.querySelector(".feature-details")?.value || "",
       open: entry.querySelector(".feature-details-panel")?.classList.contains("is-open") || false,
       sourceId: entry.dataset.sourceId || "",

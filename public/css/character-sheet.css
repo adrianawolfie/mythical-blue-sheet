@@ -417,15 +417,6 @@
     color: var(--navy-deep);
     outline: none;
   }
-  .bonbox input[type="checkbox"] {
-    appearance: none;
-    display: block;
-    margin: 0 auto;
-    cursor: pointer;
-  }
-  .bonbox input[type="checkbox"]:checked {
-    background: radial-gradient(circle, var(--navy-deep) 0 5px, var(--gold) 5.5px);
-  }
 
   /* RIGHT PANEL */
   .rp { display: flex; flex-direction: column; gap: 12px; }
@@ -1012,6 +1003,15 @@
   font-size: 13px;
 }
 
+.feature-resource-box .feature-resource-max::placeholder {
+  color: var(--ink-soft);
+  opacity: .55;
+  font-family: var(--small-italic-font);
+  font-size: 11px;
+  font-style: italic;
+  font-weight: 400;
+}
+
 .feature-resource-box .resource-of {
   font-family: var(--small-italic-font);
   font-size: 11px;
@@ -1020,7 +1020,7 @@
 }
 
 .feature-resource-box .feature-resource-max {
-  width: 2.2em;
+  width: 2.8em;
   min-height: 22px;
   padding: 2px;
   border: none;
@@ -2433,14 +2433,23 @@
   }
 }
 
-/* Keep the section tabs visible while scrolling the sheet. */
+/* Keep the section tabs visible while scrolling the sheet, styled like the sheet's cards. */
 .sheet .tabs {
   position: sticky;
   top: 0;
   z-index: 20;
-  padding-top: 8px;
-  background: rgba(237, 225, 192, .95);
-  backdrop-filter: blur(4px);
+  padding: 6px 8px;
+  border: 1px solid var(--gold);
+  border-radius: var(--r);
+  background:
+    linear-gradient(rgba(255, 250, 234, .30), rgba(255, 250, 234, .30)),
+    url('../assets/parchment-seamless.png') center / 1000px auto,
+    #ede1c0;
+  box-shadow: 0 2px 8px rgba(60, 40, 10, .12);
+}
+
+.sheet .tabs .tab {
+  margin-bottom: 0;
 }
 
 /* Section swipes should not trigger the browser's back/forward swipe on touch screens. */

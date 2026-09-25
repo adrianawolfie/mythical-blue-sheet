@@ -474,9 +474,16 @@ function renderSpellSlots() {
 
 let featureResourcesSpent = {};
 
+// A feature resource max is a number, or PB for the proficiency bonus.
+function featureResourceMax(entry) {
+  const value = entry.querySelector(".feature-resource-max").value.trim();
+  const max = /^pb$/i.test(value) ? Number.parseInt(getFieldValue("proficiencyBonus"), 10) : Number.parseInt(value, 10);
+  return Math.max(0, max || 0);
+}
+
 function renderFeatureResources() {
   document.querySelectorAll(".feature-entry").forEach(entry => {
-    const max = Math.max(0, Number.parseInt(entry.querySelector(".feature-resource-max").value, 10) || 0);
+    const max = featureResourceMax(entry);
     const available = Math.max(0, max - (featureResourcesSpent[entry.dataset.resourceId] || 0));
     entry.querySelector(".slot-available").textContent = available;
     entry.querySelector('[data-slot-step="-1"]').disabled = available <= 0;
@@ -573,7 +580,7 @@ document.addEventListener("click", event => {
   const button = event.target.closest(".feature-entry .slot-btn");
   if (!button) return;
   const entry = button.closest(".feature-entry");
-  const max = Number.parseInt(entry.querySelector(".feature-resource-max").value, 10) || 0;
+  const max = featureResourceMax(entry);
   const available = Number(entry.querySelector(".slot-available").textContent) + Number(button.dataset.slotStep);
   featureResourcesSpent = { ...featureResourcesSpent, [entry.dataset.resourceId]: Math.max(0, max - available) };
   renderFeatureResources();

@@ -75,7 +75,7 @@
   window.addSrdLibraryEntry=function(kind,entryId){
     const entry=libraries[kind].find(value=>value.id===entryId); if(!entry) return;
     if(kind==='feat') {
-      addFeatureEntry('featList',{name:entry.name,short:firstUsefulSentence(entry.details||entry.short),details:`${entry.details||''}\n\nSource: ${entry.source||'SRD 5.2.1'}`,sourceId:entry.id,source:entry.source,category:entry.category});
+      addFeatureEntry('featList',{name:entry.name,short:firstUsefulSentence(entry.details||entry.short),details:`${entry.details||''}\n\nSource: ${entry.source||'SRD 5.2.1'}`,sourceId:entry.id,source:entry.source,category:entry.category,hasResource:Boolean(entry.resource),resourceMax:entry.resource?.max||'',resourceType:entry.resource?.type||''});
     } else {
       const extras=[entry.category,entry.rarity,entry.weight?`Weight: ${entry.weight}`:'',entry.attunement?'Requires Attunement':''].filter(Boolean).join(' · ');
       addUnifiedInventoryRow({name:entry.name,type:entry.type||'gear',qty:'1',value:entry.value||'',details:`${extras}${extras?'\n\n':''}${entry.details||entry.summary||''}\n\nSource: ${entry.source||'SRD 5.2.1'}`});

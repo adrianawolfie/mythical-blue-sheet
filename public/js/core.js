@@ -611,6 +611,7 @@ if (typeof resetCharacterRules === "function") resetCharacterRules();
 
 showSheet();
 markCharacterClean();
+if (typeof restoreMissingFeatureResources === "function") restoreMissingFeatureResources(character.id);
 }
 
 async function saveCurrentCharacter(showAlert = true) {
