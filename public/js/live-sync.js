@@ -444,10 +444,27 @@ function applyLiveState(live = {}) {
     spentInput.value = "";
   }
 
+  spellSlotsSpent = live.spellSlotsSpent && typeof live.spellSlotsSpent === "object"
+    ? live.spellSlotsSpent
+    : {};
+  renderSpellSlots();
+
   const conditionsInput = document.getElementById("currentConditionsInput");
   if (conditionsInput && Array.isArray(live.conditions)) {
     conditionsInput.value = serializeConditionNames(live.conditions);
   }
+}
+
+let spellSlotsSpent = {};
+
+function renderSpellSlots() {
+  document.querySelectorAll(".slotbox[data-slot-level]").forEach(box => {
+    const max = Math.max(0, Number.parseInt(box.querySelector("input").value, 10) || 0);
+    const available = Math.max(0, max - (spellSlotsSpent[box.dataset.slotLevel] || 0));
+    box.querySelector(".slot-available").textContent = available;
+    box.querySelector('[data-slot-step="-1"]').disabled = available <= 0;
+    box.querySelector('[data-slot-step="1"]').disabled = available >= max;
+  });
 }
 
 function collectHitDiceSpent() {
@@ -478,9 +495,23 @@ document.addEventListener("click", event => {
   }
 });
 
+document.addEventListener("click", event => {
+  const button = event.target.closest(".slot-btn");
+  if (!button) return;
+  const box = button.closest(".slotbox");
+  const max = Number.parseInt(box.querySelector("input").value, 10) || 0;
+  const available = Number(box.querySelector(".slot-available").textContent) + Number(button.dataset.slotStep);
+  spellSlotsSpent = { ...spellSlotsSpent, [box.dataset.slotLevel]: Math.max(0, max - available) };
+  renderSpellSlots();
+  scheduleHPAutoSave({ spellSlotsSpent });
+});
+
 document.addEventListener("input", event => {
   if (event.target.matches('[data-field="hitDiceSpent"]')) {
     scheduleHPAutoSave({ hitDiceSpent: collectHitDiceSpent() });
+  }
+  if (event.target.matches('[data-field^="spellSlotsMaxLevel"]')) {
+    renderSpellSlots();
   }
 });
 

@@ -96,6 +96,7 @@ type Live struct {
 	ExhaustionLevel           int            `json:"exhaustionLevel"`
 	DeathSaves                DeathSaves     `json:"deathSaves"`
 	HitDiceSpent              map[string]int `json:"hitDiceSpent"`
+	SpellSlotsSpent           map[string]int `json:"spellSlotsSpent"`
 	ActiveArmorClassModifiers []string       `json:"activeArmorClassModifiers"`
 	UpdatedAt                 string         `json:"updatedAt"`
 }
@@ -112,6 +113,7 @@ type LiveUpdate struct {
 	ExhaustionLevel           *int            `json:"exhaustionLevel,omitempty"`
 	DeathSaves                *DeathSaves     `json:"deathSaves,omitempty"`
 	HitDiceSpent              *map[string]int `json:"hitDiceSpent,omitempty"`
+	SpellSlotsSpent           *map[string]int `json:"spellSlotsSpent,omitempty"`
 	ActiveArmorClassModifiers *[]string       `json:"activeArmorClassModifiers,omitempty"`
 }
 

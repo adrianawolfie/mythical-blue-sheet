@@ -283,6 +283,9 @@ func (repo Repository) UpdateLive(ctx context.Context, id string, update LiveUpd
 	if update.HitDiceSpent != nil {
 		live.HitDiceSpent = *update.HitDiceSpent
 	}
+	if update.SpellSlotsSpent != nil {
+		live.SpellSlotsSpent = *update.SpellSlotsSpent
+	}
 	if update.ActiveArmorClassModifiers != nil {
 		live.ActiveArmorClassModifiers = *update.ActiveArmorClassModifiers
 	}

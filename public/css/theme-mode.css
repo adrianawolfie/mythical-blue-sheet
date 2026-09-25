@@ -1251,6 +1251,16 @@ html[data-theme="moonlight"] .slotbox input {
   color: #f3fbff !important;
 }
 
+html[data-theme="moonlight"] .slot-btn {
+  border-color: var(--moon-ghost-soft-line);
+  color: var(--moon-ghost-bright);
+}
+
+html[data-theme="moonlight"] .slot-row,
+html[data-theme="moonlight"] .slot-available {
+  color: #f3fbff;
+}
+
 /* Journal / notes: darker surfaces, brighter labels and readable editing text. */
 html[data-theme="moonlight"] .journal-note-toolbar,
 html[data-theme="moonlight"] .journal-note-entry,

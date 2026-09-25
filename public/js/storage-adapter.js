@@ -79,6 +79,7 @@
         "exhaustionLevel",
         "deathSaves",
         "hitDiceSpent",
+        "spellSlotsSpent",
         "activeArmorClassModifiers"
       ]);
       const body = Object.fromEntries(

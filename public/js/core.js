@@ -410,6 +410,7 @@ function collectCharacterData() {
       failures: document.querySelectorAll(".dsbox .svdie.fail.on").length
     },
     hitDiceSpent: typeof collectHitDiceSpent === "function" ? collectHitDiceSpent() : {},
+    spellSlotsSpent: typeof spellSlotsSpent === "object" ? spellSlotsSpent : {},
     activeArmorClassModifiers: typeof collectActiveArmorClassModifiers === "function"
       ? collectActiveArmorClassModifiers()
       : []
@@ -472,6 +473,16 @@ function loadCharacter(character) {
     )
   );
 
+  // Split legacy "available/max" spell slot text into max fields and spent live counts.
+  const legacySpellSlotsSpent = {};
+  for (let level = 1; level <= 9; level++) {
+    const legacy = String(normalizedFields[`spellSlotsLevel${level}`] || "").match(/^\s*(\d+)\s*(?:\/\s*(\d+))?\s*$/);
+    if (!legacy || normalizedFields[`spellSlotsMaxLevel${level}`] !== undefined) continue;
+    const max = legacy[2] ?? legacy[1];
+    normalizedFields[`spellSlotsMaxLevel${level}`] = max;
+    if (Number(max) > Number(legacy[1])) legacySpellSlotsSpent[level] = Number(max) - Number(legacy[1]);
+  }
+
   applyNamedFields(normalizedFields);
   syncCoinageMirrorsFromCanonical();
 
@@ -506,6 +517,10 @@ renderProficiencyRows(
 renderDefenseRows(character.customLists?.defenses || {});
 applyUiState(character.uiState || {});
 applyLiveState(character.live || {});
+if (character.live?.spellSlotsSpent == null && Object.keys(legacySpellSlotsSpent).length) {
+  applyLiveState({ ...character.live, spellSlotsSpent: legacySpellSlotsSpent });
+  scheduleHPAutoSave({ spellSlotsSpent: legacySpellSlotsSpent });
+}
 focusedCondition = "";
 renderSelectedConditions();
 
