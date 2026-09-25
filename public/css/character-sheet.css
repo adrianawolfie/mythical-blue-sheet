@@ -645,6 +645,14 @@
   width: 100%;
 }
 
+.features-traits-main .section-heading-actions > div:first-child {
+  flex: 1 0 100%;
+}
+
+.features-traits-main .section-heading-actions .sb-hdr {
+  margin: 0 -8px;
+}
+
 .features-traits-main textarea {
   min-height: 120px;
 }
