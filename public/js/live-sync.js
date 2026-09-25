@@ -468,8 +468,44 @@ function renderSpellSlots() {
     box.querySelector(".slot-available").textContent = available;
     box.querySelector('[data-slot-step="-1"]').disabled = available <= 0;
     box.querySelector('[data-slot-step="1"]').disabled = available >= max;
+    if (box.dataset.slotLevel === "pact") box.hidden = max <= 0 && getFieldValue("class") !== "Warlock";
   });
 }
+
+// Spell slots by caster level from the 2024 Player's Handbook class tables.
+const FULL_CASTER_SPELL_SLOTS = [
+  [2], [3], [4, 2], [4, 3], [4, 3, 2], [4, 3, 3], [4, 3, 3, 1], [4, 3, 3, 2], [4, 3, 3, 3, 1], [4, 3, 3, 3, 2],
+  [4, 3, 3, 3, 2, 1], [4, 3, 3, 3, 2, 1], [4, 3, 3, 3, 2, 1, 1], [4, 3, 3, 3, 2, 1, 1], [4, 3, 3, 3, 2, 1, 1, 1],
+  [4, 3, 3, 3, 2, 1, 1, 1], [4, 3, 3, 3, 2, 1, 1, 1, 1], [4, 3, 3, 3, 3, 1, 1, 1, 1], [4, 3, 3, 3, 3, 2, 1, 1, 1],
+  [4, 3, 3, 3, 3, 2, 2, 1, 1]
+];
+const PHB_CLASSES = ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard"];
+
+function applyClassSpellSlots() {
+  const className = getFieldValue("class");
+  if (!PHB_CLASSES.includes(className)) return;
+  const level = Number.parseInt(getFieldValue("level"), 10) || 0;
+  const subclass = getFieldValue("subclass");
+  let casterLevel = 0;
+  if (["Bard", "Cleric", "Druid", "Sorcerer", "Wizard"].includes(className)) casterLevel = level;
+  if (["Paladin", "Ranger"].includes(className)) casterLevel = Math.ceil(level / 2);
+  if ((className === "Fighter" && /eldritch knight/i.test(subclass)) || (className === "Rogue" && /arcane trickster/i.test(subclass))) {
+    casterLevel = level >= 3 ? Math.ceil(level / 3) : 0;
+  }
+  const slots = FULL_CASTER_SPELL_SLOTS[casterLevel - 1] || [];
+  for (let slotLevel = 1; slotLevel <= 9; slotLevel++) {
+    setFieldValue(document.querySelector(`[data-field="spellSlotsMaxLevel${slotLevel}"]`), slots[slotLevel - 1] ? String(slots[slotLevel - 1]) : "");
+  }
+
+  const warlock = className === "Warlock" && level > 0;
+  setFieldValue(document.querySelector('[data-field="pactSlotsMax"]'), warlock ? String(level >= 17 ? 4 : level >= 11 ? 3 : level >= 2 ? 2 : 1) : "");
+  setFieldValue(document.querySelector('[data-field="pactSlotLevel"]'), warlock ? String(Math.min(5, Math.ceil(level / 2))) : "1");
+  renderSpellSlots();
+}
+
+document.addEventListener("change", event => {
+  if (event.target.matches('[data-field="class"], [data-field="level"], [data-field="subclass"]')) applyClassSpellSlots();
+});
 
 let featureResourcesSpent = {};
 
@@ -486,17 +522,40 @@ function renderFeatureResources() {
 function takeRest(type) {
   const longRest = type === "Long Rest";
   if (!confirm(longRest
-    ? "Take a long rest? This restores all spell slots and all Short Rest and Long Rest resources."
-    : "Take a short rest? This restores all Short Rest resources.")) return;
+    ? "Take a long rest? This restores all HP, hit dice, spell slots, and Short Rest and Long Rest resources, clears temporary HP and death saves, and reduces exhaustion by 1."
+    : "Take a short rest? This restores pact magic slots and Short Rest resources.")) return;
 
   featureResourcesSpent = Object.fromEntries(Object.entries(featureResourcesSpent).filter(([id]) => {
     const resourceType = document.querySelector(`.feature-entry[data-resource-id="${CSS.escape(id)}"] .feature-resource-type`)?.value;
     return resourceType && resourceType !== "Short Rest" && !(longRest && resourceType === "Long Rest");
   }));
-  if (longRest) spellSlotsSpent = {};
+  const { pact, ...otherSpellSlotsSpent } = spellSlotsSpent;
+  spellSlotsSpent = longRest ? {} : otherSpellSlotsSpent;
   renderSpellSlots();
   renderFeatureResources();
-  scheduleHPAutoSave(longRest ? { spellSlotsSpent, featureResourcesSpent } : { featureResourcesSpent });
+  const patch = { spellSlotsSpent, featureResourcesSpent };
+
+  if (longRest) {
+    const hpCurrentInput = document.getElementById("hpCurrentInput");
+    const tempHpInput = document.getElementById("tempHpInput");
+    const hitDiceSpentInput = document.querySelector('[data-field="hitDiceSpent"]');
+    const exhaustionLevel = Math.max(0, document.querySelectorAll(".exhaustion-row .svdie.on").length - 1);
+    if (hpCurrentInput) hpCurrentInput.value = document.getElementById("hpMaxInput")?.value ?? hpCurrentInput.value;
+    if (tempHpInput) tempHpInput.value = "";
+    if (hitDiceSpentInput) hitDiceSpentInput.value = "";
+    document.querySelectorAll(".exhaustion-row .svdie").forEach((die, index) => die.classList.toggle("on", index < exhaustionLevel));
+    document.querySelectorAll(".dsbox .svdie").forEach(die => die.classList.remove("on"));
+    updateHPBar();
+    Object.assign(patch, {
+      hpCurrent: hpCurrentInput?.value ?? "",
+      tempHp: "",
+      hitDiceSpent: {},
+      exhaustionLevel,
+      deathSaves: { successes: 0, failures: 0 }
+    });
+  }
+
+  scheduleHPAutoSave(patch);
   window.showToast?.(`${type} taken.`, { variant: "success" });
 }
 

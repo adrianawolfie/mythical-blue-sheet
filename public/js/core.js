@@ -148,6 +148,11 @@ function setFieldValue(field, value) {
     return;
   }
 
+  // Keep saved values that are not listed in a dropdown, such as a homebrew class.
+  if (field.tagName === "SELECT" && value && !Array.from(field.options).some(option => option.value === String(value))) {
+    field.add(new Option(value, value));
+  }
+
   field.value = typeof value === "boolean" ? "" : (value ?? "");
 }
 

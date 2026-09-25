@@ -869,6 +869,7 @@ html[data-theme="moonlight"] .inventory-unified-table textarea {
 }
 
 html[data-theme="moonlight"] .hfl > input,
+html[data-theme="moonlight"] .hfl > select,
 html[data-theme="moonlight"] .cbox input,
 html[data-theme="moonlight"] .hp-cur-input,
 html[data-theme="moonlight"] .hp-max-input,
@@ -1259,6 +1260,23 @@ html[data-theme="moonlight"] .slot-btn {
 html[data-theme="moonlight"] .slot-row,
 html[data-theme="moonlight"] .slot-available {
   color: #f3fbff;
+}
+
+html[data-theme="moonlight"] .feature-resource-box .resource-stepper {
+  border-color: var(--moon-ghost-soft-line);
+}
+
+html[data-theme="moonlight"] .feature-resource-box .resource-stepper .slot-btn:not(:disabled):hover {
+  background: rgba(124,205,255,.14);
+}
+
+html[data-theme="moonlight"] .feature-resource-box .resource-of {
+  color: var(--moon-ghost-bright);
+}
+
+html[data-theme="moonlight"] .pact-slot-level option,
+html[data-theme="moonlight"] .hfl > select option {
+  background: #06224a;
 }
 
 /* Journal / notes: darker surfaces, brighter labels and readable editing text. */

@@ -210,10 +210,12 @@ function addFeatureEntry(listId, data = {}) {
         <div class="feature-resource-box">
           <label>Resource</label>
           <div class="slot-row">
-            <button type="button" class="slot-btn" data-slot-step="-1" aria-label="Use resource">−</button>
-            <output class="slot-available" aria-label="Resource available">0</output>
-            <button type="button" class="slot-btn" data-slot-step="1" aria-label="Regain resource">+</button>
-            /
+            <span class="resource-stepper">
+              <button type="button" class="slot-btn" data-slot-step="-1" aria-label="Use resource">−</button>
+              <output class="slot-available" aria-label="Resource available">0</output>
+              <button type="button" class="slot-btn" data-slot-step="1" aria-label="Regain resource">+</button>
+            </span>
+            <span class="resource-of">of</span>
             <input class="feature-resource-max" type="text" inputmode="numeric" placeholder="max" aria-label="Resource max" value="${escapeHtml(resourceMax)}" />
           </div>
           <select class="feature-resource-type" aria-label="Resource recharge">

@@ -50,7 +50,7 @@ Logged-in pages load `public/css/account.css` and `public/js/account.js` to show
 
 File: `public/index.html`
 
-The main character sheet application. It supports editing character details, stats, spells, features, inventory, journal notes, and live status data. The sheet toolbar provides Short Rest and Long Rest buttons: a short rest restores Short Rest feature resources, and a long rest also restores Long Rest feature resources and all spell slots. Both update live state only; custom resource types are left unchanged.
+The main character sheet application. It supports editing character details, stats, spells, features, inventory, journal notes, and live status data. Class and level are dropdowns; choosing a Player's Handbook class, level, or an Eldritch Knight/Arcane Trickster subclass fills the maximum spell slots (and Warlock Pact Magic slot count and level) from the 2024 class tables, and the maximums stay editable for multiclassing. The sheet toolbar provides Short Rest and Long Rest buttons: a short rest restores Pact Magic slots and Short Rest feature resources; a long rest restores all HP, spent hit dice, all spell slots, and Short Rest and Long Rest feature resources, clears temporary HP and death saves, and reduces exhaustion by 1. Both update live state only; custom resource types are left unchanged.
 
 ### `/home.html`
 

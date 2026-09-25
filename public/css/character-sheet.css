@@ -188,7 +188,8 @@
     text-transform: uppercase;
     font-weight: 600;
   }
-  .hfl > input {
+  .hfl > input,
+  .hfl > select {
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--ink-soft);
@@ -204,7 +205,8 @@
     font-size: 12px;
     font-style: italic;
   }
-  .hfl > input:focus { border-bottom-color: var(--gold); }
+  .hfl > input:focus,
+  .hfl > select:focus { border-bottom-color: var(--gold); }
 
   .hstat {
     display: flex;
@@ -969,9 +971,54 @@
   flex-wrap: wrap;
 }
 
+.feature-resource-box .resource-stepper {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  border: 1px solid rgba(184,144,44,.55);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.feature-resource-box .resource-stepper .slot-btn {
+  width: 24px;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  font-size: 14px;
+  font-weight: 400;
+  transition: background .15s ease;
+}
+
+.feature-resource-box .resource-stepper .slot-btn:not(:disabled):hover {
+  background: rgba(184,144,44,.18);
+}
+
+.feature-resource-box .resource-stepper .slot-available {
+  min-width: 1.6em;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+}
+
+.feature-resource-box .resource-of {
+  font-family: var(--small-italic-font);
+  font-size: 11px;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
 .feature-resource-box .feature-resource-max {
-  width: 2.8em;
-  padding: 4px 2px;
+  width: 2.2em;
+  min-height: 22px;
+  padding: 2px;
+  border: none;
+  border-bottom: 1px dotted rgba(184,144,44,.56);
+  background: transparent;
+  font-family: 'Cinzel', serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 13px;
 }
 
 .feature-resource-box .feature-resource-custom {
@@ -1298,6 +1345,18 @@
     font-size: 14px;
     font-weight: 700;
     color: var(--navy-deep);
+  }
+  .slotbox-pact {
+    grid-column: 1 / -1;
+  }
+  .slotbox .pact-slot-level {
+    border: none;
+    border-bottom: 1px dotted var(--gold);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    padding: 0;
   }
 
   .stbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
