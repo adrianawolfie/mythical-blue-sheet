@@ -34,7 +34,7 @@ func TestCORSHandlesAllowedPreflight(t *testing.T) {
 	handler := CORS(next)
 
 	request := httptest.NewRequest(http.MethodOptions, "/api/characters", nil)
-	request.Header.Set("Origin", "https://raperonzolo.com")
+	request.Header.Set("Origin", "https://test.raperonzolo.com")
 	request.Header.Set("Access-Control-Request-Method", http.MethodPatch)
 	request.Header.Set("Access-Control-Request-Headers", "content-type")
 	response := httptest.NewRecorder()
@@ -43,7 +43,7 @@ func TestCORSHandlesAllowedPreflight(t *testing.T) {
 
 	require.Equal(t, http.StatusNoContent, response.Code)
 	require.False(t, nextCalled)
-	require.Equal(t, "https://raperonzolo.com", response.Header().Get("Access-Control-Allow-Origin"))
+	require.Equal(t, "https://test.raperonzolo.com", response.Header().Get("Access-Control-Allow-Origin"))
 	require.Equal(t, "true", response.Header().Get("Access-Control-Allow-Credentials"))
 	require.Equal(t, "GET, POST, PUT, PATCH, DELETE, OPTIONS", response.Header().Get("Access-Control-Allow-Methods"))
 	require.Equal(t, "Accept, Content-Type", response.Header().Get("Access-Control-Allow-Headers"))
