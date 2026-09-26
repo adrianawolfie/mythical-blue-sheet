@@ -33,17 +33,31 @@
           <div class="dm-section-label">Combat Order</div>
           <h2 id="initiativeTrackerTitle">Initiative Tracker</h2>
         </div>
-        <div class="round-display" aria-live="polite">
+      </div>
+
+      <div class="turn-bar" aria-live="polite">
+        <div class="round-display">
           <span>Round</span>
           <strong id="roundNumber">1</strong>
+        </div>
+        <div class="turn-bar-current">
+          <span>Current turn</span>
+          <strong id="activeTurnText" class="active-turn-text">Add initiative values, then press Next Turn.</strong>
+        </div>
+        <div class="turn-bar-buttons">
+          <button id="previousTurnBtn" type="button" class="dm-secondary-button" title="Go back to the previous turn">‹ Previous</button>
+          <button id="nextTurnBtn" type="button" class="dm-primary-button" title="End this turn and move to the next combatant">Next Turn ›</button>
         </div>
       </div>
 
       <div class="initiative-toolbar">
-        <button id="nextTurnBtn" type="button" class="dm-primary-button">Next Turn →</button>
         <button id="addNpcBtn" type="button" class="dm-secondary-button">+ Add NPC</button>
+        <button id="rollNpcInitiativeBtn" type="button" class="dm-secondary-button" title="Roll d20 + initiative bonus for NPCs without initiative (players roll their own)">Roll NPC Initiative</button>
+        <label class="dm-toggle" title="Roll initiative automatically when an NPC is added">
+          <input id="autoRollNpcInitiative" type="checkbox">
+          <span>Auto-roll new NPCs</span>
+        </label>
         <button id="resetCombatBtn" type="button" class="dm-subtle-button">Reset Combat</button>
-        <span id="activeTurnText" class="active-turn-text" aria-live="polite">Add initiative values to begin.</span>
       </div>
 
       <div class="tracker-legend" aria-hidden="true">
@@ -53,11 +67,12 @@
         <span>HP</span>
         <span>AC</span>
         <span>Conditions</span>
-        <span>Conc.</span>
+        <span>Concentrating</span>
         <span></span>
       </div>
 
       <div id="initiativeList" class="initiative-list" aria-live="polite"></div>
+      <div id="absentPlayersBar" class="absent-players-bar" hidden></div>
       <p id="initiativeEmptyState" class="initiative-empty-state" hidden>No combatants available.</p>
     </section>
   </main>

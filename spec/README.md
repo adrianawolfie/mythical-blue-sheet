@@ -74,7 +74,7 @@ A static character detail page. `public/js/character-detail.js` loads current co
 
 File: `public/dm-screen.html`
 
-The DM screen. It supports campaign calendar state, initiative and encounter tools, SRD statblock browsing, and custom campaign statblocks through the statblock API.
+The DM screen. It supports campaign calendar state, initiative and encounter tools, SRD statblock browsing, and custom campaign statblocks through the statblock API. In the initiative tracker, the combatant whose turn it is is listed first and the order rotates with each turn, with a marker where the next round begins. A pinned turn bar shows the round and current turn with Previous and Next Turn buttons. "Roll NPC Initiative" rolls d20 plus the statblock initiative bonus for NPCs without initiative (players are never rolled), and an "Auto-roll new NPCs" option rolls for NPCs as they are added. Players can be marked absent, which removes them from the turn order and lists them below the tracker to bring back. Concentration is shown with a lit badge and a "Concentrating" tag. Tracker state, including absent players and the auto-roll option, is kept in the browser.
 
 ### `/login.html`
 

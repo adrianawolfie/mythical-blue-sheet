@@ -62,7 +62,7 @@
   }
 
   function loadTrackerState() {
-    const fallback = { round: 1, activeId: "", playerInitiatives: {}, playerConcentration: {}, npcs: [], customStatblocks: [] };
+    const fallback = { round: 1, activeId: "", playerInitiatives: {}, playerConcentration: {}, absentPlayers: {}, autoRollNpcInitiative: false, npcs: [], customStatblocks: [] };
     try {
       const parsed = JSON.parse(localStorage.getItem(DM_STATE_KEY) || "{}");
       return {
@@ -70,6 +70,8 @@
         activeId: String(parsed.activeId || ""),
         playerInitiatives: parsed.playerInitiatives && typeof parsed.playerInitiatives === "object" ? parsed.playerInitiatives : {},
         playerConcentration: parsed.playerConcentration && typeof parsed.playerConcentration === "object" ? parsed.playerConcentration : {},
+        absentPlayers: parsed.absentPlayers && typeof parsed.absentPlayers === "object" ? parsed.absentPlayers : {},
+        autoRollNpcInitiative: parsed.autoRollNpcInitiative === true,
         npcs: Array.isArray(parsed.npcs) ? parsed.npcs : [],
         customStatblocks: Array.isArray(parsed.customStatblocks) ? parsed.customStatblocks : []
       };
@@ -358,7 +360,7 @@
   }
 
   function getCombatants() {
-    const players = playerCharacters.map(character => ({
+    const players = playerCharacters.filter(character => !state.absentPlayers[character.id]).map(character => ({
       id: character.id,
       type: "player",
       name: character.name || "Unnamed Character",
@@ -773,6 +775,11 @@
     type.className = "combatant-type";
     type.textContent = isNpc ? (statblock ? `${statblock.section} · ${statblock.source || "Statblock"}` : "Custom NPC") : "Player character · live sync";
     nameWrap.append(type);
+    const concentratingTag = document.createElement("span");
+    concentratingTag.className = "combatant-concentrating-tag";
+    concentratingTag.textContent = "✦ Concentrating";
+    nameWrap.append(concentratingTag);
+    row.classList.toggle("is-concentrating", combatant.concentrating);
     if (statblock) {
       const toggle = document.createElement("button");
       toggle.type = "button";
@@ -809,7 +816,7 @@
 
     const concentration = document.createElement("label");
     concentration.className = "combatant-concentration concentration-toggle";
-    concentration.title = "Concentrating";
+    concentration.title = "Concentrating on a spell. Click to toggle.";
     const concentrationInput = document.createElement("input");
     concentrationInput.dataset.field = "concentrating";
     concentrationInput.type = "checkbox";
@@ -832,12 +839,14 @@
       remove.textContent = "×";
       row.append(remove);
     } else {
-      const lock = document.createElement("span");
-      lock.className = "player-lock-icon";
-      lock.title = "Character live sync";
-      lock.setAttribute("aria-label", "Character live sync");
-      lock.textContent = "◆";
-      row.append(lock);
+      const absent = document.createElement("button");
+      absent.className = "combatant-remove combatant-absent";
+      absent.type = "button";
+      absent.title = `${combatant.name} is not here: hide from the initiative order`;
+      absent.setAttribute("aria-label", `Mark ${combatant.name} as absent`);
+      absent.dataset.action = "mark-absent";
+      absent.textContent = "–";
+      row.append(absent);
     }
     const legendary = createLegendaryTracker(combatant);
     if (legendary) row.append(legendary);
@@ -854,7 +863,57 @@
     empty.hidden = combatants.length > 0;
     round.textContent = String(state.round);
     const active = combatants.find(combatant => combatant.id === state.activeId);
-    activeText.textContent = active ? `Current turn · ${active.name}` : "Add initiative values to begin.";
+    activeText.textContent = active ? active.name : "Add initiative values, then press Next Turn.";
+    renderAbsentPlayers();
+  }
+
+  // Players marked absent are listed below the tracker so they can be brought back.
+  function renderAbsentPlayers() {
+    const bar = document.getElementById("absentPlayersBar");
+    if (!bar) return;
+    const absent = playerCharacters.filter(character => state.absentPlayers[character.id]);
+    bar.hidden = !absent.length;
+    bar.replaceChildren();
+    if (!absent.length) return;
+    const label = Object.assign(document.createElement("span"), { className: "absent-players-label", textContent: "Absent" });
+    bar.append(label, ...absent.map(character => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "absent-player-chip";
+      chip.dataset.restoreId = character.id;
+      chip.title = `Bring ${character.name || "this player"} back into the initiative order`;
+      chip.textContent = `${character.name || "Unnamed Character"} ↺`;
+      return chip;
+    }));
+  }
+
+  function markPlayerAbsent(id) {
+    // If it was their turn, the turn passes to whoever is next.
+    if (state.activeId === id) {
+      const ordered = getInitiativeCombatants();
+      const index = ordered.findIndex(combatant => combatant.id === id);
+      const next = ordered[(index + 1) % ordered.length];
+      state.activeId = next && next.id !== id ? next.id : "";
+    }
+    state.absentPlayers = { ...state.absentPlayers, [id]: true };
+    persistTrackerState();
+    renderTracker();
+  }
+
+  function restorePlayer(id) {
+    const { [id]: removed, ...rest } = state.absentPlayers;
+    state.absentPlayers = rest;
+    persistTrackerState();
+    renderTracker();
+  }
+
+  // Whoever's turn it is comes first; the rest follow in initiative order and wrap into the next round.
+  function turnOrder(combatants) {
+    const ranked = combatants.filter(combatant => numericInitiative(combatant.initiative) !== Number.NEGATIVE_INFINITY);
+    const unranked = combatants.filter(combatant => numericInitiative(combatant.initiative) === Number.NEGATIVE_INFINITY);
+    const start = ranked.findIndex(combatant => combatant.id === state.activeId);
+    const rotated = start > 0 ? [...ranked.slice(start), ...ranked.slice(0, start)] : ranked;
+    return { ordered: [...rotated, ...unranked], nextRoundStartId: start > 0 ? ranked[0].id : "" };
   }
 
   function renderTracker(options) {
@@ -1047,6 +1106,7 @@
 
     const concentration = row.querySelector('[data-field="concentrating"]');
     if (concentration && document.activeElement !== concentration) concentration.checked = combatant.concentrating;
+    row.classList.toggle("is-concentrating", combatant.concentrating);
   }
 
   function patchPlayerRow(row, combatant, displayIndex, options) {
@@ -1103,7 +1163,7 @@
   function reconcileTracker({ forceConditionId = "" } = {}) {
     const list = document.getElementById("initiativeList");
     if (!list) return;
-    const combatants = getCombatants();
+    const { ordered: combatants, nextRoundStartId } = turnOrder(getCombatants());
     const rowsById = new Map([...list.querySelectorAll(".combatant-row")].map(row => [row.dataset.id, row]));
     const existingRows = new Map(rowsById);
     const retainedIds = new Set();
@@ -1140,6 +1200,8 @@
       const options = { forceConditions: combatant.id === forceConditionId };
       if (combatant.type === "player") patchPlayerRow(row, combatant, displayIndex, options);
       else patchNpcRow(row, combatant, displayIndex, options);
+      row.classList.toggle("starts-next-round", combatant.id === nextRoundStartId);
+      row.dataset.nextRound = `Round ${state.round + 1}`;
     });
     updateTrackerSummary(combatants);
   }
@@ -1240,6 +1302,7 @@
     if (type === "npc") updateNpc(id, field, value);
     else if (field === "initiative") { state.playerInitiatives[id] = String(value); persistTrackerState(); }
     else if (field === "concentrating") { state.playerConcentration[id] = Boolean(value); persistTrackerState(); }
+    if (field === "concentrating") row.classList.toggle("is-concentrating", Boolean(value));
     else {
       updatePlayerSummaryLocally(id, { [field]: String(value) });
       if (field === "hpCurrent") schedulePlayerLiveSave(id, { hpCurrent: String(value) });
@@ -1286,7 +1349,9 @@
   }
 
   function addCustomNpc() {
-    state.npcs.push(normalizeNpc({ id: createId(), name: "New NPC" }));
+    const npc = normalizeNpc({ id: createId(), name: "New NPC" });
+    if (state.autoRollNpcInitiative) rollNpcInitiative(npc);
+    state.npcs.push(npc);
     persistTrackerState();
     closeNpcPicker();
     renderTracker();
@@ -1310,6 +1375,7 @@
       legendaryActionMax: la,
       legendaryActionCurrent: la
     });
+    if (state.autoRollNpcInitiative) rollNpcInitiative(npc);
     state.npcs.push(npc);
     expandedStatblocks.add(npc.id);
     persistTrackerState();
@@ -1361,9 +1427,36 @@
     persistTrackerState(); renderTracker();
   }
 
+  function previousTurn() {
+    const combatants = getInitiativeCombatants();
+    if (!combatants.length) return;
+    const currentIndex = combatants.findIndex(combatant => combatant.id === state.activeId);
+    if (currentIndex > 0) state.activeId = combatants[currentIndex - 1].id;
+    else if (currentIndex === 0 && state.round > 1) { state.activeId = combatants[combatants.length - 1].id; state.round -= 1; }
+    else if (currentIndex < 0) state.activeId = combatants[combatants.length - 1].id;
+    persistTrackerState(); renderTracker();
+  }
+
+  // NPC initiative is d20 plus the initiative bonus from its statblock (custom NPCs roll a plain d20).
+  function rollNpcInitiative(npc) {
+    const bonus = bonusToNumber(getStatblockById(npc.statblockId)?.initiative || "0");
+    npc.initiative = String(1 + Math.floor(Math.random() * 20) + bonus);
+  }
+
+  function rollAllNpcInitiative() {
+    const missing = state.npcs.filter(npc => String(npc.initiative ?? "").trim() === "");
+    const targets = missing.length
+      ? missing
+      : state.npcs.length && confirm("Every NPC already has initiative. Re-roll initiative for all NPCs?") ? state.npcs : [];
+    if (!targets.length) return;
+    targets.forEach(rollNpcInitiative);
+    persistTrackerState(); renderTracker();
+  }
+
   function resetCombat() {
     if (!confirm("Reset initiative values, NPCs, concentration markers, active turn, and round number? Custom statblocks stay saved.")) return;
     state = { ...state, round: 1, activeId: "", playerInitiatives: {}, playerConcentration: {}, npcs: [] };
+    // Absent players and the auto-roll setting are kept.
     focusedConditions.clear(); expandedStatblocks.clear(); persistTrackerState(); renderTracker();
   }
 
@@ -1919,6 +2012,7 @@
       }
       if (!action) return;
       if (action === "remove-npc") removeNpc(row.dataset.id || "");
+      if (action === "mark-absent") markPlayerAbsent(row.dataset.id || "");
       if (action === "show-condition") showCondition(row, actionElement.dataset.condition || "");
       if (action === "remove-condition") removeCondition(row, actionElement.dataset.condition || "");
       if (action === "close-condition-info") { const id = row.dataset.id || ""; focusedConditions.delete(id); renderTracker({ forceConditionId: id }); }
@@ -1952,6 +2046,17 @@
     ["statblockSearchInput", "statblockSectionFilter", "statblockTypeFilter", "statblockSizeFilter", "statblockCrFilter"].forEach(id => document.getElementById(id)?.addEventListener(id === "statblockSearchInput" ? "input" : "change", renderStatblockResults));
     document.getElementById("clearStatblockFiltersBtn")?.addEventListener("click", clearStatblockFilters);
     document.getElementById("nextTurnBtn")?.addEventListener("click", advanceTurn);
+    document.getElementById("previousTurnBtn")?.addEventListener("click", previousTurn);
+    document.getElementById("rollNpcInitiativeBtn")?.addEventListener("click", rollAllNpcInitiative);
+    const autoRoll = document.getElementById("autoRollNpcInitiative");
+    if (autoRoll) {
+      autoRoll.checked = state.autoRollNpcInitiative;
+      autoRoll.addEventListener("change", () => { state.autoRollNpcInitiative = autoRoll.checked; persistTrackerState(); });
+    }
+    document.getElementById("absentPlayersBar")?.addEventListener("click", event => {
+      const chip = event.target.closest("[data-restore-id]");
+      if (chip) restorePlayer(chip.dataset.restoreId);
+    });
     document.getElementById("resetCombatBtn")?.addEventListener("click", resetCombat);
     window.addEventListener("keydown", event => { if (event.key === "Escape") { closeCustomStatblockPanel(); closeNpcPicker(); } });
 

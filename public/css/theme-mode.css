@@ -2152,3 +2152,49 @@ html[data-theme="moonlight"] .companion-abilities {
   border-color: var(--moon-ghost-soft-line);
 }
 
+/* DM screen: turn bar, concentration, and absent players. */
+html[data-theme="moonlight"] .turn-bar {
+  border-color: var(--moon-gold-line) !important;
+  background: linear-gradient(145deg, #0f2f5e, #04142f);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .35);
+}
+
+html[data-theme="moonlight"] .turn-bar .active-turn-text {
+  color: #ffffff;
+}
+
+html[data-theme="moonlight"] .turn-bar-current > span,
+html[data-theme="moonlight"] .combatant-row.starts-next-round::after,
+html[data-theme="moonlight"] .absent-players-label {
+  color: #f3c969;
+}
+
+html[data-theme="moonlight"] .dm-toggle,
+html[data-theme="moonlight"] .absent-player-chip {
+  color: var(--moon-text);
+}
+
+html[data-theme="moonlight"] .absent-player-chip {
+  border-color: var(--moon-ghost-soft-line);
+}
+
+html[data-theme="moonlight"] .absent-players-bar {
+  border-top-color: var(--moon-ghost-soft-line);
+}
+
+html[data-theme="moonlight"] .concentration-toggle input:checked + .concentration-rune {
+  border-color: #ffe7a3;
+  background: #f3c969;
+  color: #06224a;
+  box-shadow: 0 0 0 3px rgba(243, 201, 105, .28), 0 0 16px rgba(243, 201, 105, .55);
+}
+
+html[data-theme="moonlight"] .concentration-toggle input:not(:checked) + .concentration-rune {
+  opacity: .45;
+}
+
+html[data-theme="moonlight"] .combatant-concentrating-tag {
+  background: #f3c969;
+  color: #06224a;
+}
+

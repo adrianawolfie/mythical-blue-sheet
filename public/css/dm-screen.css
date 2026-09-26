@@ -11,7 +11,8 @@
 .dm-screen-header,
 .initiative-panel {
   position: relative;
-  overflow: hidden;
+  /* clip (not hidden) so the turn bar can stay pinned while scrolling. */
+  overflow: clip;
   border: 2px solid var(--gold);
   background-color: #ede1c0;
   background-image: url('../assets/parchment-seamless.png');
@@ -552,7 +553,7 @@
   .combatant-hp::before { content: 'HP'; }
   .combatant-ac::before { content: 'AC'; }
   .combatant-conditions::before { content: 'Conditions'; }
-  .combatant-concentration::before { content: 'Conc.'; }
+  .combatant-concentration::before { content: 'Concentrating'; right: 0; left: auto !important; white-space: nowrap; }
 
   .combatant-hp { grid-column: 1 / 3; }
   .combatant-ac { grid-column: 3 / 4; }
@@ -618,7 +619,7 @@
 /* Phase 3: cleaner tracker grid and inline SRD statblocks */
 .tracker-legend,
 .combatant-row {
-  grid-template-columns: 32px minmax(180px, 1.4fr) 58px minmax(145px, .95fr) 54px minmax(250px, 1.8fr) 54px 30px;
+  grid-template-columns: 32px minmax(180px, 1.4fr) 58px minmax(145px, .95fr) 54px minmax(230px, 1.7fr) 92px 30px;
   column-gap: 10px;
 }
 
@@ -2465,3 +2466,218 @@ html[data-theme="moonlight"] .custom-statblock-field-help {
     max-height: 15px !important;
   }
 }
+
+/* Turn bar: round, current turn, and turn buttons, pinned while scrolling. */
+.turn-bar {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(184,144,44,.72);
+  border-radius: 3px;
+  background:
+    linear-gradient(rgba(255,250,234,.35), rgba(255,250,234,.35)),
+    url('../assets/parchment-seamless.png') center / 1000px auto,
+    #ede1c0;
+  box-shadow: 0 3px 10px rgba(60, 40, 10, .14);
+}
+
+.turn-bar .round-display {
+  min-width: 70px;
+  padding: 4px 10px;
+}
+
+.turn-bar .round-display strong {
+  font-size: 20px;
+}
+
+.turn-bar-current {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.turn-bar-current > span {
+  color: var(--gold-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.turn-bar .active-turn-text {
+  margin: 0;
+  overflow: hidden;
+  color: var(--navy-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.turn-bar-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.turn-bar-buttons #nextTurnBtn {
+  min-width: 132px;
+  font-size: 13px;
+}
+
+.initiative-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+
+.initiative-toolbar #resetCombatBtn {
+  margin-left: auto;
+}
+
+.dm-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--navy-deep);
+  font-family: 'Lora', serif;
+  font-size: 12px;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.dm-toggle input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--gold-deep);
+}
+
+/* The combatant whose turn it is sits on top; mark where the next round begins. */
+.combatant-row.starts-next-round {
+  margin-top: 16px;
+}
+
+.combatant-row.starts-next-round::after {
+  content: attr(data-next-round);
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 10px;
+  color: var(--gold-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Concentration: a clear lit badge when on, and a tag under the name. */
+.concentration-toggle input:not(:checked) + .concentration-rune {
+  opacity: .55;
+}
+
+.concentration-toggle input:checked + .concentration-rune {
+  box-shadow: 0 0 0 3px rgba(214,168,56,.35);
+}
+
+.combatant-concentrating-tag {
+  display: none;
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--navy-deep);
+  color: #fff3c8;
+  font-family: 'Cinzel', serif;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+
+.combatant-row.is-concentrating .combatant-concentrating-tag {
+  display: inline-flex;
+}
+
+.combatant-name-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Absent players are listed under the tracker and can be brought back. */
+.absent-players-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dotted rgba(184,144,44,.55);
+}
+
+.absent-players-bar[hidden] {
+  display: none;
+}
+
+.absent-players-label {
+  color: var(--gold-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.absent-player-chip {
+  padding: 3px 10px;
+  border: 1px dashed rgba(184,144,44,.7);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--navy-deep);
+  font-family: 'Lora', serif;
+  font-size: 12px;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.absent-player-chip:hover {
+  border-style: solid;
+  background: rgba(214,168,56,.14);
+}
+
+.combatant-absent {
+  font-size: 18px;
+}
+
+@media (max-width: 700px) {
+  .turn-bar {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .turn-bar-buttons {
+    grid-column: 1 / -1;
+  }
+
+  .turn-bar-buttons button {
+    flex: 1;
+  }
+
+  .initiative-toolbar #resetCombatBtn {
+    margin-left: 0;
+  }
+}
+
