@@ -8,6 +8,7 @@ import (
 	"raperonzolo/character-sheet/pkg/character"
 	"raperonzolo/character-sheet/pkg/config"
 	"raperonzolo/character-sheet/pkg/mailer"
+	"raperonzolo/character-sheet/pkg/party"
 	"raperonzolo/character-sheet/pkg/server"
 	"raperonzolo/character-sheet/pkg/statblock"
 	"raperonzolo/character-sheet/pkg/storage"
@@ -57,6 +58,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	parties, err := party.NewRepository(ctx, s)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	mux := http.NewServeMux()
 	mux.Handle("/", server.FileServer(http.Dir("public")))
 
@@ -99,6 +105,10 @@ func main() {
 	// statblock routes
 	mux.Handle("GET /api/custom-statblocks", server.GetCustomStatblocks(statblocks))
 	mux.Handle("POST /api/custom-statblocks", server.PostCustomStatblocks(statblocks))
+
+	// party inventory routes
+	mux.Handle("GET /api/party-inventory", server.GetPartyInventory(parties))
+	mux.Handle("POST /api/party-inventory", server.PostPartyInventory(parties))
 
 	handler := server.CORS(server.LimitPostBody(mux))
 

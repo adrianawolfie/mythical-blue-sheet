@@ -3,6 +3,8 @@
   const libraries = { feat: [], item: [], creature: [] };
   const loaded = { feat: false, item: false, creature: false };
   const selected = { feat: '', item: '', creature: '' };
+  // The party inventory passes its own handler so picked items go to the party stash instead of the sheet.
+  let itemTarget = null;
 
   function esc(value = '') { return String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function text(value = '') { return String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -71,7 +73,7 @@
     if (!window.matchMedia('(max-width: 768px)').matches) document.getElementById(id.search)?.focus();
   }
   window.openFeatPicker=()=>open('feat');
-  window.openItemPicker=()=>open('item');
+  window.openItemPicker=(onAdd)=>{ itemTarget=typeof onAdd==='function'?onAdd:null; open('item'); };
   window.openCompanionPicker=()=>open('creature');
   window.closeSrdLibraryPicker=function(kind){ const modal=document.getElementById(ids(kind).modal); if(modal) modal.hidden=true; };
   window.previewSrdLibraryEntry=function(kind,entryId){ selected[kind]=entryId; renderPreview(kind); };
@@ -84,10 +86,10 @@
       addFeatureEntry('featList',{name:entry.name,short:firstUsefulSentence(entry.details||entry.short),details:`${entry.details||''}\n\nSource: ${entry.source||'SRD 5.2.1'}`,sourceId:entry.id,source:entry.source,category:entry.category,hasResource:Boolean(entry.resource),resourceMax:entry.resource?.max||'',resourceType:entry.resource?.type||''});
     } else {
       const extras=[entry.category,entry.rarity,entry.weight?`Weight: ${entry.weight}`:'',entry.attunement?'Requires Attunement':''].filter(Boolean).join(' · ');
-      addUnifiedInventoryRow({name:entry.name,type:entry.type||'gear',rarity:entry.rarity||'',qty:'1',value:entry.value&&entry.value!==entry.rarity?entry.value:'',details:`${extras}${extras?'\n\n':''}${entry.details||entry.summary||''}\n\nSource: ${entry.source||'SRD 5.2.1'}`});
+      (itemTarget||addUnifiedInventoryRow)({name:entry.name,type:entry.type||'gear',rarity:entry.rarity||'',qty:'1',value:entry.value&&entry.value!==entry.rarity?entry.value:'',details:`${extras}${extras?'\n\n':''}${entry.details||entry.summary||''}\n\nSource: ${entry.source||'SRD 5.2.1'}`});
     }
     closeSrdLibraryPicker(kind);
   };
-  window.addCustomFromSrdPicker=function(kind){ closeSrdLibraryPicker(kind); if(kind==='creature') addCompanion(); else if(kind==='feat') addFeatureEntry('featList'); else addUnifiedInventoryRow(); };
+  window.addCustomFromSrdPicker=function(kind){ closeSrdLibraryPicker(kind); if(kind==='creature') addCompanion(); else if(kind==='feat') addFeatureEntry('featList'); else (itemTarget||addUnifiedInventoryRow)(); };
   document.addEventListener('keydown',event=>{ if(event.key==='Escape'){ closeSrdLibraryPicker('feat'); closeSrdLibraryPicker('item'); closeSrdLibraryPicker('creature'); } });
 })();

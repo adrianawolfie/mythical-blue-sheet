@@ -674,6 +674,11 @@
     </div>
 
     <div id="pg-inventory" class="pg">
+      <div class="inventory-subnav" role="tablist" aria-label="Inventory pages">
+        <button type="button" class="inventory-subtab on" role="tab" aria-selected="true" data-inventory-page="mine">My Inventory</button>
+        <button type="button" class="inventory-subtab" role="tab" aria-selected="false" data-inventory-page="party">Party Inventory</button>
+      </div>
+      <div id="partyInventoryPage" class="party-inventory-page" hidden></div>
       <div class="inventory-page-grid">
 
         <div class="sb-card inventory-coinage-card">
@@ -905,6 +910,7 @@
 <script src="js/character-rules.js"></script>
 <script src="js/attacks.js"></script>
 <script src="js/companions.js"></script>
+<script src="js/party-inventory.js"></script>
 <script src="js/app.js"></script>
 
 <script src="js/campaign-state.js"></script>

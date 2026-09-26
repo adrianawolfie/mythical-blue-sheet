@@ -6,12 +6,15 @@ function bindUnsavedCharacterWarning() {
   if (sheet && !sheet.dataset.unsavedWarningBound) {
     sheet.dataset.unsavedWarningBound = "true";
 
-    sheet.addEventListener("input", () => markCharacterDirty(), true);
-    sheet.addEventListener("change", () => markCharacterDirty(), true);
+    // The party stash saves on its own, so editing it does not make the character unsaved.
+    const inPartyPage = (event) => Boolean(event.target.closest?.("#partyInventoryPage"));
+    sheet.addEventListener("input", (event) => { if (!inPartyPage(event)) markCharacterDirty(); }, true);
+    sheet.addEventListener("change", (event) => { if (!inPartyPage(event)) markCharacterDirty(); }, true);
     sheet.addEventListener("click", (event) => {
+      if (inPartyPage(event)) return;
       const button = event.target.closest("button");
       if (!button || !sheet.contains(button)) return;
-      if (button.classList.contains("tab")) return;
+      if (button.classList.contains("tab") || button.classList.contains("inventory-subtab")) return;
       if (button.classList.contains("slot-btn") || button.classList.contains("companion-hp-btn")) return;
       if (button.id === "attackAddButton" || button.classList.contains("inventory-entry-open")) return;
       if (button.closest(".accessibility-controls")) return;

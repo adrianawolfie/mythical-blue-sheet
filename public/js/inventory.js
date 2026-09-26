@@ -1005,7 +1005,10 @@ function addUnifiedInventoryRow(data = {}) {
           <input class="inventory-item-requires-attunement" type="checkbox"${/requires attunement/i.test(item.details) ? " checked" : ""}>
           <span>Requires attunement</span>
         </label>
-        <button type="button" class="inventory-entry-remove">Remove item</button>
+        <span class="inventory-entry-buttons">
+          <button type="button" class="inventory-entry-to-party">Move to party stash</button>
+          <button type="button" class="inventory-entry-remove">Remove item</button>
+        </span>
       </div>
     </div>
   `;

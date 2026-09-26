@@ -37,5 +37,6 @@ The project spec is split across these files:
 - `spec/character.md` describes the Character domain.
 - `spec/campaign.md` describes the Campaign domain.
 - `spec/statblock.md` describes the Statblock domain.
+- `spec/party.md` describes the Party domain.
 - `spec/user.md` describes the User domain.
 - `spec/storage.md` describes the Storage boundary.
