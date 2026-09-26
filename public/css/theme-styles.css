@@ -5,6 +5,9 @@
    keeps the same moonlight colours; Neutral and Raperonzolo drop the
    nautical artwork (compass, ship, title banner) in both modes. */
 
+/* Federo: an Art Nouveau display face for the Raperonzolo theme (only downloaded when used). */
+@import url('https://fonts.googleapis.com/css2?family=Federo&display=swap');
+
 .theme-title {
   display: none;
 }
@@ -182,4 +185,206 @@ html:is([data-style="neutral"], [data-style="raperonzolo"])[data-theme="moonligh
 
 html:is([data-style="neutral"], [data-style="raperonzolo"])[data-theme="moonlight"] .login-card {
   background-image: linear-gradient(135deg, hsla(calc(var(--night-hue) + 12.7deg), 88.6%, 13.7%, .90), hsla(calc(var(--night-hue) + 9.8deg), 83.5%, 19%, .72));
+}
+
+/* ─── Raperonzolo: Art Nouveau ─────────────────────────────────────────────
+   Arched panels, whiplash ornaments, a full arch framing the sheet, pill
+   tabs and buttons, ringed medallions, and Federo lettering. Shapes and
+   ornament apply in both modes; ornament colour follows --nouveau-line. */
+
+html[data-style="raperonzolo"] {
+  --nouveau-font: 'Federo', 'Cinzel', serif;
+  --nouveau-line: var(--gold);
+  --nouveau-accent: var(--gold-deep);
+}
+
+html[data-style="raperonzolo"][data-theme="moonlight"] {
+  --nouveau-line: #c9b5ee;
+  --nouveau-accent: #9cc493;
+}
+
+/* Lettering */
+html[data-style="raperonzolo"] :is(.sb-hdr, .abn, .dsbox-title, .tab, .theme-title, .inventory-subtab, .party-title, .party-subhdr, .start-page h1, .character-card strong, .home-page h1, .home-page h2, .login-card h1, .dm-screen-header h1, .initiative-panel h2, .npc-picker-header h2, .account-panel-title, .cal-month-of, .cal-year, .feature-name) {
+  font-family: var(--nouveau-font);
+  font-weight: 400;
+}
+
+html[data-style="raperonzolo"] .sb-hdr {
+  padding: 9px 8px 8px;
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, transparent, var(--nouveau-line) 18%, var(--nouveau-line) 82%, transparent) 1;
+  font-size: 12.5px;
+  letter-spacing: 2.6px;
+}
+
+/* Whiplash curls either side of each section title (curl outward, bead toward the text). */
+html[data-style="raperonzolo"] .sb-hdr::before,
+html[data-style="raperonzolo"] .sb-hdr::after {
+  content: '';
+  width: 62px;
+  height: 16px;
+  background: var(--nouveau-line);
+  -webkit-mask: url('../assets/themes/raperonzolo/whiplash.svg') center / contain no-repeat;
+  mask: url('../assets/themes/raperonzolo/whiplash.svg') center / contain no-repeat;
+}
+
+html[data-style="raperonzolo"] .sb-hdr::before { left: 24px; }
+html[data-style="raperonzolo"] .sb-hdr::after { right: 24px; transform: translateY(-50%) scaleX(-1); }
+
+/* Arched panels */
+html[data-style="raperonzolo"] .sb-card {
+  border-radius: 26px 26px 8px 8px;
+}
+
+html[data-style="raperonzolo"] .sb-card::after {
+  inset: 4px;
+  border-radius: 22px 22px 6px 6px;
+}
+
+html[data-style="raperonzolo"] .ab {
+  padding-top: 14px;
+  border-radius: 90px 90px 12px 12px / 44px 44px 12px 12px;
+}
+
+html[data-style="raperonzolo"] .ab::after {
+  inset: 4px;
+  border-radius: 86px 86px 9px 9px / 40px 40px 9px 9px;
+}
+
+html[data-style="raperonzolo"] .abn {
+  font-size: 12px;
+  letter-spacing: 2.4px;
+}
+
+html[data-style="raperonzolo"] :is(.bonbox, .cbox, .dsbox) {
+  border-radius: 20px 20px 6px 6px;
+}
+
+html[data-style="raperonzolo"] :is(.calendar-widget, .character-card, .login-card, .dm-screen-header, .initiative-panel, .home-page, .party-tile, .companion-card, .statblock-result-card, .custom-statblock-panel) {
+  border-radius: 28px 28px 10px 10px;
+}
+
+html[data-style="raperonzolo"] :is(.combatant-row, .inline-statblock) {
+  border-radius: 18px 18px 8px 8px;
+}
+
+html[data-style="raperonzolo"] :is(.spell-picker-modal, .spell-editor-modal, .library-picker-modal, .npc-picker-modal, .account-panel) {
+  border-radius: 28px;
+}
+
+html[data-style="raperonzolo"] .sheet-toolbar {
+  border-radius: 999px;
+}
+
+/* Ringed medallions for the header stats */
+html[data-style="raperonzolo"] :is(.hdr-fields .hstat > input, .hp-readout input, .bonbox input, .modcircle) {
+  box-shadow: 0 0 0 3px rgba(var(--tone-paper-rgb), .75), 0 0 0 4px var(--nouveau-line);
+}
+
+html[data-style="raperonzolo"][data-theme="moonlight"] :is(.hdr-fields .hstat > input, .hp-readout input, .bonbox input, .modcircle) {
+  box-shadow: 0 0 0 3px hsla(calc(var(--night-hue) + 12deg), 70%, 12%, .9), 0 0 0 4px var(--nouveau-line);
+}
+
+/* Pill tabs and buttons */
+html[data-style="raperonzolo"] .sheet .tabs {
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid var(--nouveau-line);
+  border-radius: 999px;
+}
+
+html[data-style="raperonzolo"] .sheet .tab {
+  margin-bottom: 0;
+  padding: 7px 16px;
+  border: none;
+  border-radius: 999px;
+  letter-spacing: 2px;
+}
+
+html[data-style="raperonzolo"] .sheet .tab.on {
+  background: var(--navy);
+  color: #fff;
+}
+
+html[data-style="raperonzolo"] .sheet .tab.on .tab-icon {
+  filter: brightness(0) invert(1);
+}
+
+html[data-style="raperonzolo"][data-theme="moonlight"] .sheet .tab.on {
+  background: rgba(201, 181, 238, .24);
+  color: var(--moon-heading);
+}
+
+html[data-style="raperonzolo"] :is(.sheet-toolbar button, .add-btn, .feature-add, .inventory-add, .overview-action-link, .start-page button, .dm-primary-button, .dm-secondary-button, .dm-subtle-button, .account-primary, .account-secondary, .login-card button) {
+  border-radius: 999px;
+}
+
+html[data-style="raperonzolo"] .sheet-toolbar :is(.sheet-copy-button, .sheet-delete-button) {
+  border-radius: 50%;
+}
+
+/* A full arch frames the sheet, like a window in a Mucha poster. */
+html[data-style="raperonzolo"] .sheet::after {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  z-index: 1;
+  border: 1px solid var(--nouveau-line);
+  border-radius: 50% 50% 18px 18px / 150px 150px 18px 18px;
+  opacity: .6;
+  pointer-events: none;
+}
+
+/* Title with a whiplash divider underneath instead of the flowers either side. */
+html[data-style="raperonzolo"] .theme-title {
+  letter-spacing: 3px;
+}
+
+html[data-style="raperonzolo"] .theme-title::before {
+  content: none;
+}
+
+html[data-style="raperonzolo"] .theme-title::after {
+  content: '';
+  display: block;
+  width: min(260px, 80%);
+  height: 26px;
+  margin: 6px auto 0;
+  background: var(--nouveau-line);
+  -webkit-mask: url('../assets/themes/raperonzolo/divider.svg') center / contain no-repeat;
+  mask: url('../assets/themes/raperonzolo/divider.svg') center / contain no-repeat;
+}
+
+/* Faint lilies and whiplash lines behind the page. */
+html[data-style="raperonzolo"]:not([data-theme="moonlight"]) {
+  --tone-page-bg: url('../assets/themes/raperonzolo/pattern.svg') 0 0 / 200px 200px repeat, linear-gradient(#3b2752 0%, #523a6c 50%, #6b5287 100%);
+}
+
+/* Moonlight paints the page with !important (theme-mode.css), so the same
+   layers are repeated here with the pattern on top. */
+html[data-style="raperonzolo"][data-theme="moonlight"] body {
+  background-image:
+    url('../assets/themes/raperonzolo/pattern.svg'),
+    radial-gradient(circle at 50% -10%, hsla(calc(var(--night-hue) + 6.3deg), 65.7%, 41.2%, .28), transparent 42%),
+    linear-gradient(180deg, hsl(calc(var(--night-hue) + 14.4deg), 88.9%, 7.1%) 0%, hsl(calc(var(--night-hue) + 11.5deg), 85.2%, 10.6%) 48%, hsl(calc(var(--night-hue) + 9.3deg), 81.4%, 16.9%) 100%) !important;
+  background-size: 200px 200px, auto, auto !important;
+  background-repeat: repeat, no-repeat, no-repeat !important;
+  background-attachment: scroll, fixed, fixed !important;
+}
+
+@media (max-width: 768px) {
+  html[data-style="raperonzolo"] .sheet::after {
+    inset: 6px;
+    border-radius: 50% 50% 12px 12px / 70px 70px 12px 12px;
+  }
+
+  html[data-style="raperonzolo"] .theme-title::after {
+    height: 18px;
+    margin-top: 2px;
+  }
+
+  html[data-style="raperonzolo"] .sb-hdr::before,
+  html[data-style="raperonzolo"] .sb-hdr::after {
+    width: 44px;
+  }
 }

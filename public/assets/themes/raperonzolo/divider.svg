@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 30" fill="none" stroke="#000" stroke-linecap="round">
+  <g id="half">
+    <path stroke-width="1.5" d="M124 15 C 106 15, 98 7, 82 10 C 66 13, 58 23, 42 19 C 30 16, 29 7, 37 8 C 43 9, 42 16, 36.5 15"/>
+    <path stroke-width="1" d="M112 13.4 C 107 8.5, 99 7.2, 95 6.8 C 99 10.4, 104 12.8, 112 13.4 Z" fill="#000"/>
+    <path stroke-width="1" d="M70 16 C 67 20.5, 60 22.3, 56 22.8 C 59.6 19, 64 16.8, 70 16 Z" fill="#000"/>
+    <path stroke-width="1" d="M36 15 C 26 15, 14 15, 4 15"/>
+  </g>
+  <use href="#half" transform="translate(280 0) scale(-1 1)"/>
+  <g fill="#000" stroke="none">
+    <ellipse cx="140" cy="7.2" rx="2.8" ry="4.2"/>
+    <ellipse cx="140" cy="22.8" rx="2.8" ry="4.2"/>
+    <ellipse cx="132.2" cy="15" rx="4.2" ry="2.8"/>
+    <ellipse cx="147.8" cy="15" rx="4.2" ry="2.8"/>
+    <circle cx="140" cy="15" r="1.9"/>
+  </g>
+</svg>
