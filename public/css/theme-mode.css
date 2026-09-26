@@ -2034,12 +2034,10 @@ html[data-theme="moonlight"] .attack-menu-empty {
   opacity: .8;
 }
 
-html[data-theme="moonlight"] .attack-roll,
 html[data-theme="moonlight"] .attack-menu-heading {
   color: #f3c969;
 }
 
-html[data-theme="moonlight"] .attack-roll:hover,
 html[data-theme="moonlight"] .attack-menu-item:hover {
   background: rgba(124, 205, 255, .14);
 }

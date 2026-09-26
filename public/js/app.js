@@ -13,7 +13,7 @@ function bindUnsavedCharacterWarning() {
       if (!button || !sheet.contains(button)) return;
       if (button.classList.contains("tab")) return;
       if (button.classList.contains("slot-btn")) return;
-      if (button.matches(".attack-roll, #attackAddButton")) return;
+      if (button.id === "attackAddButton") return;
       if (button.closest(".accessibility-controls")) return;
       if (button.matches("[data-theme-toggle], .theme-toggle")) return;
       markCharacterDirty();

@@ -1,5 +1,5 @@
 // Mythical Blue · Attacks
-// Weapons and damage spells: add from inventory or the spell list, live bonuses, and quick rolls.
+// Weapons and damage spells: add from inventory or the spell list, with live bonuses.
 
 // Damage; properties; mastery of the SRD 5.2.1 weapons (from data/srd-items.json).
 const SRD_WEAPONS = {
@@ -42,8 +42,6 @@ const SRD_WEAPONS = {
   "Warhammer": "1d8 Bludgeoning; Versatile (1d10); Push",
   "Whip": "1d4 Slashing; Finesse, Reach; Slow"
 };
-
-const D20_ICON = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2.5 20.5 7.3v9.4L12 21.5l-8.5-4.8V7.3z"/><path d="M12 2.5 7.4 10h9.2zM7.4 10 12 21.5 16.6 10M3.5 7.3 7.4 10M20.5 7.3 16.6 10M3.5 16.7 7.4 10M20.5 16.7 16.6 10"/></svg>';
 
 function attackModifier(ability) {
   return numberFieldValue(`${ability}Modifier`) ?? 0;
@@ -137,7 +135,6 @@ function addWeaponRow(data = {}) {
       <input class="attack-notes weapon-notes" type="text" placeholder="Notes" aria-label="Notes" value="${escapeHtml(data.notes || "")}" title="${escapeHtml(data.notes || "")}">
     </div>
     <input class="attack-damage weapon-damage" type="text" placeholder="Damage" aria-label="Damage and type" value="${escapeHtml(data.damage || "")}">
-    <button type="button" class="attack-roll" title="Roll attack and damage" aria-label="Roll attack and damage">${D20_ICON}</button>
     <div class="attack-edit-tools">
       <button type="button" class="row-up" title="Move up" aria-label="Move up">↑</button>
       <button type="button" class="row-down" title="Move down" aria-label="Move down">↓</button>
@@ -147,7 +144,6 @@ function addWeaponRow(data = {}) {
 
   row.querySelector(".attack-notes").addEventListener("input", event => { event.target.title = event.target.value; });
   row.querySelector(".attack-atk").addEventListener("input", () => fitAttackBonus(row));
-  row.querySelector(".attack-roll").addEventListener("click", () => rollAttack(row));
   row.querySelector(".row-up").addEventListener("click", () => row.previousElementSibling && list.insertBefore(row, row.previousElementSibling));
   row.querySelector(".row-down").addEventListener("click", () => row.nextElementSibling && list.insertBefore(row.nextElementSibling, row));
   row.querySelector(".row-delete").addEventListener("click", () => {
@@ -194,53 +190,6 @@ function recalculateAttacks() {
     }
     fitAttackBonus(row);
   });
-}
-
-function rollDice(count, sides) {
-  return Array.from({ length: count }, () => 1 + Math.floor(Math.random() * sides));
-}
-
-// Rolls damage text such as "1d8+4 piercing" or "2d6 + 1d4 fire"; critical hits double the dice.
-function rollDamage(text, critical) {
-  const formula = String(text).match(/^[\sd\d+-]+/)?.[0].trim() || "";
-  const damageType = String(text).slice(formula.length).trim();
-  let total = 0;
-  const parts = [];
-  formula.replace(/\s+/g, "").match(/[+-]?(\d*d\d+|\d+)/g)?.forEach(term => {
-    const sign = term.startsWith("-") ? -1 : 1;
-    const dice = term.replace(/^[+-]/, "").match(/^(\d*)d(\d+)$/);
-    if (dice) {
-      const rolls = rollDice((Number(dice[1]) || 1) * (critical ? 2 : 1), Number(dice[2]));
-      total += sign * rolls.reduce((sum, roll) => sum + roll, 0);
-      parts.push(`${sign < 0 ? "- " : parts.length ? "+ " : ""}${rolls.join(" + ")}`);
-    } else {
-      total += sign * Number(term.replace(/^[+-]/, ""));
-      parts.push(`${sign < 0 ? "- " : parts.length ? "+ " : ""}${term.replace(/^[+-]/, "")}`);
-    }
-  });
-  return parts.length ? `${Math.max(0, total)} ${[damageType, "damage"].filter(Boolean).join(" ")} (${parts.join(" ")})` : "";
-}
-
-function rollAttack(row) {
-  const name = row.querySelector(".attack-name").value.trim() || "Attack";
-  const atk = row.querySelector(".attack-atk").value.trim();
-  const damage = row.querySelector(".attack-damage").value.trim();
-  const messages = [];
-  let critical = false;
-
-  if (/^[+-]?\d+$/.test(atk)) {
-    const [d20] = rollDice(1, 20);
-    critical = d20 === 20;
-    const total = d20 + Number(atk);
-    const breakdown = `(${d20} ${Number(atk) < 0 ? "-" : "+"} ${Math.abs(Number(atk))})`;
-    messages.push(d20 === 20 ? `Critical hit! ${total} ${breakdown}` : d20 === 1 ? `Natural 1, misses ${breakdown}` : `Hits AC ${total} ${breakdown}`);
-  } else if (atk) {
-    messages.push(atk);
-  }
-
-  const damageRoll = rollDamage(damage, critical);
-  if (damageRoll) messages.push(damageRoll);
-  window.showToast?.(`${name}: ${messages.join(" · ") || "nothing to roll"}`, { variant: "success", duration: 7000 });
 }
 
 // "+ Add Attack" menu with weapons from the inventory, damage spells from the spell list, and extras.
