@@ -2549,3 +2549,266 @@
   }
 }
 
+/* Attacks: a clean list instead of a spreadsheet grid. */
+.attacks-card {
+  overflow: visible;
+}
+
+.attack-list {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 12px;
+}
+
+.attack-list:empty::before {
+  content: attr(data-empty);
+  padding: 14px 4px;
+  color: var(--ink-soft);
+  font-family: var(--small-italic-font);
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+}
+
+.attack-row {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr) minmax(90px, .45fr) 30px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 2px;
+  border-bottom: 1px dotted rgba(184,144,44,.42);
+}
+
+.attack-row:last-child {
+  border-bottom: none;
+}
+
+.attack-row input {
+  min-width: 0;
+  width: 100%;
+  padding: 2px 4px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--ink);
+  outline: none;
+  transition: background .15s ease, box-shadow .15s ease;
+}
+
+.attack-row input:hover {
+  background: rgba(255,253,245,.35);
+}
+
+.attack-row input:focus {
+  background: rgba(255,253,245,.6);
+  box-shadow: inset 0 -1px 0 var(--gold);
+}
+
+.attack-row input::placeholder {
+  color: rgba(64,78,136,.4);
+  font-style: italic;
+}
+
+.attack-row .attack-atk {
+  height: 30px;
+  border: 1.5px solid var(--gold);
+  border-radius: 999px;
+  background: rgba(255,253,245,.45);
+  color: var(--navy-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.attack-row .attack-atk.is-long {
+  padding: 2px;
+  font-size: 9.5px;
+  letter-spacing: 0;
+}
+
+.attack-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.attack-row .attack-name {
+  color: var(--navy-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .4px;
+}
+
+.attack-row .attack-notes {
+  color: var(--ink-soft);
+  font-family: var(--small-italic-font);
+  font-size: 11.5px;
+  font-style: italic;
+  text-overflow: ellipsis;
+}
+
+.attack-row .attack-damage {
+  font-family: var(--small-italic-font);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+}
+
+.attack-roll {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--gold-deep);
+  cursor: pointer;
+  transition: background .15s ease, transform .15s ease;
+}
+
+.attack-roll:hover {
+  background: rgba(184,144,44,.16);
+  transform: rotate(-12deg);
+}
+
+.attack-roll svg {
+  width: 100%;
+  height: 100%;
+}
+
+.attack-edit-tools {
+  display: none;
+  gap: 2px;
+}
+
+.attack-edit-tools button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid rgba(184,144,44,.55);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--navy);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.attack-list-wrap.editing .attack-row {
+  grid-template-columns: 70px minmax(0, 1fr) minmax(90px, .45fr) auto;
+}
+
+.attack-list-wrap.editing .attack-roll {
+  display: none;
+}
+
+.attack-list-wrap.editing .attack-edit-tools {
+  display: inline-flex;
+}
+
+.attack-add-wrap {
+  position: relative;
+}
+
+.attack-add-menu {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 0;
+  width: min(360px, 80vw);
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid var(--gold);
+  border-radius: var(--r);
+  background: #f3e9cf;
+  box-shadow: 0 8px 24px rgba(40, 28, 8, .25);
+}
+
+.attack-menu-group + .attack-menu-group {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dotted rgba(184,144,44,.5);
+}
+
+.attack-menu-heading {
+  padding: 4px 8px;
+  color: var(--gold-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.attack-menu-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 7px 8px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--navy-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.attack-menu-item:disabled {
+  opacity: .5;
+  cursor: default;
+}
+
+.attack-menu-item:not(:disabled):hover,
+.attack-menu-item:focus-visible {
+  background: rgba(184,144,44,.16);
+  outline: none;
+}
+
+.attack-menu-item em {
+  color: var(--ink-soft);
+  font-family: var(--small-italic-font);
+  font-size: 11px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.attack-menu-empty {
+  margin: 0;
+  padding: 4px 8px 6px;
+  color: var(--ink-soft);
+  font-family: var(--small-italic-font);
+  font-size: 11.5px;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .attack-list {
+    padding: 2px 8px;
+  }
+
+  .attack-row,
+  .attack-list-wrap.editing .attack-row {
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+    grid-template-areas:
+      "atk main roll"
+      "atk damage roll";
+    row-gap: 2px;
+  }
+
+  .attack-row .attack-atk { grid-area: atk; }
+  .attack-main { grid-area: main; }
+  .attack-row .attack-damage { grid-area: damage; text-align: left; }
+  .attack-roll,
+  .attack-edit-tools { grid-area: roll; }
+}
+

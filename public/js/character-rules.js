@@ -71,10 +71,10 @@ function numberFieldValue(fieldKey) {
   return Number.isFinite(value) ? value : null;
 }
 
-// Fills a calculated field unless the player typed their own value there.
+// Fills a calculated field (a data-field key or an input) unless the player typed their own value there.
 // Custom values are kept (and marked) until the field is cleared.
 function applyDerivedValue(fieldKey, value) {
-  const field = document.querySelector(`.sheet [data-field="${fieldKey}"]`);
+  const field = typeof fieldKey === "string" ? document.querySelector(`.sheet [data-field="${fieldKey}"]`) : fieldKey;
   if (!field) return;
   const current = String(readFieldValue(field));
   const followsRules = current.trim() === "" ||
@@ -150,6 +150,7 @@ function recalculateCharacterRules() {
     ? String(Math.max(1, hitDie + constitution + (level - 1) * (hitDie / 2 + 1 + constitution)))
     : "");
   renderFeatureResources();
+  if (typeof recalculateAttacks === "function") recalculateAttacks();
 }
 
 // Called after a character loads so previous characters' calculated values are forgotten.

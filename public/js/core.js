@@ -536,7 +536,7 @@ function loadCharacter(character) {
   syncCoinageMirrorsFromCanonical();
 
 renderFeatureEntries("featList", character.customLists?.feats || []);
-resetWeaponRows(character.customLists?.weapons || DEFAULT_WEAPON_ROWS);
+resetWeaponRows(character.customLists?.weapons);
 resetSpellRows(character.customLists?.spells || DEFAULT_SPELL_ROWS);
 resetJournalNotes(character.customLists?.journalNotes || []);
 resetInventoryRows({

@@ -2002,3 +2002,63 @@ html[data-theme="moonlight"] .sheet .tabs {
     inset 0 1px 0 rgba(221, 242, 255, .08);
 }
 
+html[data-theme="moonlight"] .attack-row {
+  border-bottom-color: var(--moon-ghost-soft-line);
+}
+
+html[data-theme="moonlight"] .attack-row input {
+  color: var(--moon-text) !important;
+  background: transparent !important;
+}
+
+html[data-theme="moonlight"] .attack-row input:focus {
+  background: rgba(77, 154, 215, .14) !important;
+  box-shadow: inset 0 -1px 0 var(--moon-ghost-line);
+}
+
+html[data-theme="moonlight"] .attack-row .attack-atk {
+  border-color: var(--moon-gold-line) !important;
+  background: rgba(2, 18, 48, .45) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="moonlight"] .attack-row .attack-name {
+  color: #eefaff !important;
+}
+
+html[data-theme="moonlight"] .attack-row .attack-notes,
+html[data-theme="moonlight"] .attack-list:empty::before,
+html[data-theme="moonlight"] .attack-menu-item em,
+html[data-theme="moonlight"] .attack-menu-empty {
+  color: var(--moon-ghost-bright) !important;
+  opacity: .8;
+}
+
+html[data-theme="moonlight"] .attack-roll,
+html[data-theme="moonlight"] .attack-menu-heading {
+  color: #f3c969;
+}
+
+html[data-theme="moonlight"] .attack-roll:hover,
+html[data-theme="moonlight"] .attack-menu-item:hover {
+  background: rgba(124, 205, 255, .14);
+}
+
+html[data-theme="moonlight"] .attack-edit-tools button {
+  border-color: var(--moon-ghost-soft-line);
+  color: var(--moon-ghost-bright);
+}
+
+html[data-theme="moonlight"] .attack-add-menu {
+  border-color: var(--moon-gold-line);
+  background: linear-gradient(145deg, #0f2f5e, #04142f);
+}
+
+html[data-theme="moonlight"] .attack-menu-item {
+  color: #eefaff;
+}
+
+html[data-theme="moonlight"] .attack-menu-group + .attack-menu-group {
+  border-top-color: var(--moon-ghost-soft-line);
+}
+

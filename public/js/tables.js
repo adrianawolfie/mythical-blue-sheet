@@ -1,18 +1,5 @@
-// Mythical Blue · Weapons and spells
-// Editable weapon and spell tables.
-
-const DEFAULT_WEAPON_ROWS = [
-  {
-    name: "Cutlass",
-    atk: "+5",
-    damage: "1d6+3 slashing",
-    notes: "Finesse"
-  },
-  { name: "", atk: "", damage: "", notes: "" },
-  { name: "", atk: "", damage: "", notes: "" },
-  { name: "", atk: "", damage: "", notes: "" },
-  { name: "", atk: "", damage: "", notes: "" }
-];
+// Mythical Blue · Spells
+// Editable spell table.
 
 const DEFAULT_SPELL_ROWS = [
   {
@@ -159,32 +146,6 @@ function attachSpellRowControls(mainRow, detailsRow) {
   });
 }
 
-function addWeaponRow(data = {}) {
-  const tb = document.getElementById("weaponBody");
-  if (!tb) return;
-
-  const tr = document.createElement("tr");
-  tr.className = "weapon-row";
-
-  tr.innerHTML =
-    tableCell("weapon-name", data.name || "") +
-    tableCell("weapon-atk", data.atk || "") +
-    tableCell("weapon-damage", data.damage || "") +
-    tableCell("weapon-notes", data.notes || "") +
-    makeEditCell();
-
-  tb.appendChild(tr);
-  attachSimpleRowControls(tr);
-}
-
-function resetWeaponRows(rows = DEFAULT_WEAPON_ROWS) {
-  const tb = document.getElementById("weaponBody");
-  if (!tb) return;
-
-  tb.innerHTML = "";
-  rows.forEach(row => addWeaponRow(row));
-}
-
 function addSR(data = {}) {
   const tb = document.getElementById("sbody");
   if (!tb) return;
@@ -289,15 +250,6 @@ function toggleTableEditMode(tableId, button) {
   }
 }
 
-function collectWeaponRows() {
-  return Array.from(document.querySelectorAll("#weaponBody .weapon-row")).map(row => ({
-    name: row.querySelector(".weapon-name")?.value || "",
-    atk: row.querySelector(".weapon-atk")?.value || "",
-    damage: row.querySelector(".weapon-damage")?.value || "",
-    notes: row.querySelector(".weapon-notes")?.value || ""
-  }));
-}
-
 function collectSpellRows() {
   const rows = [];
   const mainRows = Array.from(document.querySelectorAll("#sbody .spell-main-row"));
@@ -322,5 +274,4 @@ function collectSpellRows() {
   return rows;
 }
 
-resetWeaponRows();
 resetSpellRows();
