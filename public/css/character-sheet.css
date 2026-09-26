@@ -3087,7 +3087,8 @@
 }
 
 @media (max-width: 768px) {
-  /* Toolbar: Character List and Save on one row; the rests, Copy, and Delete below. */
+  /* Toolbar: the character's name and class on top, then Character List and Save,
+     then the rests, Copy, and Delete. */
   .sheet-toolbar {
     gap: 6px;
     padding: 8px;
@@ -3098,20 +3099,26 @@
     padding: 9px 6px;
   }
 
-  /* The first row leaves room for the fixed account button in the corner. */
   #backToStartBtn,
   #saveCharacterBtn {
-    flex: 1 1 calc(50% - 25px);
-  }
-
-  #saveCharacterBtn {
-    margin-right: 44px;
+    flex: 1 1 calc(50% - 3px);
   }
 
   #shortRestBtn,
   #longRestBtn {
     flex: 1 1 calc(50% - 49px);
     order: 2;
+  }
+
+  .sheet-toolbar .hdr-identity-toggle {
+    flex: none;
+    min-width: 0;
+    padding: 6px 12px;
+    border: 1px solid rgba(184,144,44,.6);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--gold-deep);
+    font-size: 9px;
   }
 
   .sheet-toolbar button.sheet-copy-button,
@@ -3135,7 +3142,7 @@
     top: 16px;
   }
 
-  /* Header: name and class line with a Details button for the rest. */
+  /* Header: the Details button in the toolbar reveals the identity fields. */
   .hdr-fields {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -3143,12 +3150,15 @@
     margin-bottom: 14px;
   }
 
-  .hdr-identity {
+  /* The right padding leaves room for the fixed account button in the corner. */
+  .sheet-toolbar .hdr-identity {
     display: flex;
+    flex: 1 1 100%;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding-bottom: 8px;
+    min-width: 0;
+    padding: 0 48px 6px 2px;
     border-bottom: 1px solid rgba(184,144,44,.45);
   }
 
@@ -3213,7 +3223,6 @@
     margin: 0;
   }
 
-  .sheet .hdr-identity { order: 1; }
   .sheet .hdr-row.r1 { order: 2; }
   .sheet .hdr-row.r2 > .hfl { order: 3; }
   .sheet .hdr-row.r3 > .armor-class-tracker { order: 4; grid-column: auto;; grid-row: auto; }
