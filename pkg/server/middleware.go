@@ -4,6 +4,7 @@ import "net/http"
 
 var allowedOrigins = map[string]struct{}{
 	"https://raperonzolo.com":                               {},
+	"https://test.raperonzolo.com":                          {},
 	"https://raperonzolo-app-test-xwpvf.ondigitalocean.app": {},
 }
 
