@@ -355,23 +355,6 @@ html[data-style="raperonzolo"] .theme-title::after {
   mask: url('../assets/themes/raperonzolo/divider.svg') center / contain no-repeat;
 }
 
-/* Faint lilies and whiplash lines behind the page. */
-html[data-style="raperonzolo"]:not([data-theme="moonlight"]) {
-  --tone-page-bg: url('../assets/themes/raperonzolo/pattern.svg') 0 0 / 200px 200px repeat, linear-gradient(#3b2752 0%, #523a6c 50%, #6b5287 100%);
-}
-
-/* Moonlight paints the page with !important (theme-mode.css), so the same
-   layers are repeated here with the pattern on top. */
-html[data-style="raperonzolo"][data-theme="moonlight"] body {
-  background-image:
-    url('../assets/themes/raperonzolo/pattern.svg'),
-    radial-gradient(circle at 50% -10%, hsla(calc(var(--night-hue) + 6.3deg), 65.7%, 41.2%, .28), transparent 42%),
-    linear-gradient(180deg, hsl(calc(var(--night-hue) + 14.4deg), 88.9%, 7.1%) 0%, hsl(calc(var(--night-hue) + 11.5deg), 85.2%, 10.6%) 48%, hsl(calc(var(--night-hue) + 9.3deg), 81.4%, 16.9%) 100%) !important;
-  background-size: 200px 200px, auto, auto !important;
-  background-repeat: repeat, no-repeat, no-repeat !important;
-  background-attachment: scroll, fixed, fixed !important;
-}
-
 @media (max-width: 768px) {
   html[data-style="raperonzolo"] .sheet::after {
     inset: 6px;
