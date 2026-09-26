@@ -82,6 +82,20 @@ File: `public/login.html`
 
 A static login page. It submits credentials to `POST /api/login`; successful login sets the `user` cookie and redirects to `/`.
 
+The page links to `/forgot-password.html` to request a password reset.
+
+### `/forgot-password.html`
+
+File: `public/forgot-password.html`
+
+A static password-reset request page. It submits the requested email to `POST /api/password-reset/request`; the response does not disclose whether that email is registered. The server sends a 30-minute single-use link using the configured Gmail account.
+
+### `/reset-password.html?token={token}`
+
+File: `public/reset-password.html`
+
+A static set-password page. It validates the query token through `POST /api/password-reset/validate` before showing the password form, then submits the new password to `POST /api/password-reset/confirm`. The page removes the token from the visible URL after reading it.
+
 ### `/register.html`
 
 File: `public/register.html`

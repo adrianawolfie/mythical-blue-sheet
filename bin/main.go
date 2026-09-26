@@ -7,6 +7,7 @@ import (
 	"raperonzolo/character-sheet/pkg/campaign"
 	"raperonzolo/character-sheet/pkg/character"
 	"raperonzolo/character-sheet/pkg/config"
+	"raperonzolo/character-sheet/pkg/mailer"
 	"raperonzolo/character-sheet/pkg/server"
 	"raperonzolo/character-sheet/pkg/statblock"
 	"raperonzolo/character-sheet/pkg/storage"
@@ -39,6 +40,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	passwordResetEmail := mailer.NewGmail(config.GmailClientID, config.GmailClientSecret, config.GmailRefreshToken, config.GmailSender)
 
 	characters, err := character.NewRepository(ctx, s)
 	if err != nil {
@@ -63,6 +65,9 @@ func main() {
 	mux.Handle("POST /api/register", server.PostRegister(users))
 	mux.Handle("GET /api/me", server.GetCurrentUser(users))
 	mux.Handle("PUT /api/me", server.PutCurrentUser(users))
+	mux.Handle("POST /api/password-reset/request", server.PostPasswordResetRequest(&users, passwordResetEmail, config.AppBaseURL))
+	mux.Handle("POST /api/password-reset/validate", server.PostPasswordResetValidate(&users))
+	mux.Handle("POST /api/password-reset/confirm", server.PostPasswordResetConfirm(&users))
 	mux.Handle("GET /api/admin/users", server.GetAdminUsersData(users))
 	mux.Handle("PUT /api/admin/users/{id}", server.PutAdminUser(users))
 	mux.Handle("GET /api/admin/characters", server.GetAdminCharactersData(users, characters))

@@ -18,6 +18,8 @@ flowchart LR
   Campaign --> Storage
   Statblock --> Storage
   User --> Storage
+  Server --> Gmail[pkg/mailer
+  Gmail API]
   Storage --> Local[data/\nJSON files]
   Storage --> S3[S3 storage\noptional]
 ```
@@ -34,6 +36,7 @@ The important rule is that HTTP handlers do request/response work, while reposit
 | Campaign domain | `pkg/campaign` | Campaign files, campaign list, players, DM assignment, admin campaign views, calendar state. |
 | Statblock domain | `pkg/statblock` | Custom campaign statblocks. |
 | User domain | `pkg/user` | Registration, login, password validation/hashing, admin flag, enabled status, profile updates. |
+| Email sender | `pkg/mailer` | Sends account password-reset email through the Gmail API using OAuth refresh credentials. |
 | Storage boundary | `pkg/storage` | Abstracts local filesystem and S3 object storage. |
 | Frontend | `public/` | Static HTML, CSS, JavaScript, and assets. |
 | Specs | `spec/` | Design notes for domains, routes, storage, and pages. |
@@ -82,6 +85,8 @@ flowchart TB
 | `/character.html?id={id}` | `public/character.html` | Static query-driven character sheet backed by the character and history APIs. |
 | `/dm-screen.html` | `public/dm-screen.html` | DM tools, campaign state, initiative, custom statblocks. |
 | `/login.html` | `public/login.html` | Login page. Disabled users cannot log in. |
+| `/forgot-password.html` | `public/forgot-password.html` | Requests a password reset email. |
+| `/reset-password.html?token={token}` | `public/reset-password.html` | Validates a reset token and sets a new password. |
 | `/register.html` | `public/register.html` | Registration page. New users are disabled until an admin enables them. |
 | `/admin/users.html` | `public/admin/users.html` | Static admin page for editing users, passwords, admin flag, and enabled status. |
 | `/admin/characters.html` | `public/admin/characters.html` | Static admin page for viewing, assigning, unassigning, opening, and deleting characters. |
@@ -96,6 +101,18 @@ User accounts have two important flags:
 
 - `isAdmin`: grants access to admin APIs and admin data.
 - `enabled`: must be true for login. New registrations default to false.
+
+### Password reset email setup
+
+Password-reset email is sent through the Gmail API. Configure a Google Cloud OAuth client with the Gmail API enabled and the `https://www.googleapis.com/auth/gmail.send` scope, authorize the Google account that will send the email, and supply these deployment environment variables:
+
+- `GMAIL_CLIENT_ID`
+- `GMAIL_CLIENT_SECRET`
+- `GMAIL_REFRESH_TOKEN` (an offline OAuth refresh token for the sending account)
+- `GMAIL_SENDER` (the authorized sender email address)
+- `APP_BASE_URL` (the frontend origin used in reset links; defaults to `https://raperonzolo.com`)
+
+To obtain the refresh token, use Google's OAuth 2.0 Playground with the OAuth client's credentials and the `gmail.send` scope, authorize the sending account, and exchange the authorization code for tokens. Keep the OAuth credentials and refresh token in deployment secrets. For production, publish and verify the OAuth consent configuration as required by Google for the Gmail send scope; leaving an external OAuth app in Testing mode can cause refresh tokens to expire.
 
 Admin pages are static HTML shells. The page files can be loaded directly, but the admin data and mutations are protected by admin-only API routes.
 

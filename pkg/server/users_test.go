@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,12 +14,27 @@ import (
 
 	"raperonzolo/character-sheet/pkg/campaign"
 	"raperonzolo/character-sheet/pkg/character"
+	"raperonzolo/character-sheet/pkg/config"
 	"raperonzolo/character-sheet/pkg/statblock"
 	"raperonzolo/character-sheet/pkg/storage"
 	"raperonzolo/character-sheet/pkg/user"
 
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
+
+type testEmailSender struct {
+	to      string
+	subject string
+	body    string
+	err     error
+}
+
+func (s *testEmailSender) Send(to, subject, body string) error {
+	s.to, s.subject, s.body = to, subject, body
+	return s.err
+}
 
 func newUserTestRepository(t *testing.T, users []user.User) user.Repository {
 	t.Helper()
@@ -233,6 +249,56 @@ func TestPostLoginRejectsDisabledUser(t *testing.T) {
 	if w.Code != http.StatusForbidden {
 		t.Fatalf("expected status 403, got %d", w.Code)
 	}
+}
+
+func TestPasswordResetFlow(t *testing.T) {
+	t.Setenv("USER_SECRET", "secret")
+	config.Load()
+	users := newUserTestRepository(t, nil)
+	require.NoError(t, users.Create(context.Background(), user.User{Name: "Ada", Email: "ada@example.com", Password: "Encrypted1!", Enabled: true}))
+	sender := &testEmailSender{}
+	request := httptest.NewRequest(http.MethodPost, "/api/password-reset/request", strings.NewReader(`{"email":"ada@example.com"}`))
+	response := httptest.NewRecorder()
+	PostPasswordResetRequest(&users, sender, "https://raperonzolo.com").ServeHTTP(response, request)
+	require.Equal(t, http.StatusNoContent, response.Code)
+	assert.Equal(t, "ada@example.com", sender.to)
+	assert.Equal(t, "Reset your Mythical Blue password", sender.subject)
+
+	var resetLink string
+	for _, line := range strings.Split(sender.body, "\n") {
+		if strings.Contains(line, "/reset-password.html?token=") {
+			resetLink = line
+			break
+		}
+	}
+	parsedLink, err := url.Parse(resetLink)
+	require.NoError(t, err)
+	token := parsedLink.Query().Get("token")
+	require.NotEmpty(t, token)
+
+	validateRequest := httptest.NewRequest(http.MethodPost, "/api/password-reset/validate", strings.NewReader(`{"token":"`+token+`"}`))
+	validateResponse := httptest.NewRecorder()
+	PostPasswordResetValidate(&users).ServeHTTP(validateResponse, validateRequest)
+	assert.Equal(t, http.StatusNoContent, validateResponse.Code)
+
+	confirmRequest := httptest.NewRequest(http.MethodPost, "/api/password-reset/confirm", strings.NewReader(`{"token":"`+token+`","newPassword":"Changed1!"}`))
+	confirmResponse := httptest.NewRecorder()
+	PostPasswordResetConfirm(&users).ServeHTTP(confirmResponse, confirmRequest)
+	assert.Equal(t, http.StatusNoContent, confirmResponse.Code)
+	_, ok, err := users.Authenticate(context.Background(), "ada@example.com", "Changed1!")
+	require.NoError(t, err)
+	assert.True(t, ok)
+	assert.False(t, users.PasswordResetTokenValid(token))
+}
+
+func TestPasswordResetRequestDoesNotRevealUnknownEmail(t *testing.T) {
+	users := newUserTestRepository(t, nil)
+	sender := &testEmailSender{}
+	request := httptest.NewRequest(http.MethodPost, "/api/password-reset/request", strings.NewReader(`{"email":"missing@example.com"}`))
+	response := httptest.NewRecorder()
+	PostPasswordResetRequest(&users, sender, "https://raperonzolo.com").ServeHTTP(response, request)
+	assert.Equal(t, http.StatusNoContent, response.Code)
+	assert.Empty(t, sender.to)
 }
 
 func TestPutCurrentUserUpdatesName(t *testing.T) {
