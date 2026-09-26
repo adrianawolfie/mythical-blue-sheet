@@ -107,6 +107,29 @@
       <button type="button" class="cal-btn" id="calNextDay">Next →</button>
     </div>
 
+    <details class="cal-set-date" id="calSetDate">
+      <summary>Set exact date</summary>
+      <div class="cal-set-date-fields">
+        <label class="cal-set-field cal-set-year-field">
+          <span>Year (EM)</span>
+          <span class="cal-set-year">
+            <button type="button" class="cal-inline-adjust" data-cal-year-step="-1" aria-label="Previous year">−</button>
+            <input id="calSetYear" type="number" min="1" step="1" inputmode="numeric" aria-label="Year">
+            <button type="button" class="cal-inline-adjust" data-cal-year-step="1" aria-label="Next year">+</button>
+          </span>
+        </label>
+        <label class="cal-set-field">
+          <span>Month</span>
+          <select id="calSetMonth" aria-label="Month"></select>
+        </label>
+        <label class="cal-set-field">
+          <span>Day</span>
+          <select id="calSetDay" aria-label="Day"></select>
+        </label>
+      </div>
+      <p class="cal-set-date-hint">The date above changes as you pick. Press Save Date to keep it; days traveled stays the same.</p>
+    </details>
+
     <div class="cal-travel">
       <div class="cal-travel-heading">
         <label class="cal-travel-label" for="calDaysTraveledInput">Days Traveled</label>

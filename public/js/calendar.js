@@ -246,9 +246,69 @@
     }
   }
 
+  function sameDate(a, b) {
+    return toAbsolute(a) === toAbsolute(b);
+  }
+
+  function fillSetDateOptions() {
+    var monthSelect = document.getElementById("calSetMonth");
+    var daySelect = document.getElementById("calSetDay");
+
+    if (!monthSelect || monthSelect.options.length) return;
+
+    MONTHS.forEach(function (month) {
+      monthSelect.add(new Option(month.num + " · " + month.name, String(month.num)));
+
+      if (month.num === 9) {
+        monthSelect.add(new Option("Intercalis (leap day)", "intercalis"));
+      }
+    });
+    monthSelect.add(new Option("Aenaris (year end)", "aenaris"));
+
+    for (var day = 1; day <= 28; day++) {
+      daySelect.add(new Option(day + " · " + getWeekday(day).scripture, String(day)));
+    }
+  }
+
+  function syncSetDateFields(date) {
+    var yearInput = document.getElementById("calSetYear");
+    var monthSelect = document.getElementById("calSetMonth");
+    var daySelect = document.getElementById("calSetDay");
+
+    if (!yearInput || !monthSelect || !daySelect) return;
+
+    fillSetDateOptions();
+
+    if (document.activeElement !== yearInput) yearInput.value = String(date.year);
+    monthSelect.value = date.special || String(date.month);
+    daySelect.value = date.special ? "" : String(date.day);
+    daySelect.disabled = Boolean(date.special);
+    monthSelect.querySelector('option[value="intercalis"]').disabled = !isLeap(date.year);
+  }
+
+  function dateFromSetFields() {
+    var year = Math.max(1, Math.floor(Number(document.getElementById("calSetYear").value) || previewDate.year));
+    var monthValue = document.getElementById("calSetMonth").value;
+    var day = Number(document.getElementById("calSetDay").value) || 1;
+
+    if (monthValue === "aenaris" || (monthValue === "intercalis" && isLeap(year))) {
+      return { year: year, month: null, day: null, special: monthValue };
+    }
+
+    // Intercalis only exists in leap years; fall back to the last day of Amarsa.
+    if (monthValue === "intercalis") {
+      return { year: year, month: 9, day: 28, special: null };
+    }
+
+    return { year: year, month: Number(monthValue) || 1, day: day, special: null };
+  }
+
   function renderWidget(date) {
     var info = getInfo(date);
     var zodiac = info.zodiac;
+
+    syncSetDateFields(date);
+    document.getElementById("calSaveDay")?.classList.toggle("is-pending", !sameDate(date, savedState.calendarDate));
 
     setText("calWidgetYear", info.year + " EM");
     setText("calWidgetSign", "Year of the " + zodiac.form + " · " + zodiac.sign);
@@ -350,9 +410,11 @@
 
   async function loadLatestState() {
     var state = await global.campaignStateStorage.loadCampaignState();
+    // Keep a date the DM is still picking (not yet saved) when the poll refreshes.
+    var hasUnsavedDate = !sameDate(previewDate, savedState.calendarDate);
 
     savedState = clone(state);
-    previewDate = clone(savedState.calendarDate);
+    if (!hasUnsavedDate) previewDate = clone(savedState.calendarDate);
 
     renderSavedState();
 
@@ -447,6 +509,27 @@
     nextButton.addEventListener("click", function () {
       previewDate = advance(previewDate, 1);
       renderWidget(previewDate);
+    });
+
+    ["calSetYear", "calSetMonth", "calSetDay"].forEach(function (id) {
+      document.getElementById(id)?.addEventListener(id === "calSetYear" ? "input" : "change", function () {
+        previewDate = dateFromSetFields();
+        renderWidget(previewDate);
+      });
+    });
+
+    document.getElementById("calSetYear")?.addEventListener("blur", function () {
+      renderWidget(previewDate);
+    });
+
+    document.querySelectorAll("[data-cal-year-step]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var yearInput = document.getElementById("calSetYear");
+
+        yearInput.value = String(Math.max(1, previewDate.year + Number(button.dataset.calYearStep)));
+        previewDate = dateFromSetFields();
+        renderWidget(previewDate);
+      });
     });
 
     saveButton?.addEventListener("click", async function () {

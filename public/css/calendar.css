@@ -564,3 +564,132 @@
     padding-bottom: 5px;
   }
 }
+
+/* ── SET EXACT DATE ────────────────────────────────────────────────────── */
+
+.cal-btn-save.is-pending {
+  background: rgba(184, 144, 44, 0.2);
+  box-shadow: inset 0 -2px 0 var(--gold-deep);
+}
+
+.cal-set-date {
+  border-top: 1px solid rgba(184, 144, 44, 0.38);
+}
+
+.cal-set-date summary {
+  padding: 7px 10px;
+  color: var(--navy);
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.cal-set-date summary:hover {
+  background: rgba(184, 144, 44, 0.1);
+}
+
+.cal-set-date-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 2px 10px 6px;
+}
+
+.cal-set-field {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.cal-set-field > span:first-child {
+  color: var(--navy);
+  font-family: 'Cinzel', serif;
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  opacity: .78;
+  text-transform: uppercase;
+}
+
+.cal-set-year {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cal-set-field input,
+.cal-set-field select {
+  width: 100%;
+  min-width: 0;
+  height: 28px;
+  padding: 0 4px;
+  border: none;
+  border-bottom: 1px solid rgba(184, 144, 44, 0.6);
+  border-radius: 0;
+  background: transparent;
+  color: var(--navy-deep);
+  font-family: 'Lora', serif;
+  font-size: 13px;
+}
+
+.cal-set-field input {
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.cal-set-field input::-webkit-outer-spin-button,
+.cal-set-field input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.cal-set-field select:disabled {
+  opacity: .45;
+}
+
+.cal-set-date-hint {
+  margin: 0;
+  padding: 0 10px 8px;
+  color: rgba(28, 39, 80, .66);
+  font-family: 'Lora', serif;
+  font-size: 10.5px;
+  font-style: italic;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .cal-set-date-fields { grid-template-columns: 1fr 1fr; }
+  .cal-set-year-field { grid-column: 1 / -1; }
+  .cal-set-field input,
+  .cal-set-field select { font-size: 16px; }
+}
+
+html[data-theme="moonlight"] .cal-set-date,
+html[data-theme="moonlight"] .cal-set-field input,
+html[data-theme="moonlight"] .cal-set-field select {
+  border-color: var(--moon-line);
+}
+
+html[data-theme="moonlight"] .cal-set-date summary,
+html[data-theme="moonlight"] .cal-set-field > span:first-child,
+html[data-theme="moonlight"] .cal-set-date-hint {
+  color: var(--moon-text-soft);
+}
+
+html[data-theme="moonlight"] .cal-set-field input,
+html[data-theme="moonlight"] .cal-set-field select {
+  color: var(--moon-text);
+}
+
+html[data-theme="moonlight"] .cal-set-field select option {
+  background: #0b1e3c;
+}
+
+html[data-theme="moonlight"] .cal-btn-save.is-pending {
+  background: rgba(95, 178, 255, .2);
+  box-shadow: inset 0 -2px 0 #92d6ff;
+}
