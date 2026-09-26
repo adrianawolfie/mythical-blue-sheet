@@ -4,8 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="color-scheme" content="light dark" />
-<script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
-<title>Mythical Blue · The Great Depth — Character Sheet</title>
+<script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";document.documentElement.dataset.style=localStorage.getItem("mythicalBlueThemeStyle")||"mythical-blue";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
+<title data-text-neutral="Character Sheet" data-text-raperonzolo="Raperonzolo · Character Sheet">Mythical Blue · The Great Depth — Character Sheet</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/accessibility.css" />
 <link rel="stylesheet" href="css/styles.css" />
@@ -13,13 +13,14 @@
 <link rel="stylesheet" href="css/srd-library.css" />
 <link rel="stylesheet" href="css/toast.css" />
 <link rel="stylesheet" href="css/theme-mode.css" />
+<link rel="stylesheet" href="css/theme-styles.css" />
 <link rel="stylesheet" href="css/account.css" />
 </head>
 <body>
 
 <div id="startPage" class="start-page">
   <div class="start-page-heading-row">
-    <h1>Mythical Blue · Character Overview</h1>
+    <h1 data-text-neutral="Character Overview" data-text-raperonzolo="Raperonzolo · Character Overview">Mythical Blue · Character Overview</h1>
   </div>
 
   <!-- ═══════════════════ MATERRA CALENDAR WIDGET ═══════════════════ -->
@@ -206,8 +207,8 @@
       </div>
       <div class="hdr-row r1">
         <div class="hfl"><label>Character Name</label><input type="text" placeholder="enter name…" data-field="characterName"></div>
-        <div class="hfl"><label>Species</label><input type="text" placeholder="sea elf, human…" data-field="speciesRace"></div>
-        <div class="hfl"><label>Background</label><input type="text" placeholder="sailor, pirate, corsair…" data-field="background"></div>
+        <div class="hfl"><label>Species</label><input type="text" placeholder="sea elf, human…" data-placeholder-neutral="elf, human…" data-field="speciesRace"></div>
+        <div class="hfl"><label>Background</label><input type="text" placeholder="sailor, pirate, corsair…" data-placeholder-neutral="acolyte, sage, soldier…" data-field="background"></div>
         <div class="hfl"><label>Alignment</label><input type="text" placeholder="cn…" data-field="alignment"></div>
       </div>
       <div class="hdr-row r2">
@@ -352,7 +353,7 @@
     <!-- ═════════════════════════════════════════════════════════════ -->
 
     <div class="tabs">
-      <button class="tab on" onclick="sw('main',this)"><img class="tab-icon" src="assets/icons/navigation/main.png" data-daylight-src="assets/icons/navigation/main.png" data-moonlight-src="assets/themes/moonlight/navigation/main.png" alt="" aria-hidden="true"><span>Main</span></button>
+      <button class="tab on" onclick="sw('main',this)"><img class="tab-icon" src="assets/icons/navigation/main.png" data-daylight-src="assets/icons/navigation/main.png" data-moonlight-src="assets/themes/moonlight/navigation/main.png" data-plain-daylight-src="assets/icons/navigation/main-plain.svg" data-plain-moonlight-src="assets/themes/moonlight/navigation/main-plain.svg" alt="" aria-hidden="true"><span>Main</span></button>
       <button class="tab" onclick="sw('spells',this)"><img class="tab-icon" src="assets/icons/navigation/spells.png" data-daylight-src="assets/icons/navigation/spells.png" data-moonlight-src="assets/themes/moonlight/navigation/spells.png" alt="" aria-hidden="true"><span>Spells</span></button>
       <button class="tab" onclick="sw('inventory',this)"><img class="tab-icon" src="assets/icons/navigation/inventory.png" data-daylight-src="assets/icons/navigation/inventory.png" data-moonlight-src="assets/themes/moonlight/navigation/inventory.png" alt="" aria-hidden="true"><span>Inventory</span></button>
       <button class="tab" onclick="sw('companions',this)"><img class="tab-icon" src="assets/icons/navigation/companions.svg" data-daylight-src="assets/icons/navigation/companions.svg" data-moonlight-src="assets/themes/moonlight/navigation/companions.svg" alt="" aria-hidden="true"><span>Companions</span></button>
@@ -632,7 +633,7 @@
 
     <div id="pg-journal" class="pg">
       <div class="two-col">
-        <div class="sb-card"><div class="sb-hdr">Backstory</div><textarea class="journal-textarea-tall" placeholder="Where did your character come from? What drove them to the sea? What unfinished business waits on shore?" data-field="backstory"></textarea></div>
+        <div class="sb-card"><div class="sb-hdr">Backstory</div><textarea class="journal-textarea-tall" placeholder="Where did your character come from? What drove them to the sea? What unfinished business waits on shore?" data-placeholder-neutral="Where did your character come from? What set them on the road to adventure? What unfinished business waits back home?" data-field="backstory"></textarea></div>
         <div class="sb-card"><div class="sb-hdr">Personality, Ideals & Bonds</div><textarea class="journal-textarea-tall" placeholder="Personality traits, ideals, bonds, flaws, mannerisms…" data-field="personalityIdealsBonds"></textarea></div>
       </div>
       <div class="two-col stack-gap-top">
@@ -843,6 +844,7 @@
           <div class="sb-hdr">Other Inventory</div>
           <textarea
             placeholder="Party loot, cargo manifests, unusual trinkets, temporary notes, or anything that does not fit neatly into a table…"
+            data-placeholder-neutral="Party loot, unusual trinkets, temporary notes, or anything that does not fit neatly into a table…"
             data-field="otherInventory"
           ></textarea>
         </div>
@@ -860,7 +862,7 @@
             </label>
             <label>
               <span>Treasure Notes</span>
-              <textarea placeholder="Notable loot, ship's cargo manifest…" data-field="treasureNotes"></textarea>
+              <textarea placeholder="Notable loot, ship's cargo manifest…" data-placeholder-neutral="Notable loot, treasure hoards…" data-field="treasureNotes"></textarea>
             </label>
             <label>
               <span>Legacy Attunement Notes</span>
@@ -871,7 +873,7 @@
       </div>
     </div>
     <div class="ftr">
-      <div class="ftr-t">✦ Mythical Blue · The Great Depth ✦</div>
+      <div class="ftr-t" data-text-neutral="✦ Character Sheet ✦" data-text-raperonzolo="✿ Raperonzolo ✿">✦ Mythical Blue · The Great Depth ✦</div>
       <svg width="100" height="10" viewBox="0 0 100 10"><path d="M0 5 Q10 1 20 5 Q30 9 40 5 Q50 1 60 5 Q70 9 80 5 Q90 1 100 5" stroke="#b8902c" stroke-width="1" fill="none" stroke-linecap="round" opacity=".6" /></svg>
       <div class="ftr-t">Dungeons & Dragons 2024</div>
     </div>
@@ -882,7 +884,7 @@
 <div id="spellPickerModal" class="spell-picker-backdrop" hidden>
   <section class="spell-picker-modal" role="dialog" aria-modal="true" aria-labelledby="spellPickerTitle">
     <div class="spell-picker-header">
-      <div><div class="sb-hdr" id="spellPickerTitle">Add Spell</div><p>Choose an SRD or Mythical Blue spell to autofill its structured fields. You can edit the imported snapshot afterward.</p></div>
+      <div><div class="sb-hdr" id="spellPickerTitle">Add Spell</div><p data-text-neutral="Choose an SRD or homebrew spell to autofill its structured fields. You can edit the imported snapshot afterward.">Choose an SRD or Mythical Blue spell to autofill its structured fields. You can edit the imported snapshot afterward.</p></div>
       <button type="button" class="spell-picker-close" onclick="closeSpellPicker()" aria-label="Close spell picker">×</button>
     </div>
     <div class="spell-picker-toolbar">

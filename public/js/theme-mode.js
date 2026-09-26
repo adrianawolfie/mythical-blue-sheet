@@ -1,5 +1,9 @@
 (() => {
   const STORAGE_KEY = 'mythicalBlueThemeMode';
+  // Theme (Mythical Blue, Neutral, Raperonzolo) is separate from the daylight/moonlight mode.
+  const STYLE_KEY = 'mythicalBlueThemeStyle';
+  const STYLES = ['mythical-blue', 'neutral', 'raperonzolo'];
+  const DEFAULT_STYLE = 'mythical-blue';
   const DAYLIGHT = 'daylight';
   const MOONLIGHT = 'moonlight';
   const THEME_ICON_MAP = [
@@ -43,11 +47,51 @@
     return THEME_ICON_MAP.some(item => src.includes(item.daylight) || src.includes(item.moonlight));
   }
 
+  function getStoredStyle() {
+    try {
+      const stored = localStorage.getItem(STYLE_KEY);
+      return STYLES.includes(stored) ? stored : DEFAULT_STYLE;
+    } catch {
+      return DEFAULT_STYLE;
+    }
+  }
+
+  function currentStyle() {
+    const style = document.documentElement.dataset.style;
+    return STYLES.includes(style) ? style : DEFAULT_STYLE;
+  }
+
+  // Neutral and Raperonzolo swap nautical wording for their own, using
+  // data-text-*, data-placeholder-*, and data-empty-* attributes. Raperonzolo
+  // falls back to the neutral wording when it has none of its own.
+  function themedValue(element, kind, style) {
+    if (style === DEFAULT_STYLE) return null;
+    const own = element.getAttribute(`data-${kind}-${style}`);
+    return own ?? element.getAttribute(`data-${kind}-neutral`);
+  }
+
+  function updateThemeText(style, scope = document) {
+    const targets = { text: null, placeholder: 'placeholder', empty: 'data-empty' };
+    Object.entries(targets).forEach(([kind, attribute]) => {
+      const selector = `[data-${kind}-neutral], [data-${kind}-raperonzolo]`;
+      const elements = [...(scope.matches?.(selector) ? [scope] : []), ...(scope.querySelectorAll?.(selector) || [])];
+      elements.forEach(element => {
+        const originalKey = `data-${kind}-original`;
+        if (!element.hasAttribute(originalKey)) element.setAttribute(originalKey, attribute ? element.getAttribute(attribute) || '' : element.textContent);
+        const value = themedValue(element, kind, style) ?? element.getAttribute(originalKey);
+        if (attribute) element.setAttribute(attribute, value);
+        else if (element.textContent !== value) element.textContent = value;
+      });
+    });
+  }
+
   function updateImageAsset(img, mode) {
     if (!(img instanceof HTMLImageElement)) return;
 
-    const explicitDaylight = img.dataset.daylightSrc;
-    const explicitMoonlight = img.dataset.moonlightSrc;
+    // Images with a non-nautical version (data-plain-*-src) use it outside Mythical Blue.
+    const plain = currentStyle() !== DEFAULT_STYLE && img.dataset.plainDaylightSrc;
+    const explicitDaylight = plain ? img.dataset.plainDaylightSrc : img.dataset.daylightSrc;
+    const explicitMoonlight = plain ? img.dataset.plainMoonlightSrc || img.dataset.plainDaylightSrc : img.dataset.moonlightSrc;
     const currentSrc = img.getAttribute('src') || '';
 
     if (explicitDaylight && explicitMoonlight) {
@@ -95,21 +139,61 @@
     setStoredTheme(normalized);
   }
 
+  // Neutral and Raperonzolo hide the nautical title banner and show a text title after it instead.
+  function updateThemeTitles(style) {
+    document.querySelectorAll('img[src*="title-banner"], img[data-daylight-src*="title-banner"]').forEach(img => {
+      let title = img.nextElementSibling;
+      if (!title?.classList.contains('theme-title')) {
+        title = document.createElement('div');
+        title.className = 'theme-title';
+        title.setAttribute('aria-hidden', 'true');
+        img.after(title);
+      }
+      title.textContent = style === 'raperonzolo' ? 'Raperonzolo' : img.classList.contains('title-banner') ? 'Character Sheet' : 'Character Sheets';
+    });
+  }
+
+  function updateStyleControls(style) {
+    document.querySelectorAll('[data-theme-style-select]').forEach(select => {
+      if (select.value !== style) select.value = style;
+    });
+  }
+
+  function applyStyle(style) {
+    const normalized = STYLES.includes(style) ? style : DEFAULT_STYLE;
+    document.documentElement.dataset.style = normalized;
+    updateThemeText(normalized);
+    updateThemeTitles(normalized);
+    updateThemeAssets(currentTheme());
+    updateStyleControls(normalized);
+    try { localStorage.setItem(STYLE_KEY, normalized); } catch {}
+  }
+
+  // Lets scripts pick wording for text they build themselves.
+  window.themeText = (mythicalBlue, other) => currentStyle() === DEFAULT_STYLE ? mythicalBlue : other;
+
   function toggleTheme() {
     applyTheme(currentTheme() === MOONLIGHT ? DAYLIGHT : MOONLIGHT);
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    document.documentElement.dataset.style = getStoredStyle();
     applyTheme(getStoredTheme());
+    applyStyle(getStoredStyle());
     document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
       button.addEventListener('click', toggleTheme);
+    });
+    document.querySelectorAll('[data-theme-style-select]').forEach((select) => {
+      select.addEventListener('change', () => applyStyle(select.value));
     });
 
     const observer = new MutationObserver((mutations) => {
       const mode = currentTheme();
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement) updateThemeAssets(mode, node);
+          if (!(node instanceof HTMLElement)) return;
+          updateThemeAssets(mode, node);
+          if (currentStyle() !== DEFAULT_STYLE) updateThemeText(currentStyle(), node);
         });
       });
     });
@@ -118,5 +202,6 @@
 
   window.addEventListener('storage', (event) => {
     if (event.key === STORAGE_KEY) applyTheme(getStoredTheme());
+    if (event.key === STYLE_KEY) applyStyle(getStoredStyle());
   });
 })();

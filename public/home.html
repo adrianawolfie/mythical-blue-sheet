@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
-  <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
-  <title>Mythical Blue · Home</title>
+  <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";document.documentElement.dataset.style=localStorage.getItem("mythicalBlueThemeStyle")||"mythical-blue";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
+  <title data-text-neutral="Home" data-text-raperonzolo="Raperonzolo · Home">Mythical Blue · Home</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/accessibility.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/home.css" />
   <link rel="stylesheet" href="css/theme-mode.css" />
+<link rel="stylesheet" href="css/theme-styles.css" />
   <link rel="stylesheet" href="css/account.css" />
 </head>
 <body>
@@ -18,8 +19,8 @@
     <header class="home-header">
       <img src="assets/title-banner.png" data-daylight-src="assets/title-banner.png" data-moonlight-src="assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" />
       <div class="home-heading-copy">
-        <p class="home-kicker">Ship's Ledger</p>
-        <h1 id="homeTitle">Your Home Port</h1>
+        <p class="home-kicker" data-text-neutral="Home">Ship's Ledger</p>
+        <h1 id="homeTitle" data-text-neutral="Welcome Back">Your Home Port</h1>
         <p>Review your campaigns and open the character sheets assigned to your account.</p>
       </div>
     </header>

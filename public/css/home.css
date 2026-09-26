@@ -4,8 +4,8 @@
   margin: 0 auto;
   padding: 24px;
   border: 2px solid var(--gold);
-  background-color: #ede1c0;
-  background-image: url("../assets/parchment-seamless.png");
+  background-color: var(--tone-parchment);
+  background-image: var(--tone-parchment-image);
   background-size: 100% auto;
   background-repeat: repeat-y;
   color: var(--ink);
@@ -16,7 +16,7 @@
   content: "";
   position: absolute;
   inset: 8px;
-  border: 1px solid rgba(184, 144, 44, .36);
+  border: 1px solid rgba(var(--tone-gold-rgb), .36);
   pointer-events: none;
 }
 
@@ -37,7 +37,7 @@
 .home-header img {
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 2px 3px rgba(43, 56, 102, .16));
+  filter: drop-shadow(0 2px 3px rgba(var(--tone-navy-rgb), .16));
 }
 
 .home-heading-copy {
@@ -79,7 +79,7 @@
 
 .home-panel {
   border: 1px solid var(--gold);
-  background: rgba(255, 253, 245, .28);
+  background: rgba(var(--tone-paper-rgb), .28);
   padding: 14px;
 }
 
@@ -89,7 +89,7 @@
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
-  border-bottom: 1px solid rgba(184, 144, 44, .44);
+  border-bottom: 1px solid rgba(var(--tone-gold-rgb), .44);
   padding-bottom: 10px;
 }
 
@@ -109,7 +109,7 @@
 }
 
 .home-panel-header a {
-  border-bottom: 1px solid rgba(43, 56, 102, .38);
+  border-bottom: 1px solid rgba(var(--tone-navy-rgb), .38);
   font-family: "Cinzel", serif;
   font-size: .78rem;
   font-weight: 700;
@@ -123,7 +123,7 @@
 .home-card {
   display: grid;
   gap: 6px;
-  border: 1px solid rgba(184, 144, 44, .70);
+  border: 1px solid rgba(var(--tone-gold-rgb), .70);
   background: rgba(255, 255, 255, .30);
   padding: 12px;
 }
@@ -151,13 +151,13 @@
 }
 
 .home-card-meta span {
-  border-left: 2px solid rgba(184, 144, 44, .42);
+  border-left: 2px solid rgba(var(--tone-gold-rgb), .42);
   padding-left: 8px;
 }
 
 .home-muted {
   margin: 0;
-  border: 1px solid rgba(184, 144, 44, .55);
+  border: 1px solid rgba(var(--tone-gold-rgb), .55);
   background: rgba(255, 255, 255, .22);
   color: rgba(39, 28, 8, .74);
   padding: 14px;

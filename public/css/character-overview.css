@@ -3,7 +3,7 @@
 .card-hp-bwrap {
   width: 100%;
   height: 4px;
-  background: rgba(43,56,102,.12);
+  background: rgba(var(--tone-navy-rgb), .12);
   border-radius: 2px;
   overflow: hidden;
   margin-bottom: 4px;
@@ -50,7 +50,7 @@
 .card-hp-max {
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(43,56,102,.3);
+  border-bottom: 1px solid rgba(var(--tone-navy-rgb), .3);
   font-family: 'Cinzel', serif;
   font-weight: 700;
   color: var(--navy-deep);
@@ -146,7 +146,7 @@
 .card-condition-editor {
   margin-top: 7px;
   padding-top: 6px;
-  border-top: 1px dotted rgba(184,144,44,.55);
+  border-top: 1px dotted rgba(var(--tone-gold-rgb), .55);
 }
 
 .card-condition-label {
@@ -171,9 +171,9 @@
   align-items: center;
   gap: 3px;
   padding: 2px 5px;
-  border: 1px solid rgba(184,144,44,.62);
+  border: 1px solid rgba(var(--tone-gold-rgb), .62);
   border-radius: 999px;
-  background: rgba(255,253,245,.26);
+  background: rgba(var(--tone-paper-rgb), .26);
   color: var(--navy-deep);
   font-family: var(--small-italic-font);
   font-size: 11px;
@@ -207,14 +207,14 @@
 
 .card-condition-chip:hover .card-condition-remove,
 .card-condition-remove:focus-visible {
-  background: rgba(214,168,56,.10);
+  background: rgba(var(--tone-gold-light-rgb), .10);
   color: var(--gold-deep);
   opacity: .9;
   outline: none;
 }
 
 .card-condition-empty {
-  color: rgba(28,39,80,.58);
+  color: rgba(var(--tone-navy-deep-rgb), .58);
   font-family: var(--small-italic-font);
   font-size: 11px;
   font-style: italic;
@@ -223,8 +223,8 @@
 .card-condition-picker {
   width: auto;
   max-width: 210px;
-  border: 1px solid rgba(184,144,44,.58);
-  background: rgba(255,253,245,.3);
+  border: 1px solid rgba(var(--tone-gold-rgb), .58);
+  background: rgba(var(--tone-paper-rgb), .3);
   color: var(--navy-deep);
   font-family: var(--small-italic-font);
   font-size: 11px;
@@ -288,7 +288,7 @@
 
 .start-page .character-card .card-condition-chip:hover button.card-condition-remove,
 .start-page .character-card .card-condition-chip button.card-condition-remove:focus-visible {
-  background: rgba(214,168,56,.10) !important;
+  background: rgba(var(--tone-gold-light-rgb), .10) !important;
   color: var(--gold-deep) !important;
   opacity: .9;
   outline: none !important;
@@ -336,8 +336,8 @@
 .start-page {
   position: relative;
   overflow: hidden;
-  background-color: #ede1c0;
-  background-image: url('../assets/parchment-seamless.png');
+  background-color: var(--tone-parchment);
+  background-image: var(--tone-parchment-image);
   background-size: 100% auto;
   background-repeat: repeat-y;
   background-position: top center;
@@ -360,7 +360,7 @@
   content: '';
   position: absolute;
   inset: 7px;
-  border: 1px solid rgba(184,144,44,.36);
+  border: 1px solid rgba(var(--tone-gold-rgb), .36);
   pointer-events: none;
 }
 
@@ -375,7 +375,7 @@
   justify-content: space-between;
   gap: 14px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(184,144,44,.68);
+  border-bottom: 1px solid rgba(var(--tone-gold-rgb), .68);
 }
 
 .start-page h1 {
@@ -398,7 +398,7 @@
   padding: 10px 16px;
   border: 1px solid var(--gold-deep);
   background: linear-gradient(180deg, var(--navy-soft), var(--navy-deep));
-  box-shadow: 0 3px 7px rgba(28,39,80,.24), inset 0 1px 0 rgba(255,255,255,.16);
+  box-shadow: 0 3px 7px rgba(var(--tone-navy-deep-rgb), .24), inset 0 1px 0 rgba(255,255,255,.16);
   color: #fff7dc;
   font-family: 'Cinzel', serif;
   font-size: 12px;
@@ -419,22 +419,22 @@
 .overview-action-link:hover,
 .overview-action-link:focus-visible {
   background: linear-gradient(180deg, #46598f, var(--navy));
-  box-shadow: 0 5px 10px rgba(28,39,80,.28), inset 0 1px 0 rgba(255,255,255,.20);
+  box-shadow: 0 5px 10px rgba(var(--tone-navy-deep-rgb), .28), inset 0 1px 0 rgba(255,255,255,.20);
   transform: translateY(-2px);
   outline: none;
 }
 
 .start-page .character-card {
-  border-color: rgba(184,144,44,.72);
-  background: rgba(255,253,245,.34);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.20), 0 2px 6px rgba(43,56,102,.05);
+  border-color: rgba(var(--tone-gold-rgb), .72);
+  background: rgba(var(--tone-paper-rgb), .34);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.20), 0 2px 6px rgba(var(--tone-navy-rgb), .05);
   transition: background .16s ease, border-color .16s ease, box-shadow .16s ease, transform .16s ease;
 }
 
 .start-page .character-card:hover {
   border-color: var(--gold-deep);
-  background: rgba(255,253,245,.54);
-  box-shadow: 0 4px 10px rgba(43,56,102,.10);
+  background: rgba(var(--tone-paper-rgb), .54);
+  box-shadow: 0 4px 10px rgba(var(--tone-navy-rgb), .10);
   transform: translateY(-1px);
 }
 

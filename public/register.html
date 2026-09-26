@@ -4,24 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
-  <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
-  <title>Mythical Blue · Registration</title>
+  <script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem("mythicalBlueThemeMode")||"daylight";document.documentElement.dataset.style=localStorage.getItem("mythicalBlueThemeStyle")||"mythical-blue";}catch(e){document.documentElement.dataset.theme="daylight";}})();</script>
+  <title data-text-neutral="Registration" data-text-raperonzolo="Raperonzolo · Registration">Mythical Blue · Registration</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/accessibility.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/auth.css" />
   <link rel="stylesheet" href="css/toast.css" />
   <link rel="stylesheet" href="css/theme-mode.css" />
+<link rel="stylesheet" href="css/theme-styles.css" />
 </head>
 <body class="login-body register-body">
   <main class="login-shell" aria-labelledby="registerTitle">
     <section class="login-card">
       <div class="login-brand">
         <img src="assets/title-banner.png" data-daylight-src="assets/title-banner.png" data-moonlight-src="assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" />
-        <h1 id="registerTitle">Join the Crew</h1>
+        <h1 id="registerTitle" data-text-neutral="Create an Account">Join the Crew</h1>
       </div>
 
-      <p class="login-copy">Create a shipboard account to keep your character sheets and campaign tools close at hand. An admin will review and enable your account before you can log in.</p>
+      <p class="login-copy" data-text-neutral="Create an account to keep your character sheets and campaign tools close at hand. An admin will review and enable your account before you can log in.">Create a shipboard account to keep your character sheets and campaign tools close at hand. An admin will review and enable your account before you can log in.</p>
 
       <form class="login-form" id="registerForm" action="https://raperonzolo.com/api/register" method="post">
         <label class="login-field">

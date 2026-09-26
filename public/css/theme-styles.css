@@ -1,0 +1,171 @@
+/* Mythical Blue · Themes
+   <html data-style> picks the theme: mythical-blue (the original look),
+   neutral, or raperonzolo. <html data-theme> still picks daylight or
+   moonlight. The day palettes below only apply in daylight, so every theme
+   keeps the same moonlight colours; Neutral and Raperonzolo drop the
+   nautical artwork (compass, ship, title banner) in both modes. */
+
+.theme-title {
+  display: none;
+}
+
+/* ─── Shared: no nautical artwork outside Mythical Blue ────────────────── */
+
+html:is([data-style="neutral"], [data-style="raperonzolo"]) :is(.compass-watermark, .ship-art, img[src*="title-banner"]) {
+  display: none !important;
+}
+
+html:is([data-style="neutral"], [data-style="raperonzolo"]) .ftr svg {
+  display: none;
+}
+
+html:is([data-style="neutral"], [data-style="raperonzolo"]) .theme-title {
+  display: block;
+  margin: 4px 0 10px;
+  color: var(--navy-deep);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  line-height: 1.15;
+  text-align: center;
+}
+
+html[data-theme="moonlight"]:is([data-style="neutral"], [data-style="raperonzolo"]) .theme-title {
+  color: var(--moon-heading);
+  text-shadow: 0 0 12px rgba(121, 194, 255, .25);
+}
+
+/* On the character sheet the text title takes the banner's place at the top. */
+html:is([data-style="neutral"], [data-style="raperonzolo"]) .sheet > .theme-title {
+  position: absolute;
+  top: 58px;
+  left: 90px;
+  right: 90px;
+  margin: 0;
+  font-size: 34px;
+}
+
+html:is([data-style="neutral"], [data-style="raperonzolo"]) .sheet {
+  padding-top: 150px;
+}
+
+@media (max-width: 768px) {
+  html:is([data-style="neutral"], [data-style="raperonzolo"]) .sheet > .theme-title {
+    top: 24px;
+    left: 60px;
+    right: 60px;
+    font-size: 22px;
+  }
+
+  html:is([data-style="neutral"], [data-style="raperonzolo"]) .sheet {
+    padding-top: 78px;
+  }
+}
+
+/* ─── Neutral ──────────────────────────────────────────────────────────── */
+
+html[data-style="neutral"] .corner {
+  display: none;
+}
+
+html[data-style="neutral"]:not([data-theme="moonlight"]) {
+  --navy: #3b4048;
+  --navy-deep: #23272d;
+  --navy-soft: #5a606b;
+  --gold: #a39274;
+  --gold-deep: #6f6147;
+  --gold-light: #cdbd9a;
+  --ink: #2a2e35;
+  --ink-soft: #5d636e;
+  --tone-gold-rgb: 163, 146, 116;
+  --tone-gold-light-rgb: 190, 172, 134;
+  --tone-gold-deep-rgb: 111, 97, 71;
+  --tone-paper-rgb: 255, 255, 255;
+  --tone-navy-rgb: 59, 64, 72;
+  --tone-navy-deep-rgb: 35, 39, 45;
+  --tone-ink-soft-rgb: 93, 99, 110;
+  --tone-navy: #3b4048;
+  --tone-navy-deep: #23272d;
+  --tone-ink: #2a2e35;
+  --tone-ink-soft: #5d636e;
+  --tone-gold: #a39274;
+  --tone-gold-deep: #6f6147;
+  --tone-parchment: #f5f3ee;
+  --tone-parchment-image: linear-gradient(180deg, #f8f7f3, #f1eee7);
+  --tone-page-bg: linear-gradient(#3a3d43 0%, #474a51 50%, #55585f 100%);
+}
+
+/* Navigation icons in graphite and taupe instead of navy and gold. */
+html[data-style="neutral"]:not([data-theme="moonlight"]) :is(.tab-icon, .nav-icon) {
+  filter: grayscale(.9) contrast(1.05);
+}
+
+/* ─── Raperonzolo: lavender and lilac with sage green ──────────────────── */
+
+html[data-style="raperonzolo"] .corner {
+  background-image: url('../assets/themes/raperonzolo/corner.svg');
+  filter: none;
+}
+
+html[data-style="raperonzolo"][data-theme="moonlight"] .corner {
+  background-image: url('../assets/themes/raperonzolo/corner-moonlight.svg');
+  opacity: .9;
+}
+
+html[data-style="raperonzolo"]:not([data-theme="moonlight"]) {
+  --navy: #5b3f7e;
+  --navy-deep: #3e2860;
+  --navy-soft: #7b61a0;
+  --gold: #9d82c2;
+  --gold-deep: #4f7d4b;
+  --gold-light: #c8e2b8;
+  --ink: #3a2a52;
+  --ink-soft: #6c5a86;
+  --tone-gold-rgb: 157, 130, 194;
+  --tone-gold-light-rgb: 132, 178, 122;
+  --tone-gold-deep-rgb: 79, 125, 75;
+  --tone-paper-rgb: 255, 252, 255;
+  --tone-navy-rgb: 91, 63, 126;
+  --tone-navy-deep-rgb: 62, 40, 96;
+  --tone-ink-soft-rgb: 108, 90, 134;
+  --tone-navy: #5b3f7e;
+  --tone-navy-deep: #3e2860;
+  --tone-ink: #3a2a52;
+  --tone-ink-soft: #6c5a86;
+  --tone-gold: #9d82c2;
+  --tone-gold-deep: #4f7d4b;
+  --tone-parchment: #f3edf9;
+  /* One layer only: the image is also used inside background shorthands. */
+  --tone-parchment-image: linear-gradient(165deg, #f8f3fd 0%, #f1e8f8 55%, #edf2ea 100%);
+  --tone-page-bg: linear-gradient(#3b2752 0%, #523a6c 50%, #6b5287 100%);
+}
+
+/* Values typed over a calculated one are marked in green instead of amber. */
+html[data-style="raperonzolo"]:not([data-theme="moonlight"]) .sheet .is-manual {
+  color: #3f7a3a !important;
+}
+
+/* Navy and gold icons shift to violet and green. */
+html[data-style="raperonzolo"]:not([data-theme="moonlight"]) :is(.tab-icon, .nav-icon) {
+  filter: hue-rotate(38deg) saturate(1.15);
+}
+
+html[data-style="raperonzolo"]:not([data-theme="moonlight"]) .theme-title {
+  color: var(--navy);
+}
+
+html[data-style="raperonzolo"] .theme-title::before,
+html[data-style="raperonzolo"] .theme-title::after {
+  content: '✿';
+  display: inline-block;
+  margin: 0 .45em;
+  color: var(--gold-deep);
+  font-size: .6em;
+  vertical-align: middle;
+}
+
+html[data-style="raperonzolo"][data-theme="moonlight"] .theme-title::before,
+html[data-style="raperonzolo"][data-theme="moonlight"] .theme-title::after {
+  color: #c9b5ee;
+}

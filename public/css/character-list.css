@@ -9,7 +9,7 @@
   content: "";
   position: absolute;
   inset: 8px;
-  border: 1px solid rgba(184, 144, 44, .36);
+  border: 1px solid rgba(var(--tone-gold-rgb), .36);
   pointer-events: none;
 }
 
@@ -42,7 +42,7 @@
 .character-list-brand img {
   width: min(320px, 88vw);
   height: auto;
-  filter: drop-shadow(0 2px 3px rgba(43, 56, 102, .16));
+  filter: drop-shadow(0 2px 3px rgba(var(--tone-navy-rgb), .16));
 }
 
 .character-list-kicker {
@@ -105,13 +105,13 @@
 }
 
 .character-list-meta span {
-  border-left: 2px solid rgba(184, 144, 44, .42);
+  border-left: 2px solid rgba(var(--tone-gold-rgb), .42);
   padding-left: 8px;
 }
 
 .character-list-empty {
   margin: 0;
-  border: 1px solid rgba(184, 144, 44, .7);
+  border: 1px solid rgba(var(--tone-gold-rgb), .7);
   background: rgba(255, 255, 255, .25);
   padding: 18px;
   font: .98rem/1.5 "Lora", Georgia, serif;

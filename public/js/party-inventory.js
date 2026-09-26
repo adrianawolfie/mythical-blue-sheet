@@ -492,7 +492,7 @@
       </div>
       ${stashGroup("Unclaimed Loot", items.filter(item => item.category === "loot" && !item.claimedBy), "No unclaimed loot. Add treasure here after a fight, then claim what you want.")}
       ${stashGroup("Claimed Loot", items.filter(item => item.category === "loot" && item.claimedBy), "Nothing claimed yet.", "Claimed loot stays in the stash until its owner presses Take.")}
-      ${stashGroup("Party Items", items.filter(item => item.category !== "loot"), "No shared party items yet, such as a tent, cart, or ship's supplies.")}
+      ${stashGroup("Party Items", items.filter(item => item.category !== "loot"), window.themeText?.("No shared party items yet, such as a tent, cart, or ship's supplies.", "No shared party items yet, such as a tent, cart, or camping supplies.") ?? "No shared party items yet.")}
       <div class="party-stash-group">
         <div class="party-subhdr">Party Purse<em>${formatGold(purse)}</em></div>
         <div class="coinsrow party-purse">${COINS.map(([key]) => `<div class="cbox2${key === "gp" ? " gold-coin" : ""}"><label>${key.toUpperCase()}</label><input type="text" inputmode="decimal" placeholder="0" data-party-coin="${key}" value="${esc(stash.coins[key])}"></div>`).join("")}</div>
@@ -500,7 +500,7 @@
       </div>
       <div class="party-stash-group">
         <div class="party-subhdr">Containers<em>${stash.containers.length || ""}</em></div>
-        <div class="party-container-list" data-empty="No containers yet. Add a bag of holding, cart, or ship's hold, then put stash items in it.">${stash.containers.map(container => `<div class="party-container-row" data-party-container="${esc(container.id)}">
+        <div class="party-container-list" data-empty="${esc(window.themeText?.("No containers yet. Add a bag of holding, cart, or ship's hold, then put stash items in it.", "No containers yet. Add a bag of holding, cart, or wagon, then put stash items in it.") ?? "No containers yet.")}">${stash.containers.map(container => `<div class="party-container-row" data-party-container="${esc(container.id)}">
           <label class="inventory-entry-field"><span>Container</span><input data-container-field="name" value="${esc(container.name)}" placeholder="Bag of Holding"></label>
           <label class="inventory-entry-field"><span>Carried by</span><select data-container-field="carriedBy">${memberOptions(container.carriedBy, "Nobody / left behind")}</select></label>
           <label class="inventory-entry-field"><span>Notes</span><input data-container-field="notes" value="${esc(container.notes)}" placeholder="Where it is, capacity…"></label>

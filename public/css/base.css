@@ -11,10 +11,30 @@
     --ink-soft:    #404e88;
     --small-italic-font: 'Lora', Georgia, serif;
     --r: 3px;
+
+    /* Day palette tones. Moonlight never changes these, so each theme's
+       daylight palette (css/theme-styles.css) can recolour them without
+       touching moonlight. */
+    --tone-gold-rgb: 184, 144, 44;
+    --tone-gold-light-rgb: 214, 168, 56;
+    --tone-gold-deep-rgb: 138, 105, 24;
+    --tone-paper-rgb: 255, 253, 245;
+    --tone-navy-rgb: 43, 56, 102;
+    --tone-navy-deep-rgb: 28, 39, 80;
+    --tone-ink-soft-rgb: 64, 78, 136;
+    --tone-navy: #2b3866;
+    --tone-navy-deep: #1c2750;
+    --tone-ink: #1f2952;
+    --tone-ink-soft: #404e88;
+    --tone-gold: #b8902c;
+    --tone-gold-deep: #8a6918;
+    --tone-parchment: #ede1c0;
+    --tone-parchment-image: url('../assets/parchment-seamless.png');
+    --tone-page-bg: linear-gradient(#5a4424 0%, #6e5530 50%, #8a6a40 100%);
   }
 
   html, body {
-    background: linear-gradient(#5a4424 0%, #6e5530 50%, #8a6a40 100%);
+    background: var(--tone-page-bg);
     min-height: 100vh;
     font-family: 'IM Fell English', Georgia, serif;
     color: var(--ink);
@@ -24,7 +44,7 @@
 .sheet-toolbar {
   max-width: 1000px;
   margin: 0 auto 16px auto;
-  background: #ede1c0;
+  background: var(--tone-parchment);
   border: 2px solid var(--gold);
   padding: 16px;
   color: var(--ink);
@@ -112,8 +132,8 @@
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
-    background-color: #ede1c0;
-    background-image: url('../assets/parchment-seamless.png');
+    background-color: var(--tone-parchment);
+    background-image: var(--tone-parchment-image);
 background-size: 100% auto;
 background-repeat: repeat-y;
 background-position: top center;

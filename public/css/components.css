@@ -56,7 +56,7 @@
 .hp-bar-wrap {
   width: 120px;
   height: 5px;
-  background: rgba(43,56,102,.15);
+  background: rgba(var(--tone-navy-rgb), .15);
   border-radius: 3px;
   overflow: hidden;
 }

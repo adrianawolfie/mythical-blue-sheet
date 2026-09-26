@@ -45,8 +45,8 @@
   font-style: italic;
   font-size: 12.5px;
   color: var(--navy);
-  background: rgba(184, 144, 44, 0.1);
-  border-bottom: 1px solid rgba(184, 144, 44, 0.3);
+  background: rgba(var(--tone-gold-rgb), 0.1);
+  border-bottom: 1px solid rgba(var(--tone-gold-rgb), 0.3);
 }
 
 /* Date block — ordered: season, month, week, weekday, day */
@@ -137,7 +137,7 @@
 /* Controls: Prev | Save | Next */
 .cal-controls {
   display: flex;
-  border-top: 1px solid rgba(184, 144, 44, 0.4);
+  border-top: 1px solid rgba(var(--tone-gold-rgb), 0.4);
   margin-top: 10px;
 }
 
@@ -145,7 +145,7 @@
   flex: 1;
   padding: 9px 10px;
   border: none;
-  border-right: 1px solid rgba(184, 144, 44, 0.3);
+  border-right: 1px solid rgba(var(--tone-gold-rgb), 0.3);
   background: transparent;
   color: var(--navy);
   cursor: pointer;
@@ -158,11 +158,11 @@
 .cal-btn:last-child { border-right: none; }
 
 .cal-btn:hover {
-  background: rgba(184, 144, 44, 0.14);
+  background: rgba(var(--tone-gold-rgb), 0.14);
   color: var(--navy-deep);
 }
 
-.cal-btn:active { background: rgba(184, 144, 44, 0.28); }
+.cal-btn:active { background: rgba(var(--tone-gold-rgb), 0.28); }
 
 .cal-btn:disabled {
   cursor: default;
@@ -177,7 +177,7 @@
 }
 
 .cal-btn-save:hover {
-  background: rgba(184, 144, 44, 0.22);
+  background: rgba(var(--tone-gold-rgb), 0.22);
   color: var(--gold-deep);
 }
 
@@ -191,8 +191,8 @@
   gap: 6px;
   padding: 7px 30px;
   margin-bottom: 18px;
-  border: 1px solid rgba(184, 144, 44, 0.4);
-  background: rgba(184, 144, 44, 0.06);
+  border: 1px solid rgba(var(--tone-gold-rgb), 0.4);
+  background: rgba(var(--tone-gold-rgb), 0.06);
   font-family: 'IM Fell English', Georgia, serif;
   font-style: italic;
   font-size: 12.5px;
@@ -236,8 +236,8 @@
 /* ── SHARED CAMPAIGN TRAVEL ─────────────────────────────────────────────── */
 
 .cal-travel {
-  border-top: 1px solid rgba(184, 144, 44, 0.38);
-  background: rgba(184, 144, 44, 0.055);
+  border-top: 1px solid rgba(var(--tone-gold-rgb), 0.38);
+  background: rgba(var(--tone-gold-rgb), 0.055);
   padding: 8px 10px 9px;
 }
 
@@ -275,9 +275,9 @@
 
 .cal-travel-btn {
   padding: 5px 7px;
-  border: 1px solid rgba(184, 144, 44, 0.54);
+  border: 1px solid rgba(var(--tone-gold-rgb), 0.54);
   border-radius: 2px;
-  background: rgba(255, 253, 245, 0.16);
+  background: rgba(var(--tone-paper-rgb), 0.16);
   color: var(--navy);
   cursor: pointer;
   font-family: 'Cinzel', serif;
@@ -292,7 +292,7 @@
 
 .cal-travel-btn:hover,
 .cal-travel-btn:focus-visible {
-  background: rgba(184, 144, 44, 0.16);
+  background: rgba(var(--tone-gold-rgb), 0.16);
   border-color: var(--gold-deep);
   color: var(--navy-deep);
   outline: none;
@@ -327,7 +327,7 @@
   height: 26px;
   padding: 0 4px;
   border: none;
-  border-bottom: 1px dotted rgba(184, 144, 44, 0.66);
+  border-bottom: 1px dotted rgba(var(--tone-gold-rgb), 0.66);
   border-radius: 0;
   background: transparent;
   color: var(--gold-deep);
@@ -342,7 +342,7 @@
 
 .cal-travel-count-input:focus {
   border-bottom-color: var(--gold-deep);
-  background: rgba(255, 253, 245, 0.22);
+  background: rgba(var(--tone-paper-rgb), 0.22);
 }
 
 .cal-travel-count-input::-webkit-inner-spin-button,
@@ -568,12 +568,12 @@
 /* ── SET EXACT DATE ────────────────────────────────────────────────────── */
 
 .cal-btn-save.is-pending {
-  background: rgba(184, 144, 44, 0.2);
+  background: rgba(var(--tone-gold-rgb), 0.2);
   box-shadow: inset 0 -2px 0 var(--gold-deep);
 }
 
 .cal-set-date {
-  border-top: 1px solid rgba(184, 144, 44, 0.38);
+  border-top: 1px solid rgba(var(--tone-gold-rgb), 0.38);
 }
 
 .cal-set-date summary {
@@ -589,7 +589,7 @@
 }
 
 .cal-set-date summary:hover {
-  background: rgba(184, 144, 44, 0.1);
+  background: rgba(var(--tone-gold-rgb), 0.1);
 }
 
 .cal-set-date-fields {
@@ -628,7 +628,7 @@
   height: 28px;
   padding: 0 4px;
   border: none;
-  border-bottom: 1px solid rgba(184, 144, 44, 0.6);
+  border-bottom: 1px solid rgba(var(--tone-gold-rgb), 0.6);
   border-radius: 0;
   background: transparent;
   color: var(--navy-deep);
@@ -654,7 +654,7 @@
 .cal-set-date-hint {
   margin: 0;
   padding: 0 10px 8px;
-  color: rgba(28, 39, 80, .66);
+  color: rgba(var(--tone-navy-deep-rgb), .66);
   font-family: 'Lora', serif;
   font-size: 10.5px;
   font-style: italic;

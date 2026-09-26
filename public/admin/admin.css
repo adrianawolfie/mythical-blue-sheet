@@ -25,7 +25,7 @@ body.admin-body {
   font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
-  text-decoration-color: rgba(214, 168, 56, .6);
+  text-decoration-color: rgba(var(--tone-gold-light-rgb), .6);
   text-underline-offset: 4px;
 }
 
@@ -52,9 +52,9 @@ body.admin-body {
   position: relative;
   width: 56px;
   height: 28px;
-  border: 1px solid rgba(138, 105, 24, .72);
+  border: 1px solid rgba(var(--tone-gold-deep-rgb), .72);
   border-radius: 999px;
-  background: rgba(184, 144, 44, .20);
+  background: rgba(var(--tone-gold-rgb), .20);
   transition: background .15s ease, border-color .15s ease;
 }
 
@@ -102,8 +102,8 @@ body.admin-body {
   position: relative;
   overflow: hidden;
   border: 2px solid var(--gold);
-  background-color: #ede1c0;
-  background-image: url("../assets/parchment-seamless.png");
+  background-color: var(--tone-parchment);
+  background-image: var(--tone-parchment-image);
   background-size: 100% auto;
   background-repeat: repeat-y;
   box-shadow: 0 10px 38px rgba(0, 0, 0, .38), 0 2px 10px rgba(0, 0, 0, .22);
@@ -118,7 +118,7 @@ body.admin-body {
   content: "";
   position: absolute;
   inset: 8px;
-  border: 1px solid rgba(184, 144, 44, .36);
+  border: 1px solid rgba(var(--tone-gold-rgb), .36);
   pointer-events: none;
 }
 
@@ -140,7 +140,7 @@ body.admin-body {
 
 .admin-sidebar-link {
   display: block;
-  border: 1px solid rgba(184, 144, 44, .36);
+  border: 1px solid rgba(var(--tone-gold-rgb), .36);
   color: var(--navy-deep);
   font-family: "Cinzel", serif;
   font-size: .86rem;
@@ -154,7 +154,7 @@ body.admin-body {
 .admin-sidebar-link:focus-visible,
 .admin-sidebar-link.active {
   border-color: var(--gold-deep);
-  background: rgba(184, 144, 44, .16);
+  background: rgba(var(--tone-gold-rgb), .16);
   outline: none;
 }
 
@@ -174,7 +174,7 @@ body.admin-body {
   display: block;
   width: min(320px, 88%);
   height: auto;
-  filter: drop-shadow(0 2px 3px rgba(43, 56, 102, .16));
+  filter: drop-shadow(0 2px 3px rgba(var(--tone-navy-rgb), .16));
 }
 
 .admin-accent,
@@ -203,7 +203,7 @@ body.admin-body {
 }
 
 .admin-panel {
-  border: 1px solid rgba(184, 144, 44, .70);
+  border: 1px solid rgba(var(--tone-gold-rgb), .70);
   background: rgba(255, 255, 255, .30);
   padding: 16px;
   backdrop-filter: blur(4px);
@@ -226,7 +226,7 @@ body.admin-body {
 
 .admin-table {
   overflow: hidden;
-  border: 1px solid rgba(184, 144, 44, .70);
+  border: 1px solid rgba(var(--tone-gold-rgb), .70);
   background: rgba(255, 255, 255, .25);
 }
 
@@ -241,8 +241,8 @@ body.admin-body {
 }
 
 .admin-table thead {
-  border-bottom: 1px solid rgba(184, 144, 44, .70);
-  background: rgba(43, 56, 102, .10);
+  border-bottom: 1px solid rgba(var(--tone-gold-rgb), .70);
+  background: rgba(var(--tone-navy-rgb), .10);
   color: var(--gold-deep);
   font-family: "Cinzel", serif;
   font-size: .74rem;
@@ -254,7 +254,7 @@ body.admin-body {
 .admin-table td { padding: 12px 16px; }
 
 .admin-table tbody tr {
-  border-bottom: 1px solid rgba(184, 144, 44, .40);
+  border-bottom: 1px solid rgba(var(--tone-gold-rgb), .40);
   background: rgba(255, 255, 255, .10);
 }
 
@@ -311,8 +311,8 @@ body.admin-body {
 .admin-player-picker select,
 .admin-player-picker button {
   min-height: 32px;
-  border: 1px solid rgba(138, 105, 24, .72);
-  background: rgba(255, 253, 245, .72);
+  border: 1px solid rgba(var(--tone-gold-deep-rgb), .72);
+  background: rgba(var(--tone-paper-rgb), .72);
   color: var(--ink);
   padding: 4px 8px;
   font: .82rem "Lora", Georgia, serif;
@@ -406,7 +406,7 @@ html[data-theme="moonlight"] .admin-danger-action:focus-visible {
 
 .admin-badge-on {
   border-color: var(--gold);
-  background: rgba(184, 144, 44, .20);
+  background: rgba(var(--tone-gold-rgb), .20);
   color: var(--gold-deep);
 }
 
@@ -417,7 +417,7 @@ html[data-theme="moonlight"] .admin-danger-action:focus-visible {
   cursor: pointer;
   font: inherit;
   text-decoration: underline;
-  text-decoration-color: rgba(43, 56, 102, .38);
+  text-decoration-color: rgba(var(--tone-navy-rgb), .38);
   text-underline-offset: 3px;
 }
 
@@ -445,8 +445,8 @@ html[data-theme="moonlight"] .admin-danger-action:focus-visible {
 .admin-modal-card {
   width: min(420px, 100%);
   border: 2px solid var(--gold);
-  background-color: #ede1c0;
-  background-image: url("../assets/parchment-seamless.png");
+  background-color: var(--tone-parchment);
+  background-image: var(--tone-parchment-image);
   background-size: 100% auto;
   box-shadow: 0 12px 42px rgba(0, 0, 0, .48);
   color: var(--ink);
@@ -483,8 +483,8 @@ html[data-theme="moonlight"] .admin-danger-action:focus-visible {
 .admin-modal-field input,
 .admin-modal-field select {
   min-height: 42px;
-  border: 1px solid rgba(138, 105, 24, .72);
-  background: rgba(255, 253, 245, .72);
+  border: 1px solid rgba(var(--tone-gold-deep-rgb), .72);
+  background: rgba(var(--tone-paper-rgb), .72);
   color: var(--ink);
   padding: 8px 10px;
   font: 1rem "Lora", Georgia, serif;

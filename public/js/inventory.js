@@ -1174,7 +1174,7 @@ function addStorageLocationRow(data = {}) {
   row.dataset.storageId = storage.id;
 
   row.innerHTML =
-    inventoryInputCell("storage-location-name", storage.name, "Backpack, ship cabin, home…") +
+    inventoryInputCell("storage-location-name", storage.name, (window.themeText?.("Backpack, ship cabin, home…", "Backpack, wagon, home…") ?? "Backpack, ship cabin, home…")) +
     inventoryInputCell("storage-location-type", storage.type, "Bag, room, chest…") +
     inventoryInputCell("storage-location-notes", storage.notes, "Notes…") +
     inventoryRemoveButton("container or location");

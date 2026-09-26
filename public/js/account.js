@@ -24,7 +24,15 @@
       <section class="account-preferences" aria-label="Display preferences">
         <div class="account-preference-row">
           <span>Theme</span>
-          <button type="button" class="account-theme-toggle" data-theme-toggle aria-label="Switch visual theme">
+          <select class="account-theme-select" data-theme-style-select aria-label="Theme">
+            <option value="mythical-blue">Mythical Blue</option>
+            <option value="neutral">Neutral</option>
+            <option value="raperonzolo">Raperonzolo</option>
+          </select>
+        </div>
+        <div class="account-preference-row">
+          <span>Mode</span>
+          <button type="button" class="account-theme-toggle" data-theme-toggle aria-label="Switch between daylight and moonlight">
             <span class="account-theme-track" aria-hidden="true"><span class="account-theme-orb"></span></span>
             <span class="theme-toggle-label">Moonlight</span>
           </button>
