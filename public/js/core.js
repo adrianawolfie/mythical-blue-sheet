@@ -460,6 +460,7 @@ function collectCharacterData() {
     hitDiceSpent: typeof collectHitDiceSpent === "function" ? collectHitDiceSpent() : {},
     spellSlotsSpent: typeof spellSlotsSpent === "object" ? spellSlotsSpent : {},
     featureResourcesSpent: typeof featureResourcesSpent === "object" ? featureResourcesSpent : {},
+    companions: typeof companionLive === "object" ? companionLive : {},
     activeArmorClassModifiers: typeof collectActiveArmorClassModifiers === "function"
       ? collectActiveArmorClassModifiers()
       : []
@@ -499,6 +500,7 @@ customLists: {
   customEquippedSlots: collectCustomEquippedSlots(),
   inventoryView: getInventoryView(),
   speeds: collectExtraSpeedRows(),
+  companions: typeof collectCompanions === "function" ? collectCompanions() : [],
   armorClass: (() => {
     const state = collectArmorClassState();
     return {
@@ -554,6 +556,7 @@ resetInventoryRows({
   inventoryView: character.customLists?.inventoryView || "list"
 });
 renderExtraSpeedRows(character.customLists?.speeds || []);
+if (typeof renderCompanions === "function") renderCompanions(character.customLists?.companions || []);
 renderArmorClassState(
   character.customLists?.armorClass || null,
   normalizedFields.armorClass ?? character.summary?.armorClass ?? "",
@@ -672,6 +675,7 @@ resetSpellRows();
 resetJournalNotes();
 resetInventoryRows();
 renderExtraSpeedRows();
+if (typeof renderCompanions === "function") renderCompanions([]);
 renderArmorClassState();
 renderProficiencyRows();
 renderDefenseRows();

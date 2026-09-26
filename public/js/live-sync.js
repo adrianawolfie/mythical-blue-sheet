@@ -452,6 +452,7 @@ function applyLiveState(live = {}) {
     ? live.featureResourcesSpent
     : {};
   renderFeatureResources();
+  if (typeof applyCompanionLive === "function") applyCompanionLive(live.companions);
 
   const conditionsInput = document.getElementById("currentConditionsInput");
   if (conditionsInput && Array.isArray(live.conditions)) {
@@ -494,7 +495,7 @@ function renderFeatureResources() {
 function takeRest(type) {
   const longRest = type === "Long Rest";
   if (!confirm(longRest
-    ? "Take a long rest? This restores all HP, hit dice, spell slots, and Short Rest and Long Rest resources, clears temporary HP and death saves, and reduces exhaustion by 1 (removing the Exhaustion condition at 0)."
+    ? "Take a long rest? This restores all HP (including companions'), hit dice, spell slots, and Short Rest and Long Rest resources, clears temporary HP and death saves, and reduces exhaustion by 1 (removing the Exhaustion condition at 0)."
     : "Take a short rest? This restores pact magic slots and Short Rest resources.")) return;
 
   featureResourcesSpent = Object.fromEntries(Object.entries(featureResourcesSpent).filter(([id]) => {
@@ -522,6 +523,7 @@ function takeRest(type) {
       removeSelectedCondition("Exhaustion");
     }
     Object.assign(patch, {
+      companions: typeof restCompanions === "function" ? restCompanions() : undefined,
       hpCurrent: hpCurrentInput?.value ?? "",
       tempHp: "",
       hitDiceSpent: {},

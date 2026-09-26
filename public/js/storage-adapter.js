@@ -81,6 +81,7 @@
         "hitDiceSpent",
         "spellSlotsSpent",
         "featureResourcesSpent",
+        "companions",
         "activeArmorClassModifiers"
       ]);
       const body = Object.fromEntries(

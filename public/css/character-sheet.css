@@ -2782,3 +2782,299 @@
   .attack-edit-tools { grid-area: tools; }
 }
 
+/* Companions: familiars, pets, and mounts as compact stat cards. */
+.companions-heading-card {
+  margin-bottom: 12px;
+}
+
+.companion-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.companion-list:empty::before {
+  content: attr(data-empty);
+  grid-column: 1 / -1;
+  padding: 24px 12px;
+  color: var(--ink-soft);
+  font-family: var(--small-italic-font);
+  font-size: 12.5px;
+  font-style: italic;
+  text-align: center;
+}
+
+.companion-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--gold);
+  border-radius: var(--r);
+  background: rgba(255,250,234,.30);
+}
+
+.companion-card input,
+.companion-card select,
+.companion-card textarea {
+  min-width: 0;
+  padding: 2px 4px;
+  border: none;
+  border-bottom: 1px dotted rgba(184,144,44,.6);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--small-italic-font);
+  font-size: 13px;
+  outline: none;
+}
+
+.companion-card :is(input, select, textarea):focus {
+  border-bottom-color: var(--gold-deep);
+  background: rgba(255,253,245,.45);
+}
+
+.companion-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.companion-title {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.companion-card .companion-name {
+  width: 100%;
+  border-bottom-color: transparent;
+  color: var(--navy-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+
+.companion-subtitle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+}
+
+.companion-card .companion-kind {
+  padding: 1px 8px;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  color: var(--gold-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+}
+
+.companion-card .companion-creature { flex: 1 1 110px; font-style: italic; }
+.companion-card .companion-size { width: 64px; font-style: italic; }
+.companion-card .companion-type { flex: 1 1 90px; font-style: italic; }
+
+.companion-remove {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.companion-remove:hover {
+  color: #a8322a;
+}
+
+/* Two rows: AC · Hit Points · Temp HP, then Speed · Initiative · CR. */
+.companion-stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px 10px;
+  align-items: start;
+}
+
+.companion-stat { grid-column: span 1; }
+.companion-hp { grid-column: span 3; }
+.companion-stats > .companion-stat:nth-child(3) { grid-column: span 2; }
+.companion-stat-wide { grid-column: span 3; }
+.companion-stats > .companion-stat:nth-child(5) { grid-column: span 2; }
+
+.companion-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+
+.companion-stat > span,
+.companion-ability > span,
+.companion-field > span {
+  color: var(--navy);
+  font-family: 'Cinzel', serif;
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.companion-stat input {
+  width: 100%;
+  font-family: 'Cinzel', serif !important;
+  font-size: 13px !important;
+  font-weight: 700;
+  text-align: center;
+  color: var(--navy-deep) !important;
+}
+
+.companion-stat-wide input {
+  font-family: var(--small-italic-font) !important;
+  font-weight: 600;
+}
+
+.companion-hp-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.companion-hp-row em {
+  color: var(--ink-soft);
+}
+
+.companion-card .companion-hp-row input {
+  width: 38px;
+}
+
+.companion-hp-btn {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid rgba(184,144,44,.6);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--navy);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.companion-hp-btn:hover {
+  background: rgba(184,144,44,.16);
+}
+
+.companion-hp-bar {
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(184,144,44,.2);
+  overflow: hidden;
+}
+
+.companion-hp-bar > div {
+  height: 100%;
+  border-radius: inherit;
+  background: #2f9e6a;
+  transition: width .2s ease;
+}
+
+.companion-hp-bar > div.danger {
+  background: #c0463b;
+}
+
+.companion-abilities {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  padding: 8px 0;
+  border-top: 1px dotted rgba(184,144,44,.45);
+  border-bottom: 1px dotted rgba(184,144,44,.45);
+}
+
+.companion-ability {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.companion-card .companion-ability-score {
+  width: 100%;
+  max-width: 44px;
+  border-bottom-color: transparent;
+  color: var(--navy-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.companion-ability-mod {
+  color: var(--ink-soft);
+  font-family: var(--small-italic-font);
+  font-size: 11.5px;
+}
+
+.companion-details > summary {
+  color: var(--gold-deep);
+  font-family: 'Cinzel', serif;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.companion-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
+  padding-top: 8px;
+}
+
+.companion-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.companion-field-wide {
+  grid-column: 1 / -1;
+}
+
+.companion-card .companion-field textarea {
+  min-height: 64px;
+  resize: vertical;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 1099px) {
+  .companion-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .companion-details-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+

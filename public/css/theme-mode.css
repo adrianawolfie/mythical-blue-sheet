@@ -2102,3 +2102,53 @@ html[data-theme="moonlight"] .inventory-filter-toolbar .inventory-mobile-sort-di
   color: var(--moon-text);
 }
 
+html[data-theme="moonlight"] .companion-card {
+  background: linear-gradient(145deg, var(--moon-panel-soft), var(--moon-panel-deep));
+  border-color: var(--moon-gold-line) !important;
+}
+
+html[data-theme="moonlight"] .companion-card :is(input, select, textarea) {
+  border-bottom-color: var(--moon-ghost-soft-line) !important;
+  background: transparent !important;
+  color: var(--moon-text) !important;
+}
+
+html[data-theme="moonlight"] .companion-card .companion-name,
+html[data-theme="moonlight"] .companion-card .companion-ability-score,
+html[data-theme="moonlight"] .companion-stat input {
+  border-bottom-color: transparent !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="moonlight"] .companion-card .companion-kind {
+  border: 1px solid #f3c969 !important;
+  color: #f3c969 !important;
+}
+
+html[data-theme="moonlight"] .companion-card select option {
+  background: #06224a;
+}
+
+html[data-theme="moonlight"] .companion-stat > span,
+html[data-theme="moonlight"] .companion-ability > span,
+html[data-theme="moonlight"] .companion-field > span,
+html[data-theme="moonlight"] .companion-details > summary {
+  color: #f3c969;
+}
+
+html[data-theme="moonlight"] .companion-ability-mod,
+html[data-theme="moonlight"] .companion-hp-row em,
+html[data-theme="moonlight"] .companion-list:empty::before,
+html[data-theme="moonlight"] .companion-remove {
+  color: var(--moon-ghost-bright);
+}
+
+html[data-theme="moonlight"] .companion-hp-btn {
+  border-color: var(--moon-ghost-soft-line);
+  color: var(--moon-ghost-bright);
+}
+
+html[data-theme="moonlight"] .companion-abilities {
+  border-color: var(--moon-ghost-soft-line);
+}
+

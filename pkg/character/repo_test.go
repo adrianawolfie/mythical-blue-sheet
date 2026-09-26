@@ -317,8 +317,9 @@ func TestCopyCreatesIndependentCharacterWithResetLiveState(t *testing.T) {
 	hitDiceSpent := map[string]int{"d6": 2}
 	spellSlotsSpent := map[string]int{"1": 3}
 	featureResourcesSpent := map[string]int{"feat-0": 1}
+	companions := map[string]CompanionLive{"owl": {HpCurrent: "1", TempHp: "2"}}
 	activeModifiers := []string{"Shield"}
-	if err := repo.UpdateLive(ctx, source.ID, LiveUpdate{HpCurrent: &hp, HpOverride: &override, TempHp: &temp, Conditions: &conditions, Inspiration: &inspiration, ExhaustionLevel: &exhaustion, DeathSaves: &deathSaves, HitDiceSpent: &hitDiceSpent, SpellSlotsSpent: &spellSlotsSpent, FeatureResourcesSpent: &featureResourcesSpent, ActiveArmorClassModifiers: &activeModifiers}); err != nil {
+	if err := repo.UpdateLive(ctx, source.ID, LiveUpdate{HpCurrent: &hp, HpOverride: &override, TempHp: &temp, Conditions: &conditions, Inspiration: &inspiration, ExhaustionLevel: &exhaustion, DeathSaves: &deathSaves, HitDiceSpent: &hitDiceSpent, SpellSlotsSpent: &spellSlotsSpent, FeatureResourcesSpent: &featureResourcesSpent, Companions: &companions, ActiveArmorClassModifiers: &activeModifiers}); err != nil {
 		t.Fatalf("update source live state: %v", err)
 	}
 
@@ -332,11 +333,11 @@ func TestCopyCreatesIndependentCharacterWithResetLiveState(t *testing.T) {
 	if copied.Summary.Name != "Ada Copy" || copied.Fields["characterName"] != "Ada Copy" || copied.Fields["class"] != "Wizard" {
 		t.Fatalf("copy did not preserve configuration: %#v", copied)
 	}
-	if copied.Live.HpCurrent != "20" || copied.Live.HpMax != "20" || copied.Live.HpOverride != nil || copied.Live.TempHp != "" || len(copied.Live.Conditions) != 0 || copied.Live.Inspiration || copied.Live.ExhaustionLevel != 0 || copied.Live.DeathSaves != (DeathSaves{}) || len(copied.Live.HitDiceSpent) != 0 || len(copied.Live.SpellSlotsSpent) != 0 || len(copied.Live.FeatureResourcesSpent) != 0 || len(copied.Live.ActiveArmorClassModifiers) != 0 {
+	if copied.Live.HpCurrent != "20" || copied.Live.HpMax != "20" || copied.Live.HpOverride != nil || copied.Live.TempHp != "" || len(copied.Live.Conditions) != 0 || copied.Live.Inspiration || copied.Live.ExhaustionLevel != 0 || copied.Live.DeathSaves != (DeathSaves{}) || len(copied.Live.HitDiceSpent) != 0 || len(copied.Live.SpellSlotsSpent) != 0 || len(copied.Live.FeatureResourcesSpent) != 0 || len(copied.Live.Companions) != 0 || len(copied.Live.ActiveArmorClassModifiers) != 0 {
 		t.Fatalf("copy did not reset live state: %#v", copied.Live)
 	}
 	sourceAfter, _ := repo.GetByID(ctx, source.ID)
-	if sourceAfter.Summary.Name != "Ada" || sourceAfter.Live.HpCurrent != "3" || sourceAfter.Live.HpMax != "30" || sourceAfter.Live.SpellSlotsSpent["1"] != 3 || sourceAfter.Live.FeatureResourcesSpent["feat-0"] != 1 {
+	if sourceAfter.Summary.Name != "Ada" || sourceAfter.Live.HpCurrent != "3" || sourceAfter.Live.HpMax != "30" || sourceAfter.Live.SpellSlotsSpent["1"] != 3 || sourceAfter.Live.FeatureResourcesSpent["feat-0"] != 1 || sourceAfter.Live.Companions["owl"].HpCurrent != "1" {
 		t.Fatalf("copy changed source character: %#v", sourceAfter)
 	}
 	history, err := repo.ListHistory(ctx, copied.ID)
@@ -468,6 +469,7 @@ func TestCreateOrReplaceChangesCharacterDetails(t *testing.T) {
 	character.UIState.SkillProficiencies = []bool{false, true}
 	character.UIState.SkillExpertise = []bool{false, true}
 	character.CustomLists.InventoryItems = []InventoryItem{{ID: "item-1", Name: "Cloak of Protection", Type: "magic", Rarity: "Uncommon"}}
+	character.CustomLists.Companions = []Companion{{ID: "owl", Name: "Hoot", Kind: "Familiar", Creature: "Owl", HpMax: "1", Abilities: map[string]string{"dex": "13"}}}
 
 	if err := repo.CreateOrReplace(ctx, character); err != nil {
 		t.Fatalf("replace character: %v", err)
@@ -488,6 +490,9 @@ func TestCreateOrReplaceChangesCharacterDetails(t *testing.T) {
 	}
 	if len(updated.CustomLists.InventoryItems) != 1 || updated.CustomLists.InventoryItems[0].Rarity != "Uncommon" {
 		t.Fatalf("expected inventory item rarity to persist, got %#v", updated.CustomLists.InventoryItems)
+	}
+	if len(updated.CustomLists.Companions) != 1 || updated.CustomLists.Companions[0].Kind != "Familiar" || updated.CustomLists.Companions[0].Abilities["dex"] != "13" {
+		t.Fatalf("expected companions to persist, got %#v", updated.CustomLists.Companions)
 	}
 }
 

@@ -87,36 +87,38 @@ type DeathSaves struct {
 }
 
 type Live struct {
-	HpCurrent                 string         `json:"hpCurrent"`
-	HpOverride                *string        `json:"hpOverride"`
-	HpMax                     string         `json:"hpMax,omitempty"`
-	TempHp                    string         `json:"tempHp"`
-	Conditions                []string       `json:"conditions"`
-	Inspiration               bool           `json:"inspiration"`
-	ExhaustionLevel           int            `json:"exhaustionLevel"`
-	DeathSaves                DeathSaves     `json:"deathSaves"`
-	HitDiceSpent              map[string]int `json:"hitDiceSpent"`
-	SpellSlotsSpent           map[string]int `json:"spellSlotsSpent"`
-	FeatureResourcesSpent     map[string]int `json:"featureResourcesSpent"`
-	ActiveArmorClassModifiers []string       `json:"activeArmorClassModifiers"`
-	UpdatedAt                 string         `json:"updatedAt"`
+	HpCurrent                 string                   `json:"hpCurrent"`
+	HpOverride                *string                  `json:"hpOverride"`
+	HpMax                     string                   `json:"hpMax,omitempty"`
+	TempHp                    string                   `json:"tempHp"`
+	Conditions                []string                 `json:"conditions"`
+	Inspiration               bool                     `json:"inspiration"`
+	ExhaustionLevel           int                      `json:"exhaustionLevel"`
+	DeathSaves                DeathSaves               `json:"deathSaves"`
+	HitDiceSpent              map[string]int           `json:"hitDiceSpent"`
+	SpellSlotsSpent           map[string]int           `json:"spellSlotsSpent"`
+	FeatureResourcesSpent     map[string]int           `json:"featureResourcesSpent"`
+	Companions                map[string]CompanionLive `json:"companions"`
+	ActiveArmorClassModifiers []string                 `json:"activeArmorClassModifiers"`
+	UpdatedAt                 string                   `json:"updatedAt"`
 }
 
 // LiveUpdate uses pointers for PATCH semantics. HpOverrideSet distinguishes an
 // omitted hpOverride from an explicit JSON null.
 type LiveUpdate struct {
-	HpCurrent                 *string         `json:"hpCurrent,omitempty"`
-	HpOverride                *string         `json:"hpOverride,omitempty"`
-	HpOverrideSet             bool            `json:"-"`
-	TempHp                    *string         `json:"tempHp,omitempty"`
-	Conditions                *[]string       `json:"conditions,omitempty"`
-	Inspiration               *bool           `json:"inspiration,omitempty"`
-	ExhaustionLevel           *int            `json:"exhaustionLevel,omitempty"`
-	DeathSaves                *DeathSaves     `json:"deathSaves,omitempty"`
-	HitDiceSpent              *map[string]int `json:"hitDiceSpent,omitempty"`
-	SpellSlotsSpent           *map[string]int `json:"spellSlotsSpent,omitempty"`
-	FeatureResourcesSpent     *map[string]int `json:"featureResourcesSpent,omitempty"`
-	ActiveArmorClassModifiers *[]string       `json:"activeArmorClassModifiers,omitempty"`
+	HpCurrent                 *string                   `json:"hpCurrent,omitempty"`
+	HpOverride                *string                   `json:"hpOverride,omitempty"`
+	HpOverrideSet             bool                      `json:"-"`
+	TempHp                    *string                   `json:"tempHp,omitempty"`
+	Conditions                *[]string                 `json:"conditions,omitempty"`
+	Inspiration               *bool                     `json:"inspiration,omitempty"`
+	ExhaustionLevel           *int                      `json:"exhaustionLevel,omitempty"`
+	DeathSaves                *DeathSaves               `json:"deathSaves,omitempty"`
+	HitDiceSpent              *map[string]int           `json:"hitDiceSpent,omitempty"`
+	SpellSlotsSpent           *map[string]int           `json:"spellSlotsSpent,omitempty"`
+	FeatureResourcesSpent     *map[string]int           `json:"featureResourcesSpent,omitempty"`
+	Companions                *map[string]CompanionLive `json:"companions,omitempty"`
+	ActiveArmorClassModifiers *[]string                 `json:"activeArmorClassModifiers,omitempty"`
 }
 
 func (u *LiveUpdate) UnmarshalJSON(data []byte) error {
@@ -160,6 +162,7 @@ type CustomLists struct {
 	CustomEquippedSlots []CustomEquippedSlot `json:"customEquippedSlots"`
 	InventoryView       string               `json:"inventoryView"`
 	Speeds              []SpeedRow           `json:"speeds"`
+	Companions          []Companion          `json:"companions"`
 	ArmorClass          ArmorClassState      `json:"armorClass"`
 }
 
@@ -176,6 +179,36 @@ type FeatureEntry struct {
 	SourceID     string `json:"sourceId"`
 	Source       string `json:"source"`
 	Category     string `json:"category"`
+}
+
+// Companion is a familiar, pet, mount, or other creature that travels with the character.
+type Companion struct {
+	ID              string            `json:"id"`
+	Name            string            `json:"name"`
+	Kind            string            `json:"kind"`
+	Creature        string            `json:"creature"`
+	SourceID        string            `json:"sourceId"`
+	Size            string            `json:"size"`
+	CreatureType    string            `json:"creatureType"`
+	ArmorClass      string            `json:"armorClass"`
+	HpMax           string            `json:"hpMax"`
+	HitDice         string            `json:"hitDice"`
+	Speed           string            `json:"speed"`
+	Initiative      string            `json:"initiative"`
+	ChallengeRating string            `json:"challengeRating"`
+	Abilities       map[string]string `json:"abilities"`
+	Skills          string            `json:"skills"`
+	Senses          string            `json:"senses"`
+	Languages       string            `json:"languages"`
+	Traits          string            `json:"traits"`
+	Actions         string            `json:"actions"`
+	Notes           string            `json:"notes"`
+}
+
+// CompanionLive is a companion's hit points during play, keyed by companion ID in live state.
+type CompanionLive struct {
+	HpCurrent string `json:"hpCurrent"`
+	TempHp    string `json:"tempHp"`
 }
 
 type WeaponRow struct {

@@ -1,8 +1,8 @@
 // Mythical Blue · Shared SRD feat and inventory item pickers.
 (function () {
-  const libraries = { feat: [], item: [] };
-  const loaded = { feat: false, item: false };
-  const selected = { feat: '', item: '' };
+  const libraries = { feat: [], item: [], creature: [] };
+  const loaded = { feat: false, item: false, creature: false };
+  const selected = { feat: '', item: '', creature: '' };
 
   function esc(value = '') { return String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function text(value = '') { return String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -13,6 +13,7 @@
     return match ? match[1] : cleaned.slice(0,220);
   }
   function config(kind) {
+    if (kind === 'creature') return { title:'Add Companion', description:'Choose a creature from the SRD stat blocks to fill in a familiar, pet, or mount. You can edit everything afterward.', search:'Owl, Cat, Riding Horse, Imp…', path:'data/srd-statblocks.json', key:'', category:'section', customLabel:'+ Custom Companion' };
     return kind === 'feat'
       ? { title:'Add Feat', description:'Preview an SRD feat before adding an editable snapshot to Features & Traits.', search:'Alert, Grappler, Archery…', path:'data/srd-feats.json', key:'feats', category:'category', customLabel:'+ Custom Feature / Trait' }
       : { title:'Add Item', description:'Preview an SRD equipment or magic item entry before adding an editable inventory snapshot.', search:'Scimitar, Backpack, Bag of Holding…', path:'data/srd-items.json', key:'items', category:'category', customLabel:'+ Custom Item' };
@@ -23,7 +24,7 @@
     try {
       const response=await fetch(cfg.path,{cache:'no-store'});
       const data=await response.json();
-      libraries[kind]=(data[cfg.key]||[]).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),undefined,{sensitivity:'base'}));
+      libraries[kind]=((Array.isArray(data)?data:data[cfg.key])||[]).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),undefined,{sensitivity:'base'}));
       loaded[kind]=true;
     } catch (error) { console.warn(`${cfg.title} library unavailable`,error); }
   }
@@ -46,6 +47,7 @@
   }
   function meta(kind,entry) {
     if (kind==='feat') return [entry.category,entry.prerequisite].filter(Boolean).join(' · ');
+    if (kind==='creature') return [[entry.size,entry.type].filter(Boolean).join(' '),entry.challengeRating?`CR ${entry.challengeRating}`:''].filter(Boolean).join(' · ');
     return [entry.category,entry.rarity,entry.value,entry.weight].filter(Boolean).join(' · ');
   }
   function render(kind) {
@@ -60,8 +62,8 @@
     const id=ids(kind), box=document.getElementById(id.preview), entry=libraries[kind].find(value=>value.id===selected[kind]);
     if(!box) return;
     if(!entry){box.innerHTML='<p class="library-picker-placeholder">Select an entry to preview its rules text before adding it.</p>';return;}
-    const body=kind==='item' ? `${entry.details||entry.summary||''}${entry.attunement?'\n\nRequires Attunement.':''}` : entry.details||entry.short||'';
-    box.innerHTML=`<h3>${esc(entry.name)}</h3><p class="library-preview-meta">${esc(meta(kind,entry)||entry.source||'SRD 5.2.1')}</p><div class="library-preview-body">${text(body||'No description available.')}</div><div class="library-preview-actions"><button type="button" class="add-btn" onclick="addSrdLibraryEntry('${kind}','${esc(entry.id)}')">+ Add ${kind==='feat'?'Feat':'Item'}</button></div>`;
+    const body=kind==='creature' ? entry.text||'' : kind==='item' ? `${entry.details||entry.summary||''}${entry.attunement?'\n\nRequires Attunement.':''}` : entry.details||entry.short||'';
+    box.innerHTML=`<h3>${esc(entry.name)}</h3><p class="library-preview-meta">${esc(meta(kind,entry)||entry.source||'SRD 5.2.1')}</p><div class="library-preview-body">${text(body||'No description available.')}</div><div class="library-preview-actions"><button type="button" class="add-btn" onclick="addSrdLibraryEntry('${kind}','${esc(entry.id)}')">+ Add ${kind==='feat'?'Feat':kind==='creature'?'Companion':'Item'}</button></div>`;
   }
   async function open(kind) {
     ensureModal(kind); await load(kind); refreshCategories(kind); selected[kind]=''; renderPreview(kind); render(kind);
@@ -70,11 +72,15 @@
   }
   window.openFeatPicker=()=>open('feat');
   window.openItemPicker=()=>open('item');
+  window.openCompanionPicker=()=>open('creature');
   window.closeSrdLibraryPicker=function(kind){ const modal=document.getElementById(ids(kind).modal); if(modal) modal.hidden=true; };
   window.previewSrdLibraryEntry=function(kind,entryId){ selected[kind]=entryId; renderPreview(kind); };
   window.addSrdLibraryEntry=function(kind,entryId){
     const entry=libraries[kind].find(value=>value.id===entryId); if(!entry) return;
-    if(kind==='feat') {
+    if(kind==='creature') {
+      addCompanion(companionFromStatblock(entry));
+      markCharacterDirty();
+    } else if(kind==='feat') {
       addFeatureEntry('featList',{name:entry.name,short:firstUsefulSentence(entry.details||entry.short),details:`${entry.details||''}\n\nSource: ${entry.source||'SRD 5.2.1'}`,sourceId:entry.id,source:entry.source,category:entry.category,hasResource:Boolean(entry.resource),resourceMax:entry.resource?.max||'',resourceType:entry.resource?.type||''});
     } else {
       const extras=[entry.category,entry.rarity,entry.weight?`Weight: ${entry.weight}`:'',entry.attunement?'Requires Attunement':''].filter(Boolean).join(' · ');
@@ -82,6 +88,6 @@
     }
     closeSrdLibraryPicker(kind);
   };
-  window.addCustomFromSrdPicker=function(kind){ closeSrdLibraryPicker(kind); if(kind==='feat') addFeatureEntry('featList'); else addUnifiedInventoryRow(); };
-  document.addEventListener('keydown',event=>{ if(event.key==='Escape'){ closeSrdLibraryPicker('feat'); closeSrdLibraryPicker('item'); } });
+  window.addCustomFromSrdPicker=function(kind){ closeSrdLibraryPicker(kind); if(kind==='creature') addCompanion(); else if(kind==='feat') addFeatureEntry('featList'); else addUnifiedInventoryRow(); };
+  document.addEventListener('keydown',event=>{ if(event.key==='Escape'){ closeSrdLibraryPicker('feat'); closeSrdLibraryPicker('item'); closeSrdLibraryPicker('creature'); } });
 })();

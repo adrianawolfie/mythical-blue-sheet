@@ -2,7 +2,7 @@
 
 Package: `pkg/character`
 
-The Character domain stores versioned player character sheets, independently updated live play state, and a lightweight character index. Character configuration includes user assignment, campaign assignment, summary fields, raw sheet fields, custom lists, inventory, spells, features, journal notes, and stable UI state.
+The Character domain stores versioned player character sheets, independently updated live play state, and a lightweight character index. Character configuration includes user assignment, campaign assignment, summary fields, raw sheet fields, custom lists, inventory, spells, features, companions, journal notes, and stable UI state.
 
 `campaignId` links a character to a campaign. An empty `campaignId` means the character is not assigned to a campaign.
 
@@ -25,7 +25,7 @@ The Character domain stores versioned player character sheets, independently upd
 
 - `character/character-index.json` stores only character IDs and optional deletion timestamps. Character storage paths are derived from IDs. Configuration and live values in list responses are loaded from character documents and are not duplicated in the index.
 - `character/{id}/current.json` stores current character configuration.
-- `character/{id}/live.json` stores current HP, optional maximum-HP override, temporary HP, conditions, inspiration, exhaustion, death saves, spent hit dice, spent spell slots by level, spent feature resources by resource ID, active armor-class modifiers, and `updatedAt`.
+- `character/{id}/live.json` stores current HP, optional maximum-HP override, temporary HP, conditions, inspiration, exhaustion, death saves, spent hit dice, spent spell slots by level, spent feature resources by resource ID, companion hit points (`companions`, current and temporary HP keyed by companion ID), active armor-class modifiers, and `updatedAt`.
 - `character/{id}/history.json` lists immutable snapshots.
 - `character/{id}/versions/{uuidv7}.json` stores immutable character configuration snapshots.
 - Legacy `character/{id}.json` files remain readable and migrate to the directory layout on the next meaningful character save.

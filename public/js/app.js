@@ -12,7 +12,7 @@ function bindUnsavedCharacterWarning() {
       const button = event.target.closest("button");
       if (!button || !sheet.contains(button)) return;
       if (button.classList.contains("tab")) return;
-      if (button.classList.contains("slot-btn")) return;
+      if (button.classList.contains("slot-btn") || button.classList.contains("companion-hp-btn")) return;
       if (button.id === "attackAddButton" || button.classList.contains("inventory-entry-open")) return;
       if (button.closest(".accessibility-controls")) return;
       if (button.matches("[data-theme-toggle], .theme-toggle")) return;
