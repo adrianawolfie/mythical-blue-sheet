@@ -104,7 +104,26 @@ User accounts have two important flags:
 
 ### Password reset email setup
 
-Password-reset email is sent through the Gmail API. Configure a Google Cloud OAuth client with the Gmail API enabled and the `https://www.googleapis.com/auth/gmail.send` scope, authorize the Google account that will send the email, and supply these deployment environment variables:
+Password-reset email is sent through the Gmail API from one Google account. Set up OAuth once for that sending account:
+
+1. In the [Google Cloud Console](https://console.cloud.google.com/), create or select a project.
+2. Open **APIs & Services → Library**, find **Gmail API**, and enable it.
+3. Set up the OAuth consent screen under **Google Auth Platform** (or **APIs & Services → OAuth consent screen**):
+   - Enter the app name and support email.
+   - Choose **External** for a consumer Gmail account, or **Internal** if the sender belongs to a Google Workspace organization and the app will only be used in that organization.
+   - For an External app in **Testing**, add the sending Gmail address under **Test users**.
+   - Under **Data Access**, add `https://www.googleapis.com/auth/gmail.send`.
+4. Under **Google Auth Platform → Clients**, create an OAuth client with application type **Web application**. Add this authorized redirect URI exactly:
+   `https://developers.google.com/oauthplayground`
+   Save the client ID and client secret.
+5. Open [OAuth 2.0 Playground](https://developers.google.com/oauthplayground/) and click the settings gear:
+   - Enable **Use your own OAuth credentials** and enter the client ID and client secret from the project above.
+   - Set **Access type** to **Offline**.
+6. In the Playground, authorize the scope `https://www.googleapis.com/auth/gmail.send` while signed in to the sending account, then exchange the authorization code for tokens. Copy the `refresh_token` from the token response.
+
+The refresh token allows the server to obtain short-lived access tokens for sending mail; it is reused and does not need to be changed for each email. If no refresh token appears, revoke the app under [Google Account connections](https://myaccount.google.com/connections) and repeat the offline authorization.
+
+Supply these environment variables to the server:
 
 - `GMAIL_CLIENT_ID`
 - `GMAIL_CLIENT_SECRET`
@@ -112,7 +131,7 @@ Password-reset email is sent through the Gmail API. Configure a Google Cloud OAu
 - `GMAIL_SENDER` (the authorized sender email address)
 - `APP_BASE_URL` (the frontend origin used in reset links; defaults to `https://raperonzolo.com`)
 
-To obtain the refresh token, use Google's OAuth 2.0 Playground with the OAuth client's credentials and the `gmail.send` scope, authorize the sending account, and exchange the authorization code for tokens. Keep the OAuth credentials and refresh token in deployment secrets. For production, publish and verify the OAuth consent configuration as required by Google for the Gmail send scope; leaving an external OAuth app in Testing mode can cause refresh tokens to expire.
+For local reset-flow testing, set `APP_BASE_URL=http://localhost:8080`. Keep the client secret and refresh token in deployment secrets; never commit them to the repository. External OAuth apps left in Testing mode generally have Gmail-scope refresh tokens that expire after seven days. For ongoing production use, publish the consent configuration and complete any Google verification required for the Gmail send scope. If Google reports **Access blocked**, confirm the sender is listed as a test user and that OAuth Playground is using your own OAuth client credentials.
 
 Admin pages are static HTML shells. The page files can be loaded directly, but the admin data and mutations are protected by admin-only API routes.
 
