@@ -743,22 +743,7 @@
 
         <div class="sb-card inventory-card inventory-unified-card">
           <div class="sb-hdr">Equipment</div>
-          <div class="inventory-table-wrap">
-            <table class="inventory-table inventory-detail-table inventory-unified-table" id="inventoryItemsTable">
-              <thead>
-                <tr>
-                  <th aria-sort="none"><button type="button" class="inventory-sort-button" data-inventory-sort-key="name">Item <span class="inventory-sort-indicator" aria-hidden="true">↕</span></button><button type="button" class="inventory-sort-button inventory-rarity-sort" data-inventory-sort-key="rarity">Rarity <span class="inventory-sort-indicator" aria-hidden="true">↕</span></button></th>
-                  <th class="inventory-type-col" aria-sort="none"><button type="button" class="inventory-sort-button" data-inventory-sort-key="type">Type <span class="inventory-sort-indicator" aria-hidden="true">↕</span></button></th>
-                  <th class="inventory-qty-col">Qty</th>
-                  <th class="inventory-value-col">Value</th>
-                  <th class="inventory-location-col" aria-sort="none"><button type="button" class="inventory-sort-button" data-inventory-sort-key="location">Location <span class="inventory-sort-indicator" aria-hidden="true">↕</span></button></th>
-                  <th class="inventory-details-col"></th>
-                  <th class="inventory-remove-col"></th>
-                </tr>
-              </thead>
-              <tbody id="inventoryItemsBody"></tbody>
-            </table>
-          </div>
+          <div id="inventoryItemsBody" class="inventory-entry-list" data-empty="No items yet. Add equipment from the library or create a custom item."></div>
         </div>
 
         <div class="inventory-support-grid">

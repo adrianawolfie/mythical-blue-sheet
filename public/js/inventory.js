@@ -68,10 +68,22 @@ function inventoryRarityOptions(selected = "") {
 
 // Items whose description mentions attunement (library items say "Requires Attunement"),
 // and magic items without a description yet, can be attuned from the equipment list.
+// Players mark items that need attunement with the "Requires attunement" checkbox, which
+// keeps a "Requires Attunement" note in the item's details (library items already have one).
 function canAttuneInventoryItem(row) {
-  const type = row.querySelector(".inventory-item-type")?.value;
-  const details = row.nextElementSibling?.querySelector(".inventory-item-details")?.value || "";
-  return /attunement/i.test(details) || (type === "magic" && !details.trim());
+  return row.querySelector(".inventory-item-requires-attunement")?.checked === true;
+}
+
+function setRequiresAttunementNote(details, required) {
+  const text = details.value;
+  if (required && !/requires attunement/i.test(text)) {
+    details.value = text.trim() ? `Requires Attunement\n\n${text}` : "Requires Attunement";
+  } else if (!required) {
+    details.value = text
+      .replace(/\s*·\s*Requires Attunement[^·\n]*/gi, "")
+      .replace(/^\s*\(?Requires Attunement[^\n]*\n*/gim, "")
+      .trim();
+  }
 }
 
 function attunedItemNames() {
@@ -81,9 +93,10 @@ function attunedItemNames() {
 }
 
 // Shows which items are attuned and hides the attune button for items that cannot be attuned.
+// Shows the attune button on items that require attunement (or are attuned) and marks attuned items.
 function refreshAttunementButtons() {
   const attuned = attunedItemNames();
-  document.querySelectorAll("#inventoryItemsBody .inventory-unified-row").forEach(row => {
+  document.querySelectorAll("#inventoryItemsBody .inventory-entry").forEach(row => {
     const name = row.querySelector(".inventory-item-name")?.value.trim() || "";
     const isAttuned = Boolean(name) && attuned.includes(name.toLowerCase());
     const button = row.querySelector(".inventory-attune-toggle");
@@ -92,9 +105,8 @@ function refreshAttunementButtons() {
     button.hidden = !isAttuned && !canAttuneInventoryItem(row);
     button.classList.toggle("is-attuned", isAttuned);
     button.setAttribute("aria-pressed", String(isAttuned));
-    button.textContent = isAttuned ? "✦" : "✧";
-    button.title = isAttuned ? "Attuned. Click to end attunement." : "Attune: add to an attunement slot";
-    button.setAttribute("aria-label", button.title);
+    button.innerHTML = isAttuned ? '<span aria-hidden="true">✦</span> Attuned' : '<span aria-hidden="true">✧</span> Attune';
+    button.title = isAttuned ? "Attuned. Click to end attunement." : "Add to an attunement slot";
   });
 }
 
@@ -124,113 +136,18 @@ function toggleItemAttunement(row) {
   refreshAttunementButtons();
 }
 
-const MOBILE_INVENTORY_GROUP_ORDER = [
-  "gear",
-  "tool",
-  "magic",
-  "consumable",
-  "other"
-];
-
-const mobileInventoryGroupState = Object.fromEntries(
-  MOBILE_INVENTORY_GROUP_ORDER.map(type => [type, true])
-);
-
 const inventorySortState = {
   key: "name",
   direction: "asc"
 };
 
-function isMobileInventoryLayout() {
-  return window.matchMedia("(max-width: 768px)").matches;
-}
-
-function mobileInventorySummaryCell(item = {}) {
-  return `
-    <td class="inventory-mobile-summary" colspan="8">
-      <button type="button" class="inventory-mobile-row-toggle" aria-expanded="false">
-        <span class="inventory-mobile-summary-content">
-          <span class="inventory-mobile-summary-titleline">
-            <span class="inventory-mobile-summary-name">${inventorySafeValue(item.name || "New Item")}</span>
-            <span class="inventory-mobile-summary-type">${inventorySafeValue(inventoryTypeLabel(item.type || "gear"))}</span>
-            <span class="inventory-mobile-summary-rarity">${inventorySafeValue(item.rarity || "")}</span>
-          </span>
-          <span class="inventory-mobile-summary-meta">
-            <span class="inventory-mobile-summary-location">Unassigned</span>
-            <span class="inventory-mobile-summary-value">${inventorySafeValue(item.value || "—")}</span>
-            <span class="inventory-mobile-summary-qty">${item.qty ? `Qty ${inventorySafeValue(item.qty)}` : ""}</span>
-          </span>
-        </span>
-        <span class="inventory-mobile-chevron">⌄</span>
-      </button>
-    </td>
-  `;
-}
-
-function inventoryGroupLabel(type = "gear") {
-  return inventoryTypeLabel(type);
-}
-
-function createMobileInventoryGroupHeader(type = "gear") {
-  const row = document.createElement("tr");
-  row.className = "inventory-mobile-group-header";
-  row.dataset.inventoryGroup = type;
-
-  row.innerHTML = `
-    <td colspan="8">
-      <button
-        type="button"
-        class="inventory-mobile-group-toggle"
-        aria-expanded="${mobileInventoryGroupState[type] !== false ? "true" : "false"}"
-      >
-        <span>${inventorySafeValue(inventoryGroupLabel(type))}</span>
-        <span class="inventory-mobile-group-count">0</span>
-        <span class="inventory-mobile-group-chevron">⌄</span>
-      </button>
-    </td>
-  `;
-
-  row
-    .querySelector(".inventory-mobile-group-toggle")
-    ?.addEventListener("click", () => {
-      mobileInventoryGroupState[type] = mobileInventoryGroupState[type] === false;
-      applyInventoryFilters();
-    });
-
-  return row;
-}
-
 function inventoryItemRowPairs(body = document.getElementById("inventoryItemsBody")) {
   if (!body) return [];
 
-  return Array.from(body.querySelectorAll(".inventory-unified-row")).map(row => ({
+  return Array.from(body.querySelectorAll(".inventory-entry")).map(row => ({
     row,
-    details: row.nextElementSibling?.classList.contains("inventory-item-details-row")
-      ? row.nextElementSibling
-      : null,
-    type: normalizeInventoryType(
-      row.querySelector(".inventory-item-type")?.value || "gear"
-    )
+    type: normalizeInventoryType(row.querySelector(".inventory-item-type")?.value || "gear")
   }));
-}
-
-function rebuildMobileInventoryGroups() {
-  const body = document.getElementById("inventoryItemsBody");
-  if (!body) return;
-
-  body
-    .querySelectorAll(".inventory-mobile-group-header")
-    .forEach(header => header.remove());
-
-  const pairs = inventoryItemRowPairs(body);
-
-  // Mobile uses compact, individually expandable cards rather than a
-  // squeezed table or nested category accordions. Sorting remains available
-  // through the dedicated mobile sort bar.
-  pairs.forEach(pair => {
-    body.appendChild(pair.row);
-    if (pair.details) body.appendChild(pair.details);
-  });
 }
 
 function inventorySortValue(row, key = "name") {
@@ -307,10 +224,6 @@ function applyInventorySort() {
   const body = document.getElementById("inventoryItemsBody");
   if (!body) return;
 
-  body
-    .querySelectorAll(".inventory-mobile-group-header")
-    .forEach(header => header.remove());
-
   const pairs = inventoryItemRowPairs(body);
   const { key, direction } = inventorySortState;
 
@@ -326,12 +239,8 @@ function applyInventorySort() {
     });
   }
 
-  pairs.forEach(pair => {
-    body.appendChild(pair.row);
-    if (pair.details) body.appendChild(pair.details);
-  });
+  pairs.forEach(pair => body.appendChild(pair.row));
 
-  rebuildMobileInventoryGroups();
   updateInventorySortHeaders();
   applyInventoryFilters();
 }
@@ -352,102 +261,28 @@ function sortInventoryItems(key = "name") {
 }
 
 
-function updateMobileInventorySummary(row) {
+// Refreshes an item's one-line summary: name, type · rarity · location, quantity, and value.
+function updateInventoryItemSummary(row) {
   if (!row) return;
 
-  const name = row.querySelector(".inventory-item-name")?.value.trim() || "New Item";
+  const name = row.querySelector(".inventory-item-name")?.value.trim() || "New item";
   const qty = row.querySelector(".inventory-item-qty")?.value.trim() || "";
-  const value = row.querySelector(".inventory-item-value")?.value.trim() || "—";
-  const type = inventoryTypeLabel(
-    row.querySelector(".inventory-item-type")?.value || "gear"
-  );
-  const locationSelect = row.querySelector(".inventory-location");
-  const location =
-    locationSelect?.selectedOptions?.[0]?.textContent?.trim() ||
-    "Unassigned";
-
-  const nameTarget = row.querySelector(".inventory-mobile-summary-name");
-  const typeTarget = row.querySelector(".inventory-mobile-summary-type");
+  const value = row.querySelector(".inventory-item-value")?.value.trim() || "";
+  const type = inventoryTypeLabel(row.querySelector(".inventory-item-type")?.value || "gear");
   const rarity = normalizeInventoryRarity(row.querySelector(".inventory-item-rarity")?.value);
-  const rarityTarget = row.querySelector(".inventory-mobile-summary-rarity");
+  const location = row.querySelector(".inventory-location")?.selectedOptions?.[0]?.textContent?.trim() || "Unassigned";
+
   row.dataset.rarity = inventoryRarityKey(rarity);
-  if (rarityTarget) rarityTarget.textContent = rarity;
-  const qtyTarget = row.querySelector(".inventory-mobile-summary-qty");
-  const valueTarget = row.querySelector(".inventory-mobile-summary-value");
-  const locationTarget = row.querySelector(".inventory-mobile-summary-location");
-  const detailsTitleTarget = row.nextElementSibling?.querySelector(".inventory-item-details-title");
-
-  if (nameTarget) nameTarget.textContent = name;
-  if (typeTarget) typeTarget.textContent = type;
-  if (qtyTarget) qtyTarget.textContent = qty ? `Qty ${qty}` : "";
-  if (valueTarget) valueTarget.textContent = value;
-  if (locationTarget) locationTarget.textContent = location;
-  if (detailsTitleTarget) detailsTitleTarget.textContent = `${name} · Details`;
+  row.querySelector(".inventory-entry-name").textContent = name;
+  row.querySelector(".inventory-entry-meta").textContent = [type, rarity, location].filter(Boolean).join(" · ");
+  row.querySelector(".inventory-entry-qty").textContent = qty && qty !== "1" ? `×${qty}` : "";
+  row.querySelector(".inventory-entry-value").textContent = value;
 }
 
-function updateAllMobileInventorySummaries() {
+function updateAllInventoryItemSummaries() {
   document
-    .querySelectorAll("#inventoryItemsBody .inventory-unified-row")
-    .forEach(updateMobileInventorySummary);
-}
-
-function updateMobileInventoryGroupHeaders() {
-  const body = document.getElementById("inventoryItemsBody");
-  if (!body) return;
-
-  body
-    .querySelectorAll(".inventory-mobile-group-header")
-    .forEach(header => {
-      const type = header.dataset.inventoryGroup || "gear";
-      const matchingRows = Array.from(
-        body.querySelectorAll(".inventory-unified-row")
-      ).filter(row => {
-        const rowType = normalizeInventoryType(
-          row.querySelector(".inventory-item-type")?.value || "gear"
-        );
-
-        return rowType === type && row.dataset.inventoryFilterMatch === "true";
-      });
-
-      const open = mobileInventoryGroupState[type] !== false;
-      const toggle = header.querySelector(".inventory-mobile-group-toggle");
-      const count = header.querySelector(".inventory-mobile-group-count");
-
-      header.hidden = !matchingRows.length;
-      toggle?.setAttribute("aria-expanded", open ? "true" : "false");
-
-      if (count) count.textContent = String(matchingRows.length);
-    });
-}
-
-function bindMobileInventorySummary(row) {
-  if (!row || row.dataset.mobileSummaryBound === "true") return;
-
-  row.dataset.mobileSummaryBound = "true";
-
-  row
-    .querySelector(".inventory-mobile-row-toggle")
-    ?.addEventListener("click", () => {
-      const expanded = !row.classList.contains("mobile-expanded");
-      row.classList.toggle("mobile-expanded", expanded);
-
-      row
-        .querySelector(".inventory-mobile-row-toggle")
-        ?.setAttribute("aria-expanded", expanded ? "true" : "false");
-
-      // On mobile, collapsing the item card should also collapse its
-      // separately expandable description panel. Otherwise the details row
-      // remains visible below an item whose editable fields have been hidden.
-      if (!expanded) {
-        const detailsRow = row.nextElementSibling;
-        if (detailsRow?.classList.contains("inventory-item-details-row")) {
-          detailsRow.style.display = "none";
-          detailsRow.classList.remove("is-mobile-open");
-        }
-
-        row.querySelector(".inventory-details-toggle")?.classList.remove("open");
-      }
-    });
+    .querySelectorAll("#inventoryItemsBody .inventory-entry")
+    .forEach(updateInventoryItemSummary);
 }
 
 const STANDARD_ITEM_LOCATIONS = [
@@ -821,37 +656,6 @@ function inventoryTypeLabel(type = "gear") {
   return INVENTORY_ITEM_TYPE_OPTIONS.find(option => option.value === normalizedType)?.label || "Other";
 }
 
-function inventoryDetailsCell(open = false) {
-  return `
-    <td class="inventory-details-cell">
-      <button
-        type="button"
-        class="inventory-details-toggle ${open ? "open" : ""}"
-        aria-expanded="${open ? "true" : "false"}"
-      >Details</button>
-    </td>
-  `;
-}
-
-function inventoryDetailsRow(details = "", open = false, colspan = 6) {
-  const row = document.createElement("tr");
-  row.className = "inventory-item-details-row";
-  row.style.display = open ? "" : "none";
-  row.innerHTML = `
-    <td colspan="${colspan}">
-      <div class="inventory-item-details-panel">
-        <div class="inventory-item-details-title">Item Details</div>
-        <textarea
-          class="inventory-item-details"
-          placeholder="Full item description, properties, charges, weight, attunement requirements, lore, reminders..."
-        >${inventorySafeText(details)}</textarea>
-      </div>
-    </td>
-  `;
-
-  return row;
-}
-
 function getStorageLocations() {
   return Array.from(
     document.querySelectorAll("#storageLocationsBody .storage-location-row")
@@ -899,7 +703,7 @@ function refreshLocationSelect(select) {
 
 function refreshAllLocationSelects() {
   document.querySelectorAll(".inventory-location").forEach(refreshLocationSelect);
-  updateAllMobileInventorySummaries();
+  updateAllInventoryItemSummaries();
 }
 
 function getEquippableItems() {
@@ -912,7 +716,7 @@ function getEquippableItems() {
   };
 
   document
-    .querySelectorAll("#inventoryItemsBody .inventory-unified-row")
+    .querySelectorAll("#inventoryItemsBody .inventory-entry")
     .forEach(row => {
       const name = row.querySelector(".inventory-item-name")?.value.trim() || "";
       const type = row.querySelector(".inventory-item-type")?.value || "gear";
@@ -1012,12 +816,6 @@ function refreshLocationFilter() {
 
 function setFilteredRowVisibility(row, visible) {
   row.hidden = !visible;
-
-  const detailsRow = row.nextElementSibling;
-
-  if (detailsRow?.classList.contains("inventory-item-details-row")) {
-    detailsRow.hidden = !visible;
-  }
 }
 
 function applyInventoryFilters() {
@@ -1029,7 +827,7 @@ function applyInventoryFilters() {
     .toLowerCase();
 
   document
-    .querySelectorAll("#inventoryItemsBody .inventory-unified-row")
+    .querySelectorAll("#inventoryItemsBody .inventory-entry")
     .forEach(row => {
       const location = row.querySelector(".inventory-location")?.value || "";
       const type = normalizeInventoryType(
@@ -1040,7 +838,7 @@ function applyInventoryFilters() {
         row.querySelector(".inventory-item-name")?.value || "",
         inventoryTypeLabel(type),
         rarity,
-        row.nextElementSibling?.querySelector(".inventory-item-details")?.value || ""
+        row.querySelector(".inventory-item-details")?.value || ""
       ]
         .join(" ")
         .toLowerCase();
@@ -1054,8 +852,6 @@ function applyInventoryFilters() {
       row.dataset.inventoryFilterMatch = filterMatch ? "true" : "false";
       setFilteredRowVisibility(row, filterMatch);
     });
-
-  updateMobileInventoryGroupHeaders();
 
   document
     .querySelectorAll("#inventoryGemsBody .inventory-gem-row")
@@ -1088,107 +884,76 @@ function refreshInventoryDependentOptions() {
   refreshLocationFilter();
 }
 
-function attachItemRowBehavior(mainRow, detailsRow) {
-  const toggle = mainRow.querySelector(".inventory-details-toggle");
-  const remove = mainRow.querySelector(".inventory-remove");
-  const nameInput = mainRow.querySelector(".inventory-item-name");
-  const locationSelect = mainRow.querySelector(".inventory-location");
-  const typeSelect = mainRow.querySelector(".inventory-item-type");
-  const detailsTextarea = detailsRow.querySelector(".inventory-item-details");
+function attachItemRowBehavior(row) {
+  const editor = row.querySelector(".inventory-entry-editor");
+  const openButton = row.querySelector(".inventory-entry-open");
+  const nameInput = row.querySelector(".inventory-item-name");
+  const locationSelect = row.querySelector(".inventory-location");
+  const typeSelect = row.querySelector(".inventory-item-type");
+  const detailsTextarea = row.querySelector(".inventory-item-details");
+  const requiresAttunement = row.querySelector(".inventory-item-requires-attunement");
 
-  toggle?.addEventListener("click", event => {
-    event.preventDefault();
-
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
-    const tableWrap = mainRow.closest(".inventory-table-wrap");
-    const tableScrollLeft = tableWrap?.scrollLeft || 0;
-    const tableScrollTop = tableWrap?.scrollTop || 0;
-    const opening = detailsRow.style.display === "none";
-
-    detailsRow.style.display = opening ? "" : "none";
-    detailsRow.classList.toggle("is-mobile-open", opening);
-    toggle.classList.toggle("open", opening);
-    toggle.setAttribute("aria-expanded", opening ? "true" : "false");
-
-    requestAnimationFrame(() => {
-      if (tableWrap) {
-        tableWrap.scrollLeft = tableScrollLeft;
-        tableWrap.scrollTop = tableScrollTop;
-      }
-
-      window.scrollTo({ left: scrollX, top: scrollY, behavior: "auto" });
-
-      requestAnimationFrame(() => {
-        if (tableWrap) {
-          tableWrap.scrollLeft = tableScrollLeft;
-          tableWrap.scrollTop = tableScrollTop;
-        }
-      });
-    });
-  });
-
-  remove?.addEventListener("click", () => {
-    detailsRow.remove();
-    mainRow.remove();
-    rebuildMobileInventoryGroups();
-    refreshInventoryDependentOptions();
-  });
-
-  const commitInventoryNameChange = () => {
-    refreshAllEquippedSelects();
-    updateMobileInventorySummary(mainRow);
-    inventorySortState.key === "name" ? applyInventorySort() : applyInventoryFilters();
+  const setOpen = open => {
+    editor.hidden = !open;
+    row.classList.toggle("is-open", open);
+    openButton.setAttribute("aria-expanded", String(open));
   };
 
-  nameInput?.addEventListener("input", () => {
-    // Keep typing smooth: do not re-sort or rebuild the mobile inventory groups
-    // after every keystroke, because moving the active row can make the browser
-    // drop focus and force the user to reselect the field after each letter.
+  row.querySelector(".inventory-entry-summary").addEventListener("click", event => {
+    if (event.target.closest(".inventory-attune-toggle")) return;
+    setOpen(editor.hidden);
+  });
+
+  row.querySelector(".inventory-attune-toggle").addEventListener("click", () => toggleItemAttunement(row));
+
+  row.querySelector(".inventory-entry-remove").addEventListener("click", () => {
+    if (!confirm(`Remove ${nameInput.value.trim() || "this item"} from the inventory?`)) return;
+    row.remove();
+    refreshInventoryDependentOptions();
+    refreshAttunementButtons();
+  });
+
+  nameInput.addEventListener("input", () => {
+    // Keep typing smooth: re-sort only when the edit is committed, so the row does not move mid-word.
     refreshAllEquippedSelects();
-    updateMobileInventorySummary(mainRow);
+    updateInventoryItemSummary(row);
+    refreshAttunementButtons();
+  });
+  nameInput.addEventListener("change", () => {
+    refreshAllEquippedSelects();
+    inventorySortState.key === "name" ? applyInventorySort() : applyInventoryFilters();
   });
 
-  nameInput?.addEventListener("change", commitInventoryNameChange);
-  nameInput?.addEventListener("keydown", event => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      nameInput.blur();
-    }
+  row.querySelectorAll(".inventory-item-qty, .inventory-item-value").forEach(input => {
+    input.addEventListener("input", () => updateInventoryItemSummary(row));
   });
 
-  mainRow
-    .querySelector(".inventory-item-qty")
-    ?.addEventListener("input", () => updateMobileInventorySummary(mainRow));
+  detailsTextarea.addEventListener("input", () => {
+    requiresAttunement.checked = /requires attunement/i.test(detailsTextarea.value);
+    refreshAttunementButtons();
+    applyInventoryFilters();
+  });
 
-  mainRow
-    .querySelector(".inventory-item-value")
-    ?.addEventListener("input", () => updateMobileInventorySummary(mainRow));
+  requiresAttunement.addEventListener("change", () => {
+    setRequiresAttunementNote(detailsTextarea, requiresAttunement.checked);
+    refreshAttunementButtons();
+  });
 
-  detailsTextarea?.addEventListener("input", applyInventoryFilters);
-
-  locationSelect?.addEventListener("change", () => {
+  locationSelect.addEventListener("change", () => {
     locationSelect.dataset.selectedLocation = locationSelect.value;
-    updateMobileInventorySummary(mainRow);
+    updateInventoryItemSummary(row);
     inventorySortState.key === "location" ? applyInventorySort() : applyInventoryFilters();
   });
 
-  mainRow.querySelector(".inventory-attune-toggle")?.addEventListener("click", () => toggleItemAttunement(mainRow));
-  nameInput?.addEventListener("input", refreshAttunementButtons);
-  detailsTextarea?.addEventListener("input", refreshAttunementButtons);
-  typeSelect?.addEventListener("change", refreshAttunementButtons);
-
-  mainRow.querySelector(".inventory-item-rarity")?.addEventListener("change", () => {
-    updateMobileInventorySummary(mainRow);
-    inventorySortState.key === "rarity" ? applyInventorySort() : applyInventoryFilters();
+  [typeSelect, row.querySelector(".inventory-item-rarity")].forEach(select => {
+    select.addEventListener("change", () => {
+      refreshAllEquippedSelects();
+      updateInventoryItemSummary(row);
+      applyInventorySort();
+    });
   });
 
-  typeSelect?.addEventListener("change", () => {
-    refreshAllEquippedSelects();
-    updateMobileInventorySummary(mainRow);
-    inventorySortState.key ? applyInventorySort() : rebuildMobileInventoryGroups();
-    applyInventoryFilters();
-  });
+  return setOpen;
 }
 
 function addUnifiedInventoryRow(data = {}) {
@@ -1196,38 +961,68 @@ function addUnifiedInventoryRow(data = {}) {
   if (!body) return;
 
   const item = normalizeInventoryItem(data, data.type || "gear");
-
-  const row = document.createElement("tr");
-  row.className = "inventory-unified-row inventory-item-row";
+  const row = document.createElement("div");
+  row.className = "inventory-entry";
   row.dataset.itemId = item.id;
 
-  row.innerHTML =
-    mobileInventorySummaryCell(item) +
-    `<td class="inventory-name-cell">
-      <div class="inventory-name-wrap">
-        <input class="inventory-item-name" type="text" value="${inventorySafeValue(item.name)}" placeholder="Item…">
-        <select class="inventory-item-rarity" aria-label="Rarity">${inventoryRarityOptions(item.rarity)}</select>
-        <button type="button" class="inventory-attune-toggle" aria-pressed="false" hidden>✧</button>
+  row.innerHTML = `
+    <div class="inventory-entry-summary">
+      <button type="button" class="inventory-entry-open" aria-expanded="false">
+        <span class="inventory-entry-name"></span>
+        <span class="inventory-entry-meta"></span>
+      </button>
+      <button type="button" class="inventory-attune-toggle" aria-pressed="false" hidden></button>
+      <span class="inventory-entry-qty"></span>
+      <span class="inventory-entry-value"></span>
+      <span class="inventory-entry-chevron" aria-hidden="true">⌄</span>
+    </div>
+    <div class="inventory-entry-editor" hidden>
+      <label class="inventory-entry-field inventory-entry-field-name"><span>Item</span>
+        <input class="inventory-item-name" type="text" value="${inventorySafeValue(item.name)}" placeholder="Item name…">
+      </label>
+      <label class="inventory-entry-field"><span>Type</span>
+        <select class="inventory-item-type">${INVENTORY_ITEM_TYPE_OPTIONS
+          .map(option => `<option value="${inventorySafeValue(option.value)}"${option.value === item.type ? " selected" : ""}>${inventorySafeValue(option.label)}</option>`)
+          .join("")}</select>
+      </label>
+      <label class="inventory-entry-field"><span>Rarity</span>
+        <select class="inventory-item-rarity">${inventoryRarityOptions(item.rarity)}</select>
+      </label>
+      <label class="inventory-entry-field inventory-entry-field-small"><span>Qty</span>
+        <input class="inventory-item-qty" type="text" inputmode="numeric" value="${inventorySafeValue(item.qty)}" placeholder="1">
+      </label>
+      <label class="inventory-entry-field inventory-entry-field-small"><span>Value</span>
+        <input class="inventory-item-value" type="text" value="${inventorySafeValue(item.value)}" placeholder="—">
+      </label>
+      <label class="inventory-entry-field"><span>Location</span>
+        <select class="inventory-location" data-selected-location="${inventorySafeValue(item.location)}"></select>
+      </label>
+      <label class="inventory-entry-field inventory-entry-field-details"><span>Details</span>
+        <textarea class="inventory-item-details" placeholder="Description, properties, charges, weight, lore, reminders…">${inventorySafeText(item.details)}</textarea>
+      </label>
+      <div class="inventory-entry-actions">
+        <label class="inventory-entry-check">
+          <input class="inventory-item-requires-attunement" type="checkbox"${/requires attunement/i.test(item.details) ? " checked" : ""}>
+          <span>Requires attunement</span>
+        </label>
+        <button type="button" class="inventory-entry-remove">Remove item</button>
       </div>
-    </td>` +
-    inventoryTypeCell(item.type) +
-    inventoryInputCell("inventory-item-qty", item.qty, "1") +
-    inventoryInputCell("inventory-item-value", item.value, "—") +
-    inventoryLocationCell(item.location) +
-    inventoryDetailsCell(item.open) +
-    inventoryRemoveButton("inventory item");
-
-  const detailsRow = inventoryDetailsRow(item.details, item.open, 8);
+    </div>
+  `;
 
   body.appendChild(row);
-  body.appendChild(detailsRow);
 
-  attachItemRowBehavior(row, detailsRow);
-  refreshAttunementButtons();
-  bindMobileInventorySummary(row);
-  updateMobileInventorySummary(row);
-  inventorySortState.key ? applyInventorySort() : rebuildMobileInventoryGroups();
+  const setOpen = attachItemRowBehavior(row);
   refreshInventoryDependentOptions();
+  updateInventoryItemSummary(row);
+  refreshAttunementButtons();
+  applyInventorySort();
+
+  // A new blank item opens straight away so it can be named.
+  if (!item.name) {
+    setOpen(true);
+    row.querySelector(".inventory-item-name").focus();
+  }
 }
 
 function addInventoryEquipmentRow(data = {}) {
@@ -1495,22 +1290,19 @@ function collectStorageLocations() {
 
 function collectUnifiedInventoryRows() {
   return Array.from(
-    document.querySelectorAll("#inventoryItemsBody .inventory-unified-row")
+    document.querySelectorAll("#inventoryItemsBody .inventory-entry")
   )
-    .map(row => {
-      const detailsRow = row.nextElementSibling;
-      return {
-        id: row.dataset.itemId,
-        name: row.querySelector(".inventory-item-name")?.value.trim() || "",
-        type: normalizeInventoryType(row.querySelector(".inventory-item-type")?.value || "gear"),
-        rarity: normalizeInventoryRarity(row.querySelector(".inventory-item-rarity")?.value),
-        qty: row.querySelector(".inventory-item-qty")?.value.trim() || "",
-        value: row.querySelector(".inventory-item-value")?.value.trim() || "",
-        location: normalizeInventoryLocation(row.querySelector(".inventory-location")?.value.trim() || ""),
-        details: detailsRow?.querySelector(".inventory-item-details")?.value || "",
-        open: detailsRow?.style.display !== "none"
-      };
-    })
+    .map(row => ({
+      id: row.dataset.itemId,
+      name: row.querySelector(".inventory-item-name")?.value.trim() || "",
+      type: normalizeInventoryType(row.querySelector(".inventory-item-type")?.value || "gear"),
+      rarity: normalizeInventoryRarity(row.querySelector(".inventory-item-rarity")?.value),
+      qty: row.querySelector(".inventory-item-qty")?.value.trim() || "",
+      value: row.querySelector(".inventory-item-value")?.value.trim() || "",
+      location: normalizeInventoryLocation(row.querySelector(".inventory-location")?.value.trim() || ""),
+      details: row.querySelector(".inventory-item-details")?.value || "",
+      open: false
+    }))
     .filter(row => row.name || row.qty || row.value || row.location || row.details);
 }
 
@@ -1660,11 +1452,6 @@ function bindInventoryControls() {
   bindCoinageMirrors();
   document.querySelectorAll("[data-coinage-key]").forEach(field => field.addEventListener("input", updateInventoryWealth));
   bindInventoryViewToggle();
-
-  window.addEventListener("resize", () => {
-    inventorySortState.key ? applyInventorySort() : rebuildMobileInventoryGroups();
-    applyInventoryFilters();
-  });
 
   document
     .querySelectorAll("[data-inventory-sort-key]")

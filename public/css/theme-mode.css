@@ -2118,7 +2118,49 @@ html[data-theme="moonlight"] .inventory-attune-toggle.is-attuned {
   color: #06224a;
 }
 
-html[data-theme="moonlight"] .inventory-unified-row[data-attuned="true"] .inventory-mobile-summary-name::after {
+html[data-theme="moonlight"] .inventory-entry {
+  border-bottom-color: var(--moon-ghost-soft-line);
+}
+
+html[data-theme="moonlight"] .inventory-entry-summary:hover,
+html[data-theme="moonlight"] .inventory-entry.is-open .inventory-entry-summary {
+  background: rgba(124, 205, 255, .08);
+}
+
+html[data-theme="moonlight"] .inventory-entry-name,
+html[data-theme="moonlight"] .inventory-entry-value {
+  color: #eefaff;
+}
+
+html[data-theme="moonlight"] .inventory-entry-meta,
+html[data-theme="moonlight"] .inventory-entry-qty,
+html[data-theme="moonlight"] .inventory-entry-list:empty::before,
+html[data-theme="moonlight"] .inventory-entry-check {
+  color: var(--moon-ghost-bright);
+}
+
+html[data-theme="moonlight"] .inventory-entry-chevron,
+html[data-theme="moonlight"] .inventory-entry-field > span {
   color: #f3c969;
+}
+
+html[data-theme="moonlight"] .inventory-entry-field :is(input, select, textarea) {
+  border-bottom-color: var(--moon-ghost-soft-line) !important;
+  background: rgba(2, 18, 48, .4) !important;
+  color: var(--moon-text) !important;
+}
+
+html[data-theme="moonlight"] .inventory-entry-field select option {
+  background: #06224a;
+}
+
+html[data-theme="moonlight"] .inventory-entry-remove {
+  color: #ff8a7a;
+}
+
+html[data-theme="moonlight"] .inventory-filter-toolbar .inventory-mobile-sort-direction {
+  border-color: var(--moon-ghost-soft-line);
+  background: transparent;
+  color: var(--moon-text);
 }
 
