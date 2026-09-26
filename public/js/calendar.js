@@ -64,6 +64,8 @@
   };
 
   var CHANNEL_NAME = "mythical-blue-campaign-state-v1";
+  // Players can hide the calendar (days traveled stays); remembered in this browser.
+  var CALENDAR_HIDDEN_KEY = "mythicalBlueCalendarHidden";
   var STORAGE_EVENT_KEY = "mythicalBlueCampaignStateBroadcastV1";
 
   var campaignChannel =
@@ -477,6 +479,20 @@
     );
   }
 
+  function isCalendarHidden() {
+    try {
+      return localStorage.getItem(CALENDAR_HIDDEN_KEY) === "true";
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function applyCalendarVisibility(hidden) {
+    document.documentElement.dataset.calendar = hidden ? "off" : "on";
+    var toggle = document.getElementById("calShowCalendar");
+    if (toggle) toggle.checked = !hidden;
+  }
+
   function schedulePoll() {
     clearTimeout(pollTimer);
 
@@ -581,6 +597,21 @@
         changeTraveledDays(28, event.currentTarget);
       });
 
+    document.getElementById("calShowCalendar")?.addEventListener("change", function (event) {
+      var hidden = !event.currentTarget.checked;
+      try {
+        localStorage.setItem(CALENDAR_HIDDEN_KEY, String(hidden));
+      } catch (error) {}
+      applyCalendarVisibility(hidden);
+    });
+
+    // With the calendar hidden these step days traveled by one (and still move the date).
+    document.querySelectorAll("[data-travel-step]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        changeTraveledDays(Number(button.dataset.travelStep) || 0);
+      });
+    });
+
     var daysTraveledInput = document.getElementById("calDaysTraveledInput");
 
     daysTraveledInput?.addEventListener("change", function () {
@@ -600,7 +631,11 @@
     receiveState(event.data);
   });
 
+  applyCalendarVisibility(isCalendarHidden());
+
   global.addEventListener("storage", function (event) {
+    if (event.key === CALENDAR_HIDDEN_KEY) applyCalendarVisibility(isCalendarHidden());
+
     if (event.key !== STORAGE_EVENT_KEY || !event.newValue) return;
 
     try {
@@ -628,6 +663,7 @@
   };
 
   document.addEventListener("DOMContentLoaded", function () {
+    applyCalendarVisibility(isCalendarHidden());
     initWidget().catch(function (error) {
       console.error(error);
       alert(error.message || "Could not initialize the shared campaign calendar.");

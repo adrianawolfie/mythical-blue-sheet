@@ -693,3 +693,49 @@ html[data-theme="moonlight"] .cal-btn-save.is-pending {
   background: hsla(calc(var(--night-hue) + 3.9deg), 100%, 68.6%, .2);
   box-shadow: inset 0 -2px 0 hsl(calc(var(--night-hue) - 2.4deg), 100%, 78.6%);
 }
+
+/* ── CALENDAR ON/OFF ───────────────────────────────────────────────────── */
+
+/* With the calendar hidden only Days Traveled (with −/+ day buttons) remains. */
+html[data-calendar="off"] .calendar-widget > :not(.cal-travel) {
+  display: none;
+}
+
+html[data-calendar="off"] .cal-travel {
+  border-top: none;
+}
+
+html:not([data-calendar="off"]) .cal-travel-step {
+  display: none !important;
+}
+
+html[data-calendar="off"] .calendar-sheet-bar :is(.cal-sheet-lbl, .cal-sheet-date, .cal-sheet-sep) {
+  display: none;
+}
+
+.cal-show-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 2px;
+  color: var(--navy);
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.cal-show-toggle input {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: var(--gold-deep);
+  cursor: pointer;
+}
+
+html[data-theme="moonlight"] .cal-show-toggle {
+  color: var(--moon-text-soft);
+}

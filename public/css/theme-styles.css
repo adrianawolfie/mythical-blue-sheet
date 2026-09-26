@@ -169,3 +169,17 @@ html[data-style="raperonzolo"][data-theme="moonlight"] .theme-title::before,
 html[data-style="raperonzolo"][data-theme="moonlight"] .theme-title::after {
   color: #c9b5ee;
 }
+
+/* ─── Moonlight for Neutral and Raperonzolo: plain dark blue, no texture ─── */
+
+html:is([data-style="neutral"], [data-style="raperonzolo"])[data-theme="moonlight"] {
+  --tone-parchment-image: none;
+}
+
+html:is([data-style="neutral"], [data-style="raperonzolo"])[data-theme="moonlight"] :is(.start-page, .sheet, .dm-screen-header, .initiative-panel, .spell-picker-modal, .spell-editor-modal, .library-picker-modal, .npc-picker-modal, .home-page) {
+  background-image: none;
+}
+
+html:is([data-style="neutral"], [data-style="raperonzolo"])[data-theme="moonlight"] .login-card {
+  background-image: linear-gradient(135deg, hsla(calc(var(--night-hue) + 12.7deg), 88.6%, 13.7%, .90), hsla(calc(var(--night-hue) + 9.8deg), 83.5%, 19%, .72));
+}

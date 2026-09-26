@@ -134,6 +134,7 @@
     <div class="cal-travel">
       <div class="cal-travel-heading">
         <label class="cal-travel-label" for="calDaysTraveledInput">Days Traveled</label>
+        <button type="button" class="cal-inline-adjust cal-travel-step" data-travel-step="-1" title="Subtract one day" aria-label="Subtract one day">−</button>
         <input
           id="calDaysTraveledInput"
           class="cal-travel-count-input"
@@ -145,7 +146,12 @@
           aria-label="Total days traveled"
           title="Enter the total days traveled"
         >
+        <button type="button" class="cal-inline-adjust cal-travel-step" data-travel-step="1" title="Add one day" aria-label="Add one day">+</button>
       </div>
+      <label class="cal-show-toggle">
+        <input id="calShowCalendar" type="checkbox" checked>
+        <span>Show calendar</span>
+      </label>
 
 
     </div>
