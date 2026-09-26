@@ -66,16 +66,62 @@ function inventoryRarityOptions(selected = "") {
     .join("")}`;
 }
 
-function isInventoryRarityShown() {
-  return document.getElementById("pg-inventory")?.classList.contains("show-rarity") === true;
+// Items whose description mentions attunement (library items say "Requires Attunement"),
+// and magic items without a description yet, can be attuned from the equipment list.
+function canAttuneInventoryItem(row) {
+  const type = row.querySelector(".inventory-item-type")?.value;
+  const details = row.nextElementSibling?.querySelector(".inventory-item-details")?.value || "";
+  return /attunement/i.test(details) || (type === "magic" && !details.trim());
 }
 
-function setInventoryRarityShown(shown) {
-  document.getElementById("pg-inventory")?.classList.toggle("show-rarity", shown);
-  const toggle = document.getElementById("inventoryShowRarity");
-  if (toggle) toggle.checked = shown;
-  try { localStorage.setItem("mythicalBlueShowRarity", shown ? "true" : ""); } catch (error) { /* display preference only */ }
-  applyInventoryFilters();
+function attunedItemNames() {
+  return Array.from(document.querySelectorAll("#inventoryAttunementBody .inventory-attunement-item"))
+    .map(input => input.value.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+// Shows which items are attuned and hides the attune button for items that cannot be attuned.
+function refreshAttunementButtons() {
+  const attuned = attunedItemNames();
+  document.querySelectorAll("#inventoryItemsBody .inventory-unified-row").forEach(row => {
+    const name = row.querySelector(".inventory-item-name")?.value.trim() || "";
+    const isAttuned = Boolean(name) && attuned.includes(name.toLowerCase());
+    const button = row.querySelector(".inventory-attune-toggle");
+    row.dataset.attuned = String(isAttuned);
+    if (!button) return;
+    button.hidden = !isAttuned && !canAttuneInventoryItem(row);
+    button.classList.toggle("is-attuned", isAttuned);
+    button.setAttribute("aria-pressed", String(isAttuned));
+    button.textContent = isAttuned ? "✦" : "✧";
+    button.title = isAttuned ? "Attuned. Click to end attunement." : "Attune: add to an attunement slot";
+    button.setAttribute("aria-label", button.title);
+  });
+}
+
+// Adds an item to the first empty attunement slot, or frees its slot when it is already attuned.
+function toggleItemAttunement(row) {
+  const name = row.querySelector(".inventory-item-name")?.value.trim() || "";
+  if (!name) {
+    window.showToast?.("Give the item a name before attuning to it.", { variant: "error" });
+    return;
+  }
+
+  const slots = Array.from(document.querySelectorAll("#inventoryAttunementBody .inventory-attunement-item"));
+  const current = slots.find(input => input.value.trim().toLowerCase() === name.toLowerCase());
+
+  if (current) {
+    current.value = "";
+  } else {
+    const empty = slots.find(input => !input.value.trim());
+    if (!empty) {
+      window.showToast?.("All attunement slots are full. Remove an attuned item first.", { variant: "error" });
+      return;
+    }
+    empty.value = name;
+  }
+
+  markCharacterDirty();
+  refreshAttunementButtons();
 }
 
 const MOBILE_INVENTORY_GROUP_ORDER = [
@@ -977,7 +1023,7 @@ function setFilteredRowVisibility(row, visible) {
 function applyInventoryFilters() {
   const locationFilter = document.getElementById("inventoryLocationFilter")?.value || "all";
   const typeFilter = document.getElementById("inventoryTypeFilter")?.value || "all";
-  const rarityFilter = isInventoryRarityShown() ? document.getElementById("inventoryRarityFilter")?.value || "all" : "all";
+  const rarityFilter = document.getElementById("inventoryRarityFilter")?.value || "all";
   const searchText = (document.getElementById("inventorySearchInput")?.value || "")
     .trim()
     .toLowerCase();
@@ -1127,6 +1173,11 @@ function attachItemRowBehavior(mainRow, detailsRow) {
     inventorySortState.key === "location" ? applyInventorySort() : applyInventoryFilters();
   });
 
+  mainRow.querySelector(".inventory-attune-toggle")?.addEventListener("click", () => toggleItemAttunement(mainRow));
+  nameInput?.addEventListener("input", refreshAttunementButtons);
+  detailsTextarea?.addEventListener("input", refreshAttunementButtons);
+  typeSelect?.addEventListener("change", refreshAttunementButtons);
+
   mainRow.querySelector(".inventory-item-rarity")?.addEventListener("change", () => {
     updateMobileInventorySummary(mainRow);
     inventorySortState.key === "rarity" ? applyInventorySort() : applyInventoryFilters();
@@ -1156,6 +1207,7 @@ function addUnifiedInventoryRow(data = {}) {
       <div class="inventory-name-wrap">
         <input class="inventory-item-name" type="text" value="${inventorySafeValue(item.name)}" placeholder="Item…">
         <select class="inventory-item-rarity" aria-label="Rarity">${inventoryRarityOptions(item.rarity)}</select>
+        <button type="button" class="inventory-attune-toggle" aria-pressed="false" hidden>✧</button>
       </div>
     </td>` +
     inventoryTypeCell(item.type) +
@@ -1171,6 +1223,7 @@ function addUnifiedInventoryRow(data = {}) {
   body.appendChild(detailsRow);
 
   attachItemRowBehavior(row, detailsRow);
+  refreshAttunementButtons();
   bindMobileInventorySummary(row);
   updateMobileInventorySummary(row);
   inventorySortState.key ? applyInventorySort() : rebuildMobileInventoryGroups();
@@ -1305,9 +1358,11 @@ function addInventoryAttunementRow(data = {}) {
   row.querySelector(".inventory-remove")?.addEventListener("click", () => {
     row.remove();
     renumberInventoryAttunementRows();
+    refreshAttunementButtons();
   });
 
   renumberInventoryAttunementRows();
+  refreshAttunementButtons();
 }
 
 function addStorageLocationRow(data = {}) {
@@ -1632,12 +1687,8 @@ function bindInventoryControls() {
     ?.addEventListener("change", applyInventoryFilters);
 
   document
-    .getElementById("inventoryShowRarity")
-    ?.addEventListener("change", event => setInventoryRarityShown(event.target.checked));
-
-  let rarityShown = false;
-  try { rarityShown = localStorage.getItem("mythicalBlueShowRarity") === "true"; } catch (error) { /* display preference only */ }
-  setInventoryRarityShown(rarityShown);
+    .getElementById("inventoryAttunementBody")
+    ?.addEventListener("input", refreshAttunementButtons);
 
   document
     .getElementById("inventorySearchInput")

@@ -2108,3 +2108,17 @@ html[data-theme="moonlight"] .inventory-gem-row select option {
   background: #06224a;
 }
 
+html[data-theme="moonlight"] .inventory-attune-toggle {
+  border-color: rgba(243, 201, 105, .7);
+  color: #f3c969;
+}
+
+html[data-theme="moonlight"] .inventory-attune-toggle.is-attuned {
+  background: #f3c969;
+  color: #06224a;
+}
+
+html[data-theme="moonlight"] .inventory-unified-row[data-attuned="true"] .inventory-mobile-summary-name::after {
+  color: #f3c969;
+}
+
