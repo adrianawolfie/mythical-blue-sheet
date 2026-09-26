@@ -467,6 +467,7 @@ func TestCreateOrReplaceChangesCharacterDetails(t *testing.T) {
 	character.Fields["characterName"] = "Ada Storm"
 	character.UIState.SkillProficiencies = []bool{false, true}
 	character.UIState.SkillExpertise = []bool{false, true}
+	character.CustomLists.InventoryItems = []InventoryItem{{ID: "item-1", Name: "Cloak of Protection", Type: "magic", Rarity: "Uncommon"}}
 
 	if err := repo.CreateOrReplace(ctx, character); err != nil {
 		t.Fatalf("replace character: %v", err)
@@ -484,6 +485,9 @@ func TestCreateOrReplaceChangesCharacterDetails(t *testing.T) {
 	}
 	if len(updated.UIState.SkillExpertise) != 2 || !updated.UIState.SkillExpertise[1] || !updated.UIState.SkillProficiencies[1] {
 		t.Fatalf("expected skill proficiency and expertise to persist, got %#v", updated.UIState)
+	}
+	if len(updated.CustomLists.InventoryItems) != 1 || updated.CustomLists.InventoryItems[0].Rarity != "Uncommon" {
+		t.Fatalf("expected inventory item rarity to persist, got %#v", updated.CustomLists.InventoryItems)
 	}
 }
 

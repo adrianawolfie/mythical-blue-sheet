@@ -222,6 +222,7 @@ type InventoryItem struct {
 	ID       string `json:"id"`
 	Name     string `json:"name"`
 	Type     string `json:"type"`
+	Rarity   string `json:"rarity"`
 	Qty      string `json:"qty"`
 	Value    string `json:"value"`
 	Location string `json:"location"`

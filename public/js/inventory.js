@@ -39,6 +39,45 @@ const INVENTORY_ITEM_TYPE_OPTIONS = [
   { value: "other", label: "Other" }
 ];
 
+const INVENTORY_RARITIES = ["Common", "Uncommon", "Rare", "Very Rare", "Legendary", "Artifact"];
+
+function normalizeInventoryRarity(rarity = "") {
+  const key = String(rarity || "").trim().toLowerCase();
+  return INVENTORY_RARITIES.find(option => option.toLowerCase() === key) || "";
+}
+
+function inventoryRarityKey(rarity = "") {
+  return normalizeInventoryRarity(rarity).toLowerCase().replace(/\s+/g, "-");
+}
+
+// Library magic items used to store their rarity as the value, and their descriptions start
+// with a line such as "Magic Item · Rare", so rarity can be recovered when it is not stored.
+function inferInventoryRarity(data = {}) {
+  const firstLine = String(data.details || "").split("\n")[0];
+  return normalizeInventoryRarity(data.rarity) ||
+    normalizeInventoryRarity(data.value) ||
+    [...INVENTORY_RARITIES].sort((a, b) => b.length - a.length).find(rarity => new RegExp(`\\b${rarity}\\b`).test(firstLine)) ||
+    "";
+}
+
+function inventoryRarityOptions(selected = "") {
+  return `<option value="">—</option>${INVENTORY_RARITIES
+    .map(rarity => `<option value="${rarity}"${rarity === selected ? " selected" : ""}>${rarity}</option>`)
+    .join("")}`;
+}
+
+function isInventoryRarityShown() {
+  return document.getElementById("pg-inventory")?.classList.contains("show-rarity") === true;
+}
+
+function setInventoryRarityShown(shown) {
+  document.getElementById("pg-inventory")?.classList.toggle("show-rarity", shown);
+  const toggle = document.getElementById("inventoryShowRarity");
+  if (toggle) toggle.checked = shown;
+  try { localStorage.setItem("mythicalBlueShowRarity", shown ? "true" : ""); } catch (error) { /* display preference only */ }
+  applyInventoryFilters();
+}
+
 const MOBILE_INVENTORY_GROUP_ORDER = [
   "gear",
   "tool",
@@ -68,6 +107,7 @@ function mobileInventorySummaryCell(item = {}) {
           <span class="inventory-mobile-summary-titleline">
             <span class="inventory-mobile-summary-name">${inventorySafeValue(item.name || "New Item")}</span>
             <span class="inventory-mobile-summary-type">${inventorySafeValue(inventoryTypeLabel(item.type || "gear"))}</span>
+            <span class="inventory-mobile-summary-rarity">${inventorySafeValue(item.rarity || "")}</span>
           </span>
           <span class="inventory-mobile-summary-meta">
             <span class="inventory-mobile-summary-location">Unassigned</span>
@@ -156,6 +196,11 @@ function inventorySortValue(row, key = "name") {
     ).toLocaleLowerCase();
   }
 
+  if (key === "rarity") {
+    const rank = INVENTORY_RARITIES.indexOf(normalizeInventoryRarity(row.querySelector(".inventory-item-rarity")?.value));
+    return String(rank < 0 ? 9 : rank);
+  }
+
   if (key === "location") {
     return (
       row.querySelector(".inventory-location")?.selectedOptions?.[0]?.textContent ||
@@ -198,7 +243,7 @@ function updateInventoryMobileSortControls() {
   const key = inventorySortState.key || "name";
   const direction = inventorySortState.direction === "desc" ? "desc" : "asc";
 
-  if (select && ["name", "type", "location"].includes(key)) {
+  if (select && ["name", "type", "rarity", "location"].includes(key)) {
     select.value = key;
   }
 
@@ -246,7 +291,7 @@ function applyInventorySort() {
 }
 
 function sortInventoryItems(key = "name") {
-  if (!['name', 'type', 'location'].includes(key)) return;
+  if (!['name', 'type', 'rarity', 'location'].includes(key)) return;
 
   if (inventorySortState.key === key) {
     inventorySortState.direction = inventorySortState.direction === "asc"
@@ -277,6 +322,10 @@ function updateMobileInventorySummary(row) {
 
   const nameTarget = row.querySelector(".inventory-mobile-summary-name");
   const typeTarget = row.querySelector(".inventory-mobile-summary-type");
+  const rarity = normalizeInventoryRarity(row.querySelector(".inventory-item-rarity")?.value);
+  const rarityTarget = row.querySelector(".inventory-mobile-summary-rarity");
+  row.dataset.rarity = inventoryRarityKey(rarity);
+  if (rarityTarget) rarityTarget.textContent = rarity;
   const qtyTarget = row.querySelector(".inventory-mobile-summary-qty");
   const valueTarget = row.querySelector(".inventory-mobile-summary-value");
   const locationTarget = row.querySelector(".inventory-mobile-summary-location");
@@ -650,8 +699,9 @@ function normalizeInventoryItem(data = {}, prefix = "gear") {
     id: String(data.id || inventoryId(prefix)),
     name: String(data.name || ""),
     type: normalizeInventoryType(data.type || prefix || "gear"),
+    rarity: inferInventoryRarity(data),
     qty: String(data.qty || ""),
-    value: String(data.value || ""),
+    value: normalizeInventoryRarity(data.value) ? "" : String(data.value || ""),
     location: normalizeInventoryLocation(data.location),
     details: String(data.details || ""),
     open: data.open === true
@@ -927,6 +977,7 @@ function setFilteredRowVisibility(row, visible) {
 function applyInventoryFilters() {
   const locationFilter = document.getElementById("inventoryLocationFilter")?.value || "all";
   const typeFilter = document.getElementById("inventoryTypeFilter")?.value || "all";
+  const rarityFilter = isInventoryRarityShown() ? document.getElementById("inventoryRarityFilter")?.value || "all" : "all";
   const searchText = (document.getElementById("inventorySearchInput")?.value || "")
     .trim()
     .toLowerCase();
@@ -938,9 +989,11 @@ function applyInventoryFilters() {
       const type = normalizeInventoryType(
         row.querySelector(".inventory-item-type")?.value || "gear"
       );
+      const rarity = normalizeInventoryRarity(row.querySelector(".inventory-item-rarity")?.value);
       const searchable = [
         row.querySelector(".inventory-item-name")?.value || "",
         inventoryTypeLabel(type),
+        rarity,
         row.nextElementSibling?.querySelector(".inventory-item-details")?.value || ""
       ]
         .join(" ")
@@ -949,6 +1002,7 @@ function applyInventoryFilters() {
       const filterMatch =
         (locationFilter === "all" || location === locationFilter) &&
         (typeFilter === "all" || type === typeFilter) &&
+        (rarityFilter === "all" || rarity === rarityFilter || (rarityFilter === "none" && !rarity)) &&
         (!searchText || searchable.includes(searchText));
 
       row.dataset.inventoryFilterMatch = filterMatch ? "true" : "false";
@@ -971,6 +1025,7 @@ function applyInventoryFilters() {
       const visible =
         (locationFilter === "all" || location === locationFilter) &&
         typeFilter === "all" &&
+        rarityFilter === "all" &&
         (!searchText || searchable.includes(searchText));
 
       row.hidden = !visible;
@@ -1072,6 +1127,11 @@ function attachItemRowBehavior(mainRow, detailsRow) {
     inventorySortState.key === "location" ? applyInventorySort() : applyInventoryFilters();
   });
 
+  mainRow.querySelector(".inventory-item-rarity")?.addEventListener("change", () => {
+    updateMobileInventorySummary(mainRow);
+    inventorySortState.key === "rarity" ? applyInventorySort() : applyInventoryFilters();
+  });
+
   typeSelect?.addEventListener("change", () => {
     refreshAllEquippedSelects();
     updateMobileInventorySummary(mainRow);
@@ -1092,7 +1152,12 @@ function addUnifiedInventoryRow(data = {}) {
 
   row.innerHTML =
     mobileInventorySummaryCell(item) +
-    inventoryInputCell("inventory-item-name", item.name, "Item…") +
+    `<td class="inventory-name-cell">
+      <div class="inventory-name-wrap">
+        <input class="inventory-item-name" type="text" value="${inventorySafeValue(item.name)}" placeholder="Item…">
+        <select class="inventory-item-rarity" aria-label="Rarity">${inventoryRarityOptions(item.rarity)}</select>
+      </div>
+    </td>` +
     inventoryTypeCell(item.type) +
     inventoryInputCell("inventory-item-qty", item.qty, "1") +
     inventoryInputCell("inventory-item-value", item.value, "—") +
@@ -1124,6 +1189,50 @@ function addInventoryConsumableRow(data = {}) {
   addUnifiedInventoryRow({ ...data, type: data.type || "consumable" });
 }
 
+// Reads values such as "30", "50 gp", "5 sp", or "1,000 GP" as gold pieces (plain numbers are gold).
+function parseGoldValue(text = "") {
+  const match = String(text).replace(/,/g, "").match(/(\d+(?:\.\d+)?)\s*(cp|sp|ep|gp|pp)?/i);
+  if (!match) return null;
+  const perGold = { cp: 0.01, sp: 0.1, ep: 0.5, gp: 1, pp: 10 };
+  return Number(match[1]) * perGold[(match[2] || "gp").toLowerCase()];
+}
+
+function formatGold(value) {
+  return `${Number(value.toFixed(2)).toLocaleString()} gp`;
+}
+
+// Totals each valuable (quantity × value each), the valuables overall, and coins plus valuables.
+function updateInventoryWealth() {
+  let valuablesTotal = 0;
+  let valuablesCount = 0;
+
+  document.querySelectorAll("#inventoryGemsBody .inventory-gem-row").forEach(row => {
+    const qtyText = row.querySelector(".inventory-gem-qty")?.value.trim() || "";
+    const qty = qtyText === "" ? 1 : Number.parseFloat(qtyText) || 0;
+    const each = parseGoldValue(row.querySelector(".inventory-gem-value")?.value);
+    const total = each === null ? null : each * qty;
+    const target = row.querySelector(".inventory-gem-total strong");
+    if (target) target.textContent = total === null ? "—" : formatGold(total);
+    if (row.querySelector(".inventory-gem-name")?.value.trim() || total) valuablesCount += qty;
+    valuablesTotal += total || 0;
+  });
+
+  const coinTotal = [["copperPieces", 0.01], ["silverPieces", 0.1], ["electrumPieces", 0.5], ["goldPieces", 1], ["platinumPieces", 10]]
+    .reduce((sum, [key, perGold]) => sum + (Number.parseFloat(document.querySelector(`[data-field="${key}"]`)?.value) || 0) * perGold, 0);
+
+  const summary = document.getElementById("inventoryGemsSummary");
+  if (summary) {
+    summary.textContent = valuablesCount
+      ? `${valuablesCount.toLocaleString()} valuable${valuablesCount === 1 ? "" : "s"} · worth ${formatGold(valuablesTotal)}`
+      : "";
+  }
+
+  const wealth = document.getElementById("inventoryWealth");
+  if (wealth) {
+    wealth.innerHTML = `<span>Total wealth</span><strong>${formatGold(coinTotal + valuablesTotal)}</strong><em>Coins ${formatGold(coinTotal)} · Valuables ${formatGold(valuablesTotal)}</em>`;
+  }
+}
+
 function addInventoryGemRow(data = {}) {
   const body = document.getElementById("inventoryGemsBody");
   if (!body) return;
@@ -1137,17 +1246,22 @@ function addInventoryGemRow(data = {}) {
     notes: String(data.notes || "")
   };
 
-  const row = document.createElement("tr");
+  const row = document.createElement("div");
   row.className = "inventory-gem-row";
   row.dataset.itemId = gem.id;
 
-  row.innerHTML =
-    inventoryInputCell("inventory-gem-name", gem.name, "Diamond, ruby, diamond dust…") +
-    inventoryInputCell("inventory-gem-qty", gem.qty, "1") +
-    inventoryInputCell("inventory-gem-value", gem.value, "—") +
-    inventoryLocationCell(gem.location) +
-    inventoryInputCell("inventory-gem-notes", gem.notes, "Notes…") +
-    inventoryRemoveButton("gem or valuable");
+  row.innerHTML = `
+    <span class="inventory-gem-icon" aria-hidden="true">◆</span>
+    <div class="inventory-gem-main">
+      <input class="inventory-gem-name" type="text" value="${inventorySafeValue(gem.name)}" placeholder="Ruby, silver chalice, diamond dust…" aria-label="Gem or valuable">
+      <input class="inventory-gem-notes" type="text" value="${inventorySafeValue(gem.notes)}" placeholder="Notes…" aria-label="Notes">
+    </div>
+    <label class="inventory-gem-field inventory-gem-qty-field"><span>Qty</span><input class="inventory-gem-qty" type="text" inputmode="numeric" value="${inventorySafeValue(gem.qty)}" placeholder="1"></label>
+    <label class="inventory-gem-field inventory-gem-value-field"><span>Each</span><input class="inventory-gem-value" type="text" value="${inventorySafeValue(gem.value)}" placeholder="50 gp"></label>
+    <div class="inventory-gem-field inventory-gem-total"><span>Total</span><strong>—</strong></div>
+    <label class="inventory-gem-field inventory-gem-location-field"><span>Location</span><select class="inventory-location" data-selected-location="${inventorySafeValue(gem.location)}"></select></label>
+    <button type="button" class="inventory-remove" title="Remove gem or valuable" aria-label="Remove gem or valuable">×</button>
+  `;
 
   body.appendChild(row);
 
@@ -1158,12 +1272,18 @@ function addInventoryGemRow(data = {}) {
     applyInventoryFilters();
   });
 
+  row.querySelectorAll(".inventory-gem-qty, .inventory-gem-value").forEach(input => {
+    input.addEventListener("input", updateInventoryWealth);
+  });
+
   row.querySelector(".inventory-remove")?.addEventListener("click", () => {
     row.remove();
     applyInventoryFilters();
+    updateInventoryWealth();
   });
 
   refreshInventoryDependentOptions();
+  updateInventoryWealth();
 }
 
 function addInventoryAttunementRow(data = {}) {
@@ -1328,6 +1448,7 @@ function collectUnifiedInventoryRows() {
         id: row.dataset.itemId,
         name: row.querySelector(".inventory-item-name")?.value.trim() || "",
         type: normalizeInventoryType(row.querySelector(".inventory-item-type")?.value || "gear"),
+        rarity: normalizeInventoryRarity(row.querySelector(".inventory-item-rarity")?.value),
         qty: row.querySelector(".inventory-item-qty")?.value.trim() || "",
         value: row.querySelector(".inventory-item-value")?.value.trim() || "",
         location: normalizeInventoryLocation(row.querySelector(".inventory-location")?.value.trim() || ""),
@@ -1444,6 +1565,7 @@ function resetInventoryRows({
   setInventoryView(inventoryView || SILHOUETTE_VIEW_DEFAULT);
   refreshInventoryDependentOptions();
   syncCoinageMirrorsFromCanonical();
+  updateInventoryWealth();
   renderEquippedNodeMap();
 }
 
@@ -1481,6 +1603,7 @@ function bindCoinageMirrors() {
 
 function bindInventoryControls() {
   bindCoinageMirrors();
+  document.querySelectorAll("[data-coinage-key]").forEach(field => field.addEventListener("input", updateInventoryWealth));
   bindInventoryViewToggle();
 
   window.addEventListener("resize", () => {
@@ -1503,6 +1626,18 @@ function bindInventoryControls() {
   document
     .getElementById("inventoryTypeFilter")
     ?.addEventListener("change", applyInventoryFilters);
+
+  document
+    .getElementById("inventoryRarityFilter")
+    ?.addEventListener("change", applyInventoryFilters);
+
+  document
+    .getElementById("inventoryShowRarity")
+    ?.addEventListener("change", event => setInventoryRarityShown(event.target.checked));
+
+  let rarityShown = false;
+  try { rarityShown = localStorage.getItem("mythicalBlueShowRarity") === "true"; } catch (error) { /* display preference only */ }
+  setInventoryRarityShown(rarityShown);
 
   document
     .getElementById("inventorySearchInput")

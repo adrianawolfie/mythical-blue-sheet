@@ -635,7 +635,7 @@
       <div class="inventory-page-grid">
 
         <div class="sb-card inventory-coinage-card">
-          <div class="sb-hdr">Coinage & Gems</div>
+          <div class="sb-hdr">Coinage</div>
 
           <div class="coinsrow inventory-old-coinsrow">
             <div class="cbox2"><label>CP</label><input type="text" placeholder="0" data-field="copperPieces" data-coinage-key="copperPieces"></div>
@@ -644,26 +644,16 @@
             <div class="cbox2 gold-coin"><label>GP</label><input type="text" placeholder="0" data-field="goldPieces" data-coinage-key="goldPieces"></div>
             <div class="cbox2"><label>PP</label><input type="text" placeholder="0" data-field="platinumPieces" data-coinage-key="platinumPieces"></div>
           </div>
+          <div id="inventoryWealth" class="inventory-wealth" aria-live="polite"></div>
+        </div>
 
-          <details class="inventory-gems-details">
-            <summary class="inventory-subheading">Gems & Valuables</summary>
-            <div class="inventory-gems-section">
-              <table class="inventory-table inventory-gems-table">
-                <thead>
-                  <tr>
-                    <th>Gem / Valuable</th>
-                    <th class="inventory-qty-col">Qty</th>
-                    <th class="inventory-value-col">Value</th>
-                    <th class="inventory-location-col">Location</th>
-                    <th>Notes</th>
-                    <th class="inventory-remove-col"></th>
-                  </tr>
-                </thead>
-                <tbody id="inventoryGemsBody"></tbody>
-              </table>
-              <button type="button" class="inventory-add" onclick="addInventoryGemRow()">+ Add Gem / Valuable</button>
-            </div>
-          </details>
+        <div class="sb-card inventory-gems-card">
+          <div class="sb-hdr">Gems & Valuables</div>
+          <div id="inventoryGemsSummary" class="inventory-gems-summary" aria-live="polite"></div>
+          <div id="inventoryGemsBody" class="inventory-gems-list" data-empty="No gems or valuables yet. Add gemstones, art objects, trade goods, or anything else worth coin."></div>
+          <div class="inventory-gems-actions">
+            <button type="button" class="inventory-add" onclick="addInventoryGemRow()">+ Add Gem / Valuable</button>
+          </div>
         </div>
 
         <div class="sb-card equipped-carried-card">
@@ -718,9 +708,28 @@
             </select>
           </label>
 
+          <label class="inventory-rarity-filter">
+            <span>Rarity</span>
+            <select id="inventoryRarityFilter" class="inventory-filter-select">
+              <option value="all">All Rarities</option>
+              <option value="none">No rarity</option>
+              <option>Common</option>
+              <option>Uncommon</option>
+              <option>Rare</option>
+              <option>Very Rare</option>
+              <option>Legendary</option>
+              <option>Artifact</option>
+            </select>
+          </label>
+
           <label class="inventory-search-label">
             <span>Search</span>
             <input id="inventorySearchInput" class="inventory-search-input" placeholder="Search items…">
+          </label>
+
+          <label class="inventory-rarity-toggle">
+            <input id="inventoryShowRarity" type="checkbox">
+            <span>Show rarity</span>
           </label>
 
           <div class="inventory-mobile-sortbar" aria-label="Equipment sorting controls">
@@ -729,6 +738,7 @@
               <select id="inventoryMobileSortSelect" class="inventory-filter-select">
                 <option value="name">Name</option>
                 <option value="type">Type</option>
+                <option value="rarity">Rarity</option>
                 <option value="location">Location</option>
               </select>
             </label>
@@ -742,7 +752,7 @@
             <table class="inventory-table inventory-detail-table inventory-unified-table" id="inventoryItemsTable">
               <thead>
                 <tr>
-                  <th aria-sort="none"><button type="button" class="inventory-sort-button" data-inventory-sort-key="name">Item <span class="inventory-sort-indicator" aria-hidden="true">↕</span></button></th>
+                  <th aria-sort="none"><button type="button" class="inventory-sort-button" data-inventory-sort-key="name">Item <span class="inventory-sort-indicator" aria-hidden="true">↕</span></button><button type="button" class="inventory-sort-button inventory-rarity-sort" data-inventory-sort-key="rarity">Rarity <span class="inventory-sort-indicator" aria-hidden="true">↕</span></button></th>
                   <th class="inventory-type-col" aria-sort="none"><button type="button" class="inventory-sort-button" data-inventory-sort-key="type">Type <span class="inventory-sort-indicator" aria-hidden="true">↕</span></button></th>
                   <th class="inventory-qty-col">Qty</th>
                   <th class="inventory-value-col">Value</th>
