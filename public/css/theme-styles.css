@@ -106,14 +106,9 @@ html[data-style="neutral"]:not([data-theme="moonlight"]) :is(.tab-icon, .nav-ico
 
 /* ─── Raperonzolo: lavender and lilac with sage green ──────────────────── */
 
+/* The Art Nouveau frame (below) replaces the corner ornaments. */
 html[data-style="raperonzolo"] .corner {
-  background-image: url('../assets/themes/raperonzolo/corner.svg');
-  filter: none;
-}
-
-html[data-style="raperonzolo"][data-theme="moonlight"] .corner {
-  background-image: url('../assets/themes/raperonzolo/corner-moonlight.svg');
-  opacity: .9;
+  display: none;
 }
 
 html[data-style="raperonzolo"]:not([data-theme="moonlight"]) {
@@ -323,16 +318,40 @@ html[data-style="raperonzolo"] .sheet-toolbar :is(.sheet-copy-button, .sheet-del
   border-radius: 50%;
 }
 
-/* A full arch frames the sheet, like a window in a Mucha poster. */
+/* Art Nouveau frame around the sheet: interlaced ribbons weaving along the
+   sides and looping into the corners, with rampion bellflower sprays in two
+   opposite corners. One SVG (drawn by tools/raperonzolo-frame.py) is used as
+   a 9-slice border image: the corners stay fixed and each side stretches
+   into one long flowing wave, whatever the sheet's height. */
 html[data-style="raperonzolo"] .sheet::after {
   content: '';
   position: absolute;
-  inset: 16px;
+  inset: 8px;
   z-index: 1;
-  border: 1px solid var(--nouveau-line);
-  border-radius: 50% 50% 18px 18px / 150px 150px 18px 18px;
-  opacity: .6;
+  border: 132px solid transparent;
+  border-image: url('../assets/themes/raperonzolo/frame.svg') 180 stretch;
   pointer-events: none;
+}
+
+html[data-style="raperonzolo"][data-theme="moonlight"] .sheet::after {
+  border-image-source: url('../assets/themes/raperonzolo/frame-moonlight.svg');
+}
+
+/* Keep the footer clear of the bottom corner loops. */
+html[data-style="raperonzolo"] .sheet {
+  padding-bottom: 150px;
+}
+
+@media (max-width: 1099px) {
+  html[data-style="raperonzolo"] .sheet {
+    padding-left: 64px;
+    padding-right: 64px;
+    padding-bottom: 110px;
+  }
+
+  html[data-style="raperonzolo"] .sheet::after {
+    border-width: 92px;
+  }
 }
 
 /* Title with a whiplash divider underneath instead of the flowers either side. */
@@ -356,9 +375,15 @@ html[data-style="raperonzolo"] .theme-title::after {
 }
 
 @media (max-width: 768px) {
+  html[data-style="raperonzolo"] .sheet {
+    padding-left: 26px;
+    padding-right: 26px;
+    padding-bottom: 70px;
+  }
+
   html[data-style="raperonzolo"] .sheet::after {
-    inset: 6px;
-    border-radius: 50% 50% 12px 12px / 70px 70px 12px 12px;
+    inset: 3px;
+    border-width: 56px;
   }
 
   html[data-style="raperonzolo"] .theme-title::after {
