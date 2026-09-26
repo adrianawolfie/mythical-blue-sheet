@@ -178,6 +178,7 @@ function normalizeFeatureResourceType(type = "") {
 function setFeatureResource(entry, { max = "", type = "" }) {
   const known = type === "Short Rest" || type === "Long Rest";
   entry.querySelector(".feature-resource-area").classList.add("has-resource");
+  entry.classList.add("has-resource");
   entry.querySelector(".feature-resource-max").value = max;
   entry.querySelector(".feature-resource-type").value = known ? type : "custom";
   entry.querySelector(".feature-resource-custom").value = known ? "" : type;
@@ -258,56 +259,51 @@ function addFeatureEntry(listId, data = {}) {
   if (hasResource && !resourceMax && !String(data.resource || "").trim()) entry.dataset.resourceMissing = "true";
 
   entry.innerHTML = `
-    <div class="feature-entry-top">
-      <input class="feature-name" type="text" placeholder="Name" value="${escapeHtml(data.name || "")}" />
-      <input class="feature-short" type="text" placeholder="Short description" value="${escapeHtml(data.short || "")}" />
-    </div>
-
-    <div class="feature-entry-footer">
-      <button type="button" class="feature-details-toggle" aria-expanded="${data.open ? "true" : "false"}">
-        <span class="feature-details-toggle-icon" aria-hidden="true">${data.open ? "▾" : "▸"}</span>
-        <span>Details</span>
+    <div class="feature-entry-head">
+      <button type="button" class="feature-details-toggle" aria-expanded="${data.open ? "true" : "false"}" aria-label="Show details">
+        <span class="feature-details-toggle-icon" aria-hidden="true">⌄</span>
       </button>
-
-      <label class="feature-category-control">
-        <span class="feature-category-label">Category</span>
-        <select class="feature-category-select" aria-label="Feature category">
-          ${featureCategoryOptions(category, listId)}
-        </select>
-      </label>
-
+      <div class="feature-entry-titles">
+        <input class="feature-name" type="text" placeholder="Feature name" aria-label="Feature name" value="${escapeHtml(data.name || "")}" />
+        <input class="feature-short" type="text" placeholder="Short description" aria-label="Short description" value="${escapeHtml(data.short || "")}" />
+      </div>
       <div class="feature-resource-area ${hasResource ? "has-resource" : ""}">
-        <button type="button" class="feature-resource-toggle">+ Add Resource</button>
-        <div class="feature-resource-box">
-          <label>Resource</label>
-          <div class="slot-row">
-            <span class="resource-stepper">
-              <button type="button" class="slot-btn" data-slot-step="-1" aria-label="Use resource">−</button>
-              <output class="slot-available" aria-label="Resource available">0</output>
-              <button type="button" class="slot-btn" data-slot-step="1" aria-label="Regain resource">+</button>
-            </span>
-            <span class="resource-of">of</span>
-            <input class="feature-resource-max" type="text" inputmode="numeric" placeholder="max" title="A number, or PB for your proficiency bonus" aria-label="Resource max" value="${escapeHtml(resourceMax)}" />
-          </div>
+        <span class="resource-stepper">
+          <button type="button" class="slot-btn" data-slot-step="-1" aria-label="Use resource">−</button>
+          <output class="slot-available" aria-label="Resource available">0</output>
+          <button type="button" class="slot-btn" data-slot-step="1" aria-label="Regain resource">+</button>
+        </span>
+        <span class="feature-resource-of">of <input class="feature-resource-max" type="text" inputmode="numeric" placeholder="max" title="A number, or PB for your proficiency bonus" aria-label="Resource max" value="${escapeHtml(resourceMax)}" /></span>
+        <span class="feature-resource-recharge">
           <select class="feature-resource-type" aria-label="Resource recharge">
             <option value="Short Rest" ${resourceType === "Short Rest" ? "selected" : ""}>Short Rest</option>
             <option value="Long Rest" ${resourceType === "Long Rest" ? "selected" : ""}>Long Rest</option>
             <option value="custom" ${customResourceType ? "selected" : ""}>Custom</option>
           </select>
-          <input class="feature-resource-custom" type="text" placeholder="Resource type" aria-label="Custom resource type" value="${customResourceType ? escapeHtml(resourceType) : ""}" ${customResourceType ? "" : "hidden"} />
-          <button type="button" class="feature-resource-remove" aria-label="Remove resource tracker">X</button>
-        </div>
+          <input class="feature-resource-custom" type="text" placeholder="Recharge" aria-label="Custom resource type" value="${customResourceType ? escapeHtml(resourceType) : ""}" ${customResourceType ? "" : "hidden"} />
+        </span>
       </div>
+    </div>
 
-      <div class="feature-details-panel${data.open ? " is-open" : ""}" ${data.open ? "" : "hidden"}>
-        <textarea class="feature-details" placeholder="Full rules text, usage limits, recharge, source, notes...">${escapeHtml(data.details || "")}</textarea>
+    <div class="feature-details-panel${data.open ? " is-open" : ""}" ${data.open ? "" : "hidden"}>
+      <textarea class="feature-details" rows="3" placeholder="Full rules text, usage limits, recharge, source, notes…">${escapeHtml(data.details || "")}</textarea>
+      <div class="feature-entry-meta">
+        <label class="feature-category-control">
+          <span>Category</span>
+          <select class="feature-category-select" aria-label="Feature category">
+            ${featureCategoryOptions(category, listId)}
+          </select>
+        </label>
+        <button type="button" class="feature-meta-link feature-resource-toggle">+ Track uses</button>
+        <button type="button" class="feature-meta-link feature-resource-remove">Stop tracking uses</button>
+        <button type="button" class="feature-meta-link feature-remove">Remove feature</button>
       </div>
     </div>
 
     <div class="feature-edit-controls">
-      <button type="button" class="feature-edit-btn feature-up">↑</button>
-      <button type="button" class="feature-edit-btn feature-down">↓</button>
-      <button type="button" class="feature-edit-btn feature-delete delete-x">X</button>
+      <button type="button" class="feature-edit-btn feature-up" aria-label="Move up">↑</button>
+      <button type="button" class="feature-edit-btn feature-down" aria-label="Move down">↓</button>
+      <button type="button" class="feature-edit-btn feature-delete delete-x" aria-label="Remove feature">×</button>
     </div>
   `;
 
@@ -320,23 +316,45 @@ function addFeatureEntry(listId, data = {}) {
   const categorySelect = entry.querySelector(".feature-category-select");
   const detailsToggle = entry.querySelector(".feature-details-toggle");
   const detailsPanel = entry.querySelector(".feature-details-panel");
-  const detailsToggleIcon = entry.querySelector(".feature-details-toggle-icon");
+
+  const detailsInput = entry.querySelector(".feature-details");
+
+  // The rules text grows with its content instead of scrolling inside a small box.
+  function fitDetails() {
+    detailsInput.style.height = "auto";
+    detailsInput.style.height = `${detailsInput.scrollHeight + 2}px`;
+  }
 
   function setFeatureDetailsOpen(isOpen) {
     const open = Boolean(isOpen);
     detailsPanel.hidden = !open;
     detailsPanel.classList.toggle("is-open", open);
+    entry.classList.toggle("is-open", open);
     detailsToggle.setAttribute("aria-expanded", String(open));
-    if (detailsToggleIcon) detailsToggleIcon.textContent = open ? "▾" : "▸";
+    detailsToggle.setAttribute("aria-label", open ? "Hide details" : "Show details");
+    if (open) requestAnimationFrame(fitDetails);
   }
 
+  setFeatureDetailsOpen(Boolean(data.open));
   detailsToggle.addEventListener("click", () => {
     setFeatureDetailsOpen(!detailsPanel.classList.contains("is-open"));
   });
 
+  // Clicking the empty part of a row (not a field or button) opens or closes it.
+  entry.querySelector(".feature-entry-head").addEventListener("click", event => {
+    if (event.target.closest("input, select, button, output, .feature-resource-area")) return;
+    setFeatureDetailsOpen(!detailsPanel.classList.contains("is-open"));
+  });
+
+  detailsInput.addEventListener("input", fitDetails);
+
   resourceToggle.addEventListener("click", () => {
     resourceArea.classList.add("has-resource");
+    entry.classList.add("has-resource");
+    if (!resourceInput.value.trim()) resourceInput.value = "1";
+    renderFeatureResources();
     resourceInput.focus();
+    resourceInput.select();
   });
 
   resourceTypeSelect.addEventListener("change", () => {
@@ -350,6 +368,7 @@ function addFeatureEntry(listId, data = {}) {
     if (!confirm("Remove the resource tracker from this feature or trait?")) return;
     resourceInput.value = "";
     resourceArea.classList.remove("has-resource");
+    entry.classList.remove("has-resource");
     const { [entry.dataset.resourceId]: removed, ...remaining } = featureResourcesSpent;
     featureResourcesSpent = remaining;
     renderFeatureResources();
@@ -384,17 +403,25 @@ function addFeatureEntry(listId, data = {}) {
     refreshFeatureView(listId);
   });
 
-  entry.querySelector(".feature-delete").addEventListener("click", () => {
-    if (!confirm("Remove this feature or trait?")) return;
+  entry.querySelectorAll(".feature-delete, .feature-remove").forEach(button => button.addEventListener("click", () => {
+    const name = entry.querySelector(".feature-name")?.value.trim();
+    if (!confirm(`Remove ${name || "this feature or trait"}?`)) return;
     entry.remove();
     refreshFeatureCategorySelects(listId);
     refreshFeatureView(listId);
-  });
+  }));
 
+  if (hasResource) entry.classList.add("has-resource");
   list.appendChild(entry);
   refreshFeatureCategorySelects(listId);
   refreshFeatureView(listId);
   renderFeatureResources();
+
+  // A new blank feature opens straight away so it can be named.
+  if (!data.name && !data.short && !data.details) {
+    setFeatureDetailsOpen(true);
+    entry.querySelector(".feature-name").focus();
+  }
 }
 
 function toggleFeatureEditMode(listId, button) {

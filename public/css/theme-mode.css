@@ -789,7 +789,6 @@ html[data-theme="moonlight"] .armor-class-total,
 html[data-theme="moonlight"] .armor-class-active,
 html[data-theme="moonlight"] .equipped-slot-card,
 html[data-theme="moonlight"] .custom-equipped-slot,
-html[data-theme="moonlight"] .feature-entry,
 html[data-theme="moonlight"] .proficiency-value-row,
 html[data-theme="moonlight"] .extra-speed-row {
   background: rgba(5, 25, 58, .72) !important;
@@ -817,7 +816,6 @@ html[data-theme="moonlight"] .bonbox label,
 html[data-theme="moonlight"] .cbox label,
 html[data-theme="moonlight"] .inventory-subheading,
 html[data-theme="moonlight"] .equipped-slot-label,
-html[data-theme="moonlight"] .feature-meta-row,
 html[data-theme="moonlight"] .proficiency-type-label,
 html[data-theme="moonlight"] .armor-class-panel-title,
 html[data-theme="moonlight"] .inventory-filter-label,
@@ -841,7 +839,6 @@ html[data-theme="moonlight"] .sb-card textarea,
 html[data-theme="moonlight"] .condition-display,
 html[data-theme="moonlight"] .condition-explanation,
 html[data-theme="moonlight"] .condition-explanation strong,
-html[data-theme="moonlight"] .feature-entry,
 html[data-theme="moonlight"] .journal-note-entry,
 html[data-theme="moonlight"] .proficiency-value-row,
 html[data-theme="moonlight"] .extra-speed-row {
@@ -1238,18 +1235,6 @@ html[data-theme="moonlight"] .slot-btn {
 html[data-theme="moonlight"] .slot-row,
 html[data-theme="moonlight"] .slot-available {
   color: #f3fbff;
-}
-
-html[data-theme="moonlight"] .feature-resource-box .resource-stepper {
-  border-color: var(--moon-ghost-soft-line);
-}
-
-html[data-theme="moonlight"] .feature-resource-box .resource-stepper .slot-btn:not(:disabled):hover {
-  background: rgba(124,205,255,.14);
-}
-
-html[data-theme="moonlight"] .feature-resource-box .resource-of {
-  color: var(--moon-ghost-bright);
 }
 
 html[data-theme="moonlight"] .pact-slot-level option,
@@ -1802,7 +1787,6 @@ html[data-theme="moonlight"] .feature-browser-toolbar {
 }
 
 html[data-theme="moonlight"] .feature-browser-toolbar label > span,
-html[data-theme="moonlight"] .feature-category-row label,
 html[data-theme="moonlight"] .feature-filter-count,
 html[data-theme="moonlight"] .defense-type-cell .proficiency-type-label {
   color: var(--moon-ghost-bright) !important;
@@ -1810,7 +1794,6 @@ html[data-theme="moonlight"] .defense-type-cell .proficiency-type-label {
 
 html[data-theme="moonlight"] .feature-browser-toolbar input,
 html[data-theme="moonlight"] .feature-browser-toolbar select,
-html[data-theme="moonlight"] .feature-category-row select,
 html[data-theme="moonlight"] .feature-filter-clear,
 html[data-theme="moonlight"] .defense-value-row input {
   border-color: var(--moon-ghost-soft-line) !important;
@@ -1825,34 +1808,9 @@ html[data-theme="moonlight"] .feature-filter-clear:focus-visible {
 }
 
 /* ─── Feature cards and defenses — refined Moonlight layout ───────────── */
-html[data-theme="moonlight"] .feature-entry {
-  border-color: var(--moon-ghost-soft-line) !important;
-  background: rgba(2, 22, 57, .46) !important;
-}
 
-html[data-theme="moonlight"] .feature-entry-footer {
-  border-top-color: rgba(150, 218, 255, .34) !important;
-}
-
-html[data-theme="moonlight"] .feature-category-label,
 html[data-theme="moonlight"] .defense-type-cell .proficiency-type-label {
   color: var(--moon-ghost-bright) !important;
-}
-
-html[data-theme="moonlight"] .feature-category-select,
-html[data-theme="moonlight"] .feature-resource-type {
-  border: none !important;
-  border-bottom: 1px dotted rgba(150, 218, 255, .58) !important;
-  background: transparent !important;
-  color: #eefaff !important;
-}
-
-html[data-theme="moonlight"] .feature-category-select:hover,
-html[data-theme="moonlight"] .feature-category-select:focus,
-html[data-theme="moonlight"] .feature-resource-type:hover,
-html[data-theme="moonlight"] .feature-resource-type:focus {
-  border-bottom-color: var(--moon-ghost-line) !important;
-  background: rgba(77, 154, 215, .12) !important;
 }
 
 html[data-theme="moonlight"] .defense-type-cell .proficiency-add-row {
@@ -1861,21 +1819,6 @@ html[data-theme="moonlight"] .defense-type-cell .proficiency-add-row {
 }
 
 /* Feature cards: stable details toggle in Moonlight Mode */
-html[data-theme="moonlight"] .feature-details-toggle {
-  color: var(--moon-text-soft, #d8e8ff);
-}
-
-html[data-theme="moonlight"] .feature-details-toggle:hover,
-html[data-theme="moonlight"] .feature-details-toggle:focus-visible,
-html[data-theme="moonlight"] .feature-details-toggle-icon {
-  color: var(--moon-accent, #95ccff);
-}
-
-html[data-theme="moonlight"] .feature-details-panel textarea {
-  background: rgba(5, 20, 45, .52);
-  color: var(--moon-text, #eef6ff);
-  border-color: rgba(160, 214, 255, .56);
-}
 
 /* ─── MOONLIGHT — NATIVE DROPDOWN OPTION CONTRAST ──────────────────────
    Browsers often render an opened <select> on their own surface. Keep the
