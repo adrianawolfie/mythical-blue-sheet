@@ -3190,8 +3190,7 @@
   }
 
   .hdr-fields:not(.is-expanded) .hdr-row.r1,
-  .hdr-fields:not(.is-expanded) .hdr-row.r2 > .hfl,
-  .hdr-fields:not(.is-expanded) .extra-speed-add {
+  .hdr-fields:not(.is-expanded) .hdr-row.r2 > .hfl {
     display: none;
   }
 
