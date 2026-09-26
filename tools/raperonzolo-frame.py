@@ -1,37 +1,51 @@
 """Draws the Raperonzolo theme's Art Nouveau sheet frame.
 
-Interlaced ribbons weave along each side and loop into the corners, with
-rampion bellflower (Campanula rapunculus, "raperonzolo") sprays in two
-opposite corners. The 600x600 SVG is used as a 9-slice border image
-(180-unit corners) in public/css/theme-styles.css.
+Two ribbons weave along each side, crossing the sheet's edge, and sweep into
+knotted loops that break out past the corners. Rampion bellflowers
+(Campanula rapunculus, "raperonzolo") grow over the top-right and
+bottom-left corners: open five-pointed star flowers and nodding bells on
+slender stems with narrow leaves.
+
+The 600x600 SVG is a 9-slice border image with 200-unit corners, used in
+public/css/theme-styles.css. The sheet's edge is the thin rule at 60 units,
+so everything outside it overlaps the page around the sheet.
 
 Usage: python3 tools/raperonzolo-frame.py public/assets/themes/raperonzolo
 Writes frame.svg (daylight) and frame-moonlight.svg.
 """
-import math, sys
-# 600x600 frame for a 9-slice border-image: 180-unit corners, 240-unit edge tiles.
-S, C = 600, 180
+import math
+import re
+import sys
+
+S, C = 600, 200          # image size, corner slice
+EDGE = 60                # the sheet's edge, as a thin rule
+RIBBON_W = 9
+
 
 def pal(mode):
     if mode == 'day':
-        return dict(outline='#6b4c96', fill='#e3d5f2', line='#8e6fb3', petal='#bf9fec', petal_edge='#7e57bd',
-                    vein='#9a78d0', centre='#f6f0fd', stamen='#ffffff', stem='#5f8a57', leaf='#7ea572', leaf_edge='#4f7449', bud='#a987dc')
-    return dict(outline='#cbb8ef', fill='#23305e', line='#b6a3e0', petal='#c9b0f2', petal_edge='#9d80d6',
-                vein='#b49ae6', centre='#f3edfd', stamen='#ffffff', stem='#8fbb86', leaf='#86b37b', leaf_edge='#5e8a56', bud='#b99be6')
+        return dict(outline='#6b4c96', fill='#e6d9f4', line='#8e6fb3',
+                    petal='#b595ea', petal_edge='#7550b4', throat='#f3ecfd', vein='#8763c6',
+                    stigma='#ffffff', stem='#5b8752', leaf='#7ca56f', leaf_edge='#4a7043', sepal='#6f9a63')
+    return dict(outline='#cbb8ef', fill='#22305c', line='#b6a3e0',
+                petal='#c3a6f2', petal_edge='#8f70cf', throat='#f4eefd', vein='#9b7dd8',
+                stigma='#ffffff', stem='#8fbb86', leaf='#84b279', leaf_edge='#5b8753', sepal='#8fbb86')
 
-RIBBON_W = 8.5
+
+# ── Ribbons ────────────────────────────────────────────────────────────────
 
 def wave(sign, x0=C, x1=S - C, step=4):
     pts = []
     x = x0
     while x <= x1 + 0.01:
         th = 2 * math.pi * (x - C) / (S - 2 * C)
-        pts.append((x, 60 + sign * 14 * math.cos(th)))
+        pts.append((x, EDGE + sign * 16 * math.cos(th)))
         x += step
     return 'M' + ' L'.join(f'{x:.1f} {y:.2f}' for x, y in pts)
 
+
 def sym(start, segs):
-    # A path from `start` to a point on the diagonal, continued by its mirror image (x<->y).
+    """A path from `start` to a point on the diagonal, continued by its mirror image (x<->y)."""
     d = f'M{start[0]} {start[1]}' + ''.join(f' C{a[0]} {a[1]} {b[0]} {b[1]} {c[0]} {c[1]}' for a, b, c in segs)
     m = [(y, x) for (x, y) in [start] + [q for sg in segs for q in sg]]
     rev = m[::-1]
@@ -39,8 +53,8 @@ def sym(start, segs):
         d += f' C{rev[i][0]} {rev[i][1]} {rev[i+1][0]} {rev[i+1][1]} {rev[i+2][0]} {rev[i+2][1]}'
     return d
 
+
 def swap(d):
-    import re
     toks = re.findall(r'[MCLZ]|-?\d+\.?\d*', d)
     out, nums = [], []
     for t in toks:
@@ -49,27 +63,12 @@ def swap(d):
         else:
             nums.append(t)
             if len(nums) == 2:
-                out.append(f'{nums[1]} {nums[0]}'); nums = []
+                out.append(f'{nums[1]} {nums[0]}')
+                nums = []
     return ' '.join(out)
 
-def side_pieces():
-    """Ribbon paths for the top-left corner and top edge. 'over' pieces are
-    redrawn on top so ribbons weave over and under each other."""
-    base, over = [], []
-    # Top edge: two ribbons weaving; A over B at x=240, B over A at x=360.
-    base += [wave(+1), wave(-1)]
-    over += [wave(+1, 212, 268, 2), wave(-1, 332, 388, 2)]
-    # Outer ribbon B swells into a point at the corner.
-    base.append(sym((180, 46), [((120, 46), (58, 16), (36, 36))]))
-    # Inner ribbon A dives inward into a loop on each side before meeting at the corner.
-    A = sym((180, 74), [((118, 74), (104, 136), (138, 136)), ((168, 136), (166, 96), (134, 92)), ((110, 89), (88, 54), (70, 70))])
-    base.append(A)
-    over += weave(A)
-    return base, over
 
 def sample(d, step=0.01):
-    """Points along a path of M/C commands (cubic Beziers only)."""
-    import re
     nums = [float(v) for v in re.findall(r'-?\d+\.?\d*', d)]
     x0, y0 = nums[0], nums[1]
     pts = [(x0, y0)]
@@ -86,15 +85,13 @@ def sample(d, step=0.01):
         i += 6
     return pts
 
-def weave(d, half=13):
-    """Finds where a path crosses itself and returns short pieces to redraw on
-    top, alternating over and under along the path."""
-    pts = sample(d)
+
+def crossings(pa, pb, same):
     hits = []
-    for i in range(len(pts) - 1):
-        for j in range(i + 8, len(pts) - 1):
-            (x1, y1), (x2, y2) = pts[i], pts[i + 1]
-            (x3, y3), (x4, y4) = pts[j], pts[j + 1]
+    for i in range(len(pa) - 1):
+        for j in range((i + 8) if same else 0, len(pb) - 1):
+            (x1, y1), (x2, y2) = pa[i], pa[i + 1]
+            (x3, y3), (x4, y4) = pb[j], pb[j + 1]
             den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
             if abs(den) < 1e-9:
                 continue
@@ -102,89 +99,147 @@ def weave(d, half=13):
             u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / den
             if 0 <= t <= 1 and 0 <= u <= 1:
                 hits.append((i, j))
-    visits = sorted([(i, k, 0) for k, (i, j) in enumerate(hits)] + [(j, k, 1) for k, (i, j) in enumerate(hits)])
-    pieces = []
-    for n, (idx, k, _) in enumerate(visits):
-        if n % 2:  # every other visit goes over
-            continue
-        # walk ~half units of arc length either side of the crossing
-        a = b = idx
-        dist = 0
-        while a > 0 and dist < half:
-            dist += math.dist(pts[a], pts[a - 1]); a -= 1
-        dist = 0
-        while b < len(pts) - 1 and dist < half:
-            dist += math.dist(pts[b], pts[b + 1]); b += 1
-        pieces.append('M' + ' L'.join(f'{x:.1f} {y:.1f}' for x, y in pts[a:b + 1]))
-    return pieces
+    return hits
 
-def lines(p):
-    # thin double rule around the edge
-    return (f'<rect x="20" y="20" width="560" height="560" rx="6" fill="none" stroke="{p["line"]}" stroke-width="1.6"/>'
-            f'<rect x="27" y="27" width="546" height="546" rx="4" fill="none" stroke="{p["line"]}" stroke-width=".8" opacity=".8"/>')
 
-def petal_path(r):
-    return f'M0 0 C {r*0.28:.1f} {-r*0.3:.1f}, {r*0.3:.1f} {-r*0.72:.1f}, 0 {-r} C {-r*0.3:.1f} {-r*0.72:.1f}, {-r*0.28:.1f} {-r*0.3:.1f}, 0 0 Z'
+def piece(pts, idx, half=14):
+    a = b = idx
+    dist = 0
+    while a > 0 and dist < half:
+        dist += math.dist(pts[a], pts[a - 1])
+        a -= 1
+    dist = 0
+    while b < len(pts) - 1 and dist < half:
+        dist += math.dist(pts[b], pts[b + 1])
+        b += 1
+    return 'M' + ' L'.join(f'{x:.1f} {y:.1f}' for x, y in pts[a:b + 1])
 
-def bellflower(x, y, r, rot, p, squash=1.0):
-    # Campanula / rampion: five pointed petals in a star, pale throat, white stamens.
-    parts = [f'<g transform="translate({x} {y}) rotate({rot}) scale(1 {squash})">']
+
+def weave(d):
+    """Short pieces to redraw on top where a path crosses itself, alternating over and under."""
+    pts = sample(d)
+    hits = crossings(pts, pts, True)
+    visits = sorted([(i, k) for k, (i, j) in enumerate(hits)] + [(j, k) for k, (i, j) in enumerate(hits)])
+    return [piece(pts, idx) for n, (idx, k) in enumerate(visits) if n % 2 == 0]
+
+
+def side_pieces():
+    """Ribbons for the top-left corner and top edge; 'over' pieces are drawn last."""
+    base, over = [], []
+    # Top edge: two ribbons weaving across the sheet's edge.
+    base += [wave(+1), wave(-1)]
+    over += [wave(+1, 236, 264, 2), wave(-1, 336, 364, 2)]
+    # Outer ribbon: sweeps out past the corner into a pointed swell.
+    outer = sym((200, 44), [((142, 44), (60, 2), (22, 22))])
+    # Inner ribbon: dives into the sheet in a loop on each side and meets at the corner.
+    inner = sym((200, 76), [((134, 76), (118, 152), (158, 152)), ((194, 152), (190, 108), (152, 104)),
+                            ((124, 101), (100, 62), (82, 82))])
+    # A whiplash curl breaking outward over the edge on each side.
+    curl = 'M176 44 C 176 18 158 4 138 8 C 120 12 124 32 140 30'
+    base += [outer, inner, curl, swap(curl)]
+    over += weave(inner)
+    # The outer swell passes over the inner loops where they meet.
+    po, pi = sample(outer), sample(inner)
+    over += [piece(po, i) for i, j in crossings(po, pi, False)]
+    return base, over
+
+
+def rules(p):
+    """The sheet's edge: a thin double rule the ribbons weave across."""
+    return (f'<rect x="{EDGE - 3}" y="{EDGE - 3}" width="{S - 2 * EDGE + 6}" height="{S - 2 * EDGE + 6}" fill="none" stroke="{p["line"]}" stroke-width="1.5"/>'
+            f'<rect x="{EDGE + 4}" y="{EDGE + 4}" width="{S - 2 * EDGE - 8}" height="{S - 2 * EDGE - 8}" fill="none" stroke="{p["line"]}" stroke-width=".8" opacity=".8"/>')
+
+
+# ── Rampion bellflowers ────────────────────────────────────────────────────
+
+def star_flower(x, y, r, rot, p):
+    """Open flower seen from the front: five broad pointed lobes, pale throat, white three-part stigma."""
+    pts = []
     for i in range(5):
-        parts.append(f'<path d="{petal_path(r)}" transform="rotate({i*72})" fill="{p["petal"]}" stroke="{p["petal_edge"]}" stroke-width="1.1" stroke-linejoin="round"/>')
-        parts.append(f'<path d="M0 {-r*0.18:.1f} L0 {-r*0.72:.1f}" transform="rotate({i*72})" stroke="{p["vein"]}" stroke-width=".8" stroke-linecap="round"/>')
-    parts.append(f'<circle r="{r*0.3:.1f}" fill="{p["centre"]}"/>')
-    for i in range(3):
-        parts.append(f'<path d="M0 0 L0 {-r*0.34:.1f}" transform="rotate({i*120+20})" stroke="{p["stamen"]}" stroke-width="1.2" stroke-linecap="round"/>')
-    parts.append(f'<circle r="{r*0.09:.1f}" fill="{p["petal_edge"]}"/>')
-    parts.append('</g>')
-    return ''.join(parts)
+        a = math.radians(rot + i * 72 - 90)
+        v = math.radians(rot + i * 72 - 90 + 36)
+        pts.append(((math.cos(a) * r, math.sin(a) * r), (math.cos(v) * r * .5, math.sin(v) * r * .5), a, v))
+    d = ''
+    for i, (tip, valley, a, v) in enumerate(pts):
+        prev_valley = pts[i - 1][1]
+        c1 = (math.cos(a - .32) * r * .78, math.sin(a - .32) * r * .78)
+        c2 = (math.cos(a + .32) * r * .78, math.sin(a + .32) * r * .78)
+        if i == 0:
+            d += f'M{prev_valley[0]:.1f} {prev_valley[1]:.1f}'
+        d += f' Q{c1[0]:.1f} {c1[1]:.1f} {tip[0]:.1f} {tip[1]:.1f} Q{c2[0]:.1f} {c2[1]:.1f} {valley[0]:.1f} {valley[1]:.1f}'
+    veins = ''.join(f'<path d="M0 0 L{math.cos(a) * r * .72:.1f} {math.sin(a) * r * .72:.1f}" stroke="{p["vein"]}" stroke-width=".9" stroke-linecap="round" opacity=".8"/>' for _, _, a, _ in pts)
+    stigma = ''.join(f'<path d="M0 0 q{math.cos(math.radians(rot + k * 120)) * r * .2:.1f} {math.sin(math.radians(rot + k * 120)) * r * .2:.1f} {math.cos(math.radians(rot + k * 120 + 40)) * r * .28:.1f} {math.sin(math.radians(rot + k * 120 + 40)) * r * .28:.1f}" fill="none" stroke="{p["stigma"]}" stroke-width="1.3" stroke-linecap="round"/>' for k in range(3))
+    return (f'<g transform="translate({x} {y})">'
+            f'<path d="{d} Z" fill="{p["petal"]}" stroke="{p["petal_edge"]}" stroke-width="1.2" stroke-linejoin="round"/>'
+            f'<circle r="{r * .36:.1f}" fill="{p["throat"]}" opacity=".9"/>{veins}'
+            f'<path d="M0 0 L0 {-r * .22:.1f}" stroke="{p["stigma"]}" stroke-width="1.6" stroke-linecap="round"/>{stigma}</g>')
 
-def bud(x, y, rot, p, s=1.0):
-    return (f'<g transform="translate({x} {y}) rotate({rot}) scale({s})">'
-            f'<path d="M0 0 C 4 -4 5 -12 0 -18 C -5 -12 -4 -4 0 0 Z" fill="{p["bud"]}" stroke="{p["petal_edge"]}" stroke-width="1"/>'
-            f'<path d="M0 0 L-4 -6 M0 0 L4 -6 M0 0 L0 -7" stroke="{p["stem"]}" stroke-width="1.1" stroke-linecap="round"/></g>')
 
-def leaf(x, y, rot, p, s=1.0):
+def bell(x, y, s, rot, p):
+    """Nodding flower seen from the side: a funnel opening into three visible pointed lobes, with a green calyx."""
+    body = ('M-2.5 0 C -8 -3 -11 -12 -11.5 -21 Q -14 -26 -18 -29 Q -11 -28.5 -6 -27 Q -3 -31 0 -35 '
+            'Q 3 -31 6 -27 Q 11 -28.5 18 -29 Q 14 -26 11.5 -21 C 11 -12 8 -3 2.5 0 Z')
+    veins = ('M0 -2 Q -8 -12 -13 -26 M0 -2 L0 -31 M0 -2 Q 8 -12 13 -26')
     return (f'<g transform="translate({x} {y}) rotate({rot}) scale({s})">'
-            f'<path d="M0 0 C 5 -8 5 -20 0 -30 C -5 -20 -5 -8 0 0 Z" fill="{p["leaf"]}" stroke="{p["leaf_edge"]}" stroke-width="1"/>'
-            f'<path d="M0 -2 L0 -26" stroke="{p["leaf_edge"]}" stroke-width=".7"/></g>')
+            f'<path d="{body}" fill="{p["petal"]}" stroke="{p["petal_edge"]}" stroke-width="1.2" stroke-linejoin="round"/>'
+            f'<path d="{veins}" stroke="{p["vein"]}" stroke-width=".8" stroke-linecap="round" opacity=".75"/>'
+            f'<path d="M0 1 L-6 -9 M0 1 L6 -9 M0 1 L0 -8" stroke="{p["sepal"]}" stroke-width="1.3" stroke-linecap="round"/>'
+            f'<path d="M0 0 L0 6" stroke="{p["stem"]}" stroke-width="1.4" stroke-linecap="round"/></g>')
+
+
+def leaf(x, y, rot, length, p, bend=.15):
+    """Narrow lance-shaped leaf, pointed at both ends and slightly curved."""
+    w = length * .24
+    L = length
+    d = (f'M0 0 C {w} {-L * .25:.1f} {w * (1 + bend):.1f} {-L * .7:.1f} {w * bend * 3:.1f} {-L} '
+         f'C {-w * (1 - bend):.1f} {-L * .7:.1f} {-w} {-L * .25:.1f} 0 0 Z')
+    return (f'<g transform="translate({x} {y}) rotate({rot})">'
+            f'<path d="{d}" fill="{p["leaf"]}" stroke="{p["leaf_edge"]}" stroke-width="1" stroke-linejoin="round"/>'
+            f'<path d="M0 -2 Q {w * .4:.1f} {-L * .5:.1f} {w * bend * 3:.1f} {-L + 3}" fill="none" stroke="{p["leaf_edge"]}" stroke-width=".7"/></g>')
+
 
 def spray(p):
-    # Bellflower (rampion) spray for the top-right corner (x 420-600, y 0-180).
+    """A rampion raceme arching over the top-right corner (x 400-600, y 0-200)."""
     stem = p['stem']
-    s = []
-    for d, w in [('M584 172 C 578 124 554 86 516 60 C 494 45 470 36 446 38', 2.3),
-                 ('M552 94 C 532 98 514 112 500 130', 1.6),
-                 ('M570 128 C 584 118 592 100 594 84', 1.5),
-                 ('M516 60 C 518 42 526 28 538 20', 1.5),
-                 ('M486 44 C 478 58 464 66 450 68', 1.3)]:
-        s.append(f'<path d="{d}" fill="none" stroke="{stem}" stroke-width="{w}" stroke-linecap="round"/>')
-    s.append(leaf(578, 146, -28, p, .95) + leaf(566, 112, 42, p, .8) + leaf(532, 74, -72, p, .75) + leaf(486, 42, 64, p, .62) + leaf(506, 118, -120, p, .6))
-    s.append(bud(594, 84, 22, p, .95) + bud(538, 20, 32, p, .85) + bud(450, 68, -110, p, .75))
-    s.append(bellflower(446, 38, 23, -18, p))
-    s.append(bellflower(500, 132, 20, 14, p, .92))
-    s.append(bellflower(550, 56, 17, 40, p))
-    s.append(bellflower(592, 124, 12, 70, p, .85))
-    return ''.join(s)
+    out = []
+    stems = [('M566 198 C 562 142 542 98 508 68 C 482 45 456 34 430 32', 2.6),
+             ('M538 108 C 520 110 504 120 490 136', 1.6),
+             ('M556 150 C 568 144 576 136 580 124', 1.6),
+             ('M508 68 C 512 50 522 36 536 26', 1.6),
+             ('M472 44 C 466 58 452 66 436 68', 1.4)]
+    for d, w in stems:
+        out.append(f'<path d="{d}" fill="none" stroke="{stem}" stroke-width="{w}" stroke-linecap="round"/>')
+    out.append(leaf(566, 194, -16, 58, p) + leaf(561, 170, 34, 44, p, -.2) + leaf(532, 92, -62, 38, p)
+               + leaf(486, 52, 60, 30, p, -.2) + leaf(548, 130, -110, 28, p))
+    out.append(bell(490, 136, 1.1, 205, p) + bell(580, 124, .85, 175, p) + bell(436, 68, .85, 240, p))
+    out.append(star_flower(430, 32, 27, 8, p))
+    out.append(star_flower(536, 26, 21, -20, p))
+    out.append(star_flower(514, 98, 17, 30, p))
+    return ''.join(out)
+
 
 def svg(mode):
     p = pal(mode)
     base, over = side_pieces()
     w = RIBBON_W
+
     def strokes(ds, colour, width, cap='round'):
         return ''.join(f'<path d="{d}" fill="none" stroke="{colour}" stroke-width="{width}" stroke-linecap="{cap}" stroke-linejoin="round"/>' for d in ds)
+
     defs = (f'<defs><g id="outline">{strokes(base, p["outline"], w)}</g>'
             f'<g id="fill">{strokes(base, p["fill"], w - 3.6)}</g>'
             f'<g id="over">{strokes(over, p["outline"], w, "butt")}{strokes(over, p["fill"], w - 3.6, "butt")}</g></defs>')
-    body = [defs, lines(p)]
+    body = [defs, rules(p)]
     # Outlines of every side first, then fills, so pieces join without seams; crossings last.
     for layer in ('outline', 'fill', 'over'):
         for r in (0, 90, 180, 270):
             body.append(f'<use href="#{layer}" transform="rotate({r} 300 300)"/>')
     body.append(f'<g id="spray">{spray(p)}</g>')
     body.append('<use href="#spray" transform="rotate(180 300 300)"/>')
-    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">{"".join(body)}</svg>\n'
+    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {S} {S}" width="{S}" height="{S}">{"".join(body)}</svg>\n'
 
-out = sys.argv[1]
-open(f'{out}/frame.svg', 'w').write(svg('day'))
-open(f'{out}/frame-moonlight.svg', 'w').write(svg('night'))
+
+if __name__ == '__main__':
+    out = sys.argv[1]
+    open(f'{out}/frame.svg', 'w').write(svg('day'))
+    open(f'{out}/frame-moonlight.svg', 'w').write(svg('night'))

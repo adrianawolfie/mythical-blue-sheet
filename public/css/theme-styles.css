@@ -322,15 +322,26 @@ html[data-style="raperonzolo"] .sheet-toolbar :is(.sheet-copy-button, .sheet-del
    sides and looping into the corners, with rampion bellflower sprays in two
    opposite corners. One SVG (drawn by tools/raperonzolo-frame.py) is used as
    a 9-slice border image: the corners stay fixed and each side stretches
-   into one long flowing wave, whatever the sheet's height. */
+   into one long flowing wave, whatever the sheet's height. The sheet's edge
+   sits 30% into the border, so the ribbons and flowers spill over it. */
 html[data-style="raperonzolo"] .sheet::after {
   content: '';
   position: absolute;
-  inset: 8px;
+  inset: -48px;
   z-index: 1;
-  border: 132px solid transparent;
-  border-image: url('../assets/themes/raperonzolo/frame.svg') 180 stretch;
+  border: 160px solid transparent;
+  border-image: url('../assets/themes/raperonzolo/frame.svg') 200 stretch;
   pointer-events: none;
+}
+
+/* Leave room around the sheet for the frame to spill into. */
+html[data-style="raperonzolo"] .sheet {
+  overflow-x: visible;
+  margin-bottom: 48px;
+}
+
+html[data-style="raperonzolo"] .sheet-toolbar {
+  margin-bottom: 64px;
 }
 
 html[data-style="raperonzolo"][data-theme="moonlight"] .sheet::after {
@@ -350,7 +361,12 @@ html[data-style="raperonzolo"] .sheet {
   }
 
   html[data-style="raperonzolo"] .sheet::after {
-    border-width: 92px;
+    inset: -24px;
+    border-width: 80px;
+  }
+
+  html[data-style="raperonzolo"] .sheet-toolbar {
+    margin-bottom: 40px;
   }
 }
 
@@ -381,9 +397,18 @@ html[data-style="raperonzolo"] .theme-title::after {
     padding-bottom: 70px;
   }
 
+  html[data-style="raperonzolo"] .sheet {
+    width: auto;
+    margin: 0 10px 24px;
+  }
+
   html[data-style="raperonzolo"] .sheet::after {
-    inset: 3px;
-    border-width: 56px;
+    inset: -14px;
+    border-width: 48px;
+  }
+
+  html[data-style="raperonzolo"] .sheet-toolbar {
+    margin-bottom: 26px;
   }
 
   html[data-style="raperonzolo"] .theme-title::after {
