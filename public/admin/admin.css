@@ -542,16 +542,16 @@ html[data-theme="moonlight"] .admin-danger-action:focus-visible {
 
 html[data-theme="moonlight"] .admin-sidebar,
 html[data-theme="moonlight"] .admin-card {
-  border-color: rgba(142, 215, 255, .92);
+  border-color: hsla(calc(var(--night-hue) - 3.8deg), 100%, 77.8%, .92);
   background:
-    linear-gradient(135deg, rgba(4, 27, 66, .90), rgba(8, 42, 89, .72)),
+    linear-gradient(135deg, hsla(calc(var(--night-hue) + 12.7deg), 88.6%, 13.7%, .90), hsla(calc(var(--night-hue) + 9.8deg), 83.5%, 19%, .72)),
     url("../assets/themes/moonlight/backgrounds/parchment-seamless.png");
-  color: #eefaff;
-  box-shadow: 0 12px 42px rgba(0,0,0,.52), 0 0 18px rgba(96,184,255,.14), inset 0 0 0 1px rgba(205,238,255,.08);
+  color: hsl(calc(var(--night-hue) - 7.4deg), 100%, 96.7%);
+  box-shadow: 0 12px 42px rgba(0,0,0,.52), 0 0 18px hsla(calc(var(--night-hue) + 1.8deg), 100%, 68.8%, .14), inset 0 0 0 1px hsla(calc(var(--night-hue) - 4.6deg), 100%, 90.2%, .08);
 }
 
 html[data-theme="moonlight"] .admin-sidebar::before,
-html[data-theme="moonlight"] .admin-card::before { border-color: rgba(164, 224, 255, .38); }
+html[data-theme="moonlight"] .admin-card::before { border-color: hsla(calc(var(--night-hue) - 4.6deg), 100%, 82.2%, .38); }
 
 html[data-theme="moonlight"] .admin-card h1,
 html[data-theme="moonlight"] .admin-card p,
@@ -572,15 +572,15 @@ html[data-theme="moonlight"] .admin-sidebar-link {
 
 html[data-theme="moonlight"] .admin-table thead {
   border-color: var(--moon-line);
-  background: rgba(84, 144, 212, .18);
+  background: hsla(calc(var(--night-hue) + 6.9deg), 59.8%, 58%, .18);
 }
 
 html[data-theme="moonlight"] .admin-table tbody { border-color: var(--moon-line); }
-html[data-theme="moonlight"] .admin-table tr:hover { background: rgba(24, 49, 94, .76); }
+html[data-theme="moonlight"] .admin-table tr:hover { background: hsla(calc(var(--night-hue) + 13.6deg), 59.3%, 23.1%, .76); }
 
 html[data-theme="moonlight"] .admin-badge {
   border-color: var(--moon-line);
-  background: rgba(17, 34, 67, .58);
+  background: hsla(calc(var(--night-hue) + 14.6deg), 59.5%, 16.5%, .58);
   color: var(--moon-muted);
 }
 
@@ -588,12 +588,12 @@ html[data-theme="moonlight"] .admin-badge-on { color: var(--moon-accent); }
 
 html[data-theme="moonlight"] .admin-inline-action {
   color: var(--moon-accent);
-  text-decoration-color: rgba(149, 204, 255, .46);
+  text-decoration-color: hsla(calc(var(--night-hue) + 3.9deg), 100%, 79.2%, .46);
 }
 
 html[data-theme="moonlight"] .admin-player-picker select {
   border-color: var(--moon-line);
-  background: rgba(2, 20, 52, .74);
+  background: hsla(calc(var(--night-hue) + 13.4deg), 92.6%, 10.6%, .74);
   color: var(--moon-text);
 }
 
@@ -614,7 +614,7 @@ html[data-theme="moonlight"] .admin-player-picker button:focus-visible {
 html[data-theme="moonlight"] .admin-modal-card {
   border-color: var(--moon-line-strong);
   background:
-    linear-gradient(135deg, rgba(4, 27, 66, .94), rgba(8, 42, 89, .82)),
+    linear-gradient(135deg, hsla(calc(var(--night-hue) + 12.7deg), 88.6%, 13.7%, .94), hsla(calc(var(--night-hue) + 9.8deg), 83.5%, 19%, .82)),
     url("../assets/themes/moonlight/backgrounds/parchment-seamless.png");
   color: var(--moon-text);
 }
@@ -626,7 +626,7 @@ html[data-theme="moonlight"] .admin-modal-field span {
 
 html[data-theme="moonlight"] .admin-modal-field select {
   border-color: var(--moon-line);
-  background: rgba(2, 20, 52, .74);
+  background: hsla(calc(var(--night-hue) + 13.4deg), 92.6%, 10.6%, .74);
   color: var(--moon-text);
 }
 

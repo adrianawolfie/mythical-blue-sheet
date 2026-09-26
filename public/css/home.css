@@ -169,11 +169,11 @@ html[data-theme="moonlight"] .home-page {
   background-color: var(--moon-surface);
   background-image: url("../assets/themes/moonlight/backgrounds/parchment-seamless.png");
   color: var(--moon-text);
-  box-shadow: 0 10px 42px rgba(0, 0, 0, .46), inset 0 0 0 1px rgba(197, 229, 255, .08);
+  box-shadow: 0 10px 42px rgba(0, 0, 0, .46), inset 0 0 0 1px hsla(calc(var(--night-hue) + 1.9deg), 100%, 88.6%, .08);
 }
 
 html[data-theme="moonlight"] .home-page::before {
-  border-color: rgba(196, 229, 255, .20);
+  border-color: hsla(calc(var(--night-hue) + 1.4deg), 100%, 88.4%, .20);
 }
 
 html[data-theme="moonlight"] .home-heading-copy h1,
@@ -203,12 +203,12 @@ html[data-theme="moonlight"] .home-muted {
 
 html[data-theme="moonlight"] .home-card[href]:hover,
 html[data-theme="moonlight"] .home-card[href]:focus-visible {
-  background: rgba(24, 49, 94, .76);
+  background: hsla(calc(var(--night-hue) + 13.6deg), 59.3%, 23.1%, .76);
   outline-color: var(--moon-accent);
 }
 
 html[data-theme="moonlight"] .home-card-meta span {
-  border-color: rgba(149, 204, 255, .42);
+  border-color: hsla(calc(var(--night-hue) + 3.9deg), 100%, 79.2%, .42);
 }
 
 @media (max-width: 780px) {

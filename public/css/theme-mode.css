@@ -60,26 +60,37 @@
   }
 }
 
+/* Night palette. Every moonlight blue is written as hsl() of --night-hue
+   (plus that shade's own small hue offset, saturation, and lightness), and
+   every gold as hsl() of --night-gold-hue. A theme can recolour its whole
+   moonlight mode by changing these two values; reds, greens, whites, and
+   rarity colours keep their meaning and stay fixed. The comma form of hsl()
+   is used on purpose so gradients keep blending in sRGB. */
 html[data-theme="moonlight"] {
-  --moon-page-bg: linear-gradient(180deg, #041126 0%, #0a1f45 40%, #163362 100%);
-  --moon-surface: #122342;
-  --moon-surface-soft: rgba(17, 34, 67, .92);
-  --moon-surface-raised: rgba(13, 28, 58, .78);
-  --moon-surface-glass: rgba(17, 34, 67, .58);
-  --moon-line: rgba(146, 203, 255, .42);
-  --moon-line-strong: rgba(176, 220, 255, .65);
-  --moon-text: #eef6ff;
-  --moon-text-soft: #d8e8ff;
-  --moon-muted: rgba(224, 239, 255, .76);
-  --moon-heading: #f3f8ff;
-  --moon-accent: #95ccff;
-  --moon-accent-2: #5fb2ff;
-  --moon-button-from: #274b98;
-  --moon-button-to: #10285e;
-  --moon-button-hover-from: #315bb3;
-  --moon-button-hover-to: #17326f;
-  --moon-chip-bg: rgba(84, 144, 212, .18);
-  --moon-chip-active: rgba(118, 186, 255, .22);
+  --night-hue: 205deg;
+  --night-gold-hue: 45deg;
+}
+
+html[data-theme="moonlight"] {
+  --moon-page-bg: linear-gradient(180deg, hsl(calc(var(--night-hue) + 12.1deg), 81%, 8.2%) 0%, hsl(calc(var(--night-hue) + 13.6deg), 74.7%, 15.5%) 40%, hsl(calc(var(--night-hue) + 12.1deg), 63.3%, 23.5%) 100%);
+  --moon-surface: hsl(calc(var(--night-hue) + 13.8deg), 57.1%, 16.5%);
+  --moon-surface-soft: hsla(calc(var(--night-hue) + 14.6deg), 59.5%, 16.5%, .92);
+  --moon-surface-raised: hsla(calc(var(--night-hue) + 15deg), 63.4%, 13.9%, .78);
+  --moon-surface-glass: hsla(calc(var(--night-hue) + 14.6deg), 59.5%, 16.5%, .58);
+  --moon-line: hsla(calc(var(--night-hue) + 3.6deg), 100%, 78.6%, .42);
+  --moon-line-strong: hsla(calc(var(--night-hue) + 1.6deg), 100%, 84.5%, .65);
+  --moon-text: hsl(calc(var(--night-hue) + 6.8deg), 100%, 96.7%);
+  --moon-text-soft: hsl(calc(var(--night-hue) + 10.4deg), 100%, 92.4%);
+  --moon-muted: hsla(calc(var(--night-hue) + 6deg), 100%, 93.9%, .76);
+  --moon-heading: hsl(calc(var(--night-hue) + 10deg), 100%, 97.6%);
+  --moon-accent: hsl(calc(var(--night-hue) + 3.9deg), 100%, 79.2%);
+  --moon-accent-2: hsl(calc(var(--night-hue) + 3.9deg), 100%, 68.6%);
+  --moon-button-from: hsl(calc(var(--night-hue) + 15.9deg), 59.2%, 37.5%);
+  --moon-button-to: hsl(calc(var(--night-hue) + 16.5deg), 70.9%, 21.6%);
+  --moon-button-hover-from: hsl(calc(var(--night-hue) + 15.6deg), 57%, 44.7%);
+  --moon-button-hover-to: hsl(calc(var(--night-hue) + 16.6deg), 65.7%, 26.3%);
+  --moon-chip-bg: hsla(calc(var(--night-hue) + 6.9deg), 59.8%, 58%, .18);
+  --moon-chip-active: hsla(calc(var(--night-hue) + 5.2deg), 100%, 73.1%, .22);
 }
 
 html[data-theme="moonlight"] body {
@@ -99,7 +110,7 @@ html[data-theme="moonlight"] .npc-picker-modal {
   background-color: var(--moon-surface);
   color: var(--moon-text);
   border-color: var(--moon-line-strong);
-  box-shadow: 0 10px 42px rgba(0,0,0,.46), inset 0 0 0 1px rgba(197, 229, 255, .08);
+  box-shadow: 0 10px 42px rgba(0,0,0,.46), inset 0 0 0 1px hsla(calc(var(--night-hue) + 1.9deg), 100%, 88.6%, .08);
 }
 
 html[data-theme="moonlight"] .start-page,
@@ -116,7 +127,7 @@ html[data-theme="moonlight"] .npc-picker-modal {
 html[data-theme="moonlight"] .start-page::before,
 html[data-theme="moonlight"] .dm-screen-header::before,
 html[data-theme="moonlight"] .initiative-panel::before {
-  border-color: rgba(196, 229, 255, .20);
+  border-color: hsla(calc(var(--night-hue) + 1.4deg), 100%, 88.4%, .20);
 }
 
 html[data-theme="moonlight"] .corner {
@@ -136,7 +147,7 @@ html[data-theme="moonlight"] .ship-art {
 }
 
 html[data-theme="moonlight"] .title-banner {
-  filter: drop-shadow(0 0 10px rgba(121, 194, 255, .15));
+  filter: drop-shadow(0 0 10px hsla(calc(var(--night-hue) + 2.3deg), 100%, 73.7%, .15));
 }
 
 html[data-theme="moonlight"] .start-page h1,
@@ -203,12 +214,12 @@ html[data-theme="moonlight"] .character-card:hover,
 html[data-theme="moonlight"] .combatant-row:hover,
 html[data-theme="moonlight"] .statblock-result-card:hover,
 html[data-theme="moonlight"] .sb-card:hover {
-  background: rgba(24, 49, 94, .76);
+  background: hsla(calc(var(--night-hue) + 13.6deg), 59.3%, 23.1%, .76);
 }
 
 html[data-theme="moonlight"] .combatant-row.active-turn {
-  background: rgba(57, 100, 168, .28);
-  box-shadow: inset 4px 0 0 var(--moon-accent), inset 0 0 0 1px rgba(223, 241, 255, .12), 0 5px 14px rgba(0,0,0,.18);
+  background: hsla(calc(var(--night-hue) + 11.8deg), 49.3%, 44.1%, .28);
+  box-shadow: inset 4px 0 0 var(--moon-accent), inset 0 0 0 1px hsla(calc(var(--night-hue) + 1.3deg), 100%, 93.7%, .12), 0 5px 14px rgba(0,0,0,.18);
 }
 
 html[data-theme="moonlight"] .cal-header,
@@ -224,7 +235,7 @@ html[data-theme="moonlight"] .add-btn,
 html[data-theme="moonlight"] .theme-toggle {
   background: linear-gradient(180deg, var(--moon-button-from), var(--moon-button-to));
   color: var(--moon-text);
-  border-color: rgba(169, 213, 255, .58);
+  border-color: hsla(calc(var(--night-hue) + 4.3deg), 100%, 83.1%, .58);
   box-shadow: 0 3px 10px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.10);
 }
 
@@ -244,7 +255,7 @@ html[data-theme="moonlight"] .add-btn:hover {
 html[data-theme="moonlight"] .dm-subtle-button,
 html[data-theme="moonlight"] .cal-btn,
 html[data-theme="moonlight"] .cal-btn-save {
-  background: rgba(12, 30, 60, .35);
+  background: hsla(calc(var(--night-hue) + 12.5deg), 66.7%, 14.1%, .35);
   color: var(--moon-text-soft);
   border-color: var(--moon-line);
 }
@@ -252,7 +263,7 @@ html[data-theme="moonlight"] .cal-btn-save {
 html[data-theme="moonlight"] .cal-btn:hover,
 html[data-theme="moonlight"] .dm-subtle-button:hover,
 html[data-theme="moonlight"] .cal-btn-save:hover {
-  background: rgba(95, 178, 255, .15);
+  background: hsla(calc(var(--night-hue) + 3.9deg), 100%, 68.6%, .15);
 }
 
 html[data-theme="moonlight"] .tab,
@@ -315,7 +326,7 @@ html[data-theme="moonlight"] .npc-picker-results-header {
 
 html[data-theme="moonlight"] .cal-sign,
 html[data-theme="moonlight"] .calendar-sheet-bar {
-  background: rgba(15, 31, 61, .34);
+  background: hsla(calc(var(--night-hue) + 14.1deg), 60.5%, 14.9%, .34);
 }
 
 html[data-theme="moonlight"] input,
@@ -327,7 +338,7 @@ html[data-theme="moonlight"] select {
 
 html[data-theme="moonlight"] input::placeholder,
 html[data-theme="moonlight"] textarea::placeholder {
-  color: rgba(221, 235, 255, .46);
+  color: hsla(calc(var(--night-hue) + 10.3deg), 100%, 93.3%, .46);
 }
 
 html[data-theme="moonlight"] .sheet input,
@@ -344,7 +355,7 @@ html[data-theme="moonlight"] .library-picker-toolbar input,
 html[data-theme="moonlight"] .library-picker-toolbar select,
 html[data-theme="moonlight"] .npc-picker-filters input,
 html[data-theme="moonlight"] .npc-picker-filters select {
-  background: rgba(10, 22, 46, .26);
+  background: hsla(calc(var(--night-hue) + 15deg), 64.3%, 11%, .26);
   color: var(--moon-text);
   border-color: var(--moon-line) !important;
 }
@@ -371,19 +382,19 @@ html[data-theme="moonlight"] .combatant-condition-chip.active {
 html[data-theme="moonlight"] .combatant-condition-info,
 html[data-theme="moonlight"] .library-picker-preview,
 html[data-theme="moonlight"] .spell-preview-card {
-  background: rgba(10, 23, 46, .45);
+  background: hsla(calc(var(--night-hue) + 13.3deg), 64.3%, 11%, .45);
   color: var(--moon-text-soft);
 }
 
 html[data-theme="moonlight"] .concentration-toggle input:checked + .concentration-rune {
-  background: linear-gradient(180deg, #3870d8, #17326d);
+  background: linear-gradient(180deg, hsl(calc(var(--night-hue) + 14deg), 67.2%, 53.3%), hsl(calc(var(--night-hue) + 16.2deg), 65.2%, 25.9%));
   color: #ffffff;
-  border-color: rgba(184, 226, 255, .8);
+  border-color: hsla(calc(var(--night-hue) - 0.5deg), 100%, 86.1%, .8);
 }
 
 html[data-theme="moonlight"] .combatant-hp-bwrap,
 html[data-theme="moonlight"] .card-hp-bwrap {
-  background: rgba(222, 236, 255, .12);
+  background: hsla(calc(var(--night-hue) + 9.5deg), 100%, 93.5%, .12);
 }
 
 html[data-theme="moonlight"] .hp-divider,
@@ -394,40 +405,40 @@ html[data-theme="moonlight"] .cal-ornament {
 }
 
 html[data-theme="moonlight"] svg path[stroke="#b8902c"] {
-  stroke: rgba(148, 204, 255, .75);
+  stroke: hsla(calc(var(--night-hue) + 3.6deg), 100%, 79%, .75);
 }
 
 /* ─── Moonlight phase 2: deeper ocean palette, brighter gilding and readable spellbook ─── */
 html[data-theme="moonlight"] {
-  --gold: #f0d27d;
-  --gold-deep: #e9bd5d;
-  --gold-light: #ffe8a4;
-  --navy: #8fd4ff;
-  --navy-deep: #eef8ff;
-  --navy-soft: #b6e3ff;
-  --ink: #edf7ff;
-  --ink-soft: #cae7ff;
-  --moon-page-bg: radial-gradient(circle at 50% -10%, #123b73 0%, #071a3b 38%, #030b1b 100%);
-  --moon-surface: #071a38;
-  --moon-surface-soft: rgba(7, 25, 57, .95);
-  --moon-surface-raised: rgba(11, 35, 74, .90);
-  --moon-surface-glass: rgba(8, 30, 66, .69);
-  --moon-line: rgba(122, 202, 255, .52);
-  --moon-line-strong: rgba(255, 220, 130, .78);
-  --moon-text: #f2f9ff;
-  --moon-text-soft: #d5ebff;
-  --moon-muted: rgba(205, 229, 255, .78);
-  --moon-heading: #f5fbff;
-  --moon-accent: #9ddcff;
-  --moon-accent-2: #62bfff;
-  --moon-gold: #f5d884;
-  --moon-gold-soft: rgba(245, 216, 132, .70);
-  --moon-button-from: #2459a9;
-  --moon-button-to: #0a2459;
-  --moon-button-hover-from: #3476d7;
-  --moon-button-hover-to: #103476;
-  --moon-chip-bg: rgba(76, 148, 218, .18);
-  --moon-chip-active: rgba(108, 187, 255, .28);
+  --gold: hsl(calc(var(--night-gold-hue) - 0.7deg), 79.3%, 71.6%);
+  --gold-deep: hsl(calc(var(--night-gold-hue) - 3.9deg), 76.1%, 63.9%);
+  --gold-light: hsl(calc(var(--night-gold-hue) - 0.2deg), 100%, 82.2%);
+  --navy: hsl(calc(var(--night-hue) - 2deg), 100%, 78%);
+  --navy-deep: hsl(calc(var(--night-hue) - 0.3deg), 100%, 96.7%);
+  --navy-soft: hsl(calc(var(--night-hue) - 2deg), 100%, 85.7%);
+  --ink: hsl(calc(var(--night-hue) + 1.7deg), 100%, 96.5%);
+  --ink-soft: hsl(calc(var(--night-hue) + 2.2deg), 100%, 89.6%);
+  --moon-page-bg: radial-gradient(circle at 50% -10%, hsl(calc(var(--night-hue) + 9.6deg), 72.9%, 26.1%) 0%, hsl(calc(var(--night-hue) + 13.1deg), 78.8%, 12.9%) 38%, hsl(calc(var(--night-hue) + 15deg), 80%, 5.9%) 100%);
+  --moon-surface: hsl(calc(var(--night-hue) + 11.7deg), 77.8%, 12.4%);
+  --moon-surface-soft: hsla(calc(var(--night-hue) + 13.4deg), 78.1%, 12.5%, .95);
+  --moon-surface-raised: hsla(calc(var(--night-hue) + 12.1deg), 74.1%, 16.7%, .90);
+  --moon-surface-glass: hsla(calc(var(--night-hue) + 12.2deg), 78.4%, 14.5%, .69);
+  --moon-line: hsla(calc(var(--night-hue) - 1.1deg), 100%, 73.9%, .52);
+  --moon-line-strong: hsla(calc(var(--night-gold-hue) - 1.8deg), 100%, 75.5%, .78);
+  --moon-text: hsl(calc(var(--night-hue) + 2.7deg), 100%, 97.5%);
+  --moon-text-soft: hsl(calc(var(--night-hue) + 3.6deg), 100%, 91.8%);
+  --moon-muted: hsla(calc(var(--night-hue) + 6.2deg), 100%, 90.2%, .78);
+  --moon-heading: hsl(calc(var(--night-hue) - 1deg), 100%, 98%);
+  --moon-accent: hsl(calc(var(--night-hue) - 3.6deg), 100%, 80.8%);
+  --moon-accent-2: hsl(calc(var(--night-hue) - 0.5deg), 100%, 69.2%);
+  --moon-gold: hsl(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%);
+  --moon-gold-soft: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .70);
+  --moon-button-from: hsl(calc(var(--night-hue) + 11.1deg), 64.9%, 40.2%);
+  --moon-button-to: hsl(calc(var(--night-hue) + 15.3deg), 79.8%, 19.4%);
+  --moon-button-hover-from: hsl(calc(var(--night-hue) + 10.7deg), 67.1%, 52.4%);
+  --moon-button-hover-to: hsl(calc(var(--night-hue) + 13.8deg), 76.1%, 26.3%);
+  --moon-chip-bg: hsla(calc(var(--night-hue) + 4.6deg), 65.7%, 57.6%, .18);
+  --moon-chip-active: hsla(calc(var(--night-hue) + 2.8deg), 100%, 71.2%, .28);
 }
 
 html[data-theme="moonlight"] body {
@@ -443,25 +454,25 @@ html[data-theme="moonlight"] .spell-picker-modal,
 html[data-theme="moonlight"] .spell-editor-modal,
 html[data-theme="moonlight"] .library-picker-modal,
 html[data-theme="moonlight"] .npc-picker-modal {
-  background-color: #071a38;
+  background-color: hsl(calc(var(--night-hue) + 11.7deg), 77.8%, 12.4%);
   box-shadow:
     0 14px 48px rgba(0, 0, 0, .56),
-    0 0 28px rgba(70, 157, 255, .12),
-    inset 0 0 0 1px rgba(186, 229, 255, .09);
+    0 0 28px hsla(calc(var(--night-hue) + 6.8deg), 100%, 63.7%, .12),
+    inset 0 0 0 1px hsla(calc(var(--night-hue) - 2.4deg), 100%, 86.5%, .09);
 }
 
 html[data-theme="moonlight"] .sheet,
 html[data-theme="moonlight"] .start-page,
 html[data-theme="moonlight"] .dm-screen-header,
 html[data-theme="moonlight"] .initiative-panel {
-  border-color: rgba(245, 216, 132, .74);
+  border-color: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .74);
 }
 
 html[data-theme="moonlight"] .start-page::before,
 html[data-theme="moonlight"] .dm-screen-header::before,
 html[data-theme="moonlight"] .initiative-panel::before {
-  border-color: rgba(145, 215, 255, .34);
-  box-shadow: 0 0 14px rgba(84, 174, 255, .12);
+  border-color: hsla(calc(var(--night-hue) - 3.2deg), 100%, 78.4%, .34);
+  box-shadow: 0 0 14px hsla(calc(var(--night-hue) + 3.4deg), 100%, 66.5%, .12);
 }
 
 html[data-theme="moonlight"] .title-banner,
@@ -471,7 +482,7 @@ html[data-theme="moonlight"] .ship-art,
 html[data-theme="moonlight"] .spell-school-icon,
 html[data-theme="moonlight"] .spell-area-inline img,
 html[data-theme="moonlight"] .equipped-slot-icon {
-  filter: drop-shadow(0 0 5px rgba(92, 190, 255, .44));
+  filter: drop-shadow(0 0 5px hsla(calc(var(--night-hue) - 1.1deg), 100%, 68%, .44));
 }
 
 html[data-theme="moonlight"] .corner {
@@ -542,22 +553,22 @@ html[data-theme="moonlight"] .theme-toggle {
   justify-content: flex-start;
   padding-right: 49px;
   padding-left: 15px;
-  border-color: rgba(245, 216, 132, .74);
-  background: linear-gradient(180deg, rgba(28, 93, 171, .96), rgba(5, 28, 72, .98));
-  box-shadow: 0 0 15px rgba(82, 176, 255, .22), inset 0 1px 0 rgba(255,255,255,.12);
+  border-color: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .74);
+  background: linear-gradient(180deg, hsla(calc(var(--night-hue) + 7.7deg), 71.9%, 39%, .96), hsla(calc(var(--night-hue) + 14.4deg), 87%, 15.1%, .98));
+  box-shadow: 0 0 15px hsla(calc(var(--night-hue) + 2.4deg), 100%, 66.1%, .22), inset 0 1px 0 rgba(255,255,255,.12);
 }
 
 html[data-theme="moonlight"] .theme-toggle::before {
-  border-color: rgba(147, 213, 255, .30);
+  border-color: hsla(calc(var(--night-hue) - 1.7deg), 100%, 78.8%, .30);
 }
 
 html[data-theme="moonlight"] .theme-toggle-icon {
   left: auto;
   right: 4px;
-  background: radial-gradient(circle at 35% 35%, #fff8ce 0%, #f5d77d 58%, #d3a949 100%);
-  color: #12366b;
-  border-color: rgba(255, 231, 153, .92);
-  box-shadow: 0 0 13px rgba(245, 216, 132, .62), inset 0 1px 0 rgba(255,255,255,.62);
+  background: radial-gradient(circle at 35% 35%, hsl(calc(var(--night-gold-hue) + 6.4deg), 100%, 90.4%) 0%, hsl(var(--night-gold-hue), 85.7%, 72.5%) 58%, hsl(calc(var(--night-gold-hue) - 3.3deg), 61.1%, 55.7%) 100%);
+  color: hsl(calc(var(--night-hue) + 10.7deg), 71.2%, 24.5%);
+  border-color: hsla(calc(var(--night-gold-hue) + 0.9deg), 100%, 80%, .92);
+  box-shadow: 0 0 13px hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .62), inset 0 1px 0 rgba(255,255,255,.62);
 }
 
 @media (max-width: 700px) {
@@ -582,7 +593,7 @@ html[data-theme="moonlight"] .spell-card-topline,
 html[data-theme="moonlight"] .spell-card-meta-grid,
 html[data-theme="moonlight"] .spell-card-details,
 html[data-theme="moonlight"] .spell-card-detail-grid {
-  border-color: rgba(245, 216, 132, .52);
+  border-color: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .52);
 }
 
 html[data-theme="moonlight"] .overview-action-link,
@@ -592,8 +603,8 @@ html[data-theme="moonlight"] .dm-secondary-button,
 html[data-theme="moonlight"] .add-btn,
 html[data-theme="moonlight"] .sheet-toolbar button,
 html[data-theme="moonlight"] .start-page button {
-  border-color: rgba(245, 216, 132, .88);
-  box-shadow: 0 0 12px rgba(69, 160, 255, .16), inset 0 1px 0 rgba(255,255,255,.12);
+  border-color: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .88);
+  box-shadow: 0 0 12px hsla(calc(var(--night-hue) + 5.6deg), 100%, 63.5%, .16), inset 0 1px 0 rgba(255,255,255,.12);
 }
 
 html[data-theme="moonlight"] .overview-action-link::before,
@@ -608,7 +619,7 @@ html[data-theme="moonlight"] .card-hp-slash,
 html[data-theme="moonlight"] .cal-month-sep,
 html[data-theme="moonlight"] .cal-ornament {
   color: var(--moon-gold);
-  text-shadow: 0 0 7px rgba(245, 216, 132, .22);
+  text-shadow: 0 0 7px hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .22);
 }
 
 /* Spellbook readability: override the daylight low-opacity navy text. */
@@ -650,45 +661,45 @@ html[data-theme="moonlight"] .library-picker-preview h3,
 html[data-theme="moonlight"] .library-picker-result strong,
 html[data-theme="moonlight"] .spell-picker-result strong {
   color: var(--moon-heading);
-  text-shadow: 0 0 8px rgba(106, 190, 255, .16);
+  text-shadow: 0 0 8px hsla(calc(var(--night-hue) + 1.2deg), 100%, 70.8%, .16);
 }
 
 html[data-theme="moonlight"] .spell-card {
-  background: linear-gradient(145deg, rgba(10, 39, 82, .92), rgba(5, 22, 53, .82));
-  border-color: rgba(245, 216, 132, .58);
-  box-shadow: 0 3px 11px rgba(0, 0, 0, .19), inset 0 1px 0 rgba(202, 232, 255, .07);
+  background: linear-gradient(145deg, hsla(calc(var(--night-hue) + 10.8deg), 78.3%, 18%, .92), hsla(calc(var(--night-hue) + 13.8deg), 82.8%, 11.4%, .82));
+  border-color: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .58);
+  box-shadow: 0 3px 11px rgba(0, 0, 0, .19), inset 0 1px 0 hsla(calc(var(--night-hue) + 1deg), 100%, 89.6%, .07);
 }
 
 html[data-theme="moonlight"] .spell-card:hover {
-  border-color: rgba(255, 231, 160, .88);
-  box-shadow: 0 0 16px rgba(92, 184, 255, .18), inset 0 1px 0 rgba(219, 240, 255, .10);
+  border-color: hsla(calc(var(--night-gold-hue) - 0.2deg), 100%, 81.4%, .88);
+  box-shadow: 0 0 16px hsla(calc(var(--night-hue) + 1.1deg), 100%, 68%, .18), inset 0 1px 0 hsla(var(--night-hue), 100%, 92.9%, .10);
 }
 
 html[data-theme="moonlight"] .spell-card-topline,
 html[data-theme="moonlight"] .spell-card-meta-grid,
 html[data-theme="moonlight"] .spell-card-subrow {
-  background: rgba(12, 42, 85, .22);
+  background: hsla(calc(var(--night-hue) + 10.3deg), 75.3%, 19%, .22);
 }
 
 html[data-theme="moonlight"] .spell-school-icon {
-  border-color: rgba(148, 214, 255, .62);
-  background: rgba(12, 43, 88, .72);
+  border-color: hsla(calc(var(--night-hue) - 2deg), 100%, 79%, .62);
+  background: hsla(calc(var(--night-hue) + 10.5deg), 76%, 19.6%, .72);
 }
 
 html[data-theme="moonlight"] .spell-level-badge {
-  border-color: rgba(245, 216, 132, .90);
-  background: rgba(245, 216, 132, .10);
+  border-color: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .90);
+  background: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .10);
   color: var(--moon-gold);
 }
 
 html[data-theme="moonlight"] .spell-property-chip {
-  border-color: rgba(145, 209, 255, .36);
-  background: rgba(11, 38, 78, .48);
+  border-color: hsla(calc(var(--night-hue) + 0.1deg), 100%, 78.4%, .36);
+  background: hsla(calc(var(--night-hue) + 10.8deg), 75.3%, 17.5%, .48);
 }
 
 html[data-theme="moonlight"] .spell-property-chip.active {
-  border-color: rgba(245, 216, 132, .72);
-  background: rgba(245, 216, 132, .12);
+  border-color: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .72);
+  background: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .12);
   color: var(--moon-gold);
 }
 
@@ -697,26 +708,26 @@ html[data-theme="moonlight"] .spell-card-edit-inline,
 html[data-theme="moonlight"] .spell-card-btn,
 html[data-theme="moonlight"] .spell-picker-close {
   color: var(--moon-gold);
-  border-color: rgba(245, 216, 132, .66);
+  border-color: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .66);
 }
 
 html[data-theme="moonlight"] .spell-card-expand:hover,
 html[data-theme="moonlight"] .spell-card-edit-inline:hover,
 html[data-theme="moonlight"] .spell-card-btn:hover {
   color: #ffffff;
-  text-shadow: 0 0 8px rgba(122, 202, 255, .45);
+  text-shadow: 0 0 8px hsla(calc(var(--night-hue) - 1.1deg), 100%, 73.9%, .45);
 }
 
 html[data-theme="moonlight"] .spell-picker-result-actions button,
 html[data-theme="moonlight"] .library-picker-result-actions button {
-  border-color: rgba(245, 216, 132, .58);
-  background: rgba(12, 43, 88, .62);
+  border-color: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .58);
+  background: hsla(calc(var(--night-hue) + 10.5deg), 76%, 19.6%, .62);
   color: var(--moon-text);
 }
 
 html[data-theme="moonlight"] .spell-picker-result-actions button:hover,
 html[data-theme="moonlight"] .library-picker-result-actions button:hover {
-  background: rgba(40, 99, 177, .72);
+  background: hsla(calc(var(--night-hue) + 9.2deg), 63.1%, 42.5%, .72);
 }
 
 /* Extra moonlight glow for equipment nodes and active statblock controls. */
@@ -724,26 +735,26 @@ html[data-theme="moonlight"] .equipped-slot-icon-wrap,
 html[data-theme="moonlight"] .statblock-toggle,
 html[data-theme="moonlight"] .concentration-rune,
 html[data-theme="moonlight"] .combatant-order-medallion {
-  box-shadow: 0 0 10px rgba(94, 184, 255, .12);
+  box-shadow: 0 0 10px hsla(calc(var(--night-hue) + 1.5deg), 100%, 68.4%, .12);
 }
 
 html[data-theme="moonlight"] .equipped-slot-card.is-active .equipped-slot-icon-wrap,
 html[data-theme="moonlight"] .concentration-toggle input:checked + .concentration-rune,
 html[data-theme="moonlight"] .active-turn .combatant-order-medallion {
-  box-shadow: 0 0 13px rgba(99, 191, 255, .34);
+  box-shadow: 0 0 13px hsla(calc(var(--night-hue) - 0.4deg), 100%, 69.4%, .34);
 }
 
 
 /* ─── Moonlight phase 3: main-sheet contrast and luminous gilding ─── */
 html[data-theme="moonlight"] {
-  --moon-panel-deep: rgba(3, 17, 42, .88);
-  --moon-panel: rgba(7, 31, 70, .84);
-  --moon-panel-soft: rgba(19, 54, 102, .68);
-  --moon-panel-highlight: rgba(39, 86, 150, .42);
-  --moon-gold: #ffe08a;
-  --moon-gold-bright: #fff0b3;
-  --moon-gold-line: rgba(255, 224, 138, .88);
-  --moon-gold-soft-line: rgba(255, 224, 138, .58);
+  --moon-panel-deep: hsla(calc(var(--night-hue) + 13.5deg), 86.7%, 8.8%, .88);
+  --moon-panel: hsla(calc(var(--night-hue) + 12.1deg), 81.8%, 15.1%, .84);
+  --moon-panel-soft: hsla(calc(var(--night-hue) + 9.7deg), 68.6%, 23.7%, .68);
+  --moon-panel-highlight: hsla(calc(var(--night-hue) + 9.6deg), 58.7%, 37.1%, .42);
+  --moon-gold: hsl(calc(var(--night-gold-hue) - 0.9deg), 100%, 77.1%);
+  --moon-gold-bright: hsl(calc(var(--night-gold-hue) + 3.2deg), 100%, 85.1%);
+  --moon-gold-line: hsla(calc(var(--night-gold-hue) - 0.9deg), 100%, 77.1%, .88);
+  --moon-gold-soft-line: hsla(calc(var(--night-gold-hue) - 0.9deg), 100%, 77.1%, .58);
 }
 
 /* Give the main character sheet stronger card separation. */
@@ -769,13 +780,13 @@ html[data-theme="moonlight"] .spellbook-card {
   border-color: var(--moon-gold-line) !important;
   box-shadow:
     0 3px 10px rgba(0, 0, 0, .20),
-    0 0 12px rgba(84, 172, 255, .07),
-    inset 0 1px 0 rgba(221, 242, 255, .08);
+    0 0 12px hsla(calc(var(--night-hue) + 4.1deg), 100%, 66.5%, .07),
+    inset 0 1px 0 hsla(calc(var(--night-hue) - 2.1deg), 100%, 93.3%, .08);
 }
 
 html[data-theme="moonlight"] .ab::after,
 html[data-theme="moonlight"] .sb-card::after {
-  border-color: rgba(255, 229, 149, .36);
+  border-color: hsla(calc(var(--night-gold-hue) + 0.3deg), 100%, 79.2%, .36);
 }
 
 /* Keep panels dark rather than daylight-grey. */
@@ -791,7 +802,7 @@ html[data-theme="moonlight"] .equipped-slot-card,
 html[data-theme="moonlight"] .custom-equipped-slot,
 html[data-theme="moonlight"] .proficiency-value-row,
 html[data-theme="moonlight"] .extra-speed-row {
-  background: rgba(5, 25, 58, .72) !important;
+  background: hsla(calc(var(--night-hue) + 12.4deg), 84.1%, 12.4%, .72) !important;
   border-color: var(--moon-gold-soft-line) !important;
   color: var(--moon-text) !important;
 }
@@ -801,7 +812,7 @@ html[data-theme="moonlight"] .scorebox input,
 html[data-theme="moonlight"] .bonbox input,
 html[data-theme="moonlight"] .hstat input,
 html[data-theme="moonlight"] .cbox2 input {
-  box-shadow: inset 0 0 0 1px rgba(176, 221, 255, .08), 0 0 8px rgba(255, 224, 138, .06);
+  box-shadow: inset 0 0 0 1px hsla(calc(var(--night-hue) + 0.8deg), 100%, 84.5%, .08), 0 0 8px hsla(calc(var(--night-gold-hue) - 0.9deg), 100%, 77.1%, .06);
 }
 
 /* Explicit text hierarchy for the main sheet. */
@@ -823,13 +834,13 @@ html[data-theme="moonlight"] .spellbook-subtitle,
 html[data-theme="moonlight"] .tabs .tab {
   color: var(--moon-gold-bright) !important;
   opacity: 1 !important;
-  text-shadow: 0 0 7px rgba(255, 224, 138, .13);
+  text-shadow: 0 0 7px hsla(calc(var(--night-gold-hue) - 0.9deg), 100%, 77.1%, .13);
 }
 
 html[data-theme="moonlight"] .tabs .tab.on {
   color: #ffffff !important;
   border-bottom-color: var(--moon-gold-bright) !important;
-  text-shadow: 0 0 8px rgba(148, 211, 255, .38);
+  text-shadow: 0 0 8px hsla(calc(var(--night-hue) - 0.3deg), 100%, 79%, .38);
 }
 
 html[data-theme="moonlight"] .sn,
@@ -887,7 +898,7 @@ html[data-theme="moonlight"] .wtbl td {
 
 html[data-theme="moonlight"] .sb-hdr,
 html[data-theme="moonlight"] .wtbl th {
-  background: rgba(3, 18, 45, .60);
+  background: hsla(calc(var(--night-hue) + 13.6deg), 87.5%, 9.4%, .60);
   border-bottom-color: var(--moon-gold-line) !important;
 }
 
@@ -902,7 +913,7 @@ html[data-theme="moonlight"] .condition-chip.active {
 
 html[data-theme="moonlight"] .dot,
 html[data-theme="moonlight"] .svdie {
-  border-color: rgba(194, 227, 255, .82);
+  border-color: hsla(calc(var(--night-hue) + 2.5deg), 100%, 88%, .82);
 }
 
 html[data-theme="moonlight"] .dot.on,
@@ -912,25 +923,25 @@ html[data-theme="moonlight"] .svdie.on {
 }
 
 html[data-theme="moonlight"] .dot.expert {
-  box-shadow: 0 0 0 2px #06224a, 0 0 0 3.5px var(--moon-gold-bright);
+  box-shadow: 0 0 0 2px hsl(calc(var(--night-hue) + 10.3deg), 85%, 15.7%), 0 0 0 3.5px var(--moon-gold-bright);
 }
 
 html[data-theme="moonlight"] .sheet .is-manual {
-  color: #f3c969 !important;
+  color: hsl(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%) !important;
 }
 
 html[data-theme="moonlight"] .condition-chip.active {
-  background: rgba(255, 224, 138, .22) !important;
+  background: hsla(calc(var(--night-gold-hue) - 0.9deg), 100%, 77.1%, .22) !important;
   border-color: var(--moon-gold-bright) !important;
 }
 
 /* Preserve readable editing surfaces in tables and notes. */
 html[data-theme="moonlight"] .wtbl td {
-  background: rgba(2, 16, 39, .44);
+  background: hsla(calc(var(--night-hue) + 12.3deg), 90.2%, 8%, .44);
 }
 
 html[data-theme="moonlight"] .wtbl tr:hover td {
-  background: rgba(21, 64, 116, .38);
+  background: hsla(calc(var(--night-hue) + 7.8deg), 69.3%, 26.9%, .38);
 }
 
 html[data-theme="moonlight"] .condition-chevron {
@@ -945,8 +956,8 @@ html[data-theme="moonlight"] .inventory-unified-card,
 html[data-theme="moonlight"] .equipped-carried-card {
   box-shadow:
     0 3px 10px rgba(0,0,0,.22),
-    0 0 11px rgba(110, 191, 255, .06),
-    inset 0 0 0 1px rgba(255, 238, 175, .05);
+    0 0 11px hsla(calc(var(--night-hue) + 1.5deg), 100%, 71.6%, .06),
+    inset 0 0 0 1px hsla(calc(var(--night-gold-hue) + 2.3deg), 100%, 84.3%, .05);
 }
 
 /* ─── Moonlight phase 4: ghost-blue accents, readable panels, icon navigation ─── */
@@ -1001,22 +1012,22 @@ html[data-theme="moonlight"] .equipped-carried-card {
 }
 
 html[data-theme="moonlight"] .theme-toggle-track {
-  border-color: rgba(183,224,255,.58);
-  background: rgba(2,19,47,.70);
+  border-color: hsla(calc(var(--night-hue) + 0.8deg), 100%, 85.9%, .58);
+  background: hsla(calc(var(--night-hue) + 12.3deg), 91.8%, 9.6%, .70);
 }
 
 html[data-theme="moonlight"] .theme-toggle-orb {
   transform: translateX(17px);
-  background: #d7f0ff;
-  box-shadow: 0 0 9px rgba(160,219,255,.78);
+  background: hsl(calc(var(--night-hue) - 2.5deg), 100%, 92.2%);
+  box-shadow: 0 0 9px hsla(calc(var(--night-hue) - 2.3deg), 100%, 81.4%, .78);
 }
 
 html[data-theme="moonlight"] .theme-toggle-orb::before {
-  border-color: rgba(180,226,255,.46);
+  border-color: hsla(calc(var(--night-hue) - 1.8deg), 100%, 85.3%, .46);
 }
 
 html[data-theme="moonlight"] .theme-toggle-orb::after {
-  background: #173a6e;
+  background: hsl(calc(var(--night-hue) + 10.9deg), 65.4%, 26.1%);
 }
 
 /* Fitting line-art images instead of emoji navigation icons. */
@@ -1048,7 +1059,7 @@ html[data-theme="moonlight"] .theme-toggle-orb::after {
 
 html[data-theme="moonlight"] .tab-icon,
 html[data-theme="moonlight"] .nav-icon {
-  filter: drop-shadow(0 0 5px rgba(150,218,255,.58));
+  filter: drop-shadow(0 0 5px hsla(calc(var(--night-hue) - 3.9deg), 100%, 79.4%, .58));
 }
 
 /* Mobile switch should stay unobtrusive in crowded toolbars. */
@@ -1094,20 +1105,20 @@ html[data-theme="moonlight"] .nav-icon {
 
 html[data-theme="moonlight"] {
   /* Replace the earlier gold gilding with ghostly cyan-blue line work. */
-  --moon-ghost: #b9e5ff;
-  --moon-ghost-bright: #e2f6ff;
-  --moon-ghost-line: rgba(181, 226, 255, .88);
-  --moon-ghost-soft-line: rgba(146, 205, 246, .58);
-  --moon-ghost-faint: rgba(118, 191, 240, .24);
-  --gold: #9bd8ff;
-  --gold-deep: #75bce9;
-  --gold-light: #d4f1ff;
-  --moon-gold: #9bd8ff;
-  --moon-gold-bright: #e2f6ff;
-  --moon-gold-line: rgba(181, 226, 255, .88);
-  --moon-gold-soft-line: rgba(146, 205, 246, .58);
-  --moon-accent: #b9e5ff;
-  --moon-accent-2: #75c7ff;
+  --moon-ghost: hsl(calc(var(--night-hue) - 2.7deg), 100%, 86.3%);
+  --moon-ghost-bright: hsl(calc(var(--night-hue) - 6.4deg), 100%, 94.3%);
+  --moon-ghost-line: hsla(calc(var(--night-hue) - 1.5deg), 100%, 85.5%, .88);
+  --moon-ghost-soft-line: hsla(calc(var(--night-hue) - 0.4deg), 84.7%, 76.9%, .58);
+  --moon-ghost-faint: hsla(calc(var(--night-hue) - 0.9deg), 80.3%, 70.2%, .24);
+  --gold: hsl(calc(var(--night-hue) - 1.6deg), 100%, 80.4%);
+  --gold-deep: hsl(calc(var(--night-hue) - 1.7deg), 72.5%, 68.6%);
+  --gold-light: hsl(calc(var(--night-hue) - 5.5deg), 100%, 91.6%);
+  --moon-gold: hsl(calc(var(--night-hue) - 1.6deg), 100%, 80.4%);
+  --moon-gold-bright: hsl(calc(var(--night-hue) - 6.4deg), 100%, 94.3%);
+  --moon-gold-line: hsla(calc(var(--night-hue) - 1.5deg), 100%, 85.5%, .88);
+  --moon-gold-soft-line: hsla(calc(var(--night-hue) - 0.4deg), 84.7%, 76.9%, .58);
+  --moon-accent: hsl(calc(var(--night-hue) - 2.7deg), 100%, 86.3%);
+  --moon-accent-2: hsl(calc(var(--night-hue) - 0.7deg), 100%, 72.9%);
 }
 
 html[data-theme="moonlight"] .sheet,
@@ -1116,13 +1127,13 @@ html[data-theme="moonlight"] .dm-screen-header,
 html[data-theme="moonlight"] .initiative-panel {
   box-shadow:
     0 12px 46px rgba(0,0,0,.52),
-    0 0 28px rgba(88,172,237,.12),
-    inset 0 0 0 1px rgba(220,244,255,.10);
+    0 0 28px hsla(calc(var(--night-hue) + 1.2deg), 80.5%, 63.7%, .12),
+    inset 0 0 0 1px hsla(calc(var(--night-hue) - 6.1deg), 100%, 93.1%, .10);
 }
 
 html[data-theme="moonlight"] .corner,
 html[data-theme="moonlight"] .title-banner {
-  filter: drop-shadow(0 0 8px rgba(151,218,255,.42));
+  filter: drop-shadow(0 0 8px hsla(calc(var(--night-hue) - 3.7deg), 100%, 79.6%, .42));
 }
 
 /* Ghostly frame color across the character-sheet UI. */
@@ -1165,23 +1176,23 @@ html[data-theme="moonlight"] .inventory-legacy-notes > summary {
 html[data-theme="moonlight"] .sb-hdr,
 html[data-theme="moonlight"] .wtbl th {
   color: var(--moon-ghost-bright) !important;
-  background: rgba(1, 16, 43, .76) !important;
-  text-shadow: 0 0 8px rgba(132,204,255,.26);
+  background: hsla(calc(var(--night-hue) + 13.6deg), 95.5%, 8.6%, .76) !important;
+  text-shadow: 0 0 8px hsla(calc(var(--night-hue) - 0.1deg), 100%, 75.9%, .26);
 }
 
 /* HP controls: deep-water buttons with ghost-blue edges. */
 html[data-theme="moonlight"] .hp-adj,
 html[data-theme="moonlight"] .card-hp-adj {
   border-color: var(--moon-ghost-line) !important;
-  background: linear-gradient(180deg, rgba(19,75,133,.92), rgba(4,33,76,.96)) !important;
+  background: linear-gradient(180deg, hsla(calc(var(--night-hue) + 5.5deg), 75%, 29.8%, .92), hsla(calc(var(--night-hue) + 10.8deg), 90%, 15.7%, .96)) !important;
   color: var(--moon-ghost-bright) !important;
-  box-shadow: 0 0 8px rgba(106,191,255,.18), inset 0 1px 0 rgba(255,255,255,.10);
+  box-shadow: 0 0 8px hsla(calc(var(--night-hue) + 0.8deg), 100%, 70.8%, .18), inset 0 1px 0 rgba(255,255,255,.10);
 }
 
 html[data-theme="moonlight"] .hp-adj:hover,
 html[data-theme="moonlight"] .card-hp-adj:hover {
-  background: linear-gradient(180deg, rgba(31,102,174,.96), rgba(7,48,104,.98)) !important;
-  box-shadow: 0 0 11px rgba(124,205,255,.32), inset 0 1px 0 rgba(255,255,255,.15);
+  background: linear-gradient(180deg, hsla(calc(var(--night-hue) + 5.2deg), 69.8%, 40.2%, .96), hsla(calc(var(--night-hue) + 9.6deg), 87.4%, 21.8%, .98)) !important;
+  box-shadow: 0 0 11px hsla(calc(var(--night-hue) - 2.1deg), 100%, 74.3%, .32), inset 0 1px 0 rgba(255,255,255,.15);
 }
 
 /* Feature buttons: readable but less cyan-flat than the previous pass. */
@@ -1191,9 +1202,9 @@ html[data-theme="moonlight"] .journal-note-add,
 html[data-theme="moonlight"] .inventory-add,
 html[data-theme="moonlight"] .add-btn {
   border-color: var(--moon-ghost-line) !important;
-  background: linear-gradient(180deg, rgba(19,75,133,.94), rgba(4,33,76,.96)) !important;
+  background: linear-gradient(180deg, hsla(calc(var(--night-hue) + 5.5deg), 75%, 29.8%, .94), hsla(calc(var(--night-hue) + 10.8deg), 90%, 15.7%, .96)) !important;
   color: var(--moon-ghost-bright) !important;
-  box-shadow: 0 0 8px rgba(106,191,255,.14), inset 0 1px 0 rgba(255,255,255,.10);
+  box-shadow: 0 0 8px hsla(calc(var(--night-hue) + 0.8deg), 100%, 70.8%, .14), inset 0 1px 0 rgba(255,255,255,.10);
 }
 
 html[data-theme="moonlight"] .feature-add:hover,
@@ -1201,8 +1212,8 @@ html[data-theme="moonlight"] .table-actions .add-btn:hover,
 html[data-theme="moonlight"] .journal-note-add:hover,
 html[data-theme="moonlight"] .inventory-add:hover,
 html[data-theme="moonlight"] .add-btn:hover {
-  background: linear-gradient(180deg, rgba(31,102,174,.96), rgba(7,48,104,.98)) !important;
-  box-shadow: 0 0 11px rgba(124,205,255,.28), inset 0 1px 0 rgba(255,255,255,.15);
+  background: linear-gradient(180deg, hsla(calc(var(--night-hue) + 5.2deg), 69.8%, 40.2%, .96), hsla(calc(var(--night-hue) + 9.6deg), 87.4%, 21.8%, .98)) !important;
+  box-shadow: 0 0 11px hsla(calc(var(--night-hue) - 2.1deg), 100%, 74.3%, .28), inset 0 1px 0 rgba(255,255,255,.15);
 }
 
 /* Spell slots: remove grey daylight shading and create clean deep-water tiles. */
@@ -1211,20 +1222,20 @@ html[data-theme="moonlight"] .slot-grid {
 }
 
 html[data-theme="moonlight"] .slotbox {
-  background: linear-gradient(180deg, rgba(14,54,103,.86), rgba(3,25,62,.92)) !important;
-  box-shadow: inset 0 0 0 1px rgba(213,241,255,.05), 0 0 8px rgba(85,174,236,.10);
+  background: linear-gradient(180deg, hsla(calc(var(--night-hue) + 8deg), 76.1%, 22.9%, .86), hsla(calc(var(--night-hue) + 12.6deg), 90.8%, 12.7%, .92)) !important;
+  box-shadow: inset 0 0 0 1px hsla(calc(var(--night-hue) - 5deg), 100%, 91.8%, .05), 0 0 8px hsla(calc(var(--night-hue) - 0.4deg), 79.9%, 62.9%, .10);
 }
 
 html[data-theme="moonlight"] .slotbox span {
   color: var(--moon-ghost-bright) !important;
-  text-shadow: 0 0 7px rgba(131,207,255,.22);
+  text-shadow: 0 0 7px hsla(calc(var(--night-hue) - 1.8deg), 100%, 75.7%, .22);
 }
 
 html[data-theme="moonlight"] .slotbox input {
   padding: 3px 2px;
   border-bottom-color: var(--moon-ghost-soft-line) !important;
-  background: rgba(2,18,48,.36) !important;
-  color: #f3fbff !important;
+  background: hsla(calc(var(--night-hue) + 14.1deg), 92%, 9.8%, .36) !important;
+  color: hsl(calc(var(--night-hue) - 5deg), 100%, 97.6%) !important;
 }
 
 html[data-theme="moonlight"] .slot-btn {
@@ -1234,12 +1245,12 @@ html[data-theme="moonlight"] .slot-btn {
 
 html[data-theme="moonlight"] .slot-row,
 html[data-theme="moonlight"] .slot-available {
-  color: #f3fbff;
+  color: hsl(calc(var(--night-hue) - 5deg), 100%, 97.6%);
 }
 
 html[data-theme="moonlight"] .pact-slot-level option,
 html[data-theme="moonlight"] .hfl > select option {
-  background: #06224a;
+  background: hsl(calc(var(--night-hue) + 10.3deg), 85%, 15.7%);
 }
 
 /* Journal / notes: darker surfaces, brighter labels and readable editing text. */
@@ -1253,8 +1264,8 @@ html[data-theme="moonlight"] .other-inventory-card textarea,
 html[data-theme="moonlight"] .journal-note-text,
 html[data-theme="moonlight"] .journal-imported-notes textarea,
 html[data-theme="moonlight"] .inventory-notes-grid textarea {
-  background: rgba(2, 18, 47, .68) !important;
-  color: #eaf7ff !important;
+  background: hsla(calc(var(--night-hue) + 13.7deg), 91.8%, 9.6%, .68) !important;
+  color: hsl(calc(var(--night-hue) - 2.1deg), 100%, 95.9%) !important;
 }
 
 html[data-theme="moonlight"] .journal-note-toolbar span,
@@ -1273,13 +1284,13 @@ html[data-theme="moonlight"] .journal-imported-notes textarea,
 html[data-theme="moonlight"] .inventory-notes-grid textarea,
 html[data-theme="moonlight"] .other-inventory-card textarea {
   border-color: var(--moon-ghost-soft-line) !important;
-  color: #eaf7ff !important;
+  color: hsl(calc(var(--night-hue) - 2.1deg), 100%, 95.9%) !important;
 }
 
 /* Inventory details were still inheriting daylight ink on mobile. */
 html[data-theme="moonlight"] .inventory-item-details {
-  background: rgba(2, 18, 47, .72) !important;
-  color: #eaf7ff !important;
+  background: hsla(calc(var(--night-hue) + 13.7deg), 91.8%, 9.6%, .72) !important;
+  color: hsl(calc(var(--night-hue) - 2.1deg), 100%, 95.9%) !important;
   border-color: var(--moon-ghost-soft-line) !important;
 }
 
@@ -1287,7 +1298,7 @@ html[data-theme="moonlight"] .inventory-item-details::placeholder,
 html[data-theme="moonlight"] .inventory-notes-grid textarea::placeholder,
 html[data-theme="moonlight"] .journal-note-text::placeholder,
 html[data-theme="moonlight"] .journal-imported-notes textarea::placeholder {
-  color: rgba(214,239,255,.56) !important;
+  color: hsla(calc(var(--night-hue) - 1.6deg), 100%, 92%, .56) !important;
 }
 
 /* Keep ghost lines visible without filling the whole sheet with bright blocks. */
@@ -1300,8 +1311,8 @@ html[data-theme="moonlight"] .features-traits-main,
 html[data-theme="moonlight"] .journal-notes-card {
   box-shadow:
     0 3px 10px rgba(0,0,0,.22),
-    0 0 12px rgba(118,197,249,.08),
-    inset 0 0 0 1px rgba(190,231,255,.05);
+    0 0 12px hsla(calc(var(--night-hue) - 1.2deg), 91.6%, 72%, .08),
+    inset 0 0 0 1px hsla(calc(var(--night-hue) - 2.8deg), 100%, 87.3%, .05);
 }
 
 /* ─── Moonlight phase 5: final ghost-blue cleanup and compact theme switch ─── */
@@ -1389,29 +1400,29 @@ html[data-theme="moonlight"] .journal-notes-card {
 
 html[data-theme="moonlight"] .theme-toggle,
 html[data-theme="moonlight"] .theme-toggle-compact {
-  border-color: rgba(170, 222, 255, .62) !important;
-  background: rgba(2, 16, 42, .92) !important;
-  box-shadow: 0 0 8px rgba(115, 199, 255, .18), inset 0 1px 0 rgba(255,255,255,.08) !important;
+  border-color: hsla(calc(var(--night-hue) - 1.7deg), 100%, 83.3%, .62) !important;
+  background: hsla(calc(var(--night-hue) + 14deg), 90.9%, 8.6%, .92) !important;
+  box-shadow: 0 0 8px hsla(calc(var(--night-hue) - 1deg), 100%, 72.5%, .18), inset 0 1px 0 rgba(255,255,255,.08) !important;
 }
 
 html[data-theme="moonlight"] .theme-toggle-track {
-  background: rgba(1, 15, 40, .94) !important;
+  background: hsla(calc(var(--night-hue) + 13.5deg), 95.1%, 8%, .94) !important;
 }
 
 html[data-theme="moonlight"] .theme-toggle-track::before {
-  color: rgba(131, 174, 215, .58);
+  color: hsla(calc(var(--night-hue) + 4.3deg), 51.2%, 67.8%, .58);
 }
 
 html[data-theme="moonlight"] .theme-toggle-track::after {
-  color: #e0f5ff;
-  text-shadow: 0 0 6px rgba(149, 216, 255, .60);
+  color: hsl(calc(var(--night-hue) - 5.6deg), 100%, 93.9%);
+  text-shadow: 0 0 6px hsla(calc(var(--night-hue) - 2.9deg), 100%, 79.2%, .60);
 }
 
 html[data-theme="moonlight"] .theme-toggle-orb {
   transform: translateX(28px);
-  border-color: rgba(186, 232, 255, .78);
-  background: #d8f2ff;
-  box-shadow: 0 0 10px rgba(148, 215, 255, .64);
+  border-color: hsla(calc(var(--night-hue) - 5deg), 100%, 86.5%, .78);
+  background: hsl(calc(var(--night-hue) - 5deg), 100%, 92.4%);
+  box-shadow: 0 0 10px hsla(calc(var(--night-hue) - 2.6deg), 100%, 79%, .64);
 }
 
 @media (max-width: 700px) {
@@ -1452,28 +1463,28 @@ html[data-theme="moonlight"] .theme-toggle-orb {
 
 html[data-theme="moonlight"] {
   /* One accent language only: spectral blue-white. */
-  --gold: #a9ddff;
-  --gold-deep: #8dcdf8;
-  --gold-light: #e4f7ff;
-  --moon-ghost: #c0e9ff;
-  --moon-ghost-bright: #eefbff;
-  --moon-ghost-line: rgba(190, 232, 255, .92);
-  --moon-ghost-soft-line: rgba(145, 204, 244, .66);
-  --moon-ghost-faint: rgba(111, 183, 234, .22);
-  --moon-line: rgba(145, 204, 244, .66);
-  --moon-line-strong: rgba(190, 232, 255, .92);
-  --moon-accent: #c0e9ff;
-  --moon-accent-2: #79cfff;
+  --gold: hsl(calc(var(--night-hue) - 1.3deg), 100%, 83.1%);
+  --gold-deep: hsl(calc(var(--night-hue) - 0.9deg), 88.4%, 76.3%);
+  --gold-light: hsl(calc(var(--night-hue) - 7.2deg), 100%, 94.7%);
+  --moon-ghost: hsl(calc(var(--night-hue) - 4deg), 100%, 87.6%);
+  --moon-ghost-bright: hsl(calc(var(--night-hue) - 10.9deg), 100%, 96.7%);
+  --moon-ghost-line: hsla(calc(var(--night-hue) - 3.8deg), 100%, 87.3%, .92);
+  --moon-ghost-soft-line: hsla(calc(var(--night-hue) - 0.8deg), 81.8%, 76.3%, .66);
+  --moon-ghost-faint: hsla(calc(var(--night-hue) - 0.1deg), 74.5%, 67.6%, .22);
+  --moon-line: hsla(calc(var(--night-hue) - 0.8deg), 81.8%, 76.3%, .66);
+  --moon-line-strong: hsla(calc(var(--night-hue) - 3.8deg), 100%, 87.3%, .92);
+  --moon-accent: hsl(calc(var(--night-hue) - 4deg), 100%, 87.6%);
+  --moon-accent-2: hsl(calc(var(--night-hue) - 3.5deg), 100%, 73.7%);
 }
 
 /* Override the daylight page background itself, not only the parchment sheet. */
 html[data-theme="moonlight"],
 html[data-theme="moonlight"] body,
 html[data-theme="moonlight"] body.dm-body {
-  background-color: #020d22 !important;
+  background-color: hsl(calc(var(--night-hue) + 14.4deg), 88.9%, 7.1%) !important;
   background-image:
-    radial-gradient(circle at 50% -10%, rgba(36, 102, 174, .28), transparent 42%),
-    linear-gradient(180deg, #020d22 0%, #041632 48%, #08264e 100%) !important;
+    radial-gradient(circle at 50% -10%, hsla(calc(var(--night-hue) + 6.3deg), 65.7%, 41.2%, .28), transparent 42%),
+    linear-gradient(180deg, hsl(calc(var(--night-hue) + 14.4deg), 88.9%, 7.1%) 0%, hsl(calc(var(--night-hue) + 11.5deg), 85.2%, 10.6%) 48%, hsl(calc(var(--night-hue) + 9.3deg), 81.4%, 16.9%) 100%) !important;
   background-attachment: fixed !important;
 }
 
@@ -1552,7 +1563,7 @@ html[data-theme="moonlight"] .dm-screen-shell :where(
 
 html[data-theme="moonlight"] .combatant-row.active-turn {
   border-color: var(--moon-ghost-line) !important;
-  box-shadow: inset 4px 0 0 #92d6ff, inset 0 0 0 1px rgba(220,244,255,.14), 0 5px 14px rgba(0,0,0,.20) !important;
+  box-shadow: inset 4px 0 0 hsl(calc(var(--night-hue) - 2.4deg), 100%, 78.6%), inset 0 0 0 1px hsla(calc(var(--night-hue) - 6.1deg), 100%, 93.1%, .14), 0 5px 14px rgba(0,0,0,.20) !important;
 }
 
 /* Character sheet: spectral lines and icons throughout. */
@@ -1605,8 +1616,8 @@ html[data-theme="moonlight"] .spell-preview-card {
 html[data-theme="moonlight"] .spell-school-icon,
 html[data-theme="moonlight"] .spell-picker-result img {
   border-color: var(--moon-ghost-soft-line) !important;
-  background: rgba(20, 68, 119, .34) !important;
-  box-shadow: 0 0 7px rgba(119, 204, 255, .14);
+  background: hsla(calc(var(--night-hue) + 5.9deg), 71.2%, 27.3%, .34) !important;
+  box-shadow: 0 0 7px hsla(calc(var(--night-hue) - 2.5deg), 100%, 73.3%, .14);
 }
 
 html[data-theme="moonlight"] .spell-level-badge,
@@ -1614,8 +1625,8 @@ html[data-theme="moonlight"] .spell-property-chip,
 html[data-theme="moonlight"] .spell-prepared-filter,
 html[data-theme="moonlight"] .spell-prepared-toggle {
   border-color: var(--moon-ghost-soft-line) !important;
-  color: rgba(218, 243, 255, .82) !important;
-  background: rgba(19, 70, 124, .28) !important;
+  color: hsla(calc(var(--night-hue) - 5.5deg), 100%, 92.7%, .82) !important;
+  background: hsla(calc(var(--night-hue) + 5.9deg), 73.4%, 28%, .28) !important;
 }
 
 html[data-theme="moonlight"] .spell-property-chip.active,
@@ -1623,8 +1634,8 @@ html[data-theme="moonlight"] .spell-prepared-filter:has(input:checked),
 html[data-theme="moonlight"] .spell-prepared-toggle.is-prepared {
   border-color: var(--moon-ghost-line) !important;
   color: var(--moon-ghost-bright) !important;
-  background: rgba(77, 154, 215, .30) !important;
-  text-shadow: 0 0 6px rgba(138, 215, 255, .30) !important;
+  background: hsla(calc(var(--night-hue) + 1.5deg), 63.3%, 57.3%, .30) !important;
+  text-shadow: 0 0 6px hsla(calc(var(--night-hue) - 4.5deg), 100%, 77.1%, .30) !important;
 }
 
 html[data-theme="moonlight"] .spell-prepared-filter span,
@@ -1636,33 +1647,33 @@ html[data-theme="moonlight"] .spell-picker-add,
 html[data-theme="moonlight"] .spell-picker-close {
   color: var(--moon-ghost-bright) !important;
   border-color: var(--moon-ghost-soft-line) !important;
-  text-shadow: 0 0 6px rgba(138, 215, 255, .24) !important;
+  text-shadow: 0 0 6px hsla(calc(var(--night-hue) - 4.5deg), 100%, 77.1%, .24) !important;
 }
 
 /* Equipped / carried: remove amber selected-state highlight and grey icon tiles. */
 html[data-theme="moonlight"] .equipped-layout.equipped-list-only .equipped-slot-card,
 html[data-theme="moonlight"] .equipped-slot-card {
   border-color: var(--moon-ghost-soft-line) !important;
-  background: linear-gradient(135deg, rgba(4, 27, 66, .78), rgba(7, 39, 83, .52)) !important;
+  background: linear-gradient(135deg, hsla(calc(var(--night-hue) + 12.7deg), 88.6%, 13.7%, .78), hsla(calc(var(--night-hue) + 9.7deg), 84.4%, 17.6%, .52)) !important;
 }
 
 html[data-theme="moonlight"] .equipped-layout.equipped-list-only .equipped-slot-card.is-active,
 html[data-theme="moonlight"] .equipped-slot-card.is-active {
   border-color: var(--moon-ghost-line) !important;
-  background: linear-gradient(135deg, rgba(11, 62, 119, .76), rgba(5, 34, 76, .68)) !important;
-  box-shadow: inset 3px 0 0 #8ed7ff, 0 0 9px rgba(106, 196, 255, .12) !important;
+  background: linear-gradient(135deg, hsla(calc(var(--night-hue) + 6.7deg), 83.1%, 25.5%, .76), hsla(calc(var(--night-hue) + 10.5deg), 87.7%, 15.9%, .68)) !important;
+  box-shadow: inset 3px 0 0 hsl(calc(var(--night-hue) - 3.8deg), 100%, 77.8%), 0 0 9px hsla(calc(var(--night-hue) - 1.2deg), 100%, 70.8%, .12) !important;
 }
 
 html[data-theme="moonlight"] .equipped-layout.equipped-list-only .equipped-slot-icon-wrap,
 html[data-theme="moonlight"] .equipped-layout.equipped-list-only .equipped-slot-card.is-active .equipped-slot-icon-wrap,
 html[data-theme="moonlight"] .equipped-slot-icon-wrap {
   border-color: var(--moon-ghost-soft-line) !important;
-  background: rgba(21, 76, 133, .34) !important;
-  box-shadow: inset 0 0 0 1px rgba(221, 245, 255, .06), 0 0 6px rgba(114, 201, 255, .10);
+  background: hsla(calc(var(--night-hue) + 5.5deg), 72.7%, 30.2%, .34) !important;
+  box-shadow: inset 0 0 0 1px hsla(calc(var(--night-hue) - 7.4deg), 100%, 93.3%, .06), 0 0 6px hsla(calc(var(--night-hue) - 2deg), 100%, 72.4%, .10);
 }
 
 html[data-theme="moonlight"] .equipped-slot-icon {
-  filter: drop-shadow(0 0 4px rgba(151, 222, 255, .34));
+  filter: drop-shadow(0 0 4px hsla(calc(var(--night-hue) - 6deg), 100%, 79.6%, .34));
 }
 
 /* Mobile inventory cards: explicitly override every daylight ink color. */
@@ -1670,12 +1681,12 @@ html[data-theme="moonlight"] .equipped-slot-icon {
   html[data-theme="moonlight"] .inventory-mobile-sortbar,
 html[data-theme="moonlight"] .inventory-item-details {
     border-color: var(--moon-ghost-soft-line) !important;
-    background: rgba(2, 22, 57, .82) !important;
-    color: #eefaff !important;
+    background: hsla(calc(var(--night-hue) + 13.2deg), 93.2%, 11.6%, .82) !important;
+    color: hsl(calc(var(--night-hue) - 7.4deg), 100%, 96.7%) !important;
   }
 
   html[data-theme="moonlight"] .inventory-item-details::placeholder {
-    color: rgba(213, 240, 255, .72) !important;
+    color: hsla(calc(var(--night-hue) - 3.6deg), 100%, 91.8%, .72) !important;
   }
 }
 
@@ -1683,27 +1694,27 @@ html[data-theme="moonlight"] .inventory-item-details {
 html[data-theme="moonlight"] svg path[stroke="#b8902c"],
 html[data-theme="moonlight"] svg path[stroke="#8a6918"],
 html[data-theme="moonlight"] svg path[stroke="#d6a838"] {
-  stroke: #b9e7ff !important;
-  filter: drop-shadow(0 0 3px rgba(135, 210, 255, .26));
+  stroke: hsl(calc(var(--night-hue) - 4.4deg), 100%, 86.3%) !important;
+  filter: drop-shadow(0 0 3px hsla(calc(var(--night-hue) - 2.5deg), 100%, 76.5%, .26));
 }
 
 /* ─── Moonlight phase 6: overview frame cleanup + truly compact mobile switch ─── */
 
 /* Make the overview frame unmistakably spectral blue instead of champagne. */
 html[data-theme="moonlight"] .start-page {
-  border-color: rgba(142, 215, 255, .92) !important;
+  border-color: hsla(calc(var(--night-hue) - 3.8deg), 100%, 77.8%, .92) !important;
   box-shadow:
     0 10px 38px rgba(0, 0, 0, .48),
-    0 0 16px rgba(96, 184, 255, .14),
-    inset 0 0 0 1px rgba(205, 238, 255, .08) !important;
+    0 0 16px hsla(calc(var(--night-hue) + 1.8deg), 100%, 68.8%, .14),
+    inset 0 0 0 1px hsla(calc(var(--night-hue) - 4.6deg), 100%, 90.2%, .08) !important;
 }
 
 html[data-theme="moonlight"] .start-page::before {
-  border-color: rgba(164, 224, 255, .58) !important;
+  border-color: hsla(calc(var(--night-hue) - 4.6deg), 100%, 82.2%, .58) !important;
 }
 
 html[data-theme="moonlight"] .start-page-heading-row {
-  border-color: rgba(164, 224, 255, .70) !important;
+  border-color: hsla(calc(var(--night-hue) - 4.6deg), 100%, 82.2%, .70) !important;
 }
 
 /* Neutralize the generic mobile .start-page button flex rule for the theme switch. */
@@ -1783,7 +1794,7 @@ html[data-theme="moonlight"] .start-page-heading-row {
 html[data-theme="moonlight"] .defenses-card,
 html[data-theme="moonlight"] .feature-browser-toolbar {
   border-color: var(--moon-ghost-soft-line) !important;
-  background: rgba(2, 22, 57, .42) !important;
+  background: hsla(calc(var(--night-hue) + 13.2deg), 93.2%, 11.6%, .42) !important;
 }
 
 html[data-theme="moonlight"] .feature-browser-toolbar label > span,
@@ -1797,14 +1808,14 @@ html[data-theme="moonlight"] .feature-browser-toolbar select,
 html[data-theme="moonlight"] .feature-filter-clear,
 html[data-theme="moonlight"] .defense-value-row input {
   border-color: var(--moon-ghost-soft-line) !important;
-  background: rgba(2, 22, 57, .66) !important;
-  color: #eefaff !important;
+  background: hsla(calc(var(--night-hue) + 13.2deg), 93.2%, 11.6%, .66) !important;
+  color: hsl(calc(var(--night-hue) - 7.4deg), 100%, 96.7%) !important;
 }
 
 html[data-theme="moonlight"] .feature-filter-clear:hover,
 html[data-theme="moonlight"] .feature-filter-clear:focus-visible {
   border-color: var(--moon-ghost-line) !important;
-  background: rgba(77, 154, 215, .22) !important;
+  background: hsla(calc(var(--night-hue) + 1.5deg), 63.3%, 57.3%, .22) !important;
 }
 
 /* ─── Feature cards and defenses — refined Moonlight layout ───────────── */
@@ -1829,41 +1840,41 @@ html[data-theme="moonlight"] select {
 
 html[data-theme="moonlight"] select option,
 html[data-theme="moonlight"] select optgroup {
-  background-color: #082653 !important;
-  color: #f3fbff !important;
+  background-color: hsl(calc(var(--night-hue) + 11deg), 82.4%, 17.8%) !important;
+  color: hsl(calc(var(--night-hue) - 5deg), 100%, 97.6%) !important;
 }
 
 html[data-theme="moonlight"] select option:checked,
 html[data-theme="moonlight"] select option:hover,
 html[data-theme="moonlight"] select option:focus {
-  background-color: #315f9f !important;
+  background-color: hsl(calc(var(--night-hue) + 9.9deg), 52.9%, 40.8%) !important;
   color: #ffffff !important;
 }
 
 /* ─── MOONLIGHT — DEFENSES LEFT-ALIGNED META ROW ─────────────────────── */
 html[data-theme="moonlight"] .defense-type-cell .proficiency-type-label {
-  color: var(--moon-ghost-bright, #dff6ff) !important;
+  color: var(--moon-ghost-bright, hsl(calc(var(--night-hue) - 8.1deg), 100%, 93.7%)) !important;
 }
 
 html[data-theme="moonlight"] .defense-type-cell .proficiency-add-row {
-  border-color: var(--moon-ghost-soft-line, rgba(156, 220, 255, .52)) !important;
-  background: rgba(15, 52, 96, .34) !important;
-  color: var(--moon-ghost-bright, #dff6ff) !important;
+  border-color: var(--moon-ghost-soft-line, hsla(calc(var(--night-hue) - 3.8deg), 100%, 80.6%, .52)) !important;
+  background: hsla(calc(var(--night-hue) + 7.6deg), 73%, 21.8%, .34) !important;
+  color: var(--moon-ghost-bright, hsl(calc(var(--night-hue) - 8.1deg), 100%, 93.7%)) !important;
 }
 
 html[data-theme="moonlight"] .defense-type-cell .proficiency-add-row:hover,
 html[data-theme="moonlight"] .defense-type-cell .proficiency-add-row:focus-visible {
-  border-color: var(--moon-ghost-line, rgba(181, 232, 255, .82)) !important;
-  background: rgba(77, 154, 215, .24) !important;
+  border-color: var(--moon-ghost-line, hsla(calc(var(--night-hue) - 6.4deg), 100%, 85.5%, .82)) !important;
+  background: hsla(calc(var(--night-hue) + 1.5deg), 63.3%, 57.3%, .24) !important;
 }
 
 html[data-theme="moonlight"] .sheet .tabs {
-  background: linear-gradient(145deg, #0f2f5e, #04142f);
+  background: linear-gradient(145deg, hsl(calc(var(--night-hue) + 10.7deg), 72.5%, 21.4%), hsl(calc(var(--night-hue) + 12.7deg), 84.3%, 10%));
   border-color: var(--moon-gold-line) !important;
   box-shadow:
     0 3px 10px rgba(0, 0, 0, .20),
-    0 0 12px rgba(84, 172, 255, .07),
-    inset 0 1px 0 rgba(221, 242, 255, .08);
+    0 0 12px hsla(calc(var(--night-hue) + 4.1deg), 100%, 66.5%, .07),
+    inset 0 1px 0 hsla(calc(var(--night-hue) - 2.1deg), 100%, 93.3%, .08);
 }
 
 html[data-theme="moonlight"] .attack-row {
@@ -1876,18 +1887,18 @@ html[data-theme="moonlight"] .attack-row input {
 }
 
 html[data-theme="moonlight"] .attack-row input:focus {
-  background: rgba(77, 154, 215, .14) !important;
+  background: hsla(calc(var(--night-hue) + 1.5deg), 63.3%, 57.3%, .14) !important;
   box-shadow: inset 0 -1px 0 var(--moon-ghost-line);
 }
 
 html[data-theme="moonlight"] .attack-row .attack-atk {
   border-color: var(--moon-gold-line) !important;
-  background: rgba(2, 18, 48, .45) !important;
+  background: hsla(calc(var(--night-hue) + 14.1deg), 92%, 9.8%, .45) !important;
   color: #ffffff !important;
 }
 
 html[data-theme="moonlight"] .attack-row .attack-name {
-  color: #eefaff !important;
+  color: hsl(calc(var(--night-hue) - 7.4deg), 100%, 96.7%) !important;
 }
 
 html[data-theme="moonlight"] .attack-row .attack-notes,
@@ -1899,11 +1910,11 @@ html[data-theme="moonlight"] .attack-menu-empty {
 }
 
 html[data-theme="moonlight"] .attack-menu-heading {
-  color: #f3c969;
+  color: hsl(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%);
 }
 
 html[data-theme="moonlight"] .attack-menu-item:hover {
-  background: rgba(124, 205, 255, .14);
+  background: hsla(calc(var(--night-hue) - 2.1deg), 100%, 74.3%, .14);
 }
 
 html[data-theme="moonlight"] .attack-edit-tools button {
@@ -1913,11 +1924,11 @@ html[data-theme="moonlight"] .attack-edit-tools button {
 
 html[data-theme="moonlight"] .attack-add-menu {
   border-color: var(--moon-gold-line);
-  background: linear-gradient(145deg, #0f2f5e, #04142f);
+  background: linear-gradient(145deg, hsl(calc(var(--night-hue) + 10.7deg), 72.5%, 21.4%), hsl(calc(var(--night-hue) + 12.7deg), 84.3%, 10%));
 }
 
 html[data-theme="moonlight"] .attack-menu-item {
-  color: #eefaff;
+  color: hsl(calc(var(--night-hue) - 7.4deg), 100%, 96.7%);
 }
 
 html[data-theme="moonlight"] .attack-menu-group + .attack-menu-group {
@@ -1952,7 +1963,7 @@ html[data-theme="moonlight"] .inventory-gem-row .inventory-gem-name {
 html[data-theme="moonlight"] .inventory-wealth span,
 html[data-theme="moonlight"] .inventory-gem-field > span,
 html[data-theme="moonlight"] .inventory-gem-icon {
-  color: #f3c969;
+  color: hsl(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%);
 }
 
 html[data-theme="moonlight"] .inventory-wealth em,
@@ -1969,17 +1980,17 @@ html[data-theme="moonlight"] .inventory-gem-row select {
 }
 
 html[data-theme="moonlight"] .inventory-gem-row select option {
-  background: #06224a;
+  background: hsl(calc(var(--night-hue) + 10.3deg), 85%, 15.7%);
 }
 
 html[data-theme="moonlight"] .inventory-attune-toggle {
-  border-color: rgba(243, 201, 105, .7);
-  color: #f3c969;
+  border-color: hsla(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%, .7);
+  color: hsl(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%);
 }
 
 html[data-theme="moonlight"] .inventory-attune-toggle.is-attuned {
-  background: #f3c969;
-  color: #06224a;
+  background: hsl(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%);
+  color: hsl(calc(var(--night-hue) + 10.3deg), 85%, 15.7%);
 }
 
 html[data-theme="moonlight"] .inventory-entry {
@@ -1988,12 +1999,12 @@ html[data-theme="moonlight"] .inventory-entry {
 
 html[data-theme="moonlight"] .inventory-entry-summary:hover,
 html[data-theme="moonlight"] .inventory-entry.is-open .inventory-entry-summary {
-  background: rgba(124, 205, 255, .08);
+  background: hsla(calc(var(--night-hue) - 2.1deg), 100%, 74.3%, .08);
 }
 
 html[data-theme="moonlight"] .inventory-entry-name,
 html[data-theme="moonlight"] .inventory-entry-value {
-  color: #eefaff;
+  color: hsl(calc(var(--night-hue) - 7.4deg), 100%, 96.7%);
 }
 
 html[data-theme="moonlight"] .inventory-entry-meta,
@@ -2005,17 +2016,17 @@ html[data-theme="moonlight"] .inventory-entry-check {
 
 html[data-theme="moonlight"] .inventory-entry-chevron,
 html[data-theme="moonlight"] .inventory-entry-field > span {
-  color: #f3c969;
+  color: hsl(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%);
 }
 
 html[data-theme="moonlight"] .inventory-entry-field :is(input, select, textarea) {
   border-bottom-color: var(--moon-ghost-soft-line) !important;
-  background: rgba(2, 18, 48, .4) !important;
+  background: hsla(calc(var(--night-hue) + 14.1deg), 92%, 9.8%, .4) !important;
   color: var(--moon-text) !important;
 }
 
 html[data-theme="moonlight"] .inventory-entry-field select option {
-  background: #06224a;
+  background: hsl(calc(var(--night-hue) + 10.3deg), 85%, 15.7%);
 }
 
 html[data-theme="moonlight"] .inventory-entry-remove {
@@ -2047,19 +2058,19 @@ html[data-theme="moonlight"] .companion-stat input {
 }
 
 html[data-theme="moonlight"] .companion-card .companion-kind {
-  border: 1px solid #f3c969 !important;
-  color: #f3c969 !important;
+  border: 1px solid hsl(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%) !important;
+  color: hsl(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%) !important;
 }
 
 html[data-theme="moonlight"] .companion-card select option {
-  background: #06224a;
+  background: hsl(calc(var(--night-hue) + 10.3deg), 85%, 15.7%);
 }
 
 html[data-theme="moonlight"] .companion-stat > span,
 html[data-theme="moonlight"] .companion-ability > span,
 html[data-theme="moonlight"] .companion-field > span,
 html[data-theme="moonlight"] .companion-details > summary {
-  color: #f3c969;
+  color: hsl(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%);
 }
 
 html[data-theme="moonlight"] .companion-ability-mod,
@@ -2081,7 +2092,7 @@ html[data-theme="moonlight"] .companion-abilities {
 /* DM screen: turn bar, concentration, and absent players. */
 html[data-theme="moonlight"] .turn-bar {
   border-color: var(--moon-gold-line) !important;
-  background: linear-gradient(145deg, #0f2f5e, #04142f);
+  background: linear-gradient(145deg, hsl(calc(var(--night-hue) + 10.7deg), 72.5%, 21.4%), hsl(calc(var(--night-hue) + 12.7deg), 84.3%, 10%));
   box-shadow: 0 3px 12px rgba(0, 0, 0, .35);
 }
 
@@ -2092,7 +2103,7 @@ html[data-theme="moonlight"] .turn-bar .active-turn-text {
 html[data-theme="moonlight"] .turn-bar-current > span,
 html[data-theme="moonlight"] .combatant-row.starts-next-round::after,
 html[data-theme="moonlight"] .absent-players-label {
-  color: #f3c969;
+  color: hsl(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%);
 }
 
 html[data-theme="moonlight"] .dm-toggle,
@@ -2109,10 +2120,10 @@ html[data-theme="moonlight"] .absent-players-bar {
 }
 
 html[data-theme="moonlight"] .concentration-toggle input:checked + .concentration-rune {
-  border-color: #ffe7a3;
-  background: #f3c969;
-  color: #06224a;
-  box-shadow: 0 0 0 3px rgba(243, 201, 105, .28), 0 0 16px rgba(243, 201, 105, .55);
+  border-color: hsl(calc(var(--night-gold-hue) - 0.7deg), 100%, 82%);
+  background: hsl(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%);
+  color: hsl(calc(var(--night-hue) + 10.3deg), 85%, 15.7%);
+  box-shadow: 0 0 0 3px hsla(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%, .28), 0 0 16px hsla(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%, .55);
 }
 
 html[data-theme="moonlight"] .concentration-toggle input:not(:checked) + .concentration-rune {
@@ -2120,7 +2131,7 @@ html[data-theme="moonlight"] .concentration-toggle input:not(:checked) + .concen
 }
 
 html[data-theme="moonlight"] .combatant-concentrating-tag {
-  background: #f3c969;
-  color: #06224a;
+  background: hsl(calc(var(--night-gold-hue) - 3.3deg), 85.2%, 68.2%);
+  color: hsl(calc(var(--night-hue) + 10.3deg), 85%, 15.7%);
 }
 

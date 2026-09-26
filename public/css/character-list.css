@@ -118,7 +118,7 @@
 }
 
 html[data-theme="moonlight"] .character-list-page::before {
-  border-color: rgba(196, 229, 255, .20);
+  border-color: hsla(calc(var(--night-hue) + 1.4deg), 100%, 88.4%, .20);
 }
 
 html[data-theme="moonlight"] .character-list-title,
@@ -143,7 +143,7 @@ html[data-theme="moonlight"] .character-list-card {
 
 html[data-theme="moonlight"] .character-list-card:hover,
 html[data-theme="moonlight"] .character-list-card:focus-visible {
-  background: rgba(24, 49, 94, .76);
+  background: hsla(calc(var(--night-hue) + 13.6deg), 59.3%, 23.1%, .76);
   outline-color: var(--moon-accent);
 }
 
@@ -153,5 +153,5 @@ html[data-theme="moonlight"] .character-list-empty {
 }
 
 html[data-theme="moonlight"] .character-list-meta span {
-  border-color: rgba(149, 204, 255, .42);
+  border-color: hsla(calc(var(--night-hue) + 3.9deg), 100%, 79.2%, .42);
 }

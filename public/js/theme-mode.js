@@ -149,7 +149,7 @@
         title.setAttribute('aria-hidden', 'true');
         img.after(title);
       }
-      title.textContent = style === 'raperonzolo' ? 'Raperonzolo' : img.classList.contains('title-banner') ? 'Character Sheet' : 'Character Sheets';
+      title.textContent = img.classList.contains('title-banner') ? 'Character Sheet' : 'Character Sheets';
     });
   }
 

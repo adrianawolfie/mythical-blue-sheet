@@ -232,19 +232,19 @@ body.login-body {
 }
 
 html[data-theme="moonlight"] .login-card {
-  border-color: rgba(142, 215, 255, .92);
+  border-color: hsla(calc(var(--night-hue) - 3.8deg), 100%, 77.8%, .92);
   background:
-    linear-gradient(135deg, rgba(4, 27, 66, .90), rgba(8, 42, 89, .72)),
+    linear-gradient(135deg, hsla(calc(var(--night-hue) + 12.7deg), 88.6%, 13.7%, .90), hsla(calc(var(--night-hue) + 9.8deg), 83.5%, 19%, .72)),
     url("../assets/themes/moonlight/backgrounds/parchment-seamless.png");
   box-shadow:
     0 12px 42px rgba(0, 0, 0, .52),
-    0 0 18px rgba(96, 184, 255, .14),
-    inset 0 0 0 1px rgba(205, 238, 255, .08);
-  color: #eefaff;
+    0 0 18px hsla(calc(var(--night-hue) + 1.8deg), 100%, 68.8%, .14),
+    inset 0 0 0 1px hsla(calc(var(--night-hue) - 4.6deg), 100%, 90.2%, .08);
+  color: hsl(calc(var(--night-hue) - 7.4deg), 100%, 96.7%);
 }
 
 html[data-theme="moonlight"] .login-card::before {
-  border-color: rgba(164, 224, 255, .38);
+  border-color: hsla(calc(var(--night-hue) - 4.6deg), 100%, 82.2%, .38);
 }
 
 html[data-theme="moonlight"] .login-brand h1,
@@ -254,32 +254,32 @@ html[data-theme="moonlight"] .login-register {
 }
 
 html[data-theme="moonlight"] .login-copy {
-  color: rgba(232, 245, 255, .86);
+  color: hsla(calc(var(--night-hue) + 1.1deg), 100%, 95.5%, .86);
 }
 
 html[data-theme="moonlight"] .login-field input {
   border-color: var(--moon-ghost-soft-line);
-  background: rgba(2, 20, 52, .74);
-  color: #eefaff;
+  background: hsla(calc(var(--night-hue) + 13.4deg), 92.6%, 10.6%, .74);
+  color: hsl(calc(var(--night-hue) - 7.4deg), 100%, 96.7%);
 }
 
 html[data-theme="moonlight"] .login-field input:focus {
   border-color: var(--moon-ghost-line);
-  box-shadow: 0 0 0 3px rgba(121, 207, 255, .18);
-  background: rgba(3, 27, 66, .86);
+  box-shadow: 0 0 0 3px hsla(calc(var(--night-hue) - 3.5deg), 100%, 73.7%, .18);
+  background: hsla(calc(var(--night-hue) + 12.1deg), 91.3%, 13.5%, .86);
 }
 
 html[data-theme="moonlight"] .login-help {
-  color: rgba(232, 245, 255, .76);
+  color: hsla(calc(var(--night-hue) + 1.1deg), 100%, 95.5%, .76);
 }
 
 html[data-theme="moonlight"] .login-requirement {
-  color: rgba(232, 245, 255, .42);
+  color: hsla(calc(var(--night-hue) + 1.1deg), 100%, 95.5%, .42);
 }
 
 html[data-theme="moonlight"] .login-requirement::before {
-  border-color: rgba(190, 232, 255, .22);
-  background: rgba(2, 20, 52, .44);
+  border-color: hsla(calc(var(--night-hue) - 3.8deg), 100%, 87.3%, .22);
+  background: hsla(calc(var(--night-hue) + 13.4deg), 92.6%, 10.6%, .44);
 }
 
 html[data-theme="moonlight"] .login-requirement.is-met {
@@ -293,20 +293,20 @@ html[data-theme="moonlight"] .login-requirement.is-met::before {
 }
 
 html[data-theme="moonlight"] .login-submit {
-  border-color: rgba(170, 222, 255, .62);
-  background: rgba(2, 16, 42, .92);
-  color: #eefaff;
+  border-color: hsla(calc(var(--night-hue) - 1.7deg), 100%, 83.3%, .62);
+  background: hsla(calc(var(--night-hue) + 14deg), 90.9%, 8.6%, .92);
+  color: hsl(calc(var(--night-hue) - 7.4deg), 100%, 96.7%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
 }
 
 html[data-theme="moonlight"] .login-submit:hover,
 html[data-theme="moonlight"] .login-submit:focus-visible {
-  background: rgba(10, 56, 112, .88);
-  box-shadow: 0 0 12px rgba(115, 199, 255, .18);
+  background: hsla(calc(var(--night-hue) + 7.9deg), 83.6%, 23.9%, .88);
+  box-shadow: 0 0 12px hsla(calc(var(--night-hue) - 1deg), 100%, 72.5%, .18);
 }
 
 html[data-theme="moonlight"] .login-register {
-  border-color: rgba(190, 232, 255, .42);
+  border-color: hsla(calc(var(--night-hue) - 3.8deg), 100%, 87.3%, .42);
 }
 
 html[data-theme="moonlight"] .login-error {

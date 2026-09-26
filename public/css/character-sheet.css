@@ -3208,7 +3208,7 @@ html[data-theme="moonlight"] .feature-entry {
 
 html[data-theme="moonlight"] .feature-entry-head:hover,
 html[data-theme="moonlight"] .feature-entry.is-open .feature-entry-head {
-  background: rgba(95, 178, 255, .08);
+  background: hsla(calc(var(--night-hue) + 3.9deg), 100%, 68.6%, .08);
 }
 
 html[data-theme="moonlight"] .feature-name,
@@ -3226,36 +3226,36 @@ html[data-theme="moonlight"] .feature-category-control > span {
 }
 
 html[data-theme="moonlight"] .feature-entry-titles input::placeholder {
-  color: rgba(216, 232, 255, .45);
+  color: hsla(calc(var(--night-hue) + 10.4deg), 100%, 92.4%, .45);
 }
 
 html[data-theme="moonlight"] .feature-entry-titles input:focus,
 html[data-theme="moonlight"] .feature-details-panel .feature-details:focus {
-  background: rgba(4, 17, 38, .5);
+  background: hsla(calc(var(--night-hue) + 12.1deg), 81%, 8.2%, .5);
 }
 
 html[data-theme="moonlight"] .feature-details-panel .feature-details {
   border-left-color: var(--moon-line);
-  background: rgba(4, 17, 38, .34);
+  background: hsla(calc(var(--night-hue) + 12.1deg), 81%, 8.2%, .34);
   color: var(--moon-text);
 }
 
 html[data-theme="moonlight"] .feature-details-toggle,
 html[data-theme="moonlight"] .feature-resource-type,
 html[data-theme="moonlight"] .feature-meta-link {
-  color: #f5d884;
+  color: hsl(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%);
 }
 
 html[data-theme="moonlight"] .feature-resource-type option,
 html[data-theme="moonlight"] .feature-category-select option {
-  background: #0b1e3c;
+  background: hsl(calc(var(--night-hue) + 11.7deg), 69%, 13.9%);
 }
 
 html[data-theme="moonlight"] .feature-resource-area .resource-stepper,
 html[data-theme="moonlight"] .feature-category-select,
 html[data-theme="moonlight"] .feature-edit-btn {
   border-color: var(--moon-line);
-  background: rgba(4, 17, 38, .4);
+  background: hsla(calc(var(--night-hue) + 12.1deg), 81%, 8.2%, .4);
 }
 
 html[data-theme="moonlight"] .feature-resource-area .slot-btn,
@@ -3280,6 +3280,6 @@ html[data-theme="moonlight"] .sheet .feature-entry-titles input:hover {
 }
 
 html[data-theme="moonlight"] .sheet .feature-entry-titles input:focus {
-  border-bottom-color: #f5d884 !important;
-  background: rgba(4, 17, 38, .5) !important;
+  border-bottom-color: hsl(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%) !important;
+  background: hsla(calc(var(--night-hue) + 12.1deg), 81%, 8.2%, .5) !important;
 }

@@ -686,10 +686,10 @@ html[data-theme="moonlight"] .cal-set-field select {
 }
 
 html[data-theme="moonlight"] .cal-set-field select option {
-  background: #0b1e3c;
+  background: hsl(calc(var(--night-hue) + 11.7deg), 69%, 13.9%);
 }
 
 html[data-theme="moonlight"] .cal-btn-save.is-pending {
-  background: rgba(95, 178, 255, .2);
-  box-shadow: inset 0 -2px 0 #92d6ff;
+  background: hsla(calc(var(--night-hue) + 3.9deg), 100%, 68.6%, .2);
+  box-shadow: inset 0 -2px 0 hsl(calc(var(--night-hue) - 2.4deg), 100%, 78.6%);
 }

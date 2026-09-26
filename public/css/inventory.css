@@ -2510,11 +2510,11 @@ html[data-theme="moonlight"] .inventory-subnav,
 html[data-theme="moonlight"] .party-tile,
 html[data-theme="moonlight"] .party-owner-chips span {
   border-color: var(--moon-line);
-  background: rgba(8, 26, 54, .45);
+  background: hsla(calc(var(--night-hue) + 11.5deg), 74.2%, 12.2%, .45);
 }
 
 html[data-theme="moonlight"] .inventory-subtab { color: var(--moon-text-soft); }
-html[data-theme="moonlight"] .inventory-subtab.on { background: rgba(95, 178, 255, .26); color: var(--moon-heading); }
+html[data-theme="moonlight"] .inventory-subtab.on { background: hsla(calc(var(--night-hue) + 3.9deg), 100%, 68.6%, .26); color: var(--moon-heading); }
 
 html[data-theme="moonlight"] .party-title,
 html[data-theme="moonlight"] .party-tile strong,
@@ -2550,13 +2550,13 @@ html[data-theme="moonlight"] .party-member-worth,
 html[data-theme="moonlight"] .party-member-coins,
 html[data-theme="moonlight"] .party-member-item span:not(:first-child),
 html[data-theme="moonlight"] .party-container-list:empty::before {
-  color: rgba(216, 232, 255, .72);
+  color: hsla(calc(var(--night-hue) + 10.4deg), 100%, 92.4%, .72);
 }
 
-html[data-theme="moonlight"] .party-tile-main { border-color: rgba(245, 216, 132, .6); background: rgba(245, 216, 132, .10); }
+html[data-theme="moonlight"] .party-tile-main { border-color: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .6); background: hsla(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%, .10); }
 html[data-theme="moonlight"] .party-tile-main strong,
 html[data-theme="moonlight"] .party-find-total,
-html[data-theme="moonlight"] .party-owner-chips b { color: #f5d884; }
+html[data-theme="moonlight"] .party-owner-chips b { color: hsl(calc(var(--night-gold-hue) - 0.4deg), 85%, 73.9%); }
 
 html[data-theme="moonlight"] .party-wealth-table th,
 html[data-theme="moonlight"] .party-wealth-table td,
@@ -2570,19 +2570,19 @@ html[data-theme="moonlight"] .party-stash-group {
 
 html[data-theme="moonlight"] .party-search input {
   border-color: var(--moon-line);
-  background: rgba(4, 17, 38, .42);
+  background: hsla(calc(var(--night-hue) + 12.1deg), 81%, 8.2%, .42);
   color: var(--moon-text);
 }
 
 html[data-theme="moonlight"] .party-quick,
 html[data-theme="moonlight"] .party-take,
 html[data-theme="moonlight"] .inventory-entry-to-party {
-  border-color: rgba(146, 214, 255, .6);
-  color: #bfe6ff;
+  border-color: hsla(calc(var(--night-hue) - 2.4deg), 100%, 78.6%, .6);
+  color: hsl(calc(var(--night-hue) - 1.6deg), 100%, 87.5%);
 }
 
 html[data-theme="moonlight"] .party-quick.is-mine {
-  background: rgba(95, 178, 255, .34);
+  background: hsla(calc(var(--night-hue) + 3.9deg), 100%, 68.6%, .34);
   color: var(--moon-heading);
 }
 

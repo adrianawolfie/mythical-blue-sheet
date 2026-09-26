@@ -180,23 +180,23 @@
 }
 
 html[data-theme="moonlight"] .account-theme-track {
-  background: rgba(1, 15, 40, .82);
+  background: hsla(calc(var(--night-hue) + 13.5deg), 95.1%, 8%, .82);
 }
 
 html[data-theme="moonlight"] .account-theme-track::before {
-  color: rgba(131, 174, 215, .58);
+  color: hsla(calc(var(--night-hue) + 4.3deg), 51.2%, 67.8%, .58);
 }
 
 html[data-theme="moonlight"] .account-theme-track::after {
-  color: #e0f5ff;
-  text-shadow: 0 0 6px rgba(149, 216, 255, .6);
+  color: hsl(calc(var(--night-hue) - 5.6deg), 100%, 93.9%);
+  text-shadow: 0 0 6px hsla(calc(var(--night-hue) - 2.9deg), 100%, 79.2%, .6);
 }
 
 html[data-theme="moonlight"] .account-theme-orb {
   transform: translateX(30px);
-  border-color: rgba(186, 232, 255, .78);
-  background: #d8f2ff;
-  box-shadow: 0 0 10px rgba(148, 215, 255, .58);
+  border-color: hsla(calc(var(--night-hue) - 5deg), 100%, 86.5%, .78);
+  background: hsl(calc(var(--night-hue) - 5deg), 100%, 92.4%);
+  box-shadow: 0 0 10px hsla(calc(var(--night-hue) - 2.6deg), 100%, 79%, .58);
 }
 
 .account-accessibility-controls {
@@ -289,51 +289,51 @@ html[data-theme="moonlight"] .account-theme-orb {
 }
 
 html[data-theme="moonlight"] .account-action {
-  border-color: rgba(222, 188, 97, .72);
-  background: rgba(15, 25, 58, .94);
-  color: #f5e6bd;
+  border-color: hsla(calc(var(--night-gold-hue) - 1.3deg), 65.4%, 62.5%, .72);
+  background: hsla(calc(var(--night-hue) + 21deg), 58.9%, 14.3%, .94);
+  color: hsl(calc(var(--night-gold-hue) - 1.1deg), 73.7%, 85.1%);
 }
 
 html[data-theme="moonlight"] .account-panel {
-  border-color: #debc61;
-  background: #101a38;
-  color: #f4ead0;
+  border-color: hsl(calc(var(--night-gold-hue) - 1.3deg), 65.4%, 62.5%);
+  background: hsl(calc(var(--night-hue) + 20deg), 55.6%, 14.1%);
+  color: hsl(calc(var(--night-gold-hue) - 1.7deg), 62.1%, 88.6%);
 }
 
 html[data-theme="moonlight"] .account-panel-title,
 html[data-theme="moonlight"] .account-close {
-  color: #f5e6bd;
+  color: hsl(calc(var(--night-gold-hue) - 1.1deg), 73.7%, 85.1%);
 }
 
 html[data-theme="moonlight"] .account-panel-email,
 html[data-theme="moonlight"] .account-help {
-  color: #b7c4ee;
+  color: hsl(calc(var(--night-hue) + 20.8deg), 61.8%, 82.5%);
 }
 
 html[data-theme="moonlight"] .account-field input {
-  border-color: rgba(222, 188, 97, .62);
+  border-color: hsla(calc(var(--night-gold-hue) - 1.3deg), 65.4%, 62.5%, .62);
   background: rgba(255, 255, 255, .08);
-  color: #f4ead0;
+  color: hsl(calc(var(--night-gold-hue) - 1.7deg), 62.1%, 88.6%);
 }
 
 html[data-theme="moonlight"] .account-preferences {
-  border-color: rgba(222, 188, 97, .42);
+  border-color: hsla(calc(var(--night-gold-hue) - 1.3deg), 65.4%, 62.5%, .42);
   background: rgba(255, 255, 255, .05);
 }
 
 html[data-theme="moonlight"] .account-accessibility-controls {
-  border-color: rgba(222, 188, 97, .52);
+  border-color: hsla(calc(var(--night-gold-hue) - 1.3deg), 65.4%, 62.5%, .52);
   background: rgba(255, 255, 255, .08);
 }
 
 html[data-theme="moonlight"] .account-secondary {
   background: rgba(255, 255, 255, .08);
-  color: #f5e6bd;
+  color: hsl(calc(var(--night-gold-hue) - 1.1deg), 73.7%, 85.1%);
 }
 
 html[data-theme="moonlight"] .account-primary {
-  background: #debc61;
-  color: #101a38;
+  background: hsl(calc(var(--night-gold-hue) - 1.3deg), 65.4%, 62.5%);
+  color: hsl(calc(var(--night-hue) + 20deg), 55.6%, 14.1%);
 }
 
   @media (max-width: 620px) {
@@ -368,10 +368,10 @@ html[data-theme="moonlight"] .account-primary {
 
 html[data-theme="moonlight"] .account-theme-select {
   border-color: var(--moon-line);
-  background: rgba(4, 17, 38, .5);
+  background: hsla(calc(var(--night-hue) + 12.1deg), 81%, 8.2%, .5);
   color: var(--moon-text);
 }
 
 html[data-theme="moonlight"] .account-theme-select option {
-  background: #0b1e3c;
+  background: hsl(calc(var(--night-hue) + 11.7deg), 69%, 13.9%);
 }
