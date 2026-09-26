@@ -321,7 +321,7 @@ html[data-style="raperonzolo"] .sheet-toolbar :is(.sheet-copy-button, .sheet-del
 /* Art Nouveau frame around the sheet: flowing green vines weaving along the
    edges, spilling over them and curling into tendrils, with rampion sprays in two
    opposite corners. public/js/nouveau-frame.js draws it as an inline SVG
-   sized to the sheet; --frame-scale sets the size of its details. */
+   sized to the framed element; --frame-scale sets the size of its details. */
 .nouveau-frame {
   display: none;
 }
@@ -337,6 +337,13 @@ html[data-style="raperonzolo"] .nouveau-frame {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.nouveau-defs {
+  position: absolute;
+}
+
+html[data-style="raperonzolo"] :is(.nouveau-frame, .nouveau-defs) {
   --vine: #5d8c50;
   --vine-light: #a9cd97;
   --stem: #557f49;
@@ -350,7 +357,7 @@ html[data-style="raperonzolo"] .nouveau-frame {
   --vein: #6a47ad;
 }
 
-html[data-style="raperonzolo"][data-theme="moonlight"] .nouveau-frame {
+html[data-style="raperonzolo"][data-theme="moonlight"] :is(.nouveau-frame, .nouveau-defs) {
   --vine: #86b977;
   --vine-light: #c6e5b8;
   --stem: #8fbb86;
@@ -381,12 +388,12 @@ html[data-style="raperonzolo"][data-theme="moonlight"] .nouveau-frame {
 .nouveau-frame .nf-vein { stroke: var(--vein); stroke-width: .5; opacity: .55; }
 .nouveau-frame .nf-style { stroke: #fff; stroke-width: 1; }
 .nouveau-frame .nf-style-dot { fill: #fff; }
-.nouveau-frame .nf-c-throat { stop-color: var(--throat); }
-.nouveau-frame .nf-c-pale { stop-color: var(--petal-pale); }
-.nouveau-frame .nf-c-petal { stop-color: var(--petal); }
-.nouveau-frame .nf-c-deep { stop-color: var(--petal-deep); }
-.nouveau-frame .nf-c-leaf { stop-color: var(--leaf); }
-.nouveau-frame .nf-c-leaf-dark { stop-color: var(--leaf-dark); }
+.nouveau-defs .nf-c-throat { stop-color: var(--throat); }
+.nouveau-defs .nf-c-pale { stop-color: var(--petal-pale); }
+.nouveau-defs .nf-c-petal { stop-color: var(--petal); }
+.nouveau-defs .nf-c-deep { stop-color: var(--petal-deep); }
+.nouveau-defs .nf-c-leaf { stop-color: var(--leaf); }
+.nouveau-defs .nf-c-leaf-dark { stop-color: var(--leaf-dark); }
 
 /* Leave room around the sheet for the frame to spill into. */
 html[data-style="raperonzolo"] .sheet {
@@ -397,6 +404,22 @@ html[data-style="raperonzolo"] .sheet {
 
 html[data-style="raperonzolo"] .sheet-toolbar {
   margin-bottom: 64px;
+}
+
+/* The character overview and the DM screen get the same frame, with room
+   inside for the vines and outside for them to spill into. */
+html[data-style="raperonzolo"] #startPage {
+  --frame-scale: 1;
+  overflow: visible;
+  padding: 60px 76px 150px;
+}
+
+html[data-style="raperonzolo"] .dm-screen-shell {
+  --frame-scale: 1;
+  position: relative;
+  width: calc(100% - 40px);
+  /* narrower windows trade side padding for tracker width; the vines then overlap the panel edges */
+  padding: 64px clamp(8px, calc(50vw - 620px), 48px) 140px;
 }
 
 /* Keep the footer clear of the bottom corner loops. */
@@ -411,8 +434,16 @@ html[data-style="raperonzolo"] .sheet {
     padding-bottom: 110px;
   }
 
-  html[data-style="raperonzolo"] .sheet {
+  html[data-style="raperonzolo"] :is(.sheet, #startPage, .dm-screen-shell) {
     --frame-scale: .55;
+  }
+
+  html[data-style="raperonzolo"] #startPage {
+    padding: 40px 44px 110px;
+  }
+
+  html[data-style="raperonzolo"] .dm-screen-shell {
+    padding: 40px 8px 110px;
   }
 
   html[data-style="raperonzolo"] .sheet-toolbar {
@@ -451,6 +482,13 @@ html[data-style="raperonzolo"] .theme-title::after {
     --frame-scale: .42;
     width: auto;
     margin: 0 14px 24px;
+  }
+
+  html[data-style="raperonzolo"] :is(#startPage, .dm-screen-shell) {
+    --frame-scale: .42;
+    width: auto;
+    margin: 0 14px 24px;
+    padding: 30px 18px 70px;
   }
 
   html[data-style="raperonzolo"] .sheet-toolbar {

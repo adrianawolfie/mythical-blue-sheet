@@ -1,7 +1,8 @@
 // Raperonzolo theme: an Art Nouveau frame of flowing vines around the
-// character sheet, with rampion bellflower sprays in two opposite corners.
-// It is drawn as an inline SVG sized to the sheet, so the vines keep their
-// shape at any sheet size; colours come from CSS variables in theme-styles.css.
+// character sheet, the character overview and the DM screen, with rampion
+// bellflower sprays in two opposite corners. It is drawn as an inline SVG
+// sized to the framed element, so the vines keep their shape at any size;
+// colours come from CSS variables in theme-styles.css.
 (function () {
   const NS = 'http://www.w3.org/2000/svg';
   const TAU = Math.PI * 2;
@@ -149,14 +150,15 @@
     return best;
   }
 
-  const gradients = '<defs>' +
+  // Shared by every frame on the page, in one SVG that is never hidden.
+  const gradients = '<svg class="nouveau-defs" aria-hidden="true" width="0" height="0"><defs>' +
     '<radialGradient id="nf-corolla" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="21">' +
     '<stop offset="0" class="nf-c-throat"/><stop offset=".28" class="nf-c-pale"/><stop offset=".7" class="nf-c-petal"/><stop offset="1" class="nf-c-deep"/></radialGradient>' +
     '<linearGradient id="nf-bell" gradientUnits="userSpaceOnUse" x1="-14" y1="0" x2="14" y2="0">' +
     '<stop offset="0" class="nf-c-deep"/><stop offset=".38" class="nf-c-pale"/><stop offset=".7" class="nf-c-petal"/><stop offset="1" class="nf-c-deep"/></linearGradient>' +
     '<radialGradient id="nf-mouth" cx=".5" cy=".7" r=".6"><stop offset="0" class="nf-c-throat"/><stop offset="1" class="nf-c-petal"/></radialGradient>' +
     '<linearGradient id="nf-leaf" x1="0" y1="0" x2="1" y2="0"><stop offset="0" class="nf-c-leaf-dark"/><stop offset=".5" class="nf-c-leaf"/><stop offset="1" class="nf-c-leaf-dark"/></linearGradient>' +
-    '</defs>';
+    '</defs></svg>';
 
   // Open rampion flower: a fused five-lobed star with veins, pale throat and a three-part style.
   // Drawn at radius 20; `squash` tilts it away from the viewer.
@@ -207,11 +209,11 @@
       star(-236, 12, 21, -8, 14, .7) + star(-58, 56, 34, 6, 0, 1);
   }
 
-  function draw(sheet, svg) {
-    const W = sheet.offsetWidth, H = sheet.offsetHeight;
-    const k = parseFloat(getComputedStyle(sheet).getPropertyValue('--frame-scale')) || 1;
+  function draw(box, svg, id) {
+    const W = box.offsetWidth, H = box.offsetHeight;
+    const k = parseFloat(getComputedStyle(box).getPropertyValue('--frame-scale')) || 1;
     const gap = 2 * k + 1;
-    // The SVG box matches the sheet (so it adds no scrolling); the vines spill past it.
+    // The SVG box matches the framed element (so it adds no scrolling); the vines spill past it.
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     Object.assign(svg.style, { width: W + 'px', height: H + 'px' });
 
@@ -226,8 +228,8 @@
 
     // Where a vine passes under another, a mask cuts a small gap in it.
     const crossings = weave(vs);
-    const box = `x="${-W}" y="${-H}" width="${3 * W}" height="${3 * H}"`;
-    const masks = vs.map((u, i) => `<mask id="nf-under-${i}" maskUnits="userSpaceOnUse" ${box}><rect ${box} fill="#fff"/>` +
+    const area = `x="${-W}" y="${-H}" width="${3 * W}" height="${3 * H}"`;
+    const masks = vs.map((u, i) => `<mask id="nf-${id}-under-${i}" maskUnits="userSpaceOnUse" ${area}><rect ${area} fill="#fff"/>` +
       crossings.filter(c => c.under[0] === i).map(c => {
         const o = vs[c.over[0]], wo = o.width(c.over[1]), wu = u.width(c.under[1]);
         const half = Math.min(160 * k, (wu / 2 + wo / 2 + gap) / Math.max(c.sin, .08)) + 2;
@@ -253,32 +255,38 @@
       leaves += leaf(at[0], at[1], th * 180 / Math.PI + 90 - d * 55, 30 * k, -.1 * d);
     }));
 
-    svg.innerHTML = gradients + masks +
-      vs.map((v, i) => `<g mask="url(#nf-under-${i})"><path class="nf-vine" d="${band(v.pts, v.width, true)}"/>` +
+    svg.innerHTML = masks +
+      vs.map((v, i) => `<g mask="url(#nf-${id}-under-${i})"><path class="nf-vine" d="${band(v.pts, v.width, true)}"/>` +
         `<path class="nf-vine-light" d="${band(v.pts, j => v.width(j) * .28, true)}"/></g>`).join('') +
       tendrils + leaves +
       `<g transform="translate(${W} 0) scale(${k})">${spray()}</g>` +
       `<g transform="rotate(180 ${W / 2} ${H / 2}) translate(${W} 0) scale(${k})">${spray()}</g>`;
   }
 
-  function init() {
-    const sheet = document.querySelector('.sheet');
-    if (!sheet) return;
+  function frame(box, id) {
     const svg = document.createElementNS(NS, 'svg');
     svg.setAttribute('class', 'nouveau-frame');
     svg.setAttribute('aria-hidden', 'true');
-    sheet.appendChild(svg);
+    box.appendChild(svg);
     let size = '', queued = false;
     const update = () => {
       queued = false;
-      if (document.documentElement.dataset.style !== 'raperonzolo') { size = ''; return; }
-      const next = sheet.offsetWidth + 'x' + sheet.offsetHeight + getComputedStyle(sheet).getPropertyValue('--frame-scale');
-      if (next !== size) { size = next; draw(sheet, svg); }
+      // skipped while the theme is off or the element is hidden; the resize observer catches it when shown
+      if (document.documentElement.dataset.style !== 'raperonzolo' || !box.offsetWidth) { size = ''; return; }
+      const next = box.offsetWidth + 'x' + box.offsetHeight + getComputedStyle(box).getPropertyValue('--frame-scale');
+      if (next !== size) { size = next; draw(box, svg, id); }
     };
     const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
-    new ResizeObserver(queue).observe(sheet);
+    new ResizeObserver(queue).observe(box);
     new MutationObserver(queue).observe(document.documentElement, { attributes: true, attributeFilter: ['data-style'] });
     queue();
+  }
+
+  function init() {
+    const boxes = document.querySelectorAll('.sheet, #startPage, .dm-screen-shell');
+    if (!boxes.length) return;
+    document.body.insertAdjacentHTML('beforeend', gradients);
+    boxes.forEach(frame);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
