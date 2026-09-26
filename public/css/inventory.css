@@ -28,11 +28,6 @@
 
 /* ─── COINAGE — RESTORED CIRCLES ───────────────────────────── */
 
-.compact-main-coinage-card {
-  margin-top: 12px;
-}
-
-.compact-main-coinage-card .coinsrow,
 .inventory-coinage-card .coinsrow {
   display: flex;
   justify-content: center;
@@ -40,7 +35,6 @@
   padding: 9px 10px 10px;
 }
 
-.compact-main-coinage-card .cbox2,
 .inventory-coinage-card .cbox2 {
   flex: 0 0 auto;
   width: 50px;
@@ -48,13 +42,11 @@
   text-align: center;
 }
 
-.compact-main-coinage-card .cbox2 label,
 .inventory-coinage-card .cbox2 label {
   display: block;
   margin-bottom: 4px;
 }
 
-.compact-main-coinage-card .cbox2 input,
 .inventory-coinage-card .cbox2 input {
   box-sizing: border-box;
   width: 46px;
@@ -74,26 +66,6 @@
   text-align: center;
 }
 
-.compact-main-coinage-card .coinsrow {
-  gap: 9px;
-  padding: 7px 8px 8px;
-}
-
-.compact-main-coinage-card .cbox2 {
-  width: 42px;
-}
-
-.compact-main-coinage-card .cbox2 input {
-  width: 38px;
-  min-width: 38px;
-  max-width: 38px;
-  height: 38px;
-  min-height: 38px;
-  max-height: 38px;
-  font-size: 11px;
-}
-
-.compact-main-coinage-card .gold-coin input,
 .inventory-coinage-card .gold-coin input {
   background: rgba(214,168,56,.35);
   border-color: var(--navy-deep);
@@ -488,23 +460,6 @@
   background: rgba(255,253,245,.3);
 }
 
-.inventory-qty-col {
-  width: 42px;
-  text-align: center !important;
-}
-
-.inventory-value-col {
-  width: 66px;
-}
-
-.inventory-location-col {
-  width: 118px;
-}
-
-.inventory-details-col {
-  width: 48px;
-}
-
 .inventory-slot-col {
   width: 36px;
   text-align: center !important;
@@ -546,40 +501,6 @@
   color: var(--navy-deep);
   opacity: 1;
   outline: none;
-}
-
-.inventory-details-cell {
-  text-align: right;
-}
-
-.inventory-details-toggle {
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--gold-deep);
-  cursor: pointer;
-  font-family: 'Cinzel', serif;
-  font-size: 7px;
-  font-weight: 700;
-  letter-spacing: .35px;
-  text-transform: uppercase;
-  opacity: .72;
-}
-
-.inventory-details-toggle:hover,
-.inventory-details-toggle:focus-visible,
-.inventory-details-toggle.open {
-  color: var(--navy-deep);
-  opacity: 1;
-  outline: none;
-}
-
-.inventory-item-details-row td {
-  padding: 0 6px 6px;
-}
-
-.inventory-item-details-panel {
-  padding-top: 5px;
 }
 
 .inventory-item-details {
@@ -687,7 +608,6 @@
     grid-column: auto;
   }
 
-  .compact-main-coinage-card .coinsrow,
   .inventory-coinage-card .coinsrow {
     gap: 6px;
     padding-left: 5px;
@@ -770,18 +690,6 @@
   .inventory-table input,
   .inventory-table select {
     font-size: 10px;
-  }
-
-  .inventory-value-col {
-    width: 56px;
-  }
-
-  .inventory-location-col {
-    width: 88px;
-  }
-
-  .inventory-details-col {
-    width: 42px;
   }
 
   .inventory-remove-col,
@@ -1006,7 +914,6 @@
   }
 }
 
-
 /* ─── EQUIPPED & CARRIED · LIST-ONLY REFINEMENT ───────────────── */
 .equipped-layout.equipped-list-only {
   padding-top: 2px;
@@ -1075,43 +982,6 @@
   font-family: var(--small-italic-font);
   font-size: 11px;
   outline: none;
-}
-
-.inventory-table-wrap {
-  overflow-x: auto;
-}
-
-.inventory-unified-table {
-  table-layout: fixed;
-}
-
-.inventory-unified-table th:first-child {
-  width: auto;
-}
-
-.inventory-type-col {
-  width: 132px;
-}
-
-.inventory-unified-table .inventory-qty-col {
-  width: 46px;
-}
-
-.inventory-unified-table .inventory-value-col {
-  width: 76px;
-}
-
-.inventory-unified-table .inventory-location-col {
-  width: 145px;
-}
-
-.inventory-unified-table .inventory-details-col {
-  width: 54px;
-}
-
-.inventory-unified-table .inventory-remove-col,
-.inventory-unified-table .inventory-remove-cell {
-  width: 20px;
 }
 
 /* ─── CATEGORIZED JOURNAL NOTES ────────────────────────────── */
@@ -1299,10 +1169,6 @@
     grid-template-columns: 1fr;
   }
 
-  .inventory-unified-table {
-    min-width: 680px;
-  }
-
   .journal-note-meta {
     grid-template-columns: 1fr;
   }
@@ -1312,151 +1178,15 @@
   }
 }
 
-
 /* ─── EQUIPMENT TABLE · MOBILE CARD LAYOUT ───────────────────────────────
    The desktop table remains unchanged. On smaller screens each equipment
    item becomes a compact card, so users never need to horizontally scroll. */
 
-@media (max-width: 768px) {
-  .inventory-table-wrap {
-    overflow-x: visible;
-  }
-
-  .inventory-unified-table {
-    display: block;
-    width: 100%;
-    min-width: 0;
-  }
-
-  .inventory-unified-table thead {
-    display: none;
-  }
-
-  .inventory-unified-table tbody {
-    display: block;
-    padding: 6px;
-  }
-
-  .inventory-unified-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(86px, .55fr);
-    gap: 7px 9px;
-    margin-bottom: 7px;
-    padding: 7px;
-    border: 1px solid rgba(184,144,44,.4);
-    background: rgba(255,253,245,.16);
-  }
-
-  .inventory-unified-row td {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    width: auto !important;
-    min-width: 0;
-    padding: 0;
-    border-bottom: none;
-  }
-
-  .inventory-unified-row td::before {
-    color: var(--navy);
-    font-family: 'Cinzel', serif;
-    font-size: 6.5px;
-    font-weight: 700;
-    letter-spacing: .75px;
-    text-transform: uppercase;
-  }
-
-  .inventory-unified-row td:nth-child(1) {
-    grid-column: 1 / -1;
-  }
-
-  .inventory-unified-row td:nth-child(1)::before {
-    content: "Item";
-  }
-
-  .inventory-unified-row td:nth-child(2)::before {
-    content: "Type";
-  }
-
-  .inventory-unified-row td:nth-child(3)::before {
-    content: "Qty";
-  }
-
-  .inventory-unified-row td:nth-child(4)::before {
-    content: "Value";
-  }
-
-  .inventory-unified-row td:nth-child(5)::before {
-    content: "Location";
-  }
-
-  .inventory-unified-row td:nth-child(6),
-  .inventory-unified-row td:nth-child(7) {
-    align-self: end;
-    justify-content: flex-end;
-  }
-
-  .inventory-unified-row td:nth-child(6)::before,
-  .inventory-unified-row td:nth-child(7)::before {
-    content: "";
-  }
-
-  .inventory-unified-row input,
-  .inventory-unified-row select {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .inventory-unified-row .inventory-details-toggle {
-    align-self: flex-start;
-  }
-
-  .inventory-unified-row .inventory-remove {
-    align-self: flex-end;
-  }
-
-  .inventory-unified-row + .inventory-item-details-row {
-    display: block;
-    margin: -7px 6px 8px;
-  }
-
-  .inventory-unified-row + .inventory-item-details-row[style*="display: none"] {
-    display: none !important;
-  }
-
-  .inventory-unified-row + .inventory-item-details-row td {
-    display: block;
-    padding: 0;
-    border-bottom: none;
-  }
-
-  .inventory-unified-row + .inventory-item-details-row .inventory-item-details-panel {
-    padding-top: 0;
-  }
-}
-
-
 /* ─── EQUIPMENT · MOBILE NO-HORIZONTAL-SCROLL OVERRIDE ────────────────── */
 @media (max-width: 768px) {
-  .inventory-unified-card,
-  .inventory-table-wrap { width: 100%; max-width: 100%; overflow: visible !important; }
-  .inventory-unified-table, .inventory-unified-table tbody, .inventory-unified-table tr, .inventory-unified-table td { box-sizing: border-box; }
-  .inventory-unified-table { display:block !important; width:100% !important; max-width:100% !important; min-width:0 !important; table-layout:auto !important; }
-  .inventory-unified-table thead { display:none !important; }
-  .inventory-unified-table tbody { display:block !important; width:100% !important; max-width:100% !important; padding:6px; }
-  .inventory-unified-row { display:grid !important; width:100% !important; max-width:100% !important; min-width:0 !important; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:7px 9px; margin:0 0 8px; padding:8px; border:1px solid rgba(184,144,44,.4); background:rgba(255,253,245,.16); }
-  .inventory-unified-row td { display:flex !important; flex-direction:column; gap:3px; width:auto !important; max-width:100% !important; min-width:0 !important; padding:0 !important; border-bottom:none !important; }
-  .inventory-unified-row td:nth-child(1), .inventory-unified-row td:nth-child(5) { grid-column:1 / -1; }
-  .inventory-unified-row input, .inventory-unified-row select { box-sizing:border-box; width:100% !important; max-width:100% !important; min-width:0 !important; }
-  .inventory-unified-row td:nth-child(6), .inventory-unified-row td:nth-child(7) { align-self:end; justify-content:flex-end; }
-  .inventory-unified-row td:nth-child(6) { grid-column:1; }
-  .inventory-unified-row td:nth-child(7) { grid-column:2; }
-  .inventory-unified-row + .inventory-item-details-row { display:block; width:auto !important; max-width:100% !important; margin:-8px 6px 9px; }
-  .inventory-unified-row + .inventory-item-details-row[style*="display: none"] { display:none !important; }
-  .inventory-unified-row + .inventory-item-details-row td { display:block !important; width:100% !important; max-width:100% !important; padding:0 !important; border-bottom:none !important; }
+  .inventory-unified-card { width: 100%; max-width: 100%; overflow: visible !important; }
   .inventory-item-details { box-sizing:border-box; width:100% !important; max-width:100% !important; }
 }
-
 
 /* ─── EQUIPMENT · MOBILE GROUPED ACCORDION ──────────────────────────────
    Compact mobile-first inventory browsing:
@@ -1465,261 +1195,11 @@
    - inline editor only when requested
    - no horizontal scrolling */
 
-.inventory-mobile-summary,
-.inventory-mobile-group-header {
-  display: none;
-}
-
 @media (max-width: 768px) {
-  .inventory-unified-card,
-  .inventory-table-wrap {
+  .inventory-unified-card {
     width: 100%;
     max-width: 100%;
     overflow: visible !important;
-  }
-
-  .inventory-unified-table {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    table-layout: auto !important;
-  }
-
-  .inventory-unified-table thead {
-    display: none !important;
-  }
-
-  .inventory-unified-table tbody {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 4px 7px 8px;
-  }
-
-  .inventory-mobile-group-header {
-    display: table-row;
-  }
-
-  .inventory-mobile-group-header[hidden] {
-    display: none !important;
-  }
-
-  .inventory-mobile-group-header td {
-    display: block;
-    width: 100%;
-    padding: 8px 0 3px !important;
-    border-bottom: none !important;
-  }
-
-  .inventory-mobile-group-toggle {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 4px 1px;
-    border: none;
-    border-bottom: 1px solid rgba(184,144,44,.52);
-    background: transparent;
-    color: var(--navy);
-    cursor: pointer;
-    font-family: 'Cinzel', serif;
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: .9px;
-    text-align: left;
-    text-transform: uppercase;
-  }
-
-  .inventory-mobile-group-count {
-    min-width: 18px;
-    margin-left: 7px;
-    padding: 1px 4px;
-    border: 1px solid rgba(184,144,44,.4);
-    border-radius: 999px;
-    color: var(--gold-deep);
-    font-size: 7px;
-    line-height: 1;
-    text-align: center;
-  }
-
-  .inventory-mobile-group-chevron {
-    margin-left: auto;
-    color: var(--gold-deep);
-    font-size: 14px;
-    line-height: .7;
-    transition: transform .16s ease;
-  }
-
-  .inventory-mobile-group-toggle[aria-expanded="false"] .inventory-mobile-group-chevron {
-    transform: rotate(-90deg);
-  }
-
-  .inventory-unified-row {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    border-bottom: 1px dotted rgba(184,144,44,.42) !important;
-    background: transparent !important;
-  }
-
-  .inventory-unified-row[hidden] {
-    display: none !important;
-  }
-
-  .inventory-mobile-summary {
-    display: block !important;
-    width: 100% !important;
-    padding: 0 !important;
-    border-bottom: none !important;
-  }
-
-  .inventory-mobile-row-toggle {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    min-width: 0;
-    padding: 7px 1px;
-    border: none;
-    background: transparent;
-    color: var(--navy-deep);
-    cursor: pointer;
-    font-family: var(--small-italic-font);
-    text-align: left;
-  }
-
-  .inventory-mobile-summary-main,
-  .inventory-mobile-summary-side {
-    display: flex;
-    align-items: center;
-    min-width: 0;
-  }
-
-  .inventory-mobile-summary-main {
-    flex: 1 1 auto;
-    gap: 4px;
-  }
-
-  .inventory-mobile-summary-side {
-    flex: 0 1 auto;
-    justify-content: flex-end;
-    gap: 6px;
-    margin-left: 8px;
-  }
-
-  .inventory-mobile-summary-name {
-    overflow: hidden;
-    color: var(--navy-deep);
-    font-size: 12px;
-    font-weight: 700;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .inventory-mobile-summary-qty {
-    flex: 0 0 auto;
-    color: var(--gold-deep);
-    font-size: 10px;
-    font-weight: 700;
-  }
-
-  .inventory-mobile-summary-location {
-    overflow: hidden;
-    max-width: 110px;
-    color: rgba(28,39,80,.66);
-    font-size: 10px;
-    font-style: italic;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .inventory-mobile-chevron {
-    flex: 0 0 auto;
-    color: var(--gold-deep);
-    font-size: 14px;
-    line-height: .7;
-    transition: transform .16s ease;
-  }
-
-  .inventory-unified-row.mobile-expanded .inventory-mobile-chevron {
-    transform: rotate(180deg);
-  }
-
-  .inventory-unified-row > td:not(.inventory-mobile-summary) {
-    display: none !important;
-  }
-
-  .inventory-unified-row.mobile-expanded {
-    margin: 0 0 5px !important;
-    padding-bottom: 7px !important;
-    border-bottom: 1px solid rgba(184,144,44,.55) !important;
-  }
-
-  .inventory-unified-row.mobile-expanded > td:not(.inventory-mobile-summary) {
-    display: flex !important;
-    flex-direction: column;
-    gap: 3px;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    padding: 4px 1px 0 !important;
-    border-bottom: none !important;
-  }
-
-  .inventory-unified-row.mobile-expanded > td:not(.inventory-mobile-summary)::before {
-    color: var(--navy);
-    font-family: 'Cinzel', serif;
-    font-size: 6.5px;
-    font-weight: 700;
-    letter-spacing: .75px;
-    text-transform: uppercase;
-  }
-
-  .inventory-unified-row.mobile-expanded td:nth-child(2)::before { content: "Item"; }
-  .inventory-unified-row.mobile-expanded td:nth-child(3)::before { content: "Type"; }
-  .inventory-unified-row.mobile-expanded td:nth-child(4)::before { content: "Qty"; }
-  .inventory-unified-row.mobile-expanded td:nth-child(5)::before { content: "Value"; }
-  .inventory-unified-row.mobile-expanded td:nth-child(6)::before { content: "Location"; }
-  .inventory-unified-row.mobile-expanded td:nth-child(7)::before { content: ""; }
-  .inventory-unified-row.mobile-expanded td:nth-child(8)::before { content: ""; }
-
-  .inventory-unified-row input,
-  .inventory-unified-row select {
-    box-sizing: border-box;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-  }
-
-  .inventory-unified-row.mobile-expanded .inventory-details-toggle {
-    align-self: flex-start;
-  }
-
-  .inventory-unified-row.mobile-expanded .inventory-remove {
-    align-self: flex-end;
-  }
-
-  .inventory-unified-row + .inventory-item-details-row {
-    display: block;
-    width: auto !important;
-    max-width: 100% !important;
-    margin: -3px 1px 8px;
-  }
-
-  .inventory-unified-row + .inventory-item-details-row[style*="display: none"],
-  .inventory-unified-row[hidden] + .inventory-item-details-row {
-    display: none !important;
-  }
-
-  .inventory-unified-row + .inventory-item-details-row td {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 !important;
-    border-bottom: none !important;
   }
 
   .inventory-item-details {
@@ -1728,7 +1208,6 @@
     max-width: 100% !important;
   }
 }
-
 
 /* ─── SMALL VISUAL POLISH PASS ──────────────────────────────────────────
    Refines the existing components without changing behavior or save data. */
@@ -1822,27 +1301,6 @@
   padding-bottom: 2px;
 }
 
-/* Desktop equipment table: slightly more breathing room */
-@media (min-width: 769px) {
-  .inventory-unified-table th {
-    padding-top: 7px;
-    padding-bottom: 6px;
-  }
-
-  .inventory-unified-table td {
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-
-  .inventory-unified-table .inventory-item-name {
-    font-size: 12px;
-  }
-
-  .inventory-unified-table tbody tr:hover {
-    background: rgba(184,144,44,.045);
-  }
-}
-
 /* Journal Notes: softer collapsible cards and clearer open state */
 .journal-note-toolbar {
   background: rgba(255,253,245,.10);
@@ -1875,34 +1333,6 @@
 
 /* Mobile Equipment accordion: keep it light, not boxy */
 @media (max-width: 768px) {
-  .inventory-mobile-group-toggle {
-    padding-top: 6px;
-    padding-bottom: 5px;
-    border-bottom-color: rgba(184,144,44,.45);
-  }
-
-  .inventory-mobile-row-toggle {
-    padding: 8px 1px;
-  }
-
-  .inventory-unified-row.mobile-expanded {
-    padding: 0 6px 7px !important;
-    border-left: 2px solid rgba(184,144,44,.52) !important;
-    background: rgba(255,253,245,.10) !important;
-  }
-
-  .inventory-unified-row.mobile-expanded .inventory-mobile-row-toggle {
-    margin-left: -5px;
-    margin-right: -5px;
-    width: calc(100% + 10px);
-    padding-left: 5px;
-    padding-right: 5px;
-    background: rgba(184,144,44,.055);
-  }
-
-  .inventory-mobile-summary-name {
-    font-size: 12px;
-  }
 
   .equipped-layout.equipped-list-only .equipped-list-view {
     gap: 7px;
@@ -1913,49 +1343,10 @@
   }
 }
 
-
 /* ─── EQUIPMENT TABLE · DESKTOP COLUMN BALANCE + STABLE DETAILS ─────────
    Give Type and Location more breathing room and keep horizontal position
    fixed when item Details expand or collapse. */
 
-@media (min-width: 769px) {
-  .inventory-unified-table {
-    min-width: 980px;
-  }
-
-  .inventory-unified-table th:first-child {
-    width: 34%;
-  }
-
-  .inventory-unified-table .inventory-type-col {
-    width: 188px;
-  }
-
-  .inventory-unified-table .inventory-location-col {
-    width: 218px;
-  }
-
-  .inventory-unified-table .inventory-qty-col {
-    width: 52px;
-  }
-
-  .inventory-unified-table .inventory-value-col {
-    width: 84px;
-  }
-}
-
-.inventory-unified-row,
-.inventory-item-details-row,
-.inventory-item-details-panel {
-  overflow-anchor: none;
-}
-
-.inventory-item-details-row td {
-  width: 100%;
-  max-width: 100%;
-}
-
-.inventory-item-details-panel,
 .inventory-item-details {
   box-sizing: border-box;
   width: 100%;
@@ -1966,134 +1357,11 @@
   display: block;
 }
 
-
 /* ─── EQUIPMENT · DESKTOP RESPONSIVE GRID ROWS ──────────────────────────
    Desktop no longer relies on rigid table sizing. Rows remain visually
    table-like but use a responsive grid, so horizontal scrolling is removed. */
-@media (min-width: 769px) {
-  .inventory-unified-card .inventory-table-wrap {
-    overflow-x: visible !important;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .inventory-unified-table {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    table-layout: auto !important;
-  }
-
-  .inventory-unified-table thead,
-  .inventory-unified-table tbody {
-    display: block;
-    width: 100%;
-  }
-
-  .inventory-unified-table thead tr,
-  .inventory-unified-table .inventory-unified-row {
-    display: grid !important;
-    grid-template-columns:
-      minmax(150px, 1.35fr)
-      minmax(150px, .82fr)
-      48px
-      72px
-      minmax(160px, .95fr)
-      72px
-      18px;
-    gap: 0;
-    align-items: center;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-  }
-
-  .inventory-unified-table th,
-  .inventory-unified-table .inventory-unified-row td {
-    box-sizing: border-box;
-    display: block;
-    width: auto !important;
-    min-width: 0 !important;
-    max-width: 100%;
-    overflow: hidden;
-  }
-
-  .inventory-unified-table .inventory-mobile-summary {
-    display: none !important;
-  }
-
-  .inventory-unified-table input,
-  .inventory-unified-table select {
-    box-sizing: border-box;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-  }
-
-  .inventory-unified-table select {
-    text-overflow: ellipsis;
-  }
-
-  .inventory-unified-table .inventory-item-details-row {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .inventory-unified-table .inventory-item-details-row[style*="display: none"] {
-    display: none !important;
-  }
-
-  .inventory-unified-table .inventory-item-details-row td {
-    display: block;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 !important;
-  }
-
-  .inventory-unified-table .inventory-item-details-panel {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 100%;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1050px) {
-  .inventory-unified-table thead tr,
-  .inventory-unified-table .inventory-unified-row {
-    grid-template-columns:
-      minmax(125px, 1.18fr)
-      minmax(132px, .8fr)
-      42px
-      58px
-      minmax(132px, .9fr)
-      62px
-      16px;
-  }
-}
 
 /* ─── EQUIPMENT TABLE SORTING ──────────────────────────────── */
-.inventory-sort-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-}
-
-.inventory-sort-button:hover,
-.inventory-sort-button:focus-visible,
-.inventory-sort-button.is-active {
-  color: var(--gold-deep);
-  outline: none;
-}
 
 .inventory-sort-indicator {
   min-width: 8px;
@@ -2106,14 +1374,6 @@
    Draw one shared underline across the unified equipment header so the
    blank Details / remove columns remain perfectly aligned with the named
    columns. */
-.inventory-unified-table thead tr {
-  border-bottom: 1px solid rgba(184,144,44,.52);
-}
-
-.inventory-unified-table thead th {
-  border-bottom: 0;
-}
-
 
 /* ─── EQUIPMENT · MOBILE COMPACT ITEM CARDS ────────────────────────────
    Mobile intentionally uses expandable cards rather than a compressed
@@ -2152,192 +1412,14 @@
     letter-spacing: .45px;
     white-space: nowrap;
   }
-
-  .inventory-unified-table tbody {
-    padding: 7px;
-  }
-
-  .inventory-mobile-group-header {
-    display: none !important;
-  }
-
-  .inventory-unified-row {
-    display: block !important;
-    margin: 0 0 8px !important;
-    overflow: hidden;
-    border: 1px solid rgba(184,144,44,.40) !important;
-    border-radius: 4px;
-    background: linear-gradient(135deg, rgba(255,253,245,.30), rgba(255,248,226,.12)) !important;
-    box-shadow: 0 1px 0 rgba(255,255,255,.18);
-  }
-
-  .inventory-mobile-row-toggle {
-    align-items: center;
-    gap: 8px;
-    padding: 9px 8px;
-  }
-
-  .inventory-mobile-summary-content {
-    display: flex;
-    min-width: 0;
-    flex: 1 1 auto;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .inventory-mobile-summary-titleline,
-  .inventory-mobile-summary-meta {
-    display: flex;
-    min-width: 0;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .inventory-mobile-summary-name {
-    flex: 0 1 auto;
-    font-size: 12px;
-  }
-
-  .inventory-mobile-summary-type {
-    flex: 0 0 auto;
-    max-width: 48%;
-    overflow: hidden;
-    padding: 1px 5px;
-    border: 1px solid rgba(184,144,44,.34);
-    border-radius: 999px;
-    color: rgba(28,39,80,.68);
-    font-family: 'Cinzel', serif;
-    font-size: 6.5px;
-    font-weight: 700;
-    letter-spacing: .45px;
-    line-height: 1.35;
-    text-overflow: ellipsis;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .inventory-mobile-summary-meta {
-    color: rgba(28,39,80,.64);
-    font-size: 9.5px;
-    font-style: italic;
-  }
-
-  .inventory-mobile-summary-location {
-    flex: 1 1 auto;
-    max-width: none;
-  }
-
-  .inventory-mobile-summary-value,
-  .inventory-mobile-summary-qty {
-    flex: 0 0 auto;
-    color: var(--gold-deep);
-    font-size: 9px;
-    font-style: normal;
-    font-weight: 700;
-  }
-
-  .inventory-mobile-summary-value:not(:empty)::before {
-    content: '· ';
-    color: rgba(184,144,44,.56);
-  }
-
-  .inventory-mobile-summary-qty:not(:empty)::before {
-    content: '· ';
-    color: rgba(184,144,44,.56);
-  }
-
-  .inventory-unified-row.mobile-expanded {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 8px;
-    padding: 0 7px 8px !important;
-    border-left: 2px solid rgba(184,144,44,.62) !important;
-  }
-
-  .inventory-unified-row.mobile-expanded .inventory-mobile-summary {
-    grid-column: 1 / -1;
-    margin: 0 -7px;
-    width: calc(100% + 14px) !important;
-  }
-
-  .inventory-unified-row.mobile-expanded .inventory-mobile-row-toggle {
-    width: 100%;
-    margin: 0;
-    padding: 9px 8px;
-    background: rgba(184,144,44,.065);
-  }
-
-  .inventory-unified-row.mobile-expanded > td:not(.inventory-mobile-summary) {
-    display: flex !important;
-    padding: 6px 0 0 !important;
-  }
-
-  .inventory-unified-row.mobile-expanded td:nth-child(2),
-  .inventory-unified-row.mobile-expanded td:nth-child(3),
-  .inventory-unified-row.mobile-expanded td:nth-child(6) {
-    grid-column: 1 / -1;
-  }
-
-  .inventory-unified-row.mobile-expanded td:nth-child(7) {
-    grid-column: 1;
-    align-items: flex-start;
-  }
-
-  .inventory-unified-row.mobile-expanded td:nth-child(8) {
-    grid-column: 2;
-    align-items: flex-end;
-  }
-
-  .inventory-unified-row + .inventory-item-details-row {
-    margin: -5px 8px 9px;
-  }
 }
-
 
 /* ─── EQUIPMENT · MOBILE DETAILS ATTACHMENT FIX ──────────────────────────
    Details are subordinate to an expanded mobile item card. The CSS guard
    prevents a detached description panel even if an older saved row or a
    script timing edge case leaves its inline display state open. */
-.inventory-item-details-title {
-  display: none;
-}
 
 @media (max-width: 768px) {
-  .inventory-unified-row:not(.mobile-expanded) + .inventory-item-details-row {
-    display: none !important;
-  }
-
-  .inventory-unified-row + .inventory-item-details-row {
-    width: auto !important;
-    max-width: calc(100% - 16px) !important;
-    margin: -6px 8px 10px !important;
-  }
-
-  .inventory-unified-row + .inventory-item-details-row td {
-    padding: 0 !important;
-  }
-
-  .inventory-unified-row + .inventory-item-details-row .inventory-item-details-panel {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 8px;
-    border: 1px solid rgba(184,144,44,.48);
-    border-top: 0;
-    background: rgba(255,253,245,.19);
-  }
-
-  .inventory-item-details-title {
-    display: block;
-    margin: -1px 0 6px;
-    padding-bottom: 5px;
-    border-bottom: 1px dotted rgba(184,144,44,.46);
-    color: var(--navy);
-    font-family: 'Cinzel', serif;
-    font-size: 7px;
-    font-weight: 700;
-    letter-spacing: .75px;
-    text-transform: uppercase;
-  }
 
   .inventory-item-details {
     min-height: 94px;

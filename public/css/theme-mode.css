@@ -771,7 +771,6 @@ html[data-theme="moonlight"] .inventory-card,
 html[data-theme="moonlight"] .inventory-equipment-card,
 html[data-theme="moonlight"] .inventory-unified-card,
 html[data-theme="moonlight"] .inventory-filter-card,
-html[data-theme="moonlight"] .compact-main-coinage-card,
 html[data-theme="moonlight"] .features-traits-main,
 html[data-theme="moonlight"] .proficiencies-card,
 html[data-theme="moonlight"] .armor-class-panel,
@@ -801,7 +800,6 @@ html[data-theme="moonlight"] .cbox2 input,
 html[data-theme="moonlight"] .condition-chip,
 html[data-theme="moonlight"] .armor-class-total,
 html[data-theme="moonlight"] .armor-class-active,
-html[data-theme="moonlight"] .inventory-unified-row,
 html[data-theme="moonlight"] .equipped-slot-card,
 html[data-theme="moonlight"] .custom-equipped-slot,
 html[data-theme="moonlight"] .feature-entry,
@@ -857,14 +855,9 @@ html[data-theme="moonlight"] .condition-display,
 html[data-theme="moonlight"] .condition-explanation,
 html[data-theme="moonlight"] .condition-explanation strong,
 html[data-theme="moonlight"] .feature-entry,
-html[data-theme="moonlight"] .inventory-unified-row,
 html[data-theme="moonlight"] .journal-note-entry,
 html[data-theme="moonlight"] .proficiency-value-row,
-html[data-theme="moonlight"] .extra-speed-row,
-html[data-theme="moonlight"] .inventory-unified-table td,
-html[data-theme="moonlight"] .inventory-unified-table input,
-html[data-theme="moonlight"] .inventory-unified-table select,
-html[data-theme="moonlight"] .inventory-unified-table textarea {
+html[data-theme="moonlight"] .extra-speed-row {
   color: var(--moon-text) !important;
 }
 
@@ -904,14 +897,11 @@ html[data-theme="moonlight"] .armor-class-panel,
 html[data-theme="moonlight"] .spellbook-card,
 html[data-theme="moonlight"] .spell-card,
 html[data-theme="moonlight"] .wtbl th,
-html[data-theme="moonlight"] .wtbl td,
-html[data-theme="moonlight"] .inventory-unified-table th,
-html[data-theme="moonlight"] .inventory-unified-table td {
+html[data-theme="moonlight"] .wtbl td {
   border-color: var(--moon-gold-soft-line) !important;
 }
 
 html[data-theme="moonlight"] .sb-hdr,
-html[data-theme="moonlight"] .inventory-unified-table th,
 html[data-theme="moonlight"] .wtbl th {
   background: rgba(3, 18, 45, .60);
   border-bottom-color: var(--moon-gold-line) !important;
@@ -951,13 +941,11 @@ html[data-theme="moonlight"] .condition-chip.active {
 }
 
 /* Preserve readable editing surfaces in tables and notes. */
-html[data-theme="moonlight"] .wtbl td,
-html[data-theme="moonlight"] .inventory-unified-table td {
+html[data-theme="moonlight"] .wtbl td {
   background: rgba(2, 16, 39, .44);
 }
 
-html[data-theme="moonlight"] .wtbl tr:hover td,
-html[data-theme="moonlight"] .inventory-unified-table tr:hover td {
+html[data-theme="moonlight"] .wtbl tr:hover td {
   background: rgba(21, 64, 116, .38);
 }
 
@@ -1176,17 +1164,13 @@ html[data-theme="moonlight"] .slotbox,
 html[data-theme="moonlight"] .journal-note-entry,
 html[data-theme="moonlight"] .journal-imported-notes,
 html[data-theme="moonlight"] .inventory-item-details,
-html[data-theme="moonlight"] .inventory-item-details-panel,
 html[data-theme="moonlight"] .inventory-legacy-notes,
 html[data-theme="moonlight"] .wtbl th,
-html[data-theme="moonlight"] .wtbl td,
-html[data-theme="moonlight"] .inventory-unified-table th,
-html[data-theme="moonlight"] .inventory-unified-table td {
+html[data-theme="moonlight"] .wtbl td {
   border-color: var(--moon-ghost-soft-line) !important;
 }
 
 html[data-theme="moonlight"] .sb-hdr,
-html[data-theme="moonlight"] .inventory-unified-table th,
 html[data-theme="moonlight"] .wtbl th,
 html[data-theme="moonlight"] .slotbox,
 html[data-theme="moonlight"] .journal-imported-notes > summary,
@@ -1195,7 +1179,6 @@ html[data-theme="moonlight"] .inventory-legacy-notes > summary {
 }
 
 html[data-theme="moonlight"] .sb-hdr,
-html[data-theme="moonlight"] .inventory-unified-table th,
 html[data-theme="moonlight"] .wtbl th {
   color: var(--moon-ghost-bright) !important;
   background: rgba(1, 16, 43, .76) !important;
@@ -1322,12 +1305,7 @@ html[data-theme="moonlight"] .other-inventory-card textarea {
 }
 
 /* Inventory details were still inheriting daylight ink on mobile. */
-html[data-theme="moonlight"] .inventory-item-details,
-html[data-theme="moonlight"] .inventory-item-details-panel,
-html[data-theme="moonlight"] .inventory-unified-row + .inventory-item-details-row,
-html[data-theme="moonlight"] .inventory-unified-row + .inventory-item-details-row td,
-html[data-theme="moonlight"] .inventory-unified-row + .inventory-item-details-row .inventory-item-details-panel,
-html[data-theme="moonlight"] .inventory-unified-row + .inventory-item-details-row .inventory-item-details {
+html[data-theme="moonlight"] .inventory-item-details {
   background: rgba(2, 18, 47, .72) !important;
   color: #eaf7ff !important;
   border-color: var(--moon-ghost-soft-line) !important;
@@ -1626,16 +1604,12 @@ html[data-theme="moonlight"] .sheet :where(
   .equipped-carried-card,
   .equipped-slot-card,
   .equipped-slot-icon-wrap,
-  .inventory-unified-row,
-  .inventory-item-details-panel,
   .inventory-item-details,
   .journal-note-entry,
   .journal-imported-notes,
   .inventory-legacy-notes,
   .wtbl th,
-  .wtbl td,
-  .inventory-unified-table th,
-  .inventory-unified-table td
+  .wtbl td
 ) {
   border-color: var(--moon-ghost-soft-line) !important;
 }
@@ -1647,7 +1621,6 @@ html[data-theme="moonlight"] .sheet :where(
   .inventory-mobile-sortbar label,
   .inventory-subheading,
   .equipped-slot-label,
-  .inventory-item-details-title,
   .journal-note-toolbar span,
   .journal-note-meta span
 ) {
@@ -1727,49 +1700,14 @@ html[data-theme="moonlight"] .equipped-slot-icon {
 /* Mobile inventory cards: explicitly override every daylight ink color. */
 @media (max-width: 768px) {
   html[data-theme="moonlight"] .inventory-mobile-sortbar,
-  html[data-theme="moonlight"] .inventory-unified-row,
-  html[data-theme="moonlight"] .inventory-mobile-summary,
-  html[data-theme="moonlight"] .inventory-mobile-row-toggle,
-  html[data-theme="moonlight"] .inventory-unified-row.mobile-expanded,
-  html[data-theme="moonlight"] .inventory-unified-row.mobile-expanded .inventory-mobile-row-toggle,
-  html[data-theme="moonlight"] .inventory-unified-row + .inventory-item-details-row .inventory-item-details-panel,
-  html[data-theme="moonlight"] .inventory-item-details {
+html[data-theme="moonlight"] .inventory-item-details {
     border-color: var(--moon-ghost-soft-line) !important;
     background: rgba(2, 22, 57, .82) !important;
     color: #eefaff !important;
   }
 
-  html[data-theme="moonlight"] :where(
-    .inventory-mobile-summary-name,
-    .inventory-mobile-summary-location,
-    .inventory-mobile-summary-meta,
-    .inventory-mobile-summary-value,
-    .inventory-mobile-summary-qty,
-    .inventory-mobile-summary-type,
-    .inventory-mobile-chevron,
-    .inventory-mobile-group-toggle,
-    .inventory-mobile-group-count,
-    .inventory-mobile-group-chevron,
-    .inventory-item-details-title,
-    .inventory-item-details,
-    .inventory-item-details-panel,
-    .inventory-item-details-row td,
-    .inventory-unified-row.mobile-expanded > td:not(.inventory-mobile-summary),
-    .inventory-unified-row.mobile-expanded > td:not(.inventory-mobile-summary)::before
-  ) {
-    color: #eefaff !important;
-    border-color: var(--moon-ghost-soft-line) !important;
-  }
-
-  html[data-theme="moonlight"] .inventory-mobile-summary-location,
-  html[data-theme="moonlight"] .inventory-mobile-summary-meta,
   html[data-theme="moonlight"] .inventory-item-details::placeholder {
     color: rgba(213, 240, 255, .72) !important;
-  }
-
-  html[data-theme="moonlight"] .inventory-mobile-summary-value:not(:empty)::before,
-  html[data-theme="moonlight"] .inventory-mobile-summary-qty:not(:empty)::before {
-    color: rgba(170, 222, 255, .72) !important;
   }
 }
 
