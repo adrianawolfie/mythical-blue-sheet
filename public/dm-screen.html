@@ -133,57 +133,147 @@
           <div>
             <div class="dm-section-label">Custom Monster</div>
             <h3 id="customStatblockTitle">Create Custom Statblock</h3>
-            <p>Build a reusable Mythical Blue statblock. Saved custom statblocks appear in the NPC picker under <strong>Custom Monsters</strong>.</p>
+            <p>Fill in the fields and watch the statblock build itself on the right. Saved statblocks appear in the NPC picker under <strong>Custom Monsters</strong>.</p>
           </div>
-          <button id="closeCustomStatblockBtn" type="button" class="npc-picker-close" aria-label="Close custom statblock builder">×</button>
-        </div>
-        <div class="custom-statblock-grid">
-          <label><span>Name</span><input id="customStatName" placeholder="Tidewraith Captain"></label>
-          <label><span>Size</span><input id="customStatSize" placeholder="Medium"></label>
-          <label><span>Type</span><input id="customStatType" placeholder="Undead"></label>
-          <label><span>Alignment</span><input id="customStatAlignment" placeholder="Chaotic Neutral"></label>
-          <label class="custom-statblock-description-field"><span>Description</span><textarea id="customStatDescription" rows="2" placeholder="A short creature description shown inside the statblock preview."></textarea></label>
-          <label><span>Armor Class</span><input id="customStatAc" type="number" inputmode="numeric" placeholder="15"></label>
-          <label><span>Hit Points</span><input id="customStatHp" type="number" inputmode="numeric" placeholder="68"></label>
-          <label><span>Hit Dice Formula</span><input id="customStatHpFormula" placeholder="8d8 + 32"></label>
-          <label><span>Initiative</span><input id="customStatInitiative" placeholder="+4"></label>
-          <label><span>Speed</span><input id="customStatSpeed" placeholder="30 ft., Swim 40 ft."></label>
-          <label><span>Challenge Rating</span><input id="customStatCr" placeholder="4"></label>
-          <label><span>Proficiency Bonus</span><input id="customStatPb" type="number" min="0" inputmode="numeric" placeholder="2"></label>
-          <label><span>Legendary Resistances</span><input id="customStatLegendaryResistance" type="number" min="0" inputmode="numeric" placeholder="0"></label>
-          <label><span>Legendary Actions</span><input id="customStatLegendaryActions" type="number" min="0" inputmode="numeric" placeholder="0"></label>
-        </div>
-        <div class="custom-statblock-abilities" aria-label="Ability scores">
-          <label><span>STR</span><input id="customStatStr" type="number" inputmode="numeric" placeholder="10"></label>
-          <label><span>DEX</span><input id="customStatDex" type="number" inputmode="numeric" placeholder="10"></label>
-          <label><span>CON</span><input id="customStatCon" type="number" inputmode="numeric" placeholder="10"></label>
-          <label><span>INT</span><input id="customStatInt" type="number" inputmode="numeric" placeholder="10"></label>
-          <label><span>WIS</span><input id="customStatWis" type="number" inputmode="numeric" placeholder="10"></label>
-          <label><span>CHA</span><input id="customStatCha" type="number" inputmode="numeric" placeholder="10"></label>
-        </div>
-        <fieldset class="custom-statblock-proficiencies">
-          <legend>Proficiencies</legend>
-          <div class="custom-statblock-proficiency-help">Choose which saving throws and skills should include the monster’s proficiency bonus. Expertise adds the bonus twice.</div>
-          <div class="custom-save-proficiency-grid" aria-label="Saving throw proficiencies">
-            <label><input type="checkbox" name="customSaveProficiency" value="Str"><span>STR Save</span></label>
-            <label><input type="checkbox" name="customSaveProficiency" value="Dex"><span>DEX Save</span></label>
-            <label><input type="checkbox" name="customSaveProficiency" value="Con"><span>CON Save</span></label>
-            <label><input type="checkbox" name="customSaveProficiency" value="Int"><span>INT Save</span></label>
-            <label><input type="checkbox" name="customSaveProficiency" value="Wis"><span>WIS Save</span></label>
-            <label><input type="checkbox" name="customSaveProficiency" value="Cha"><span>CHA Save</span></label>
+          <div class="custom-statblock-heading-actions">
+            <label class="dm-secondary-button statblock-import-button" title="Import a monster saved from the Tetra-cube statblock generator (tetra-cube.com/dnd/dnd-statblock.html)">
+              Import .monster file
+              <input id="statblockImportInput" type="file" accept=".monster,.json,application/json" hidden>
+            </label>
+            <button id="closeCustomStatblockBtn" type="button" class="npc-picker-close" aria-label="Close custom statblock builder">×</button>
           </div>
-          <div class="custom-skill-proficiency-grid">
-            <label><span>Skill Proficiencies</span><input id="customStatSkillProficiencies" placeholder="Perception, Stealth, Arcana"></label>
-            <label><span>Skill Expertise</span><input id="customStatSkillExpertise" placeholder="History, Perception"></label>
-          </div>
-        </fieldset>
-        <div class="custom-statblock-textareas">
-          <label><span>Senses / Languages / Defenses / Other Metadata</span><textarea id="customStatMeta" placeholder="Resistances Cold&#10;Senses Darkvision 60 ft.; Passive Perception 15&#10;Languages Common"></textarea></label>
-          <label><span>Traits</span><textarea id="customStatTraits" placeholder="Amphibious. The monster can breathe air and water.&#10;Magic Resistance. The monster has advantage on saving throws against spells."></textarea><small class="custom-statblock-field-help">One trait per line. Each line renders as a separate trait.</small></label>
-          <label><span>Actions</span><textarea id="customStatActions" placeholder="Multiattack. The monster makes two attacks.&#10;Harpoon. Melee or Ranged Attack Roll: +6..."></textarea><small class="custom-statblock-field-help">One action per line, for example: Scimitar. Melee Weapon Attack...</small></label>
-          <label><span>Bonus Actions / Reactions</span><textarea id="customStatExtraActions" placeholder="Bonus Actions&#10;Shadow Step. ...&#10;Reactions&#10;Parry. ..."></textarea><small class="custom-statblock-field-help">Put section headings like Bonus Actions or Reactions on their own line.</small></label>
-          <label><span>Legendary Actions</span><textarea id="customStatLegendaryText" placeholder="Move. The monster moves up to half its Speed.&#10;Tail Swipe. The monster makes one Tail attack."></textarea><small class="custom-statblock-field-help">Do not include the uses/reset sentence here; use the Legendary Actions number field above.</small></label>
         </div>
+
+        <div class="statblock-builder">
+          <div class="statblock-builder-form">
+            <fieldset class="builder-section">
+              <legend>Basics</legend>
+              <div class="builder-grid">
+                <label class="builder-rest"><span>Name</span><input id="customStatName" placeholder="Cultist Cleric"></label>
+                <label><span>Size</span><select id="customStatSize"><option>Tiny</option><option>Small</option><option selected>Medium</option><option>Large</option><option>Huge</option><option>Gargantuan</option></select></label>
+                <label class="builder-wide"><span>Type</span><input id="customStatType" placeholder="Humanoid (Human)"></label>
+                <label class="builder-wide"><span>Alignment</span><input id="customStatAlignment" placeholder="Chaotic Neutral"></label>
+                <label class="builder-full"><span>Description</span><textarea id="customStatDescription" rows="2" placeholder="Optional flavour text shown under the statblock."></textarea></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="builder-section">
+              <legend>Armor, hit points & speed</legend>
+              <div class="builder-grid">
+                <label><span>Armor Class</span><input id="customStatAc" type="number" inputmode="numeric" placeholder="10"></label>
+                <label class="builder-wide"><span>Armor</span><input id="customStatArmor" placeholder="breastplate, natural armor…"></label>
+                <label><span>Hit Points</span><input id="customStatHp" type="number" inputmode="numeric" placeholder="auto"></label>
+                <label class="builder-wide"><span>Hit Dice</span><input id="customStatHpFormula" placeholder="3d8 + 9"></label>
+                <label class="builder-wide"><span>Speed</span><input id="customStatSpeed" placeholder="30 ft., Swim 40 ft."></label>
+                <label><span>Initiative</span><input id="customStatInitiative" placeholder="auto"></label>
+                <label><span>Challenge</span><input id="customStatCr" placeholder="1/2"></label>
+                <label><span>Prof. Bonus</span><input id="customStatPb" type="number" min="0" inputmode="numeric" placeholder="auto"></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="builder-section">
+              <legend>Ability scores & saving throws</legend>
+              <p class="builder-help">Saves fill in automatically (modifier, plus the proficiency bonus when Proficient is ticked). Type a number in Save to use your own.</p>
+              <div class="builder-abilities">
+              <div class="builder-ability">
+                <span class="builder-ability-name">STR</span>
+                <label><span>Score</span><input id="customStatStr" type="number" inputmode="numeric" placeholder="10"></label>
+                <em class="builder-ability-mod" id="customStatStrMod">+0</em>
+                <label><span>Save</span><input id="customStatStrSave" class="builder-save-input" data-ability="Str" type="text" inputmode="numeric" placeholder="+0"></label>
+                <label class="builder-check"><input type="checkbox" name="customSaveProficiency" value="Str"><span>Proficient</span></label>
+              </div>
+              <div class="builder-ability">
+                <span class="builder-ability-name">DEX</span>
+                <label><span>Score</span><input id="customStatDex" type="number" inputmode="numeric" placeholder="10"></label>
+                <em class="builder-ability-mod" id="customStatDexMod">+0</em>
+                <label><span>Save</span><input id="customStatDexSave" class="builder-save-input" data-ability="Dex" type="text" inputmode="numeric" placeholder="+0"></label>
+                <label class="builder-check"><input type="checkbox" name="customSaveProficiency" value="Dex"><span>Proficient</span></label>
+              </div>
+              <div class="builder-ability">
+                <span class="builder-ability-name">CON</span>
+                <label><span>Score</span><input id="customStatCon" type="number" inputmode="numeric" placeholder="10"></label>
+                <em class="builder-ability-mod" id="customStatConMod">+0</em>
+                <label><span>Save</span><input id="customStatConSave" class="builder-save-input" data-ability="Con" type="text" inputmode="numeric" placeholder="+0"></label>
+                <label class="builder-check"><input type="checkbox" name="customSaveProficiency" value="Con"><span>Proficient</span></label>
+              </div>
+              <div class="builder-ability">
+                <span class="builder-ability-name">INT</span>
+                <label><span>Score</span><input id="customStatInt" type="number" inputmode="numeric" placeholder="10"></label>
+                <em class="builder-ability-mod" id="customStatIntMod">+0</em>
+                <label><span>Save</span><input id="customStatIntSave" class="builder-save-input" data-ability="Int" type="text" inputmode="numeric" placeholder="+0"></label>
+                <label class="builder-check"><input type="checkbox" name="customSaveProficiency" value="Int"><span>Proficient</span></label>
+              </div>
+              <div class="builder-ability">
+                <span class="builder-ability-name">WIS</span>
+                <label><span>Score</span><input id="customStatWis" type="number" inputmode="numeric" placeholder="10"></label>
+                <em class="builder-ability-mod" id="customStatWisMod">+0</em>
+                <label><span>Save</span><input id="customStatWisSave" class="builder-save-input" data-ability="Wis" type="text" inputmode="numeric" placeholder="+0"></label>
+                <label class="builder-check"><input type="checkbox" name="customSaveProficiency" value="Wis"><span>Proficient</span></label>
+              </div>
+              <div class="builder-ability">
+                <span class="builder-ability-name">CHA</span>
+                <label><span>Score</span><input id="customStatCha" type="number" inputmode="numeric" placeholder="10"></label>
+                <em class="builder-ability-mod" id="customStatChaMod">+0</em>
+                <label><span>Save</span><input id="customStatChaSave" class="builder-save-input" data-ability="Cha" type="text" inputmode="numeric" placeholder="+0"></label>
+                <label class="builder-check"><input type="checkbox" name="customSaveProficiency" value="Cha"><span>Proficient</span></label>
+              </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="builder-section">
+              <legend>Skills, defenses, senses & languages</legend>
+              <div class="builder-grid">
+                <label class="builder-half"><span>Skill Proficiencies</span><input id="customStatSkillProficiencies" placeholder="Medicine, Religion"></label>
+                <label class="builder-half"><span>Skill Expertise</span><input id="customStatSkillExpertise" placeholder="Perception"></label>
+                <label class="builder-half"><span>Damage Resistances</span><input id="customStatResistances" placeholder="Radiant"></label>
+                <label class="builder-half"><span>Damage Vulnerabilities</span><input id="customStatVulnerabilities" placeholder="Fire"></label>
+                <label class="builder-full"><span>Immunities (damage and conditions)</span><input id="customStatImmunities" placeholder="Poison; Poisoned, Frightened"></label>
+                <label class="builder-half"><span>Senses</span><input id="customStatSenses" placeholder="Darkvision 60 ft. (passive Perception is added for you)"></label>
+                <label class="builder-half"><span>Languages</span><input id="customStatLanguages" placeholder="Aequor, Common"></label>
+                <label class="builder-full"><span>Gear</span><input id="customStatGear" placeholder="Breastplate, Club, Holy Symbol"></label>
+                <label><span>Legendary Resistances</span><input id="customStatLegendaryResistance" type="number" min="0" inputmode="numeric" placeholder="0"></label>
+                <label><span>Legendary Actions</span><input id="customStatLegendaryActions" type="number" min="0" inputmode="numeric" placeholder="0"></label>
+              </div>
+            </fieldset>
+
+          <fieldset class="builder-section builder-entries" data-section="Traits">
+            <legend>Traits</legend>
+            <div class="builder-entry-list" data-empty="No traits yet. e.g. Amphibious, Magic Resistance, Spellcasting…"></div>
+            <button type="button" class="builder-add-entry" data-section="Traits">+ Add Trait</button>
+          </fieldset>
+          <fieldset class="builder-section builder-entries" data-section="Actions">
+            <legend>Actions</legend>
+            <div class="builder-entry-list" data-empty="No actions yet. e.g. Multiattack, Club, Water Droplet (Cantrip)…"></div>
+            <button type="button" class="builder-add-entry" data-section="Actions">+ Add Action</button>
+          </fieldset>
+          <fieldset class="builder-section builder-entries" data-section="Bonus Actions">
+            <legend>Bonus Actions</legend>
+            <div class="builder-entry-list" data-empty="No bonus actions yet. e.g. Healing Word (lvl 1), Shadow Step…"></div>
+            <button type="button" class="builder-add-entry" data-section="Bonus Actions">+ Add Bonus Action</button>
+          </fieldset>
+          <fieldset class="builder-section builder-entries" data-section="Reactions">
+            <legend>Reactions</legend>
+            <div class="builder-entry-list" data-empty="No reactions yet. e.g. Parry…"></div>
+            <button type="button" class="builder-add-entry" data-section="Reactions">+ Add Reaction</button>
+          </fieldset>
+          <fieldset class="builder-section builder-entries" data-section="Legendary Actions">
+            <legend>Legendary Actions</legend>
+            <div class="builder-entry-list" data-empty="No legendary actions yet. e.g. Move, Tail Swipe…"></div>
+            <button type="button" class="builder-add-entry" data-section="Legendary Actions">+ Add Legendary Action</button>
+          </fieldset>
+          <fieldset class="builder-section builder-entries" data-section="Lair Actions">
+            <legend>Lair Actions</legend>
+            <div class="builder-entry-list" data-empty="No lair actions yet. e.g. Rising Tide…"></div>
+            <button type="button" class="builder-add-entry" data-section="Lair Actions">+ Add Lair Action</button>
+          </fieldset>
+          </div>
+
+          <aside class="statblock-builder-preview" aria-label="Live statblock preview">
+            <div class="dm-section-label">Live preview</div>
+            <div id="statblockBuilderPreview"></div>
+          </aside>
+        </div>
+
         <div class="custom-statblock-actions">
           <button id="saveCustomStatblockBtn" type="button" class="dm-secondary-button">Save Statblock</button>
           <button id="saveAddCustomStatblockBtn" type="button" class="dm-primary-button">Save & Add to Tracker</button>

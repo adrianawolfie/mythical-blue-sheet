@@ -442,8 +442,10 @@
     return summary;
   }
 
-  const STATBLOCK_SECTION_HEADINGS = ["Traits", "Actions", "Bonus Actions", "Reactions", "Legendary Actions"];
-  const STATBLOCK_META_PREFIXES = ["Skills", "Gear", "Senses", "Languages", "CR", "Resistances", "Immunities", "Vulnerabilities"];
+  const STATBLOCK_SECTION_HEADINGS = ["Traits", "Actions", "Bonus Actions", "Reactions", "Legendary Actions", "Lair Actions"];
+  const STATBLOCK_META_PREFIXES = ["Saving Throws", "Skills", "Gear", "Damage Vulnerabilities", "Damage Resistances", "Damage Immunities", "Condition Immunities", "Senses", "Languages", "CR", "Resistances", "Immunities", "Vulnerabilities"];
+  // Colon-labelled lines inside an entry (spell lists, attack results) that must not start a new entry.
+  const STATBLOCK_CONTINUATION_LABEL = /^(?:\d|legendary action uses\b|hit\b|miss\b|failure\b|success\b|first\b|second\b|trigger\b|response\b|at will\b|cantrips?\b)|(?:saving throw|attack roll|slots?\)?|each)$/i;
 
   function normalizeStatblockLine(value) {
     return String(value || "").replace(/\s+/g, " ").trim();
@@ -487,7 +489,7 @@
 
     if (!words.length || words.length > 10) return false;
 
-    const connectors = new Set(["a", "an", "and", "at", "by", "for", "from", "if", "in", "of", "on", "only", "or", "the", "to", "with", "while"]);
+    const connectors = new Set(["a", "an", "and", "as", "at", "by", "for", "from", "if", "in", "into", "of", "on", "only", "or", "over", "per", "the", "to", "under", "with", "while"]);
     return words.every((word, index) => {
       const lower = word.toLowerCase();
       if (index > 0 && connectors.has(lower)) return true;
@@ -495,30 +497,37 @@
     });
   }
 
-  function splitStatblockEntries(lines) {
+  function splitStatblockEntries(lines, { linePerEntry = false } = {}) {
     const rawText = Array.isArray(lines) ? lines.join("\n") : String(lines || "");
-    const sourceLines = expandInlineStatblockEntryBreaks(rawText).split(/\r?\n/);
+    const sourceLines = linePerEntry ? normalizeEscapedLineBreaks(rawText).split(/\r?\n/) : expandInlineStatblockEntryBreaks(rawText).split(/\r?\n/);
     const entries = [];
     let current = null;
 
     sourceLines.map(normalizeStatblockLine).filter(Boolean).forEach(line => {
-      const titleMatch = line.match(/^([^.!?]{1,92})\.\s*(.*)$/);
-      if (titleMatch && looksLikeStatblockEntryTitle(titleMatch[1])) {
-        current = { title: titleMatch[1].trim(), text: titleMatch[2].trim() };
+      // Custom statblocks keep one entry per line, and their entry names may end in "." or ":".
+      const titleMatch = linePerEntry ? line.match(/^([^.!?:]{1,92})([.:])\s*(.*)$/) : line.match(/^([^.!?]{1,92})(\.)\s*(.*)$/);
+      const isContinuationLabel = titleMatch?.[2] === ":" && STATBLOCK_CONTINUATION_LABEL.test(titleMatch[1].trim());
+      // A wrapped SRD line such as "Scorching Ray." finishes the previous sentence rather than starting an entry.
+      const finishesSentence = !linePerEntry && current && !titleMatch?.[3] && !/[.!?:)]$/.test(current.text);
+      if (titleMatch && !isContinuationLabel && !finishesSentence && looksLikeStatblockEntryTitle(titleMatch[1])) {
+        current = { title: titleMatch[1].trim(), text: titleMatch[3].trim(), more: [] };
         entries.push(current);
         return;
       }
 
       if (!current) {
-        current = { title: "", text: line };
+        current = { title: "", text: line, more: [] };
         entries.push(current);
         return;
       }
 
-      current.text = `${current.text} ${line}`.trim();
+      // Spell lists ("At Will: …", "1/Day: …") start their own paragraph; other wrapped lines join the last one.
+      if (linePerEntry || /^(?:at will|cantrips|\d+\/day(?: each)?|\d+(?:st|nd|rd|th) level)\b[^:]{0,30}:/i.test(line)) current.more.push(line);
+      else if (current.more.length) current.more[current.more.length - 1] = `${current.more[current.more.length - 1]} ${line}`;
+      else current.text = `${current.text} ${line}`.trim();
     });
 
-    return entries.filter(entry => entry.title || entry.text);
+    return entries.filter(entry => entry.title || entry.text || entry.more.length);
   }
 
   function parseStructuredStatblock(statblock) {
@@ -555,26 +564,49 @@
       } else if (activeSection) activeSection.lines.push(line);
     });
 
-    return { abilities, metadata, sections: sections.map(section => ({ title: section.title, entries: splitStatblockEntries(section.lines) })) };
+    const armorNote = preamble.find(line => /^AC\s+\d+/.test(line))?.match(/\((.+)\)/)?.[1] || "";
+    const linePerEntry = isCustomStatblock(statblock);
+    return { abilities, metadata, armorNote, sections: sections.map(section => ({ title: section.title, entries: splitStatblockEntries(section.lines, { linePerEntry }) })) };
+  }
+
+  const STATBLOCK_META_LABELS = { Resistances: "Damage Resistances", Vulnerabilities: "Damage Vulnerabilities", CR: "Challenge" };
+
+  function displaySigned(value) {
+    return String(value || "").replace(/-/g, "−");
+  }
+
+  function statblockProperty(label, value) {
+    const line = document.createElement("p");
+    line.className = "statblock-property";
+    const name = document.createElement("b");
+    name.textContent = label;
+    line.append(name, ` ${value}`);
+    return line;
+  }
+
+  function statblockRule() {
+    const rule = document.createElement("div");
+    rule.className = "statblock-rule";
+    rule.setAttribute("aria-hidden", "true");
+    return rule;
   }
 
   function createStatblockPanel(statblock, { closeButton = false, addButton = false, editButton = false } = {}) {
     if (!statblock) return null;
     const structured = parseStructuredStatblock(statblock);
+    const proficiencyBonus = getProficiencyBonus(statblock);
     const panel = document.createElement("section");
     panel.className = "inline-statblock";
     panel.setAttribute("aria-label", `${statblock.name} statblock`);
     const header = document.createElement("header");
     header.className = "inline-statblock-header";
     const heading = document.createElement("div");
-    const source = document.createElement("div");
-    source.className = "dm-section-label";
-    source.textContent = statblock.source || statblock.section || "Statblock";
     const title = document.createElement("h3");
     title.textContent = statblock.name;
     const subtitle = document.createElement("p");
+    subtitle.className = "statblock-subtitle";
     subtitle.textContent = `${statblock.size} ${statblock.type}, ${statblock.alignment}`;
-    heading.append(source, title, subtitle);
+    heading.append(title, subtitle);
     header.append(heading);
     if (closeButton) {
       const close = document.createElement("button");
@@ -586,100 +618,87 @@
       header.append(close);
     }
     panel.append(header);
-
-    const vitals = document.createElement("div");
-    vitals.className = "inline-statblock-vitals";
-    [["Armor Class", statblock.armorClass || "—"], ["Hit Points", statblock.hp || "—", statblock.hpFormula ? `(${statblock.hpFormula})` : ""], ["Initiative", statblock.initiative || "—"], ["Speed", statblock.speed || "—"], ["Challenge", statblock.challengeRating ? `CR ${statblock.challengeRating}` : "—"], ["Proficiency", getProficiencyBonus(statblock) ? `PB +${getProficiencyBonus(statblock)}` : "—"]].forEach(([label, value, detail]) => {
-      const vital = document.createElement("div");
-      const labelElement = document.createElement("span");
-      labelElement.textContent = label;
-      const valueElement = document.createElement("strong");
-      valueElement.textContent = value;
-      vital.append(labelElement, valueElement);
-      if (detail) {
-        const detailElement = document.createElement("small");
-        detailElement.textContent = detail;
-        vital.append(detailElement);
-      }
-      vitals.append(vital);
-    });
-    panel.append(vitals);
-
     if (statblock.description) {
       const description = document.createElement("p");
       description.className = "inline-statblock-description";
       description.textContent = statblock.description;
       panel.append(description);
     }
+
+    const columns = document.createElement("div");
+    columns.className = "statblock-columns";
+    const main = document.createElement("div");
+    main.className = "statblock-column";
+    main.append(statblockRule());
+    main.append(statblockProperty("Armor Class", `${statblock.armorClass || "—"}${structured.armorNote ? ` (${structured.armorNote})` : ""}`));
+    main.append(statblockProperty("Hit Points", `${statblock.hp || "—"}${statblock.hpFormula ? ` (${statblock.hpFormula})` : ""}`));
+    main.append(statblockProperty("Speed", statblock.speed || "—"));
+    if (statblock.initiative) main.append(statblockProperty("Initiative", `${displaySigned(formatBonus(bonusToNumber(statblock.initiative)))} (${10 + bonusToNumber(statblock.initiative)})`));
+
     if (structured.abilities.length) {
-      const abilities = document.createElement("div");
-      abilities.className = "inline-statblock-abilities";
+      main.append(statblockRule());
+      const table = document.createElement("table");
+      table.className = "statblock-abilities";
+      const head = document.createElement("tr");
+      const values = document.createElement("tr");
       structured.abilities.forEach(ability => {
-        const item = document.createElement("div");
-        item.className = "inline-statblock-ability";
-        const heading = document.createElement("div");
-        heading.className = "inline-statblock-ability-heading";
-        const name = document.createElement("strong");
-        name.textContent = ability.name;
-        const score = document.createElement("span");
-        score.textContent = ability.score;
-        heading.append(name, score);
-        const values = document.createElement("div");
-        values.className = "inline-statblock-ability-values";
-        [["Mod", ability.modifier, "small"], ["Save", ability.save, "em"]].forEach(([label, value, tag]) => {
-          const valueWrap = document.createElement(tag);
-          const valueLabel = document.createElement("b");
-          valueLabel.textContent = label;
-          const number = document.createElement("span");
-          number.textContent = value;
-          valueWrap.append(valueLabel, number);
-          values.append(valueWrap);
-        });
-        item.append(heading, values);
-        abilities.append(item);
+        const th = document.createElement("th");
+        th.scope = "col";
+        th.textContent = ability.name;
+        const td = document.createElement("td");
+        td.textContent = `${ability.score} (${displaySigned(ability.modifier)})`;
+        head.append(th);
+        values.append(td);
       });
-      panel.append(abilities);
+      table.append(head, values);
+      main.append(table);
     }
-    if (structured.metadata.length) {
-      const metadata = document.createElement("dl");
-      metadata.className = "inline-statblock-metadata";
-      structured.metadata.forEach(item => {
-        const row = document.createElement("div");
-        const label = document.createElement("dt");
-        label.textContent = item.label;
-        const value = document.createElement("dd");
-        value.textContent = item.value || "—";
-        row.append(label, value);
-        metadata.append(row);
-      });
-      panel.append(metadata);
-    }
+
+    main.append(statblockRule());
+    const savingThrows = structured.abilities
+      .filter(ability => bonusToNumber(ability.save) !== bonusToNumber(ability.modifier))
+      .map(ability => `${ability.name.charAt(0)}${ability.name.slice(1).toLowerCase()} ${displaySigned(formatBonus(bonusToNumber(ability.save)))}`);
+    if (savingThrows.length && !structured.metadata.some(item => item.label === "Saving Throws")) main.append(statblockProperty("Saving Throws", savingThrows.join(", ")));
+    structured.metadata.forEach(item => main.append(statblockProperty(STATBLOCK_META_LABELS[item.label] || item.label, item.value || "—")));
+    if (!structured.metadata.some(item => item.label === "CR") && statblock.challengeRating) main.append(statblockProperty("Challenge", `${statblock.challengeRating}${proficiencyBonus ? ` (PB +${proficiencyBonus})` : ""}`));
+    columns.append(main);
+
     if (structured.sections.length) {
-      const sections = document.createElement("div");
-      sections.className = "inline-statblock-sections";
+      const rules = document.createElement("div");
+      rules.className = "statblock-column statblock-column-rules";
       structured.sections.forEach(section => {
         const sectionElement = document.createElement("section");
         sectionElement.className = "inline-statblock-section";
-        const heading = document.createElement("h4");
-        heading.textContent = section.title;
-        sectionElement.append(heading);
+        if (section.title !== "Traits") {
+          const sectionHeading = document.createElement("h4");
+          sectionHeading.textContent = section.title;
+          sectionElement.append(sectionHeading);
+        }
         section.entries.forEach(entry => {
           const article = document.createElement("article");
           article.className = "inline-statblock-entry";
-          if (entry.title) {
-            const title = document.createElement("h5");
-            title.textContent = entry.title;
-            article.append(title);
-          }
           const text = document.createElement("p");
-          text.textContent = entry.text;
+          if (entry.title) {
+            const entryTitle = document.createElement("strong");
+            entryTitle.textContent = `${entry.title}.`;
+            text.append(entryTitle, " ");
+          }
+          text.append(entry.text);
           article.append(text);
+          (entry.more || []).forEach(paragraph => {
+            const more = document.createElement("p");
+            more.className = "statblock-entry-more";
+            more.textContent = paragraph;
+            article.append(more);
+          });
           sectionElement.append(article);
         });
-        sections.append(sectionElement);
+        rules.append(sectionElement);
       });
-      panel.append(sections);
+      columns.append(rules);
     }
+    panel.append(columns);
+
     if (addButton || editButton) {
       const actions = document.createElement("div");
       actions.className = "statblock-preview-actions";
@@ -1595,7 +1614,8 @@
     return String(value || "")
       .toLowerCase()
       .normalize("NFKD")
-      .replace(/[\u0300-\u036f]/g, "");
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/['’`]/g, "");
   }
 
   function escapeRegExp(value) {
@@ -1621,6 +1641,8 @@
         word === `${compactToken}es`
       );
       if (nameHasExactOrPlural) return true;
+      // Names match as you type, so "gob" finds Goblin and "cul" finds Cultist.
+      if (nameWords.some(word => word.startsWith(compactToken))) return true;
 
       // Very short searches should not match the middle of unrelated names
       // such as Pirate or Triceratops. Allow suffix matches so Rat still finds
@@ -1801,10 +1823,14 @@
   function clearCustomStatblockForm() {
     editingStatblockId = "";
     document.querySelectorAll("#customStatblockPanel input, #customStatblockPanel textarea").forEach(input => { if (input.type === "checkbox") input.checked = false; else input.value = ""; });
+    document.querySelectorAll("#customStatblockPanel .builder-save-input").forEach(input => { delete input.dataset.custom; });
+    document.querySelectorAll("#customStatblockPanel .builder-entry-list").forEach(list => list.replaceChildren());
+    setCustomField("customStatSize", "Medium");
     const title = document.getElementById("customStatblockTitle");
     if (title) title.textContent = "Create Custom Statblock";
     const saveButton = document.getElementById("saveCustomStatblockBtn");
     if (saveButton) saveButton.textContent = "Save Statblock";
+    refreshBuilder();
     document.getElementById("customStatName")?.focus();
   }
 
@@ -1819,72 +1845,312 @@
     return normalizeStatblockTextareaValue(document.getElementById(id)?.value || "");
   }
 
-  function statblockEntriesToText(section, { skipLegendaryUses = false, skipLegendaryResistance = false } = {}) {
-    if (!section) return "";
-    return section.entries
-      .filter(entry => {
+  function averageFromDice(formula) {
+    const match = String(formula || "").replace(/−/g, "-").match(/(\d+)\s*d\s*(\d+)\s*(?:([+-])\s*(\d+))?/i);
+    if (!match) return 0;
+    const bonus = match[3] ? Number(match[4]) * (match[3] === "-" ? -1 : 1) : 0;
+    return Math.max(1, Math.floor(Number(match[1]) * (Number(match[2]) + 1) / 2) + bonus);
+  }
+
+  function growTextarea(textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = `${textarea.scrollHeight + 2}px`;
+  }
+
+  function addBuilderEntry(section, { name = "", text = "" } = {}, { after = null, focus = false } = {}) {
+    const list = document.querySelector(`#customStatblockPanel .builder-entries[data-section="${section}"] .builder-entry-list`);
+    if (!list) return null;
+    const row = document.createElement("div");
+    row.className = "builder-entry";
+    const nameInput = document.createElement("input");
+    nameInput.className = "builder-entry-name";
+    nameInput.placeholder = section === "Traits" ? "Name, e.g. Spellcasting" : "Name, e.g. Multiattack";
+    nameInput.setAttribute("aria-label", `${section} name`);
+    nameInput.value = name;
+    const textInput = document.createElement("textarea");
+    textInput.className = "builder-entry-text";
+    textInput.rows = 2;
+    textInput.placeholder = "What it does. Each extra line becomes an indented paragraph. Ctrl+Enter adds another entry.";
+    textInput.setAttribute("aria-label", `${section} description`);
+    textInput.value = text;
+    const tools = document.createElement("div");
+    tools.className = "builder-entry-tools";
+    [["up", "↑", "Move up"], ["down", "↓", "Move down"], ["remove", "×", "Remove"]].forEach(([action, label, aria]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.entryAction = action;
+      button.setAttribute("aria-label", aria);
+      button.textContent = label;
+      tools.append(button);
+    });
+    row.append(nameInput, tools, textInput);
+    if (after) after.after(row); else list.append(row);
+    window.requestAnimationFrame(() => growTextarea(textInput));
+    if (focus) nameInput.focus();
+    return row;
+  }
+
+  function collectBuilderEntries(section) {
+    return [...document.querySelectorAll(`#customStatblockPanel .builder-entries[data-section="${section}"] .builder-entry`)]
+      .map(row => ({
+        name: normalizeStatblockLine(row.querySelector(".builder-entry-name")?.value).replace(/[.:]+$/, ""),
+        lines: String(row.querySelector(".builder-entry-text")?.value || "").split(/\r?\n/).map(normalizeStatblockLine).filter(Boolean)
+      }))
+      .filter(entry => entry.name || entry.lines.length)
+      .map(({ name, lines }) => [name ? `${name}. ${lines[0] || ""}`.trim() : lines[0], ...lines.slice(1)].filter(Boolean).join("\n"));
+  }
+
+  function builderAbilityScores() {
+    return ABILITY_LABELS.map(label => [label, getFieldValue(`customStat${label}`) || "10"]);
+  }
+
+  function builderProficiencyBonus() {
+    return toNumber(getFieldValue("customStatPb"), challengeToProficiencyBonus(getFieldValue("customStatCr") || "0"));
+  }
+
+  function builderAutoSave(label, proficiencyBonus) {
+    const proficient = document.querySelector(`input[name="customSaveProficiency"][value="${label}"]`)?.checked;
+    return abilityModifierNumber(getFieldValue(`customStat${label}`) || "10") + (proficient ? proficiencyBonus : 0);
+  }
+
+  function refreshBuilderDerived() {
+    const proficiencyBonus = builderProficiencyBonus();
+    const dexMod = abilityModifierNumber(getFieldValue("customStatDex") || "10");
+    ABILITY_LABELS.forEach(label => {
+      const mod = document.getElementById(`customStat${label}Mod`);
+      if (mod) mod.textContent = displaySigned(formatBonus(abilityModifierNumber(getFieldValue(`customStat${label}`) || "10")));
+      const save = document.getElementById(`customStat${label}Save`);
+      if (!save) return;
+      const auto = formatBonus(builderAutoSave(label, proficiencyBonus));
+      save.placeholder = auto;
+      if (!save.dataset.custom && document.activeElement !== save) save.value = auto;
+      save.classList.toggle("is-manual", Boolean(save.dataset.custom));
+    });
+    const placeholders = {
+      customStatPb: String(challengeToProficiencyBonus(getFieldValue("customStatCr") || "0")),
+      customStatInitiative: formatBonus(dexMod),
+      customStatAc: String(10 + dexMod),
+      customStatHp: String(averageFromDice(getFieldValue("customStatHpFormula")) || "1")
+    };
+    Object.entries(placeholders).forEach(([id, value]) => { const field = document.getElementById(id); if (field) field.placeholder = value; });
+  }
+
+  let builderPreviewFrame = 0;
+  function refreshBuilder() {
+    refreshBuilderDerived();
+    if (builderPreviewFrame) return;
+    builderPreviewFrame = window.requestAnimationFrame(() => {
+      builderPreviewFrame = 0;
+      document.getElementById("statblockBuilderPreview")?.replaceChildren(createStatblockPanel(buildCustomStatblockFromForm()));
+    });
+  }
+
+  function fillBuilderFromStatblock(statblock) {
+    const structured = parseStructuredStatblock(statblock);
+    const abilityMap = new Map(structured.abilities.map(ability => [ability.name.toLowerCase(), ability]));
+    const sectionByTitle = new Map(structured.sections.map(section => [section.title, section]));
+    const proficiencyBonus = getProficiencyBonus(statblock);
+    const inferredSkills = inferSkillsFromMetadata(structured.metadata, structured.abilities, proficiencyBonus);
+    const inferredSaves = inferSaveProficiencies(structured.abilities, proficiencyBonus);
+    const metaValues = labels => structured.metadata.filter(item => labels.includes(item.label)).map(item => item.value).filter(Boolean).join("; ");
+    const perceptionBonus = (metaValues(["Skills"]).match(/Perception\s*([+−-]\s*\d+)/i) || [])[1];
+    const passive = 10 + (perceptionBonus ? bonusToNumber(perceptionBonus) : abilityModifierNumber(abilityMap.get("wis")?.score || 10));
+    const senses = metaValues(["Senses"]).replace(new RegExp(`[;,]?\\s*passive perception ${passive}\\b`, "i"), "").replace(/^[;,\s]+|[;,\s]+$/g, "");
+
+    clearCustomStatblockForm();
+    setCustomField("customStatName", statblock.name);
+    setCustomField("customStatSize", ["Tiny", "Small", "Medium", "Large", "Huge", "Gargantuan"].find(size => String(statblock.size).startsWith(size)) || "Medium");
+    setCustomField("customStatType", statblock.type);
+    setCustomField("customStatAlignment", statblock.alignment);
+    setCustomField("customStatDescription", statblock.description || "");
+    setCustomField("customStatAc", statblock.armorClass);
+    setCustomField("customStatArmor", structured.armorNote);
+    setCustomField("customStatHp", statblock.hp);
+    setCustomField("customStatHpFormula", statblock.hpFormula);
+    setCustomField("customStatInitiative", statblock.initiative);
+    setCustomField("customStatSpeed", statblock.speed);
+    setCustomField("customStatCr", statblock.challengeRating);
+    setCustomField("customStatPb", proficiencyBonus === challengeToProficiencyBonus(statblock.challengeRating) ? "" : proficiencyBonus);
+    setCustomField("customStatLegendaryResistance", getLegendaryResistanceMax(statblock) || "");
+    setCustomField("customStatLegendaryActions", getLegendaryActionMax(statblock) || "");
+    ABILITY_LABELS.forEach(label => setCustomField(`customStat${label}`, abilityMap.get(label.toLowerCase())?.score || "10"));
+    setCheckedValues("customSaveProficiency", statblock.saveProficiencies?.length ? statblock.saveProficiencies : inferredSaves);
+    ABILITY_LABELS.forEach(label => {
+      const ability = abilityMap.get(label.toLowerCase());
+      const save = document.getElementById(`customStat${label}Save`);
+      if (!ability || !save || bonusToNumber(ability.save) === builderAutoSave(label, proficiencyBonus)) return;
+      save.value = formatBonus(bonusToNumber(ability.save));
+      save.dataset.custom = "1";
+    });
+    setCustomField("customStatSkillProficiencies", (statblock.skillProficiencies?.length ? statblock.skillProficiencies : inferredSkills.proficient).join(", "));
+    setCustomField("customStatSkillExpertise", (statblock.skillExpertise?.length ? statblock.skillExpertise : inferredSkills.expert).join(", "));
+    setCustomField("customStatResistances", metaValues(["Resistances", "Damage Resistances"]));
+    setCustomField("customStatVulnerabilities", metaValues(["Vulnerabilities", "Damage Vulnerabilities"]));
+    setCustomField("customStatImmunities", metaValues(["Immunities", "Damage Immunities", "Condition Immunities"]));
+    setCustomField("customStatSenses", senses);
+    setCustomField("customStatLanguages", metaValues(["Languages"]));
+    setCustomField("customStatGear", metaValues(["Gear"]));
+    STATBLOCK_SECTION_HEADINGS.forEach(sectionTitle => {
+      (sectionByTitle.get(sectionTitle)?.entries || []).forEach(entry => {
         const combined = `${entry.title || ""} ${entry.text || ""}`.trim();
-        if (skipLegendaryUses && /^Legendary Action Uses\b/i.test(combined)) return false;
-        if (skipLegendaryResistance && /^Legendary Resistance\b/i.test(combined)) return false;
-        return Boolean(combined);
-      })
-      .map(entry => entry.title ? `${entry.title}. ${entry.text || ""}`.trim() : String(entry.text || "").trim())
-      .join("\n");
+        if (sectionTitle === "Traits" && /^Legendary Resistance\b/i.test(combined)) return;
+        if (sectionTitle === "Legendary Actions" && /^(?:Legendary Action Uses\b|\S+(?: \S+)? can take \d+ legendary actions?)/i.test(combined)) return;
+        addBuilderEntry(sectionTitle, { name: entry.title, text: [entry.text, ...(entry.more || [])].filter(Boolean).join("\n") });
+      });
+    });
+    refreshBuilder();
   }
 
   function openStatblockEditor(statblockId) {
     const statblock = getStatblockById(statblockId);
     if (!statblock) return;
     const isCustom = isCustomStatblock(statblock);
+    fillBuilderFromStatblock(statblock);
     editingStatblockId = isCustom ? statblock.id : "";
-    const structured = parseStructuredStatblock(statblock);
-    const abilityMap = new Map(structured.abilities.map(ability => [ability.name.toLowerCase(), ability.score]));
-    const sectionByTitle = new Map(structured.sections.map(section => [section.title, section]));
-    const proficiencyBonus = getProficiencyBonus(statblock);
-    const inferredSkills = inferSkillsFromMetadata(structured.metadata, structured.abilities, proficiencyBonus);
-    const inferredSaves = inferSaveProficiencies(structured.abilities, proficiencyBonus);
-    const meta = structured.metadata
-      .filter(item => item.label !== "CR" && item.label !== "Skills")
-      .map(item => `${item.label} ${item.value || ""}`.trim())
-      .join("\n");
-
-    setCustomField("customStatName", statblock.name);
-    setCustomField("customStatSize", statblock.size);
-    setCustomField("customStatType", statblock.type);
-    setCustomField("customStatAlignment", statblock.alignment);
-    setCustomField("customStatDescription", statblock.description || "");
-    setCustomField("customStatAc", statblock.armorClass);
-    setCustomField("customStatHp", statblock.hp);
-    setCustomField("customStatHpFormula", statblock.hpFormula);
-    setCustomField("customStatInitiative", statblock.initiative);
-    setCustomField("customStatSpeed", statblock.speed);
-    setCustomField("customStatCr", statblock.challengeRating);
-    setCustomField("customStatPb", proficiencyBonus);
-    setCustomField("customStatLegendaryResistance", getLegendaryResistanceMax(statblock));
-    setCustomField("customStatLegendaryActions", getLegendaryActionMax(statblock));
-    setCustomField("customStatStr", abilityMap.get("str") || "10");
-    setCustomField("customStatDex", abilityMap.get("dex") || "10");
-    setCustomField("customStatCon", abilityMap.get("con") || "10");
-    setCustomField("customStatInt", abilityMap.get("int") || "10");
-    setCustomField("customStatWis", abilityMap.get("wis") || "10");
-    setCustomField("customStatCha", abilityMap.get("cha") || "10");
-    setCheckedValues("customSaveProficiency", statblock.saveProficiencies?.length ? statblock.saveProficiencies : inferredSaves);
-    setCustomField("customStatSkillProficiencies", (statblock.skillProficiencies?.length ? statblock.skillProficiencies : inferredSkills.proficient).join(", "));
-    setCustomField("customStatSkillExpertise", (statblock.skillExpertise?.length ? statblock.skillExpertise : inferredSkills.expert).join(", "));
-    setCustomField("customStatMeta", meta);
-    setCustomField("customStatTraits", statblockEntriesToText(sectionByTitle.get("Traits"), { skipLegendaryResistance: true }));
-    setCustomField("customStatActions", statblockEntriesToText(sectionByTitle.get("Actions")));
-    setCustomField("customStatExtraActions", [
-      sectionByTitle.has("Bonus Actions") ? `Bonus Actions\n${statblockEntriesToText(sectionByTitle.get("Bonus Actions"))}` : "",
-      sectionByTitle.has("Reactions") ? `Reactions\n${statblockEntriesToText(sectionByTitle.get("Reactions"))}` : ""
-    ].filter(Boolean).join("\n"));
-    setCustomField("customStatLegendaryText", statblockEntriesToText(sectionByTitle.get("Legendary Actions"), { skipLegendaryUses: true }));
-
     const title = document.getElementById("customStatblockTitle");
     const saveButton = document.getElementById("saveCustomStatblockBtn");
     if (title) title.textContent = isCustom ? `Edit ${statblock.name}` : `Edit ${statblock.name} as Custom`;
     if (saveButton) saveButton.textContent = isCustom ? "Save Changes" : "Save Custom Copy";
     openCustomStatblockPanel();
+  }
+
+  function titleCase(value) {
+    return String(value || "").replace(/\b([a-z])([a-z]*)/g, (word, first, rest, offset) => (offset > 0 && ["of", "and", "or", "the", "in", "to", "from"].includes(word)) ? word : first.toUpperCase() + rest);
+  }
+
+  // Maps a monster saved from the Tetra-cube statblock generator (tetra-cube.com/dnd/dnd-statblock.html) onto the builder.
+  function importTetraCubeMonster(data) {
+    const scores = Object.fromEntries(["str", "dex", "con", "int", "wis", "cha"].map(key => [key, Number.parseInt(data[`${key}Points`], 10) || 10]));
+    const mods = Object.fromEntries(Object.entries(scores).map(([key, score]) => [key, abilityModifierNumber(score)]));
+    const customCr = data.cr === "*";
+    const challengeRating = customCr ? String(data.customCr || "0").trim().split(/\s+/)[0] : String(data.cr ?? "0");
+    const proficiencyBonus = customCr ? toNumber(data.customProf, 2) : challengeToProficiencyBonus(challengeRating);
+    const shortName = String(data.shortName || "").trim() || String(data.name || "monster").toLowerCase();
+    const expand = value => String(value || "")
+      .replace(/\[MON\]/g, `The ${shortName}`)
+      .replace(/\[mon\]/g, `the ${shortName}`)
+      .replace(/\[(STR|DEX|CON|INT|WIS|CHA)?\s*(\d+)\s*d\s*(\d+)\s*(?:([+-])\s*(\d+))?\]/gi, (_match, stat, count, die, sign, extra) => {
+        const bonus = (stat ? mods[stat.toLowerCase()] : 0) + (extra ? Number(extra) * (sign === "-" ? -1 : 1) : 0);
+        return `${Math.max(1, Math.floor(Number(count) * (Number(die) + 1) / 2) + bonus)} (${count}d${die}${bonus ? ` ${bonus < 0 ? "-" : "+"} ${Math.abs(bonus)}` : ""})`;
+      })
+      .replace(/(DC\s*)?\[(STR|DEX|CON|INT|WIS|CHA)\s+SAVE\]/gi, (_match, _dc, stat) => `DC ${8 + proficiencyBonus + mods[stat.toLowerCase()]}`)
+      .replace(/\[(STR|DEX|CON|INT|WIS|CHA)\s+ATK\]/gi, (_match, stat) => formatBonus(proficiencyBonus + mods[stat.toLowerCase()]))
+      .replace(/\[(STR|DEX|CON|INT|WIS|CHA)\]/gi, (_match, stat) => formatBonus(mods[stat.toLowerCase()]))
+      .replace(/\*\*|__|(^|\s)_|_(?=\s|[.,;:]|$)/g, "$1");
+    const list = items => Array.isArray(items) ? items : [];
+
+    const armorTable = { "padded armor": [11, 99], "leather armor": [11, 99], "studded leather": [12, 99], "hide armor": [12, 2], "chain shirt": [13, 2], "scale mail": [14, 2], breastplate: [14, 2], "half plate": [15, 2], "ring mail": [14, 0], "chain mail": [16, 0], splint: [17, 0], plate: [18, 0] };
+    const armorName = String(data.armorName || "none").toLowerCase();
+    let armorClass = 10 + mods.dex;
+    let armorNote = "";
+    if (armorName === "natural armor") { armorClass += toNumber(data.natArmorBonus, 0); armorNote = "natural armor"; }
+    else if (armorName === "mage armor") { armorClass = 13 + mods.dex; armorNote = "mage armor"; }
+    else if (armorName === "other") { armorClass = Number.parseInt(data.otherArmorDesc, 10) || armorClass; armorNote = (String(data.otherArmorDesc || "").match(/\((.+)\)/) || [])[1] || ""; }
+    else if (armorTable[armorName]) { armorClass = armorTable[armorName][0] + Math.min(mods.dex, armorTable[armorName][1]); armorNote = armorName; }
+    if (toNumber(data.shieldBonus, 0)) { armorClass += toNumber(data.shieldBonus, 0); armorNote = [armorNote, "shield"].filter(Boolean).join(", "); }
+
+    let hp = "";
+    let hpFormula = "";
+    if (data.customHP) {
+      hp = String(Number.parseInt(data.hpText, 10) || "");
+      hpFormula = (String(data.hpText || "").match(/\((.+)\)/) || [])[1] || "";
+    } else {
+      const count = toNumber(data.hitDice, 1) || 1;
+      const die = { tiny: 4, small: 6, medium: 8, large: 10, huge: 12, gargantuan: 20 }[String(data.size || "medium").toLowerCase()] || 8;
+      const bonus = count * mods.con;
+      hpFormula = `${count}d${die}${bonus ? ` ${bonus < 0 ? "-" : "+"} ${Math.abs(bonus)}` : ""}`;
+      hp = String(averageFromDice(hpFormula));
+    }
+    const speed = data.customSpeed ? String(data.speedDesc || "") : [
+      `${toNumber(data.speed, 0)} ft.`,
+      toNumber(data.burrowSpeed, 0) ? `Burrow ${data.burrowSpeed} ft.` : "",
+      toNumber(data.climbSpeed, 0) ? `Climb ${data.climbSpeed} ft.` : "",
+      toNumber(data.flySpeed, 0) ? `Fly ${data.flySpeed} ft.${data.hover ? " (hover)" : ""}` : "",
+      toNumber(data.swimSpeed, 0) ? `Swim ${data.swimSpeed} ft.` : ""
+    ].filter(Boolean).join(", ");
+
+    const skills = list(data.skills);
+    const damage = type => [
+      ...list(data.damagetypes).filter(item => item.type === type).map(item => titleCase(item.name)),
+      ...list(data.specialdamage).filter(item => item.type === type).map(item => item.name)
+    ].filter(Boolean);
+    const immunities = [damage("i").join(", "), list(data.conditions).map(item => titleCase(item.name)).join(", ")].filter(Boolean).join("; ");
+    const senses = [
+      toNumber(data.blindsight, 0) ? `Blindsight ${data.blindsight} ft.${data.blind ? " (blind beyond this radius)" : ""}` : "",
+      toNumber(data.darkvision, 0) ? `Darkvision ${data.darkvision} ft.` : "",
+      toNumber(data.tremorsense, 0) ? `Tremorsense ${data.tremorsense} ft.` : "",
+      toNumber(data.truesight, 0) ? `Truesight ${data.truesight} ft.` : ""
+    ].filter(Boolean).join(", ");
+    const spoken = list(data.languages).filter(item => item.speaks !== false).map(item => item.name);
+    const understood = list(data.languages).filter(item => item.speaks === false).map(item => item.name);
+    const languages = [
+      spoken.join(", "),
+      understood.length ? `understands ${understood.join(", ")} but can't speak${data.understandsBut ? ` ${data.understandsBut}` : ""}` : "",
+      toNumber(data.telepathy, 0) ? `telepathy ${data.telepathy} ft.` : ""
+    ].filter(Boolean).join("; ");
+
+    clearCustomStatblockForm();
+    setCustomField("customStatName", data.name || "Imported Monster");
+    setCustomField("customStatSize", titleCase(data.size || "medium"));
+    setCustomField("customStatType", `${titleCase(data.type || "creature")}${data.tag ? ` (${data.tag})` : ""}`);
+    setCustomField("customStatAlignment", titleCase(data.alignment || "unaligned"));
+    setCustomField("customStatAc", armorClass);
+    setCustomField("customStatArmor", armorNote);
+    setCustomField("customStatHp", hp);
+    setCustomField("customStatHpFormula", hpFormula);
+    setCustomField("customStatSpeed", speed);
+    setCustomField("customStatCr", challengeRating);
+    setCustomField("customStatPb", proficiencyBonus === challengeToProficiencyBonus(challengeRating) ? "" : proficiencyBonus);
+    ABILITY_LABELS.forEach(label => setCustomField(`customStat${label}`, scores[label.toLowerCase()]));
+    setCheckedValues("customSaveProficiency", list(data.sthrows).map(item => titleCase(item.name)));
+    setCustomField("customStatSkillProficiencies", skills.filter(item => !/ex/i.test(item.note || "")).map(item => titleCase(item.name)).join(", "));
+    setCustomField("customStatSkillExpertise", skills.filter(item => /ex/i.test(item.note || "")).map(item => titleCase(item.name)).join(", "));
+    setCustomField("customStatResistances", damage("r").join(", "));
+    setCustomField("customStatVulnerabilities", damage("v").join(", "));
+    setCustomField("customStatImmunities", immunities);
+    setCustomField("customStatSenses", senses);
+    setCustomField("customStatLanguages", languages);
+
+    list(data.abilities).forEach(item => {
+      const resistance = String(item.name || "").match(/^Legendary Resistance\s*\((\d+)\s*\/\s*Day\)/i);
+      if (resistance) { setCustomField("customStatLegendaryResistance", resistance[1]); return; }
+      addBuilderEntry("Traits", { name: expand(item.name), text: expand(item.desc) });
+    });
+    [["actions", "Actions"], ["bonusActions", "Bonus Actions"], ["reactions", "Reactions"]].forEach(([key, section]) => list(data[key]).forEach(item => addBuilderEntry(section, { name: expand(item.name), text: expand(item.desc) })));
+    if (data.isLegendary && list(data.legendaries).length) {
+      setCustomField("customStatLegendaryActions", (String(data.legendariesDescription || "").match(/take (\d+) legendary actions?/i) || [])[1] || 3);
+      list(data.legendaries).forEach(item => addBuilderEntry("Legendary Actions", { name: expand(item.name), text: expand(item.desc) }));
+    }
+    if (data.isMythic && list(data.mythics).length) {
+      addBuilderEntry("Legendary Actions", { text: expand(data.mythicDescription) });
+      list(data.mythics).forEach(item => addBuilderEntry("Legendary Actions", { name: expand(item.name), text: expand(item.desc) }));
+    }
+    if (data.isLair && list(data.lairs).length) {
+      addBuilderEntry("Lair Actions", { text: expand(data.lairDescription) });
+      list(data.lairs).forEach(item => addBuilderEntry("Lair Actions", { text: `• ${expand(item.desc || item.name)}` }));
+      if (data.lairDescriptionEnd) addBuilderEntry("Lair Actions", { text: expand(data.lairDescriptionEnd) });
+    }
+    if (data.isRegional && list(data.regionals).length) {
+      addBuilderEntry("Lair Actions", { name: "Regional Effects", text: [expand(data.regionalDescription), ...list(data.regionals).map(item => `• ${expand(item.desc || item.name)}`), expand(data.regionalDescriptionEnd)].filter(Boolean).join("\n") });
+    }
+    const title = document.getElementById("customStatblockTitle");
+    if (title) title.textContent = `Import ${data.name || "Monster"}`;
+    refreshBuilder();
+  }
+
+  async function importStatblockFile(file) {
+    if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      if (data && typeof data.text === "string" && data.name) fillBuilderFromStatblock(normalizeStatblock({ ...data, id: "", section: CUSTOM_MONSTER_SECTION }));
+      else if (data && typeof data === "object" && "strPoints" in data) importTetraCubeMonster(data);
+      else throw new Error("This file is not a Tetra-cube .monster file.");
+      editingStatblockId = "";
+      openCustomStatblockPanel();
+    } catch (error) {
+      console.error(error);
+      alert(error.message?.startsWith("This file") ? error.message : "Could not read this .monster file.");
+    }
   }
 
   function buildCustomStatblockFromForm() {
@@ -1893,47 +2159,52 @@
     const type = getFieldValue("customStatType") || "Creature";
     const alignment = getFieldValue("customStatAlignment") || "Unaligned";
     const description = getTextareaValue("customStatDescription");
-    const armorClass = getFieldValue("customStatAc") || "10";
-    const hp = getFieldValue("customStatHp") || "1";
+    const abilities = builderAbilityScores();
+    const abilityScores = abilityScoreMapFromPairs(abilities);
+    const dexMod = abilityModifierNumber(abilityScores.get("dex"));
+    const armorClass = getFieldValue("customStatAc") || String(10 + dexMod);
+    const armorNote = getFieldValue("customStatArmor");
     const hpFormula = getFieldValue("customStatHpFormula");
-    const initiative = getFieldValue("customStatInitiative");
+    const hp = getFieldValue("customStatHp") || String(averageFromDice(hpFormula) || 1);
+    const initiative = getFieldValue("customStatInitiative") || formatBonus(dexMod);
     const speed = getFieldValue("customStatSpeed") || "30 ft.";
     const challengeRating = getFieldValue("customStatCr") || "0";
-    const proficiencyBonus = toNumber(getFieldValue("customStatPb"), challengeToProficiencyBonus(challengeRating));
+    const proficiencyBonus = builderProficiencyBonus();
     const saveProficiencies = selectedCheckboxValues("customSaveProficiency");
     const skillProficiencies = parseCommaList(getFieldValue("customStatSkillProficiencies"));
     const skillExpertise = parseCommaList(getFieldValue("customStatSkillExpertise"));
     const lr = toNumber(getFieldValue("customStatLegendaryResistance"), 0);
     const la = toNumber(getFieldValue("customStatLegendaryActions"), 0);
-    const abilities = [
-      ["Str", getFieldValue("customStatStr") || "10"],
-      ["Dex", getFieldValue("customStatDex") || "10"],
-      ["Con", getFieldValue("customStatCon") || "10"],
-      ["Int", getFieldValue("customStatInt") || "10"],
-      ["Wis", getFieldValue("customStatWis") || "10"],
-      ["Cha", getFieldValue("customStatCha") || "10"]
-    ];
-    const abilityScores = abilityScoreMapFromPairs(abilities);
-    const saveSet = new Set(saveProficiencies.map(item => item.toLowerCase()));
     const abilityLines = abilities.map(([label, score]) => {
-      const modifier = abilityModifierNumber(score);
-      const save = modifier + (saveSet.has(label.toLowerCase()) ? proficiencyBonus : 0);
-      return `${label} ${score} ${formatBonus(modifier)} ${formatBonus(save)}`;
+      const saveField = document.getElementById(`customStat${label}Save`);
+      const save = saveField?.dataset.custom && saveField.value.trim() ? bonusToNumber(saveField.value) : builderAutoSave(label, proficiencyBonus);
+      return `${label} ${score} ${formatBonus(abilityModifierNumber(score))} ${formatBonus(save)}`;
     }).join("\n");
-    const generatedSkills = buildSkillsLine(skillProficiencies, skillExpertise, abilityScores, proficiencyBonus);
-    const meta = [generatedSkills, getTextareaValue("customStatMeta")].filter(Boolean).join("\n");
-    const traits = getTextareaValue("customStatTraits");
-    const actions = getTextareaValue("customStatActions");
-    const extra = getTextareaValue("customStatExtraActions");
-    const legendaryText = getTextareaValue("customStatLegendaryText");
-    const legendaryResistanceText = lr ? `Legendary Resistance (${lr}/Day). If the monster fails a saving throw, it can choose to succeed instead.` : "";
-    const legendaryHeader = la ? `Legendary Action Uses: ${la}. Immediately after another creature’s turn, the monster can expend a use to take one of the following actions. The monster regains all expended uses at the start of each of its turns.` : "";
+    const skillsLine = buildSkillsLine(skillProficiencies, skillExpertise, abilityScores, proficiencyBonus);
+    const perception = (skillsLine.match(/Perception ([+-]\d+)/) || [])[1];
+    const passive = 10 + (perception ? bonusToNumber(perception) : abilityModifierNumber(abilityScores.get("wis")));
+    const sensesField = getFieldValue("customStatSenses");
+    const senses = /passive perception/i.test(sensesField) ? sensesField : [sensesField, `Passive Perception ${passive}`].filter(Boolean).join("; ");
+    const meta = [
+      skillsLine,
+      getFieldValue("customStatVulnerabilities") ? `Vulnerabilities ${getFieldValue("customStatVulnerabilities")}` : "",
+      getFieldValue("customStatResistances") ? `Resistances ${getFieldValue("customStatResistances")}` : "",
+      getFieldValue("customStatImmunities") ? `Immunities ${getFieldValue("customStatImmunities")}` : "",
+      getFieldValue("customStatGear") ? `Gear ${getFieldValue("customStatGear")}` : "",
+      `Senses ${senses}`,
+      getFieldValue("customStatLanguages") ? `Languages ${getFieldValue("customStatLanguages")}` : ""
+    ].filter(Boolean).join("\n");
+    const legendaryResistanceText = lr ? `Legendary Resistance (${lr}/Day). If it fails a saving throw, it can choose to succeed instead.` : "";
+    const legendaryHeader = la ? `It can take ${la} legendary actions, choosing from the options below. Only one legendary action can be used at a time and only at the end of another creature’s turn. It regains spent legendary actions at the start of its turn.` : "";
+    const sectionText = (heading, lines) => lines.filter(Boolean).length ? `${heading}\n${lines.filter(Boolean).join("\n")}` : "";
     const sections = [
-      `${name}\n${size} ${type}, ${alignment}\nAC ${armorClass}\n${initiative ? `Initiative ${initiative}\n` : ""}HP ${hp}${hpFormula ? ` (${hpFormula})` : ""}\nSpeed ${speed}\nMOD SAVE\n${abilityLines}\n${meta}\nCR ${challengeRating} (PB ${formatBonus(proficiencyBonus)})`,
-      [legendaryResistanceText, traits].filter(Boolean).length ? `Traits\n${[legendaryResistanceText, traits].filter(Boolean).join("\n")}` : "",
-      actions ? `Actions\n${actions}` : "",
-      extra,
-      la || legendaryText ? `Legendary Actions\n${[legendaryHeader, legendaryText].filter(Boolean).join("\n")}` : ""
+      `${name}\n${size} ${type}, ${alignment}\nAC ${armorClass}${armorNote ? ` (${armorNote})` : ""}\nInitiative ${initiative}\nHP ${hp}${hpFormula ? ` (${hpFormula})` : ""}\nSpeed ${speed}\nMOD SAVE\n${abilityLines}\n${meta}\nCR ${challengeRating} (PB ${formatBonus(proficiencyBonus)})`,
+      sectionText("Traits", [legendaryResistanceText, ...collectBuilderEntries("Traits")]),
+      sectionText("Actions", collectBuilderEntries("Actions")),
+      sectionText("Bonus Actions", collectBuilderEntries("Bonus Actions")),
+      sectionText("Reactions", collectBuilderEntries("Reactions")),
+      sectionText("Legendary Actions", [legendaryHeader, ...collectBuilderEntries("Legendary Actions")]),
+      sectionText("Lair Actions", collectBuilderEntries("Lair Actions"))
     ];
     return normalizeStatblock({
       id: editingStatblockId || createId("custom-statblock"),
@@ -1958,6 +2229,74 @@
       skillProficiencies,
       skillExpertise
     });
+  }
+
+  function handleBuilderInput(event) {
+    const target = event.target;
+    if (target.matches(".builder-save-input")) {
+      if (target.value.trim()) target.dataset.custom = "1"; else delete target.dataset.custom;
+    }
+    if (target.matches(".builder-entry-text")) growTextarea(target);
+    // Typing "Name. Description" (or "Name: Description") into the name box splits it into both fields.
+    const nameSplit = event.type === "change" && target.matches(".builder-entry-name") ? target.value.match(/^([^.!?:]{1,92})[.:]\s+(.+)$/) : null;
+    const entryText = target.closest(".builder-entry")?.querySelector(".builder-entry-text");
+    if (nameSplit && entryText && !entryText.value.trim() && looksLikeStatblockEntryTitle(nameSplit[1])) {
+      target.value = nameSplit[1].trim();
+      entryText.value = nameSplit[2].trim();
+      growTextarea(entryText);
+    }
+    if (event.type === "change" && target.matches('input[name="customSaveProficiency"]')) delete document.getElementById(`customStat${target.value}Save`)?.dataset.custom;
+    if (event.type === "change" && target.matches(".builder-save-input") && target.dataset.custom && bonusToNumber(target.value) === builderAutoSave(target.dataset.ability, builderProficiencyBonus())) delete target.dataset.custom;
+    if (target.id === "statblockImportInput") return;
+    refreshBuilder();
+  }
+
+  function handleBuilderClick(event) {
+    const addButton = event.target.closest(".builder-add-entry");
+    if (addButton) { addBuilderEntry(addButton.dataset.section, {}, { focus: true }); refreshBuilder(); return; }
+    const tool = event.target.closest("[data-entry-action]");
+    const row = tool?.closest(".builder-entry");
+    if (!row) return;
+    if (tool.dataset.entryAction === "up" && row.previousElementSibling) row.previousElementSibling.before(row);
+    if (tool.dataset.entryAction === "down" && row.nextElementSibling) row.nextElementSibling.after(row);
+    if (tool.dataset.entryAction === "remove") row.remove();
+    refreshBuilder();
+  }
+
+  function handleBuilderKeydown(event) {
+    const row = event.target.closest(".builder-entry");
+    if (!row || event.key !== "Enter") return;
+    const section = row.closest(".builder-entries")?.dataset.section || "";
+    if (event.target.matches(".builder-entry-name") && !event.ctrlKey && !event.metaKey) {
+      event.preventDefault();
+      row.querySelector(".builder-entry-text")?.focus();
+    } else if (event.ctrlKey || event.metaKey) {
+      event.preventDefault();
+      addBuilderEntry(section, {}, { after: row, focus: true });
+      refreshBuilder();
+    }
+  }
+
+  // Pasting several "Name. Description" lines into a name field splits them into separate entries.
+  function handleBuilderPaste(event) {
+    const input = event.target;
+    if (!input.matches?.(".builder-entry-name")) return;
+    const pasted = event.clipboardData?.getData("text") || "";
+    const entries = splitStatblockEntries(pasted, { linePerEntry: true });
+    if (!/\n/.test(pasted.trim()) && !(entries.length === 1 && entries[0].title && entries[0].text)) return;
+    event.preventDefault();
+    const row = input.closest(".builder-entry");
+    const section = row.closest(".builder-entries").dataset.section;
+    let previous = row;
+    entries.forEach((entry, index) => {
+      const values = { name: entry.title, text: [entry.text, ...entry.more].filter(Boolean).join("\n") };
+      if (index === 0 && !row.querySelector(".builder-entry-text").value.trim()) {
+        input.value = values.name;
+        row.querySelector(".builder-entry-text").value = values.text;
+        growTextarea(row.querySelector(".builder-entry-text"));
+      } else previous = addBuilderEntry(section, values, { after: previous });
+    });
+    refreshBuilder();
   }
 
   async function saveCustomStatblock({ addToTracker = false } = {}) {
@@ -2027,6 +2366,14 @@
     document.getElementById("saveCustomStatblockBtn")?.addEventListener("click", () => saveCustomStatblock({ addToTracker: false }));
     document.getElementById("saveAddCustomStatblockBtn")?.addEventListener("click", () => saveCustomStatblock({ addToTracker: true }));
     document.getElementById("resetCustomStatblockBtn")?.addEventListener("click", clearCustomStatblockForm);
+    const builderPanel = document.getElementById("customStatblockPanel");
+    builderPanel?.addEventListener("input", handleBuilderInput);
+    builderPanel?.addEventListener("change", handleBuilderInput);
+    builderPanel?.addEventListener("click", handleBuilderClick);
+    builderPanel?.addEventListener("keydown", handleBuilderKeydown);
+    builderPanel?.addEventListener("paste", handleBuilderPaste);
+    builderPanel?.addEventListener("focusout", event => { if (event.target.matches(".builder-save-input")) refreshBuilderDerived(); });
+    document.getElementById("statblockImportInput")?.addEventListener("change", event => { importStatblockFile(event.target.files?.[0]); event.target.value = ""; });
     document.getElementById("closeNpcPickerBtn")?.addEventListener("click", closeNpcPicker);
     document.getElementById("npcPickerBackdrop")?.addEventListener("click", event => { if (event.target.id === "npcPickerBackdrop") closeNpcPicker(); });
     document.getElementById("statblockResults")?.addEventListener("click", event => {
