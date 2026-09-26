@@ -63,6 +63,10 @@ type adminCampaignDMRequest struct {
 	UserID string `json:"userId"`
 }
 
+type adminCreateCampaignRequest struct {
+	Name string `json:"name"`
+}
+
 func GetAdminUsersData(repo user.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cookie, ok := requireCookie(w, r)
@@ -201,6 +205,30 @@ func GetAdminCampaignsData(users user.Repository, campaigns campaign.Repository)
 			Campaigns:     views,
 			CampaignCount: len(views),
 		})
+	}
+}
+
+func PostAdminCampaign(users user.Repository, campaigns campaign.Repository) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := requireAdmin(w, r, users); !ok {
+			return
+		}
+
+		var req adminCreateCampaignRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeJSON(w, http.StatusBadRequest, err)
+			return
+		}
+		created, err := campaigns.CreateCampaign(r.Context(), req.Name)
+		if err != nil {
+			if errors.Is(err, campaign.ErrCampaignNameRequired) {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusCreated, created)
 	}
 }
 

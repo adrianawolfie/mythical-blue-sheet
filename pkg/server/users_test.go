@@ -1311,6 +1311,49 @@ func TestGetAdminCampaignsListsCampaigns(t *testing.T) {
 	}
 }
 
+func TestPostAdminCampaignCreatesCampaignForAdmin(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true}})
+	campaigns := newCampaignTestRepository(t, nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/campaigns", bytes.NewBufferString(`{"name":"New Voyage"}`))
+	req.AddCookie(&http.Cookie{Name: "user", Value: "admin@example.com"})
+	w := httptest.NewRecorder()
+
+	PostAdminCampaign(users, campaigns).ServeHTTP(w, req)
+
+	if w.Code != http.StatusCreated {
+		t.Fatalf("expected status 201, got %d: %s", w.Code, w.Body.String())
+	}
+	var created campaign.Campaign
+	if err := json.NewDecoder(w.Body).Decode(&created); err != nil {
+		t.Fatalf("decode created campaign: %v", err)
+	}
+	if created.Name != "New Voyage" || created.ID == "" || created.DM != "" || len(created.Players) != 0 {
+		t.Fatalf("expected unassigned new campaign, got %#v", created)
+	}
+	loaded, err := campaigns.List(context.Background())
+	if err != nil || len(loaded) != 1 || loaded[0].ID != created.ID {
+		t.Fatalf("expected created campaign to be indexed, got %#v, %v", loaded, err)
+	}
+}
+
+func TestPostAdminCampaignRejectsNonAdmin(t *testing.T) {
+	users := newUserTestRepository(t, []user.User{{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Player", Email: "player@example.com", Password: "hash"}})
+	campaigns := newCampaignTestRepository(t, nil)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/campaigns", bytes.NewBufferString(`{"name":"New Voyage"}`))
+	req.AddCookie(&http.Cookie{Name: "user", Value: "player@example.com"})
+	w := httptest.NewRecorder()
+
+	PostAdminCampaign(users, campaigns).ServeHTTP(w, req)
+
+	if w.Code != http.StatusForbidden {
+		t.Fatalf("expected status 403, got %d", w.Code)
+	}
+	loaded, err := campaigns.List(context.Background())
+	if err != nil || len(loaded) != 0 {
+		t.Fatalf("expected no campaign to be created, got %#v, %v", loaded, err)
+	}
+}
+
 func TestPostAdminCampaignPlayerPersistsUserID(t *testing.T) {
 	users := newUserTestRepository(t, []user.User{
 		{ID: uuid.MustParse("018fe68a-01a8-70b1-8ea3-2d0b819a2d29"), Name: "Admin User", Email: "admin@example.com", Password: "hash", IsAdmin: true},

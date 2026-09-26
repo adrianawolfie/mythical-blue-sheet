@@ -81,6 +81,7 @@ func main() {
 	mux.Handle("POST /api/admin/characters/{id}/assignment", server.PostAdminCharacterAssignment(users, characters))
 	mux.Handle("DELETE /api/admin/characters/{id}", server.DeleteAdminCharacter(users, characters))
 	mux.Handle("GET /api/admin/campaigns", server.GetAdminCampaignsData(users, campaigns))
+	mux.Handle("POST /api/admin/campaigns", server.PostAdminCampaign(users, campaigns))
 	mux.Handle("POST /api/admin/campaigns/{id}/players", server.PostAdminCampaignPlayer(users, campaigns))
 	mux.Handle("DELETE /api/admin/campaigns/{id}/players/{userId}", server.DeleteAdminCampaignPlayer(users, campaigns))
 	mux.Handle("PUT /api/admin/campaigns/{id}/dm", server.PutAdminCampaignDM(users, campaigns))

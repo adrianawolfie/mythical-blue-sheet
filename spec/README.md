@@ -125,4 +125,4 @@ A static admin page. `public/admin/versions.js` fetches admin-only `GET /api/adm
 
 File: `public/admin/campaigns.html`
 
-A static admin page. `public/admin/campaigns.js` fetches admin-only `GET /api/admin/campaigns` to list campaigns loaded from `campaign/index.json` and the full `campaign/{id}.json` records, including DM and player names resolved from user IDs and controls to assign or clear those users.
+A static admin page. `public/admin/campaigns.js` fetches admin-only `GET /api/admin/campaigns` to list campaigns loaded from `campaign/index.json` and the full `campaign/{id}.json` records, including DM and player names resolved from user IDs and controls to assign or clear those users. Admins can create a named campaign from this page with `POST /api/admin/campaigns`; new campaigns start with the default calendar, zero travel days, and no assigned DM or players.

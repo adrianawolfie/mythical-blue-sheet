@@ -91,7 +91,7 @@ flowchart TB
 | `/admin/users.html` | `public/admin/users.html` | Static admin page for editing users, passwords, admin flag, and enabled status. |
 | `/admin/characters.html` | `public/admin/characters.html` | Static admin page for viewing, assigning, unassigning, opening, and deleting characters. |
 | `/admin/versions.html?id={id}` | `public/admin/versions.html` | Static admin page for browsing and previewing a character's saved versions. |
-| `/admin/campaigns.html` | `public/admin/campaigns.html` | Static admin page for viewing campaigns, assigning players, and assigning or clearing the DM. |
+| `/admin/campaigns.html` | `public/admin/campaigns.html` | Static admin page for creating campaigns, assigning players, and assigning or clearing the DM. |
 
 ## Auth And Admin Behavior
 
@@ -172,6 +172,7 @@ flowchart TD
 | `GET /api/campaign-state` | Shared campaign state. |
 | `POST /api/campaign-state` | Save shared campaign state. |
 | `GET /api/admin/campaigns` | Admin campaign list with player and DM display data. |
+| `POST /api/admin/campaigns` | Admin-only campaign creation by name. |
 | `POST /api/admin/campaigns/{id}/players` | Add player. |
 | `DELETE /api/admin/campaigns/{id}/players/{userId}` | Remove player. |
 | `PUT /api/admin/campaigns/{id}/dm` | Assign or clear campaign DM. |

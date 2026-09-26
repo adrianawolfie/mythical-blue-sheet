@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="/css/base.css" />
   <link rel="stylesheet" href="/css/theme-mode.css" />
 <link rel="stylesheet" href="/css/theme-styles.css" />
+  <link rel="stylesheet" href="/css/toast.css" />
   <link rel="stylesheet" href="/css/account.css" />
   <link rel="stylesheet" href="/admin/admin.css" />
 </head>
@@ -19,9 +20,26 @@
     <nav class="admin-nav"><a class="admin-back-link" href="/">Back to Sheet</a></nav>
     <div class="admin-layout">
       <aside class="admin-sidebar"><div class="admin-sidebar-inner"><p class="admin-sidebar-title">Admin</p><nav class="admin-sidebar-nav"><a class="admin-sidebar-link" href="/admin/users.html">Users</a><a class="admin-sidebar-link" href="/admin/characters.html">Characters</a><a class="admin-sidebar-link active" href="/admin/campaigns.html">Campaigns</a></nav></div></aside>
-      <section class="admin-card"><div class="admin-content"><header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><h1 id="adminTitle">Campaigns</h1></div></header><section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Campaign</th><th>Calendar Date</th><th>Days Traveled</th><th>DM</th><th>Players</th><th>Updated At</th></tr></thead><tbody id="adminCampaignsBody"><tr><td class="admin-empty" colspan="6">Loading campaigns...</td></tr></tbody></table></div></section></div></section>
+      <section class="admin-card"><div class="admin-content"><header class="admin-header"><img src="/assets/title-banner.png" data-daylight-src="/assets/title-banner.png" data-moonlight-src="/assets/themes/moonlight/branding/title-banner.png" alt="Mythical Blue · The Great Depth" /><div><h1 id="adminTitle">Campaigns</h1></div></header><div class="admin-campaign-toolbar"><button class="admin-create-campaign" id="createCampaignButton" type="button" hidden>+ Create Campaign</button></div><section class="admin-table"><div class="admin-table-scroll"><table><thead><tr><th>Campaign</th><th>Calendar Date</th><th>Days Traveled</th><th>DM</th><th>Players</th><th>Updated At</th></tr></thead><tbody id="adminCampaignsBody"><tr><td class="admin-empty" colspan="6">Loading campaigns...</td></tr></tbody></table></div></section></div></section>
     </div>
   </main>
+  <div class="admin-modal" id="createCampaignModal" hidden>
+    <section class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="createCampaignTitle">
+      <h2 id="createCampaignTitle">Create Campaign</h2>
+      <form id="createCampaignForm">
+        <label class="admin-modal-field">
+          <span>Campaign Name</span>
+          <input id="createCampaignName" type="text" maxlength="100" required />
+        </label>
+        <p class="admin-modal-error" id="createCampaignError" role="alert" aria-live="polite"></p>
+        <div class="admin-modal-actions">
+          <button type="submit">Create</button>
+          <button type="button" data-campaign-create-cancel>Cancel</button>
+        </div>
+      </form>
+    </section>
+  </div>
+  <script src="/js/toast.js"></script>
   <script src="/js/theme-mode.js"></script>
   <script src="/js/accessibility.js"></script>
   <script src="/js/api-client.js"></script>

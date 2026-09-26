@@ -7,8 +7,11 @@ import (
 	"io"
 	"path"
 	"raperonzolo/character-sheet/pkg/storage"
+	"strings"
 	"sync"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -290,6 +293,90 @@ func (repo Repository) SaveCampaign(ctx context.Context, campaign Campaign) (Cam
 	}
 
 	return next, nil
+}
+
+func (repo Repository) CreateCampaign(ctx context.Context, name string) (Campaign, error) {
+	name = strings.TrimSpace(name)
+	if name == "" {
+		return Campaign{}, ErrCampaignNameRequired
+	}
+
+	repo.Lock()
+	defer repo.Unlock()
+
+	index, err := repo.readCampaignIndex(ctx)
+	if err != nil {
+		return Campaign{}, fmt.Errorf("failed to read campaign index: %w", err)
+	}
+	id, err := uuid.NewV7()
+	if err != nil {
+		return Campaign{}, fmt.Errorf("failed to generate campaign ID: %w", err)
+	}
+	state := DefaultState()
+	next, err := validateAndNormalize(Campaign{
+		ID:            id.String(),
+		Name:          name,
+		SchemaVersion: 1,
+		CalendarDate:  state.CalendarDate,
+		DaysTraveled:  0,
+		Players:       []string{},
+	})
+	if err != nil {
+		return Campaign{}, err
+	}
+	if err := repo.writeCampaign(ctx, next); err != nil {
+		return Campaign{}, err
+	}
+	index = append(index, Index{ID: next.ID})
+	if err := repo.writeCampaignIndex(ctx, index); err != nil {
+		_ = repo.storage.Delete(ctx, path.Join(campaignRootPath, next.ID+".json"))
+		return Campaign{}, fmt.Errorf("failed to update campaign index: %w", err)
+	}
+	return next, nil
+}
+
+func (repo Repository) readCampaignIndex(ctx context.Context) ([]Index, error) {
+	reader, err := repo.storage.Reader(ctx, campaignIndexPath)
+	if err != nil {
+		return nil, err
+	}
+	defer reader.Close()
+
+	var index []Index
+	if err := json.NewDecoder(reader).Decode(&index); err != nil {
+		if err == io.EOF {
+			return []Index{}, nil
+		}
+		return nil, err
+	}
+	return index, nil
+}
+
+func (repo Repository) writeCampaign(ctx context.Context, value Campaign) error {
+	writer, err := repo.storage.Writer(ctx, path.Join(campaignRootPath, value.ID+".json"))
+	if err != nil {
+		return fmt.Errorf("failed to write campaign: %w", err)
+	}
+	if err := json.NewEncoder(writer).Encode(value); err != nil {
+		_ = writer.Close()
+		return fmt.Errorf("failed to encode campaign: %w", err)
+	}
+	if err := writer.Close(); err != nil {
+		return fmt.Errorf("failed to close campaign: %w", err)
+	}
+	return nil
+}
+
+func (repo Repository) writeCampaignIndex(ctx context.Context, index []Index) error {
+	writer, err := repo.storage.Writer(ctx, campaignIndexPath)
+	if err != nil {
+		return err
+	}
+	if err := json.NewEncoder(writer).Encode(index); err != nil {
+		_ = writer.Close()
+		return err
+	}
+	return writer.Close()
 }
 
 func (repo Repository) getByID(ctx context.Context, id string) (Campaign, error) {

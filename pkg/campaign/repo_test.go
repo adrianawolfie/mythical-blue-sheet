@@ -144,6 +144,39 @@ func TestSaveCampaignPersistsCampaignFile(t *testing.T) {
 	}
 }
 
+func TestCreateCampaignPersistsDefaultsAndIndexesCampaign(t *testing.T) {
+	ctx, repo, dir := newTestRepository(t)
+
+	created, err := repo.CreateCampaign(ctx, "  New Voyage  ")
+	if err != nil {
+		t.Fatalf("create campaign: %v", err)
+	}
+	if created.ID == "" || created.Name != "New Voyage" || created.SchemaVersion != 1 || created.DaysTraveled != 0 || created.DM != "" || len(created.Players) != 0 || created.UpdatedAt == nil {
+		t.Fatalf("expected new campaign defaults, got %#v", created)
+	}
+	if created.CalendarDate.Year != 4520 || created.CalendarDate.Month == nil || *created.CalendarDate.Month != 3 || created.CalendarDate.Day == nil || *created.CalendarDate.Day != 28 {
+		t.Fatalf("expected default calendar date, got %#v", created.CalendarDate)
+	}
+
+	loaded, err := repo.List(ctx)
+	if err != nil {
+		t.Fatalf("list campaigns: %v", err)
+	}
+	if len(loaded) != 1 || loaded[0].ID != created.ID || loaded[0].Name != "New Voyage" {
+		t.Fatalf("expected new campaign in list, got %#v", loaded)
+	}
+	if _, err := os.Stat(filepath.Join(dir, campaignRootPath, created.ID+".json")); err != nil {
+		t.Fatalf("campaign file was not saved: %v", err)
+	}
+}
+
+func TestCreateCampaignRejectsEmptyName(t *testing.T) {
+	ctx, repo, _ := newTestRepository(t)
+	if _, err := repo.CreateCampaign(ctx, "  "); err != ErrCampaignNameRequired {
+		t.Fatalf("expected campaign name error, got %v", err)
+	}
+}
+
 func TestGetReturnsDefaultWhenStateFileInvalid(t *testing.T) {
 	ctx, repo, dir := newTestRepository(t)
 	if err := os.WriteFile(filepath.Join(dir, statePath), []byte("{"), 0o644); err != nil {

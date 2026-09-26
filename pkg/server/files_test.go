@@ -78,7 +78,7 @@ func TestFrontendAPIClientUsesGoServerBaseURL(t *testing.T) {
 	chdirRepoRoot(t)
 	contents, err := os.ReadFile(filepath.Join("public", "js", "api-client.js"))
 	require.NoError(t, err)
-	require.Contains(t, string(contents), `const API_BASE_URL = "https://raperonzolo.com"`)
+	require.Contains(t, string(contents), `const API_BASE_URL = window.location.hostname === "localhost" ? window.location.origin : "https://raperonzolo.com"`)
 	require.Contains(t, string(contents), "new URL(path, API_BASE_URL)")
 }
 

@@ -10,6 +10,7 @@ Campaign records are stored as `campaign/{id}.json`. The campaign list is stored
 
 - `List` loads `campaign/index.json`, reads each listed campaign file, and returns full campaigns. It accepts functional options such as filtering by player user ID or DM user ID.
 - `GetByID` loads one campaign from `campaign/{id}.json`.
+- `CreateCampaign` requires a non-empty name, assigns a UUIDv7, initializes the default calendar date with zero days traveled and no DM or players, and persists both the campaign record and its ID in `campaign/index.json`.
 - `SaveCampaign` validates, normalizes, timestamps, and persists one campaign to `campaign/{id}.json`.
 - `ListAdmin` resolves player names and available users for the admin campaign page.
 - `AssignDM` validates the user and assigns the DM user ID to the campaign, or clears the DM when the user ID is empty.
@@ -22,6 +23,7 @@ Campaign records are stored as `campaign/{id}.json`. The campaign list is stored
 
 - `GET /admin/campaigns.html` is served from `public/admin/campaigns.html` by the static file server; admin data is protected by `/api/admin/campaigns`.
 - `GET /api/admin/campaigns` returns campaign admin views for the static admin campaigns page.
+- `POST /api/admin/campaigns` creates a campaign from a name; only admins may call it.
 - `POST /api/admin/campaigns/{id}/players` adds a user ID to a campaign's players.
 - `DELETE /api/admin/campaigns/{id}/players/{userId}` removes a user ID from a campaign's players.
 - `PUT /api/admin/campaigns/{id}/dm` assigns or clears a campaign's DM user ID.

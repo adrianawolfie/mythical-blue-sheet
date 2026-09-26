@@ -1,5 +1,23 @@
 (() => {
   const body = document.getElementById("adminCampaignsBody");
+  const createButton = document.getElementById("createCampaignButton");
+  const createModal = document.getElementById("createCampaignModal");
+  const createForm = document.getElementById("createCampaignForm");
+  const createName = document.getElementById("createCampaignName");
+  const createError = document.getElementById("createCampaignError");
+  const createSubmit = createForm.querySelector("button[type='submit']");
+
+  function closeCreateModal() {
+    createModal.hidden = true;
+    createForm.reset();
+    createError.textContent = "";
+  }
+
+  function openCreateModal() {
+    createError.textContent = "";
+    createModal.hidden = false;
+    createName.focus();
+  }
 
   function textEl(tag, text, className = "") {
     const el = document.createElement(tag);
@@ -142,13 +160,50 @@
       return;
     }
     if (response.status === 403) {
+      createButton.hidden = true;
       body.innerHTML = '<tr><td class="admin-empty" colspan="6">Forbidden.</td></tr>';
       return;
     }
     if (!response.ok) throw new Error("Could not load campaigns.");
     const data = await response.json();
+    createButton.hidden = false;
     renderCampaigns(data.Campaigns || []);
   }
+
+  createButton.addEventListener("click", openCreateModal);
+  document.querySelector("[data-campaign-create-cancel]").addEventListener("click", closeCreateModal);
+  createModal.addEventListener("click", (event) => { if (event.target === createModal) closeCreateModal(); });
+  createForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    createError.textContent = "";
+    const name = createName.value.trim();
+    if (!name) {
+      createError.textContent = "Campaign name is required.";
+      return;
+    }
+
+    createSubmit.disabled = true;
+    try {
+      const response = await window.apiFetch("/api/admin/campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name })
+      });
+      if (!response.ok) {
+        createError.textContent = (await response.text()) || "Could not create campaign.";
+        return;
+      }
+      closeCreateModal();
+      if (typeof window.showToast === "function") {
+        window.showToast("Campaign created.", { variant: "success" });
+      }
+      load().catch((error) => console.error(error));
+    } catch {
+      createError.textContent = "Could not create campaign. Please try again.";
+    } finally {
+      createSubmit.disabled = false;
+    }
+  });
 
   document.addEventListener("click", async (event) => {
     const showPicker = event.target.closest("[data-campaign-show-player-picker]");
