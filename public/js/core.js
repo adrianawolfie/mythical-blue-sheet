@@ -14,6 +14,55 @@ function sw(name, btn) {
     if (offset < 0) window.scrollBy(0, offset);
   }
 
+// On phones the Main tab is split into Abilities & Skills, Combat, and Features views.
+const MAIN_VIEW_KEY = "mythicalBlueMainView";
+const MAIN_VIEWS = ["abilities", "combat", "features"];
+
+function mainViewsActive() {
+  const nav = document.querySelector(".main-subnav");
+  return Boolean(nav && getComputedStyle(nav).display !== "none");
+}
+
+function setMainView(view, { scroll = true } = {}) {
+  const page = document.getElementById("pg-main");
+  if (!page || !MAIN_VIEWS.includes(view)) return;
+  page.dataset.mainView = view;
+  page.querySelectorAll(".main-subnav [data-main-view]").forEach(button => {
+    const active = button.dataset.mainView === view;
+    button.classList.toggle("on", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+  try { localStorage.setItem(MAIN_VIEW_KEY, view); } catch {}
+  if (!scroll) return;
+  const tabs = document.querySelector(".sheet .tabs");
+  const offset = page.getBoundingClientRect().top - (tabs ? tabs.getBoundingClientRect().bottom : 0) - 12;
+  if (offset < 0) window.scrollBy(0, offset);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  let stored = "";
+  try { stored = localStorage.getItem(MAIN_VIEW_KEY) || ""; } catch {}
+  setMainView(MAIN_VIEWS.includes(stored) ? stored : "abilities", { scroll: false });
+  document.querySelectorAll(".main-subnav [data-main-view]").forEach(button => button.addEventListener("click", () => setMainView(button.dataset.mainView)));
+  document.getElementById("hdrIdentityToggle")?.addEventListener("click", event => {
+    const expanded = document.querySelector(".hdr-fields")?.classList.toggle("is-expanded");
+    event.currentTarget.setAttribute("aria-expanded", String(Boolean(expanded)));
+    event.currentTarget.textContent = expanded ? "Done" : "Details";
+  });
+  document.querySelector(".hdr-fields")?.addEventListener("input", updateHeaderIdentity);
+  document.querySelector(".hdr-fields")?.addEventListener("change", updateHeaderIdentity);
+});
+
+// The compact phone header shows the name with species, class, level, and subclass underneath.
+function updateHeaderIdentity() {
+  const name = document.getElementById("hdrIdentityName");
+  const line = document.getElementById("hdrIdentityLine");
+  if (!name || !line) return;
+  const value = key => String(document.querySelector(`.hdr-fields [data-field="${key}"]`)?.value || "").trim();
+  name.textContent = value("characterName") || "Unnamed Character";
+  line.textContent = [value("speciesRace"), [value("class"), value("level")].filter(Boolean).join(" "), value("subclass")].filter(Boolean).join(" · ");
+}
+
 // Swipe left or right on phones and tablets to move between sections.
 let sectionSwipeStart = null;
 
@@ -36,11 +85,25 @@ document.addEventListener("touchend", event => {
   sectionSwipeStart = null;
   if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
 
+  // Step through the Main views before moving on to the next tab.
+  const mainPage = document.getElementById("pg-main");
+  if (mainPage?.classList.contains("on") && mainViewsActive()) {
+    const view = MAIN_VIEWS[MAIN_VIEWS.indexOf(mainPage.dataset.mainView) + (dx < 0 ? 1 : -1)];
+    if (view) {
+      setMainView(view);
+      mainPage.classList.remove("pg-enter-next", "pg-enter-previous");
+      void mainPage.offsetWidth;
+      mainPage.classList.add(dx < 0 ? "pg-enter-next" : "pg-enter-previous");
+      return;
+    }
+  }
+
   const tabs = Array.from(document.querySelectorAll(".sheet .tabs .tab"));
   const next = tabs[tabs.findIndex(tab => tab.classList.contains("on")) + (dx < 0 ? 1 : -1)];
   if (!next) return;
   next.click();
   next.scrollIntoView({ block: "nearest", inline: "nearest" });
+  if (dx > 0 && mainPage?.classList.contains("on") && mainViewsActive()) setMainView("features", { scroll: false });
   const page = document.querySelector(".pg.on");
   page.classList.remove("pg-enter-next", "pg-enter-previous");
   void page.offsetWidth;
@@ -753,6 +816,7 @@ function showSheet() {
   document.getElementById("startPage").style.display = "none";
   document.querySelector(".sheet").style.display = "block";
   document.querySelector(".sheet-toolbar").style.display = "flex";
+  updateHeaderIdentity();
   stopIndexPolling();
   startSheetHPPolling();
 }

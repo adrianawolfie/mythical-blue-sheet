@@ -3078,3 +3078,202 @@
   }
 }
 
+
+/* ─── Phones: compact toolbar and header, Main split into views ─────────── */
+
+.hdr-identity,
+.inventory-subnav.main-subnav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* Toolbar: Character List and Save on one row; the rests, Copy, and Delete below. */
+  .sheet-toolbar {
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .sheet-toolbar > button {
+    min-width: 0;
+    padding: 9px 6px;
+  }
+
+  /* The first row leaves room for the fixed account button in the corner. */
+  #backToStartBtn,
+  #saveCharacterBtn {
+    flex: 1 1 calc(50% - 25px);
+  }
+
+  #saveCharacterBtn {
+    margin-right: 44px;
+  }
+
+  #shortRestBtn,
+  #longRestBtn {
+    flex: 1 1 calc(50% - 49px);
+    order: 2;
+  }
+
+  .sheet-toolbar button.sheet-copy-button,
+  .sheet-toolbar button.sheet-delete-button {
+    flex: 0 0 40px;
+    order: 2;
+    margin-left: 0;
+  }
+
+  .sheet-toolbar > form,
+  .sheet-version-preview {
+    order: 3;
+  }
+
+  .sheet {
+    padding-top: 96px;
+  }
+
+  .title-banner {
+    width: 160px;
+    top: 16px;
+  }
+
+  /* Header: name and class line with a Details button for the rest. */
+  .hdr-fields {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px 6px;
+    margin-bottom: 14px;
+  }
+
+  .hdr-identity {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(184,144,44,.45);
+  }
+
+  .hdr-identity-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .hdr-identity-text strong {
+    color: var(--navy-deep);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 20px;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .hdr-identity-text span {
+    color: var(--ink-soft);
+    font-family: var(--small-italic-font);
+    font-size: 12.5px;
+    font-style: italic;
+  }
+
+  .hdr-identity-toggle {
+    flex: none;
+    padding: 6px 12px;
+    border: 1px solid rgba(184,144,44,.6);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--gold-deep);
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+  }
+
+  .hdr-fields:not(.is-expanded) .hdr-row.r1,
+  .hdr-fields:not(.is-expanded) .hdr-row.r2 > .hfl,
+  .hdr-fields:not(.is-expanded) .extra-speed-add {
+    display: none;
+  }
+
+  /* Armor Class, Initiative, Speed, and Temp HP share one row; Hit Points gets the next. */
+  .sheet .hdr-row.r2,
+  .sheet .hdr-row.r3,
+  .sheet .movement-wrap,
+  .sheet .hmini-row {
+    display: contents;
+  }
+
+  .sheet .hdr-fields > *,
+  .sheet .hdr-row.r2 > *,
+  .sheet .hdr-row.r3 > *,
+  .sheet .movement-wrap > *,
+  .sheet .hmini-row > * {
+    grid-row: auto;
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+
+  .sheet .hdr-identity { order: 1; }
+  .sheet .hdr-row.r1 { order: 2; }
+  .sheet .hdr-row.r2 > .hfl { order: 3; }
+  .sheet .hdr-row.r3 > .armor-class-tracker { order: 4; grid-column: auto;; grid-row: auto; }
+  .sheet .hmini-row > .hmini:first-child { order: 5; grid-column: auto; }
+  .sheet .hmini-row > .hmini:last-child { order: 6; grid-column: auto; }
+  .sheet .hdr-row.r3 > .hstat:nth-child(3) { order: 7; grid-column: auto;; grid-row: auto; }
+  .sheet .extra-speed-panel { order: 8; }
+  .sheet .hdr-row.r3 > .hp-tracker { order: 9;; grid-row: auto; }
+  .sheet .hdr-row.r3 > .conditions { order: 10;; grid-row: auto; }
+  .sheet .hdr-row.r3 > .exhaustion { order: 11;; grid-row: auto; }
+  .sheet .condition-explanation { order: 12; }
+
+  .sheet .hdr-row.r3 > .armor-class-tracker,
+  .sheet .hmini-row > .hmini,
+  .sheet .hdr-row.r3 > .hstat:nth-child(3) {
+    justify-self: center;
+    min-width: 0;
+  }
+
+  .hdr-fields .hstat input {
+    width: 48px;
+    height: 48px;
+  }
+
+  .hdr-fields .hstat.wide input,
+  .hdr-fields .hstat.conditions input {
+    width: 100%;
+    height: auto;
+  }
+
+  .hdr-fields .hstat > label {
+    font-size: 7.5px;
+    letter-spacing: .8px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .hdr-row.r3 > .hp-tracker {
+    justify-self: center;
+    width: 100%;
+    max-width: 290px;
+  }
+
+  /* Main: one view at a time, chosen with the tabs or by swiping. */
+  .inventory-subnav.main-subnav {
+    display: flex;
+  }
+
+  #pg-main[data-main-view="abilities"] :is(.combrow > *, .attacks-card, .defenses-card, .features-traits-main),
+  #pg-main[data-main-view="combat"] :is(.bonrow > *, .lp .ab, .proficiencies-card, .features-traits-main),
+  #pg-main[data-main-view="features"] :is(.bonrow > *, .combrow > *, .lp .ab, .proficiencies-card, .defenses-card, .attacks-card) {
+    display: none;
+  }
+
+  #pg-main[data-main-view="combat"] .defenses-card {
+    order: 7;
+    grid-column: 1 / -1;
+  }
+
+  #pg-main[data-main-view="combat"] .combrow .cbox:last-child {
+    grid-column: 1 / -1;
+  }
+}

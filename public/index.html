@@ -197,6 +197,13 @@
   <div class="content">
 
     <div class="hdr-fields">
+      <div class="hdr-identity">
+        <div class="hdr-identity-text">
+          <strong id="hdrIdentityName">Unnamed Character</strong>
+          <span id="hdrIdentityLine"></span>
+        </div>
+        <button id="hdrIdentityToggle" type="button" class="hdr-identity-toggle" aria-expanded="false">Details</button>
+      </div>
       <div class="hdr-row r1">
         <div class="hfl"><label>Character Name</label><input type="text" placeholder="enter name…" data-field="characterName"></div>
         <div class="hfl"><label>Species</label><input type="text" placeholder="sea elf, human…" data-field="speciesRace"></div>
@@ -351,7 +358,12 @@
       <button class="tab" onclick="sw('journal',this)"><img class="tab-icon" src="assets/icons/navigation/journal.png" data-daylight-src="assets/icons/navigation/journal.png" data-moonlight-src="assets/themes/moonlight/navigation/journal.png" alt="" aria-hidden="true"><span>Journal</span></button>
     </div>
 
-    <div id="pg-main" class="pg on">
+    <div id="pg-main" class="pg on" data-main-view="abilities">
+      <div class="inventory-subnav main-subnav" role="tablist" aria-label="Main sections">
+        <button type="button" class="inventory-subtab on" role="tab" aria-selected="true" data-main-view="abilities">Abilities &amp; Skills</button>
+        <button type="button" class="inventory-subtab" role="tab" aria-selected="false" data-main-view="combat">Combat</button>
+        <button type="button" class="inventory-subtab" role="tab" aria-selected="false" data-main-view="features">Features</button>
+      </div>
       <div class="body">
 
         <div class="lp">
